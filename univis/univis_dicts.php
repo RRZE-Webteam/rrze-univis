@@ -21,7 +21,7 @@
 		    "h.c."  =>  "ehrenhalber",
 		    "med."  =>  "Medizin",
 		    "jur."  =>  "Recht",
-		    "rer."  =>  ""          
+		    "rer."  =>  ""
 		);
 
 		public static $lecturetypen = array(

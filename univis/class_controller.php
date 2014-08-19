@@ -163,7 +163,6 @@ class Controller {
                 //$contents = fread($handle, filesize($filename));
                 $contents = stream_get_contents($handle);
 		fclose($handle);
-                //_rrze_debug($contents);
 		return $contents;
 	}
 }

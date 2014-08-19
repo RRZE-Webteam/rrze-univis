@@ -115,7 +115,6 @@ class UNIVIS {
 			$personen_jobs = array();
 			for ($i=0; $i < count($jobs); $i++) {
 
-
 				if(in_array($jobs[$i]["description"], $xjobs)) {
 					continue;
 				}

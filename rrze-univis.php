@@ -125,7 +125,7 @@ class RRZE_UnivIS {
     }
 
     public static function add_options_page() {
-        self::$univis_option_page = add_options_page(__('UnivIS', self::textdomain), __('UnivIS', self::textdomain), 'manage_options', 'options-univis', array(__CLASS__, 'options_univis'));
+        self::$univis_option_page = add_options_page(__('<b><i>Univ</i>IS</b>', self::textdomain), __('<b><i>Univ</i>IS</b>', self::textdomain), 'manage_options', 'options-univis', array(__CLASS__, 'options_univis'));
         add_action('load-' . self::$univis_option_page, array(__CLASS__, 'univis_help_menu'));
     }
 
@@ -133,7 +133,7 @@ class RRZE_UnivIS {
         ?>
         <div class="wrap">
         <?php screen_icon(); ?>
-            <h2><?php echo esc_html(__('Einstellungen &rsaquo; UnivIS', self::textdomain)); ?></h2>
+            <h2><?php echo esc_html(__('Einstellungen &rsaquo; <b><i>Univ</i>IS</b>', self::textdomain)); ?></h2>
 
             <form method="post" action="options.php">
         <?php
@@ -169,7 +169,7 @@ class RRZE_UnivIS {
     public static function univis_help_menu() {
 
         $content_univis = array(
-            '<p>' . __('<b><i>Univ</i>IS</b>-Daten k�nnen im XML-Format �ber einen Shortcode in die Seiten eingebunden werden.', self::textdomain) . '</p>',
+            '<p>' . __('<b><i>Univ</i>IS</b>-Daten können im XML-Format über einen Shortcode in die Seiten eingebunden werden.', self::textdomain) . '</p>',
             '<p><strong>' . __('Shortcode:', self::textdomain) . '</strong></p>',
             '<p>' . __('<b>[univis]</b>: bindet den Link zu <b><i>Univ</i>IS</b> ein. Der Linktext kann unten gesetzt werden.', self::textdomain) . '</p>',
             '<p>' . __('<b>[univis number=321601]</b>: liefert alle Informationen zur Org.-Nr. 321601 aus der Institutionendatenbank.', self::textdomain) . '</p>'
