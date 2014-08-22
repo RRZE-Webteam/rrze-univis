@@ -101,7 +101,7 @@ class UNIVIS {
 
 		// XML Daten Parsen
 		$daten = $this->xml2array($url);
-
+                $datenMitarbeiterAlle = array();
 		if($this->optionen["Sortiere_Jobs"]) {
 
 			$jobs = $daten["Org"][0]["jobs"][0]["job"];
@@ -113,20 +113,27 @@ class UNIVIS {
 			}
 
 			$personen_jobs = array();
+                        $daten_text = array();
 			for ($i=0; $i < count($jobs); $i++) {
 
 				if(in_array($jobs[$i]["description"], $xjobs)) {
 					continue;
 				}
-
-				for ($j=0; $j < count($jobs[$i]["pers"][0]["per"]); $j++) {
-					if($personen_jobs[$jobs[$i]["pers"][0]["per"][$j]["UnivISRef"][0]["key"]]) {
+                                if(isset($jobs[$i]["pers"])) {
+                                    for ($j=0; $j < count($jobs[$i]["pers"][0]["per"]); $j++) {
+					if(isset($personen_jobs[$jobs[$i]["pers"][0]["per"][$j]["UnivISRef"][0]["key"]])) {
 						$personen_jobs[$jobs[$i]["pers"][0]["per"][$j]["UnivISRef"][0]["key"]] .= "|".$jobs[$i]["description"];
 					}else{
 						$personen_jobs[$jobs[$i]["pers"][0]["per"][$j]["UnivISRef"][0]["key"]] = $jobs[$i]["description"];
 					}
-
+                                    }
 				}
+                                if(isset($jobs[$i]["text"])) {
+                                    $k = count($daten_text);
+                                    $daten_text[$k]["text"] = $jobs[$i]["text"];
+                                    $daten_text[$k]["rang"] = $jobs[$i]["description"];
+                                  
+                                }
 			}
 
 			for ($k=0; $k < count($daten["Person"]); $k++) {
@@ -137,9 +144,14 @@ class UNIVIS {
 					$daten["Person"][$k]["rang"] = $personen_jobs[$key];
 				}
 			}
-		}       
-
-		return $daten["Person"];
+                    
+                        $datenMitarbeiterAlle = array_merge($daten["Person"], $daten_text);
+		} else {
+                    $datenMitarbeiterAlle = $daten["Person"];
+                }
+                
+		return $datenMitarbeiterAlle;
+                
                                                          
 	}
 

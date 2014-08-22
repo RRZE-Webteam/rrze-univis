@@ -75,48 +75,74 @@ class Render {
 		if($this->optionen["Sortiere_Jobs"]) {
 			// Bei Lehrstuehlen ist es aber sinnvoller nach Jobs bzw. Rang zu gliedern.
 			$such_kategorie = "rang";
-		}
 
+		}
 		$gruppen = array();
 
 		$gruppen_dict = array();
+                $gruppen_personen = array();
+                $gruppen_text = array();
 		foreach ($personen as $person) {
-			if(empty($person["firstname"]))
-				continue;
-
+                        //Text-Felder müssen auch angezeigt werden, deshalb rausgenommen
+			//if(empty($person["firstname"]))
+			//	continue;
+                        
+                                                
 			if(empty($person[$such_kategorie])) {
 				continue;
 			}
-
-			$person["title-long"] = $this->_str_replace_dict(Dicts::$acronyms, $person["title"]);
-			//$name = $person["firstname"]."-".$person["lastname"];
-			$name = $person["@attributes"]["key"];
+                        if(isset($person["title"])) {
+                            $person["title-long"] = $this->_str_replace_dict(Dicts::$acronyms, $person["title"]);
+                        }
+			
+                    if(isset($person["firstname"])&&isset($person["lastname"])) {
+                        $name = $person["firstname"]."-".$person["lastname"];
+			//$name = $person["@attributes"]["key"];
                         
-                        $person["nameurl"] = str_replace("Person.", ":", $name);
-                        $person["nameurl"] = str_replace(".", "/", $person["nameurl"]);
-                        $person["nameurl"] = $person["semester"] . $person["nameurl"];
+                        //$person["nameurl"] = str_replace("Person.", ":", $name);
+                        //$person["nameurl"] = str_replace(".", "/", $person["nameurl"]);
+                        //$person["nameurl"] = $person["semester"] . $person["nameurl"];
 
 
-                        //$person["nameurl"] = strtolower($this->umlaute_ersetzen($name));
+                        $person["nameurl"] = strtolower($this->umlaute_ersetzen($name));
 			//$person["nameurl"] = str_replace("-", "_", $person["nameurl"]);
-			//$person["nameurl"] = str_replace(" ", "-", $person["nameurl"]);
-
+			$person["nameurl"] = str_replace(" ", "-", $person["nameurl"]);
+                    }
 			$gruppen_namen = explode("|", $person[$such_kategorie]);
+                       
 
 			foreach ($gruppen_namen as $gruppen_name) {
-				if($gruppen_dict[$gruppen_name]==NULL) {
-					$gruppen_dict[$gruppen_name] = array();
+                            if(isset($person["id"])) {
+         			if(empty($gruppen_personen[$gruppen_name])) {
+              					$gruppen_personen[$gruppen_name] = array();                                      
 				}
-
-				array_push($gruppen_dict[$gruppen_name], $person);
-			}
+                            
+				array_push($gruppen_personen[$gruppen_name], $person);
+                                
+                            } else {
+                                if(empty($gruppen_text[$gruppen_name])) {
+              					$gruppen_text[$gruppen_name] = array();                                      
+				}
+                            
+				array_push($gruppen_text[$gruppen_name], $person);
+                            }
+                        }
+                                              
 		}
 
-
-		foreach ($gruppen_dict as $gruppen_name => $gruppen_personen) {
+		foreach ($gruppen_personen as $gruppen_name => $gruppen_personen) {
 			$gruppen_obj = array(
 				"name" => $gruppen_name,
 				"personen" => $gruppen_personen
+			);
+
+			array_push($gruppen, $gruppen_obj);
+		}
+                
+                foreach ($gruppen_text as $gruppen_name => $gruppen_info) {
+			$gruppen_obj = array(
+				"name" => $gruppen_name,
+				"info" => $gruppen_info
 			);
 
 			array_push($gruppen, $gruppen_obj);
@@ -151,6 +177,14 @@ class Render {
 		if(count($gruppen) <= 1) {
 			$this->optionen["Zeige_Sprungmarken"] = 0;
 		}
+                
+                //Workaround für die Ausgabe [leer]
+                for ($i=0; $i < count($gruppen); $i++) {
+			if($gruppen[$i]["name"] =='[leer]') {
+                            $gruppen[$i]["name"] = '';
+			}                        
+                }
+
 		return array("gruppen" => $gruppen, "optionen" => $this->optionen);
 	}
 
@@ -172,16 +206,17 @@ class Render {
 			if(empty($person[$such_kategorie])) {
 				continue;
 			}
-
-			$person["title-long"] = $this->_str_replace_dict(Dicts::$acronyms, $person["title"]);
-			$name = $person["firstname"]."-".$person["lastname"];
+                        if(isset($person["title"])) {
+                            $person["title-long"] = $this->_str_replace_dict(Dicts::$acronyms, $person["title"]);
+                        }
+                        $name = $person["firstname"]."-".$person["lastname"];
 			$person["nameurl"] = strtolower($this->umlaute_ersetzen($name));
 			$person["nameurl"] = str_replace(" ", "-", $person["nameurl"]);
 
 			$gruppen_namen = explode("|", $person[$such_kategorie]);
 
 			foreach ($gruppen_namen as $gruppen_name) {
-				if($gruppen_dict[$gruppen_name]==NULL) {
+				if(empty($gruppen_dict[$gruppen_name])) {
 					$gruppen_dict[$gruppen_name] = array();
 				}
 
