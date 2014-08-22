@@ -52,8 +52,9 @@ class Cache {
 	public function setzeDaten($data) {
 		
 		$filepath = $this->filepath();
-                
-		file_put_contents($filepath, $data);
+                if(file_exists($filepath)) {
+                    file_put_contents($filepath, $data);
+                }
 	}
 
 	private function sucheDatei() {
