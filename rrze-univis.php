@@ -2,7 +2,7 @@
 /**
  * Plugin Name: RRZE-UnivIS
  * Description: Einbindung von Daten aus UnivIS für den Geschäftsverteilungsplan auf Basis des UnivIS-Plugins des Webbaukastens.
- * Version: 0.9.8
+ * Version: 0.9.9
  * Author: Karin Kimpan, RRZE-Webteam
  * Author URI: http://blogs.fau.de/webworking/
  * License: GPLv2 or later
@@ -76,16 +76,21 @@ class RRZE_UnivIS {
         $defaults = array(
 			'UnivISOrgNr' => '0',
 			'task' => 'mitarbeiter-alle',
+                        'Personenanzeige_Verzeichnis' => '',
 			'Personenanzeige_Bildsuche' =>	'1',
 			'Personenanzeige_ZusatzdatenInDatei' =>	'1',
 			'Personenanzeige_Publikationen'	=> '0',
 			'Personenanzeige_Lehrveranstaltung' => '1',
+                        'Lehrveranstaltung_Verzeichnis' => '',
+                        'SeitenCache' => '0',
 			'START_SOMMERSEMESTER' => '1.4',
 			'START_WINTERSEMESTER' => '1.10',
-			'Zeige_Sprungmarken' => '1',
+			'Zeige_Sprungmarken' => '0',
 			'OrgUnit' => '',
 			'Sortiere_Alphabet' => '0',
-			'Sortiere_Jobs' => '1'
+			'Sortiere_Jobs' => '1',
+                        'Ignoriere_Jobs' => 'Sicherheitsbeauftragter|IT-Sicherheits-Beauftragter|Webmaster|Postmaster|IT-Betreuer|UnivIS-Beauftragte',
+                        'Datenverzeichnis' => ''
 	);
         return $defaults;
     }
@@ -133,7 +138,7 @@ class RRZE_UnivIS {
         ?>
         <div class="wrap">
         <?php screen_icon(); ?>
-            <h2><?php echo esc_html(__('Einstellungen &rsaquo; <b><i>Univ</i>IS</b>', self::textdomain)); ?></h2>
+            <h2><?php echo __('Einstellungen &rsaquo; <b><i>Univ</i>IS</b>', self::textdomain); ?></h2>
 
             <form method="post" action="options.php">
         <?php
@@ -206,7 +211,9 @@ class RRZE_UnivIS {
         extract($shortcode_atts);
         if ($UnivISOrgNr) {
             // FETCH $_GET OR CRON ARGUMENTS TO AUTOMATE TASKS
-            $args = (!empty($_GET)) ? $_GET:array('task'=>$argv[1]);
+            if(isset($argv[1])) {
+                $args = (!empty($_GET)) ? $_GET:array('task'=>$argv[1]);
+            }
             $controller = new Controller("mitarbeiter-alle", NULL, $shortcode_atts);
             $ausgabe = $controller->ladeHTML();
             
