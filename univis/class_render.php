@@ -143,12 +143,21 @@ class Render {
 		}
                 
                 foreach ($gruppen_text as $gruppen_name => $gruppen_info) {
+                        //ersetze Links in Textfeldern
+                        /*_rrze_debug($gruppen_info);
+                        if(preg_match('/\[[\s\S]+\]+\S+/', $gruppen_info[0]['text'], $gruppen_info_link, PREG_OFFSET_CAPTURE)==1) {
+                            _rrze_debug($gruppen_info_link);
+                        }*/
 			$gruppen_obj = array(
 				"name" => $gruppen_name,
 				"info" => $gruppen_info
 			);
 			array_push($gruppen, $gruppen_obj);
 		}
+               
+
+                
+
 
 		if($this->optionen["OrgUnit"] != "") {
 			$gruppe = array(
@@ -186,6 +195,8 @@ class Render {
                             $gruppen[$i]["name"] = '';
 			}                        
                 }
+                
+                
 
 		return array("gruppen" => $gruppen, "optionen" => $this->optionen);
 	}
