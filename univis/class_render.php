@@ -116,18 +116,21 @@ class Render {
          			if(empty($gruppen_personen[$gruppen_name])) {
               					$gruppen_personen[$gruppen_name] = array();                                      
 				}
-                            
 				array_push($gruppen_personen[$gruppen_name], $person);
                                 
                             } else {
                                 if(empty($gruppen_text[$gruppen_name])) {
-              					$gruppen_text[$gruppen_name] = array();                                      
+              					$gruppen_text[$gruppen_name] = array();      
 				}
-                            
+ 
 				array_push($gruppen_text[$gruppen_name], $person);
+                            // Suche man eingetragen Mailadressen bzw. URLs
+                            $suchstring = '/\[(.+?)\](\S+)/';
+                            // Umsetzung in HTML-Link
+                            $html = "<a href='$2'>$1</a>";
+                            $gruppen_text[$gruppen_name][0]['text'] = preg_replace($suchstring, $html, $gruppen_text[$gruppen_name][0]['text']);
                             }
-                        }
-                                              
+                        }                                             
 		}
 
 		foreach ($gruppen_personen as $gruppen_name => $gruppen_personen) {
@@ -144,7 +147,6 @@ class Render {
 				"name" => $gruppen_name,
 				"info" => $gruppen_info
 			);
-
 			array_push($gruppen, $gruppen_obj);
 		}
 

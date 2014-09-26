@@ -2,7 +2,7 @@
 /**
  * Plugin Name: RRZE-UnivIS
  * Description: Einbindung von Daten aus UnivIS für den Geschäftsverteilungsplan auf Basis des UnivIS-Plugins des Webbaukastens.
- * Version: 0.9.9
+ * Version: 1.0
  * Author: Karin Kimpan, RRZE-Webteam
  * Author URI: http://blogs.fau.de/webworking/
  * License: GPLv2 or later
