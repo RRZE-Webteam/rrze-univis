@@ -124,7 +124,7 @@ class Render {
 				}
  
 				array_push($gruppen_text[$gruppen_name], $person);
-                            // Suche man eingetragen Mailadressen bzw. URLs
+                            // Suche nach eingetragen Mailadressen bzw. URLs
                             $suchstring = '/\[(.+?)\](\S+)/';
                             // Umsetzung in HTML-Link
                             $html = "<a href='$2'>$1</a>";
@@ -143,28 +143,22 @@ class Render {
 		}
                 
                 foreach ($gruppen_text as $gruppen_name => $gruppen_info) {
-                        //ersetze Links in Textfeldern
-                        /*_rrze_debug($gruppen_info);
-                        if(preg_match('/\[[\s\S]+\]+\S+/', $gruppen_info[0]['text'], $gruppen_info_link, PREG_OFFSET_CAPTURE)==1) {
-                            _rrze_debug($gruppen_info_link);
-                        }*/
 			$gruppen_obj = array(
 				"name" => $gruppen_name,
 				"info" => $gruppen_info
 			);
 			array_push($gruppen, $gruppen_obj);
 		}
-               
-
                 
-
-
+                //Sortierung der Ergebnisse nach dem Funktionsfeld
+                //$gruppen = $this->record_sort($gruppen, "name");
+                        
 		if($this->optionen["OrgUnit"] != "") {
 			$gruppe = array(
 				"name" => $this->optionen["OrgUnit"],
 				"personen" => $gruppen_dict[$this->optionen["OrgUnit"]]
 			);
-			$gruppen = array($gruppe);
+                        $gruppen = array($gruppe);
 		}
 
 		// Sollen die Personen alphabetisch sortiert werden?
@@ -195,8 +189,6 @@ class Render {
                             $gruppen[$i]["name"] = '';
 			}                        
                 }
-                
-                
 
 		return array("gruppen" => $gruppen, "optionen" => $this->optionen);
 	}
