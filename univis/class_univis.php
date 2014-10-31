@@ -1,6 +1,6 @@
 <?PHP
 
-require("univis_dicts.php");
+require_once('univis_dicts.php');
 
 class UNIVIS {
 
