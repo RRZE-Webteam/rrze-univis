@@ -63,7 +63,7 @@ class Render {
 	}
 
 
-	private function _bearbeiteMitarbeiterAlle($personen) {
+	private function _bearbeiteMitarbeiterAlle($daten) {
 		/////////	Daten Formatieren
 		////////////////
 		//	Array: ["ORGNAME"] => Array: PERSON-ARRAY
@@ -71,11 +71,14 @@ class Render {
 
 
 		// Standard Aufteilung: orgname
-		$such_kategorie = "orgname";
+                //_rrze_debug($personen);
+                $personen = $daten['Person'];
+                $jobnamen = $daten['jobs'];
+                $such_kategorie = "orgname";
 		if($this->optionen["Sortiere_Jobs"]) {
 			// Bei Lehrstuehlen ist es aber sinnvoller nach Jobs bzw. Rang zu gliedern.
 			$such_kategorie = "rang";
-
+                        $jobs = $daten['Org'][0]['jobs'][0]['job'];
 		}
 		$gruppen = array();
 
@@ -95,24 +98,29 @@ class Render {
                             $person["title-long"] = $this->_str_replace_dict(Dicts::$acronyms, $person["title"]);
                         }
 			
-                    if(isset($person["firstname"])&&isset($person["lastname"])) {
-                        $name = $person["firstname"]."-".$person["lastname"];
-			//$name = $person["@attributes"]["key"];
-                        
-                        //$person["nameurl"] = str_replace("Person.", ":", $name);
-                        //$person["nameurl"] = str_replace(".", "/", $person["nameurl"]);
-                        //$person["nameurl"] = $person["semester"] . $person["nameurl"];
+                        if(isset($person["firstname"])&&isset($person["lastname"])) {
+                            $name = $person["firstname"]."-".$person["lastname"];
+                            //$name = $person["@attributes"]["key"];
+
+                            //$person["nameurl"] = str_replace("Person.", ":", $name);
+                            //$person["nameurl"] = str_replace(".", "/", $person["nameurl"]);
+                            //$person["nameurl"] = $person["semester"] . $person["nameurl"];
 
 
-                        $person["nameurl"] = strtolower($this->umlaute_ersetzen($name));
-			//$person["nameurl"] = str_replace("-", "_", $person["nameurl"]);
-			$person["nameurl"] = str_replace(" ", "-", $person["nameurl"]);
-                    }
+                            $person["nameurl"] = strtolower($this->umlaute_ersetzen($name));
+                            //$person["nameurl"] = str_replace("-", "_", $person["nameurl"]);
+                            $person["nameurl"] = str_replace(" ", "-", $person["nameurl"]);
+                        }
 			$gruppen_namen = explode("|", $person[$such_kategorie]);
-                       
 
 			foreach ($gruppen_namen as $gruppen_name) {
-                            if(isset($person["id"])) {
+                            if(empty($gruppen_dict[$gruppen_name])) {
+					$gruppen_dict[$gruppen_name] = array();
+				}
+
+				array_push($gruppen_dict[$gruppen_name], $person);
+                            
+                            /*if(isset($person["id"])) {
          			if(empty($gruppen_personen[$gruppen_name])) {
               					$gruppen_personen[$gruppen_name] = array();                                      
 				}
@@ -123,15 +131,28 @@ class Render {
               					$gruppen_text[$gruppen_name] = array();      
 				}
  
-				array_push($gruppen_text[$gruppen_name], $person);
+				array_push($gruppen_text[$gruppen_name], $person);*/
                             // Suche nach eingetragen Mailadressen bzw. URLs
-                            $suchstring = '/\[(.+?)\](\S+)/';
+                            //$suchstring = '/\[(.+?)\](\S+)/';
                             // Umsetzung in HTML-Link
-                            $html = "<a href='$2'>$1</a>";
-                            $gruppen_text[$gruppen_name][0]['text'] = preg_replace($suchstring, $html, $gruppen_text[$gruppen_name][0]['text']);
+                            //$html = "<a href='$2'>$1</a>";
+                        
+                            //$gruppen_text[$gruppen_name][0]['text'] = preg_replace($suchstring, $html, $gruppen_text[$gruppen_name][0]['text']);
                             }
-                        }                                             
+                                                                    
 		}
+
+                    foreach ($jobnamen as $gruppen_name) {
+                            $gruppen_personen = $gruppen_dict[$gruppen_name];
+                            $gruppen_obj = array(
+                                    "name" => $gruppen_name,
+                                    //"personen" => $this->record_sort($gruppen_personen, "lastname")
+                                    "personen" => $this->array_orderby($gruppen_personen, "lastname", SORT_ASC, "firstname", SORT_ASC)
+                            );
+
+                            array_push($gruppen, $gruppen_obj);
+                    }  
+                
 
 		foreach ($gruppen_personen as $gruppen_name => $gruppen_personen) {
 			$gruppen_obj = array(
@@ -171,9 +192,10 @@ class Render {
 				}
 			}
 
-			$personen = $this->record_sort($personen, "lastname");
-
-			$gruppe = array("name" => "Alle Mitarbeiter", "personen" => $personen);
+			$personen = $this->record_sort($personen, "id");
+                        $personen = $this->array_orderby($personen,"lastname", SORT_ASC, "firstname", SORT_ASC );
+			
+                        $gruppe = array("name" => "Alle Mitarbeiter", "personen" => $personen);
 			$gruppen = array($gruppe);
 
 		}
@@ -665,6 +687,24 @@ class Render {
 
 	    return $records;
 	}
+        
+        private function array_orderby(){
+		$args = func_get_args();
+		$data = array_shift($args);
+		foreach ($args as $n => $field) {
+			if (is_string($field)) {
+				$tmp = array();
+				foreach ($data as $key => $row)
+					$tmp[$key] = $row[$field];
+				$args[$n] = $tmp;
+			}
+		}
+		$args[] = &$data;
+                _rrze_debug($args);
+		call_user_func_array('array_multisort', $args);
+		return array_pop($args);
+	}
+
 
 }
 

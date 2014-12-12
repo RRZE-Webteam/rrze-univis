@@ -132,7 +132,8 @@ class Controller {
 			$fpath = '../../univis.conf';
 		}
 		$fpath_alternative = $_SERVER["DOCUMENT_ROOT"].'/vkdaten/univis.conf';                
-		if(file_exists($fpath_alternative)){ $fpath = $fpath_alternative; }
+		
+                if(file_exists($fpath_alternative)){ $fpath = $fpath_alternative; }
 		$options = array();
 		$fh = fopen($fpath, 'r') or die('Cannot open file!');
 		while(!feof($fh)) {

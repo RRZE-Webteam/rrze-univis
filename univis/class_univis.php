@@ -43,13 +43,15 @@ class UNIVIS {
 		$this->optionen = $optionen;
 
 	}
+        /*
         public function test() {
             if (!empty($this->optionen)) {
 		$this->daten = $this->_ladeMitarbeiterAlle();
             }
         return $this->daten;
         }
-	public function ladeDaten() {
+	*/
+        public function ladeDaten() {
 
 		if (!empty($this->optionen)) {
 			switch($this->optionen["task"]){
@@ -105,13 +107,19 @@ class UNIVIS {
 		if($this->optionen["Sortiere_Jobs"]) {
 
 			$jobs = $daten["Org"][0]["jobs"][0]["job"];
-
+                        $jobnamen = array();
+                        $jobs_vergeben = array();
 			$xjobs = array();
+     //_rrze_debug($jobs);
+                        foreach ($jobs as $job)
+			{
+				$jobnamen[] = $job['description'];
+			}
 
 			if($this->optionen["Ignoriere_Jobs"]) {
 				$xjobs = explode("|", $this->optionen["Ignoriere_Jobs"]);
 			}
-
+                        
 			$personen_jobs = array();
                         $daten_text = array();
 			for ($i=0; $i < count($jobs); $i++) {
@@ -119,6 +127,19 @@ class UNIVIS {
 				if(in_array($jobs[$i]["description"], $xjobs)) {
 					continue;
 				}
+                                if (
+					(!in_array($jobs[$i]["description"], $jobs_vergeben))
+					AND
+                                        ((isset($jobs[$i]["pers"])
+                                        AND
+					(count($jobs[$i]["pers"][0]["per"]) > 0))
+                                        OR
+                                        (isset($jobs[$i]['text'])))
+				)
+				{
+					$jobs_vergeben[] = $jobs[$i]["description"];
+				}
+              
                                 if(isset($jobs[$i]["pers"])) {
                                     for ($j=0; $j < count($jobs[$i]["pers"][0]["per"]); $j++) {
 					if(isset($personen_jobs[$jobs[$i]["pers"][0]["per"][$j]["UnivISRef"][0]["key"]])) {
@@ -144,13 +165,10 @@ class UNIVIS {
 					$daten["Person"][$k]["rang"] = $personen_jobs[$key];
 				}
 			}
-                    
-                        $datenMitarbeiterAlle = array_merge($daten["Person"], $daten_text);
-		} else {
-                    $datenMitarbeiterAlle = $daten["Person"];
-                }
-                
-		return $datenMitarbeiterAlle;
+                        $daten['Person'] = array_merge($daten["Person"], $daten_text);
+		} 
+                $daten['jobs'] = $jobs_vergeben;
+		return $daten;
                 
                                                          
 	}
