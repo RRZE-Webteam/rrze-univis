@@ -81,7 +81,7 @@ class Render {
                         $jobs = $daten['Org'][0]['jobs'][0]['job'];
 		}
 		$gruppen = array();
-
+                //_rrze_debug($personen);
 		$gruppen_dict = array();
                 $gruppen_personen = array();
                 $gruppen_text = array();
@@ -111,15 +111,54 @@ class Render {
                             //$person["nameurl"] = str_replace("-", "_", $person["nameurl"]);
                             $person["nameurl"] = str_replace(" ", "-", $person["nameurl"]);
                         }
-			$gruppen_namen = explode("|", $person[$such_kategorie]);
+                        
+                        if(isset($person['text'])) {
+                            // Suche nach eingetragen Mailadressen bzw. URLs
+                            $suchstring_0 = '/\*\*/';   // ** durch * ersetzen
+                            $html_0 = '*';
+                            $suchstring_1 = '/\|\|/';  // || durch | ersetzen
+                            $html_1 = '|';
+                            $suchstring_2 = '/\^\^/';     // ^^ durch ^ ersetzen
+                            $html_2 = '^';
+                            $suchstring_3 = '/__/';  // __ durch _ ersetzen
+                            $html_3 = '_';
+                            $suchstring_4 = '/^\s+/';  // zwei Leerzeilen durch Absatz
+                            $html_4 = '';
+                            $suchstring_5 = '/\*(.+)\*/';    // *fett*
+                            $html_5 =  '<b>$1</b>';
+                            $suchstring_6 = '/\|(.+)\|/';  // |kursiv|
+                            $html_6 = '<i>$1</i>';
+                            $suchstring_7 = '/\^(.+)\^/';    // pi^2^
+                            $html_7 = '';
+                            $suchstring_8 = '/_(.+)_/';    // H_2_O
+                            $suchstring_9 = '/\r/';   // Leerzeile durch Zeilenumbruch
+                            $html_9 = '<br>';
+                            $suchstring_10 = '/\[(.+?)\]\s?(\S+)/'; // [Linktext] Ziel-URL bzw. -Mailadresse
+                            $html_10 = "<a href='$2'>$1</a>";
+                            $suchstring_11 = '//'; // http://www.blabla.de/
+                            $suchstring_12 = '//';    // mailto:name@firma.de                          
+                            $suchstring_13 = '//';   // - am Anfang der Zeilen
+                            
+                            
+                            // Umsetzung in HTML-Link
 
+                            for ($i=0; $i<14; $i++) {
+                                $suchstring = 'suchstring_' . $i;
+                                _rrze_debug($suchstring);
+                                $html = 'html_' . $i;
+                                $person['text'] = preg_replace($$suchstring, $$html, $person['text']);
+                            }
+                            //$person['text'] = preg_replace($suchstring_textlink, $html_textlink, $person['text']);
+                            //$person['text'] = preg_replace($suchstring_fett, $html_fett, $person['text']);
+                        }
+			$gruppen_namen = explode("|", $person[$such_kategorie]);
+                        _rrze_debug($person);
 			foreach ($gruppen_namen as $gruppen_name) {
                             if(empty($gruppen_dict[$gruppen_name])) {
 					$gruppen_dict[$gruppen_name] = array();
 				}
 
 				array_push($gruppen_dict[$gruppen_name], $person);
-                            
                             /*if(isset($person["id"])) {
          			if(empty($gruppen_personen[$gruppen_name])) {
               					$gruppen_personen[$gruppen_name] = array();                                      
@@ -144,32 +183,17 @@ class Render {
 
                     foreach ($jobnamen as $gruppen_name) {
                             $gruppen_personen = $gruppen_dict[$gruppen_name];
+                            if(isset($gruppen_personen['lastname'])){
+                                $gruppen_personen = $this->array_orderby($gruppen_personen, "lastname", SORT_ASC, "firstname", SORT_ASC);
+                            }
                             $gruppen_obj = array(
                                     "name" => $gruppen_name,
                                     //"personen" => $this->record_sort($gruppen_personen, "lastname")
-                                    "personen" => $this->array_orderby($gruppen_personen, "lastname", SORT_ASC, "firstname", SORT_ASC)
+                                    "personen" => $gruppen_personen
                             );
-
+         
                             array_push($gruppen, $gruppen_obj);
-                    }  
-                
-
-		foreach ($gruppen_personen as $gruppen_name => $gruppen_personen) {
-			$gruppen_obj = array(
-				"name" => $gruppen_name,
-				"personen" => $gruppen_personen
-			);
-
-			array_push($gruppen, $gruppen_obj);
-		}
-                
-                foreach ($gruppen_text as $gruppen_name => $gruppen_info) {
-			$gruppen_obj = array(
-				"name" => $gruppen_name,
-				"info" => $gruppen_info
-			);
-			array_push($gruppen, $gruppen_obj);
-		}
+                    }                  
                 
                 //Sortierung der Ergebnisse nach dem Funktionsfeld
                 //$gruppen = $this->record_sort($gruppen, "name");
@@ -188,7 +212,9 @@ class Render {
 
 			foreach ($gruppen as $gruppe) {
 				foreach ($gruppe["personen"] as $person) {
+                                    if(isset($person['id'])&&isset($person['lastname'])) {
 					$personen[] = $person;
+                                    }
 				}
 			}
 
@@ -204,14 +230,14 @@ class Render {
 		if(count($gruppen) <= 1) {
 			$this->optionen["Zeige_Sprungmarken"] = 0;
 		}
-                
+                //_rrze_debug($gruppen);
                 //Workaround für die Ausgabe [leer]
                 for ($i=0; $i < count($gruppen); $i++) {
 			if($gruppen[$i]["name"] =='[leer]') {
                             $gruppen[$i]["name"] = '';
 			}                        
                 }
-
+                //_rrze_debug(array("gruppen" => $gruppen, "optionen" => $this->optionen));
 		return array("gruppen" => $gruppen, "optionen" => $this->optionen);
 	}
 
@@ -700,7 +726,6 @@ class Render {
 			}
 		}
 		$args[] = &$data;
-                _rrze_debug($args);
 		call_user_func_array('array_multisort', $args);
 		return array_pop($args);
 	}

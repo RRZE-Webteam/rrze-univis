@@ -103,14 +103,13 @@ class UNIVIS {
 
 		// XML Daten Parsen
 		$daten = $this->xml2array($url);
-                $datenMitarbeiterAlle = array();
 		if($this->optionen["Sortiere_Jobs"]) {
 
 			$jobs = $daten["Org"][0]["jobs"][0]["job"];
                         $jobnamen = array();
                         $jobs_vergeben = array();
 			$xjobs = array();
-     //_rrze_debug($jobs);
+
                         foreach ($jobs as $job)
 			{
 				$jobnamen[] = $job['description'];
