@@ -131,8 +131,10 @@ class Render {
                             $suchstring_7 = '/\^(.+)\^/';    // pi^2^
                             $html_7 = '';
                             $suchstring_8 = '/_(.+)_/';    // H_2_O
-                            $suchstring_9 = '/\r/';   // Leerzeile durch Zeilenumbruch
-                            $html_9 = '<br>';
+                            $suchstring_9 = '//';
+                            $html_9 = '';
+                            $suchstring_9 = '/\n\n/';   // Leerzeile durch Zeilenumbruch
+                            $html_9 = '\n';
                             $suchstring_10 = '/\[(.+?)\]\s?(\S+)/'; // [Linktext] Ziel-URL bzw. -Mailadresse
                             $html_10 = "<a href='$2'>$1</a>";
                             $suchstring_11 = '//'; // http://www.blabla.de/
@@ -140,14 +142,18 @@ class Render {
                             $suchstring_13 = '//';   // - am Anfang der Zeilen
                             
                             
+       
+                            
                             // Umsetzung in HTML-Link
 
-                            for ($i=0; $i<14; $i++) {
+                            for ($i=0; $i<11; $i++) {
                                 $suchstring = 'suchstring_' . $i;
                                 _rrze_debug($suchstring);
                                 $html = 'html_' . $i;
                                 $person['text'] = preg_replace($$suchstring, $$html, $person['text']);
                             }
+                                           $person['text'] = nl2br($person['text']);      
+                                          //$person['text'] = str_replace('<br />\r<br />', '<br />', $person['text']);
                             //$person['text'] = preg_replace($suchstring_textlink, $html_textlink, $person['text']);
                             //$person['text'] = preg_replace($suchstring_fett, $html_fett, $person['text']);
                         }
