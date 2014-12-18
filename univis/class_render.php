@@ -113,6 +113,7 @@ class Render {
                         }
                         
                         if(isset($person['text'])) {
+                            $person['text'] = str_replace('\r', 'b', $person['text']);
                             // Suche nach eingetragen Mailadressen bzw. URLs
                             $suchstring_0 = '/\*\*/';   // ** durch * ersetzen
                             $html_0 = '*';
