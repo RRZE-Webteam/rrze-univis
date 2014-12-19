@@ -71,7 +71,6 @@ class Render {
 
 
 		// Standard Aufteilung: orgname
-                //_rrze_debug($personen);
                 $personen = $daten['Person'];
                 $jobnamen = $daten['jobs'];
                 $such_kategorie = "orgname";
@@ -81,7 +80,6 @@ class Render {
                         $jobs = $daten['Org'][0]['jobs'][0]['job'];
 		}
 		$gruppen = array();
-                //_rrze_debug($personen);
 		$gruppen_dict = array();
                 $gruppen_personen = array();
                 $gruppen_text = array();
@@ -113,7 +111,7 @@ class Render {
                         }
                         
                         if(isset($person['text'])) {
-                            $person['text'] = str_replace('\r', 'b', $person['text']);
+                           
                             // Suche nach eingetragen Mailadressen bzw. URLs
                             $suchstring_0 = '/\*\*/';   // ** durch * ersetzen
                             $html_0 = '*';
@@ -134,8 +132,8 @@ class Render {
                             $suchstring_8 = '/_(.+)_/';    // H_2_O
                             $suchstring_9 = '//';
                             $html_9 = '';
-                            $suchstring_9 = '/\n\n/';   // Leerzeile durch Zeilenumbruch
-                            $html_9 = '\n';
+                           // $suchstring_9 = '/\n\n/';   // Leerzeile durch Zeilenumbruch
+                            //$html_9 = '\n';
                             $suchstring_10 = '/\[(.+?)\]\s?(\S+)/'; // [Linktext] Ziel-URL bzw. -Mailadresse
                             $html_10 = "<a href='$2'>$1</a>";
                             $suchstring_11 = '//'; // http://www.blabla.de/
@@ -149,17 +147,18 @@ class Render {
 
                             for ($i=0; $i<11; $i++) {
                                 $suchstring = 'suchstring_' . $i;
-                                _rrze_debug($suchstring);
                                 $html = 'html_' . $i;
                                 $person['text'] = preg_replace($$suchstring, $$html, $person['text']);
                             }
-                                           $person['text'] = nl2br($person['text']);      
+                             $person['text'] = str_replace(PHP_EOL, '<br>', $person['text']);
+
+                                           //$person['text'] = nl2br($person['text']);      
                                           //$person['text'] = str_replace('<br />\r<br />', '<br />', $person['text']);
                             //$person['text'] = preg_replace($suchstring_textlink, $html_textlink, $person['text']);
                             //$person['text'] = preg_replace($suchstring_fett, $html_fett, $person['text']);
                         }
 			$gruppen_namen = explode("|", $person[$such_kategorie]);
-                        _rrze_debug($person);
+                                
 			foreach ($gruppen_namen as $gruppen_name) {
                             if(empty($gruppen_dict[$gruppen_name])) {
 					$gruppen_dict[$gruppen_name] = array();
@@ -237,14 +236,14 @@ class Render {
 		if(count($gruppen) <= 1) {
 			$this->optionen["Zeige_Sprungmarken"] = 0;
 		}
-                //_rrze_debug($gruppen);
+
                 //Workaround für die Ausgabe [leer]
                 for ($i=0; $i < count($gruppen); $i++) {
 			if($gruppen[$i]["name"] =='[leer]') {
                             $gruppen[$i]["name"] = '';
 			}                        
                 }
-                //_rrze_debug(array("gruppen" => $gruppen, "optionen" => $this->optionen));
+
 		return array("gruppen" => $gruppen, "optionen" => $this->optionen);
 	}
 
