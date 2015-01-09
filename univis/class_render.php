@@ -113,49 +113,49 @@ class Render {
                         if(isset($person['text'])) {
                            
                             // Suche nach eingetragen Mailadressen bzw. URLs
-                            $suchstring_0 = '/\*\*/';   // ** durch * ersetzen
+                            $suchstring_0 = '\*\*';   // ** durch * ersetzen
                             $html_0 = '*';
-                            $suchstring_1 = '/\|\|/';  // || durch | ersetzen
+                            $suchstring_1 = '\|\|';  // || durch | ersetzen
                             $html_1 = '|';
-                            $suchstring_2 = '/\^\^/';     // ^^ durch ^ ersetzen
+                            $suchstring_2 = '\^\^';     // ^^ durch ^ ersetzen
                             $html_2 = '^';
-                            $suchstring_3 = '/__/';  // __ durch _ ersetzen
+                            $suchstring_3 = '__';  // __ durch _ ersetzen
                             $html_3 = '_';
-                            $suchstring_4 = '/^\s+/';  // zwei Leerzeilen durch Absatz
-                            $html_4 = '';
+                           
+                            $suchstring_4 = '/^- ?(.+)/m';   // - am Anfang der Zeilen: Jeder Listenpunkt wird als vollständige Aufzählung umgesetzt
+                            $html_4 = '<ul><li>$1</li></ul>';
+                            
                             $suchstring_5 = '/\*(.+)\*/';    // *fett*
                             $html_5 =  '<b>$1</b>';
                             $suchstring_6 = '/\|(.+)\|/';  // |kursiv|
                             $html_6 = '<i>$1</i>';
                             $suchstring_7 = '/\^(.+)\^/';    // pi^2^
-                            $html_7 = '';
+                            $html_7 = '<sup>$1</sup>';
                             $suchstring_8 = '/_(.+)_/';    // H_2_O
-                            $suchstring_9 = '//';
-                            $html_9 = '';
-                           // $suchstring_9 = '/\n\n/';   // Leerzeile durch Zeilenumbruch
-                            //$html_9 = '\n';
-                            $suchstring_10 = '/\[(.+?)\]\s?(\S+)/'; // [Linktext] Ziel-URL bzw. -Mailadresse
-                            $html_10 = "<a href='$2'>$1</a>";
-                            $suchstring_11 = '//'; // http://www.blabla.de/
-                            $suchstring_12 = '//';    // mailto:name@firma.de                          
-                            $suchstring_13 = '//';   // - am Anfang der Zeilen
-                            
-                            
-       
-                            
+                            $html_8 = '<sub>$1</sub>';
+                            $suchstring_9 = '/\[(.+?)\]\s?(\S+)/'; // [Linktext] Ziel-URL bzw. -Mailadresse
+                            $html_9 = "<a href='$2'>$1</a>";
+                            //nachfolgender Code gibt Probleme mit Linktext
+                            //$suchstring_10 = '/((http|https):\/\/\S+)/'; // http://www.blabla.de/ oder https://www.blaljblsfd.de/lsdjfl.html
+                            //$html_10 = "<a href='$1'>$1</a>";
+                            //$suchstring_11 = '/(mailto:[^0-9][a-zA-Z0-9_]+([.][a-zA-Z0-9_]+)*[@][a-zA-Z0-9_]+([.][a-zA-Z0-9_]+)*[.][a-zA-Z]{2,4})/';    // mailto:name@firma.de                          
+                            //$html_11 = "<a href='$1'>$1</a>";
+                           
                             // Umsetzung in HTML-Link
-
-                            for ($i=0; $i<11; $i++) {
+                            for ($i=0; $i<4; $i++) {
+                                $suchstring = 'suchstring_' . $i;
+                                $html = 'html_' . $i;
+                                $person['text'] = str_replace($$suchstring, $$html, $person['text']);                                
+                            }
+                                
+                            for ($i=4; $i<10; $i++) {
                                 $suchstring = 'suchstring_' . $i;
                                 $html = 'html_' . $i;
                                 $person['text'] = preg_replace($$suchstring, $$html, $person['text']);
                             }
+                            // Leerzeile durch Zeilenumbruch und zwei Leerzeilen durch Absatz
                              $person['text'] = str_replace(PHP_EOL, '<br>', $person['text']);
-
-                                           //$person['text'] = nl2br($person['text']);      
-                                          //$person['text'] = str_replace('<br />\r<br />', '<br />', $person['text']);
-                            //$person['text'] = preg_replace($suchstring_textlink, $html_textlink, $person['text']);
-                            //$person['text'] = preg_replace($suchstring_fett, $html_fett, $person['text']);
+                             $person['text'] = str_replace("<br>\r<br>", '<br>', $person['text']);
                         }
 			$gruppen_namen = explode("|", $person[$such_kategorie]);
                                 
