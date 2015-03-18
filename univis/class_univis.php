@@ -103,6 +103,10 @@ class UNIVIS {
 
 		// XML Daten Parsen
 		$daten = $this->xml2array($url);
+                if(empty($daten)) {
+                    echo "Leider konnte die Organisationseinheit nicht gefunden werden.";
+                    $daten = -1;
+                } else {
 		if($this->optionen["Sortiere_Jobs"]) {
 
 			$jobs = $daten["Org"][0]["jobs"][0]["job"];
@@ -167,6 +171,7 @@ class UNIVIS {
                         $daten['Person'] = array_merge($daten["Person"], $daten_text);
 		} 
                 $daten['jobs'] = $jobs_vergeben;
+                }
 		return $daten;
                 
                                                          
