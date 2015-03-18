@@ -164,6 +164,7 @@ class Render {
 					$gruppen_dict[$gruppen_name] = array();
 				}
 
+
 				array_push($gruppen_dict[$gruppen_name], $person);
                             /*if(isset($person["id"])) {
          			if(empty($gruppen_personen[$gruppen_name])) {
@@ -183,13 +184,13 @@ class Render {
                             //$html = "<a href='$2'>$1</a>";
                         
                             //$gruppen_text[$gruppen_name][0]['text'] = preg_replace($suchstring, $html, $gruppen_text[$gruppen_name][0]['text']);
-                            }
-                                                                    
+                            }                                 
 		}
 
                     foreach ($jobnamen as $gruppen_name) {
                             $gruppen_personen = $gruppen_dict[$gruppen_name];
-                            if(isset($gruppen_personen['lastname'])){
+                                                                                    
+                            if(isset($gruppen_personen[0]['lastname'])){
                                 $gruppen_personen = $this->array_orderby($gruppen_personen, "lastname", SORT_ASC, "firstname", SORT_ASC);
                             }
                             $gruppen_obj = array(
@@ -215,6 +216,7 @@ class Render {
 		// Sollen die Personen alphabetisch sortiert werden?
 		if($this->optionen["Sortiere_Alphabet"] != 0) {
 			$personen = array();
+
 
 			foreach ($gruppen as $gruppe) {
 				foreach ($gruppe["personen"] as $person) {
