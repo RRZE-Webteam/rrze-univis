@@ -105,7 +105,7 @@ class UNIVIS {
 		$daten = $this->xml2array($url);
                 if(empty($daten)) {
                     echo "Leider konnte die Organisationseinheit nicht gefunden werden.";
-                    $daten = -1;
+                    return -1;
                 } else {
 		if($this->optionen["Sortiere_Jobs"]) {
 
@@ -171,9 +171,9 @@ class UNIVIS {
                         $daten['Person'] = array_merge($daten["Person"], $daten_text);
 		} 
                 $daten['jobs'] = $jobs_vergeben;
-                }
-		return $daten;
                 
+		return $daten;
+                }
                                                          
 	}
 
@@ -195,8 +195,12 @@ class UNIVIS {
 
 		// XML Daten Parsen
 		$daten = $this->xml2array($url);
-
-		return $daten["Person"];
+                if(empty($daten)) {
+                    echo "Leider konnte die Organisationseinheit nicht gefunden werden.";
+                    return -1;
+                } else {
+                    return $daten["Person"];
+                }
 	}
 
 
@@ -230,6 +234,10 @@ class UNIVIS {
 		}
 
 		$persArray = $this->xml2array($url);
+                if(empty($persArray)) {
+                    echo "Leider konnte die Person nicht gefunden werden.";
+                    return -1;
+                } else {
 		$person = $persArray["Person"];
 
 		if(count($persArray) == 0 ) {
@@ -251,6 +259,7 @@ class UNIVIS {
 		}
 
 		return $person;
+                }
 	}
 
 	private function _ladePublikationen($authorid = NULL) {
@@ -269,6 +278,10 @@ class UNIVIS {
 
 
 		$array = $this->xml2array($url);
+                if(empty($array)) {
+                    echo "Leider konnte die Organisationseinheit nicht gefunden werden.";
+                    return -1;
+                } else {
 		$publications = $array["Pub"];
 
 		//Personen laden
@@ -285,6 +298,7 @@ class UNIVIS {
 		$this->univis_refs_ersetzen($refs, $publications);
 
 		return $publications;
+                }
 
 	}
 
@@ -305,6 +319,10 @@ class UNIVIS {
 
 
 		$array = $this->xml2array($url);
+                if(empty($array)) {
+                    echo "Leider konnte die Organisationseinheit nicht gefunden werden.";
+                    return -1;
+                } else {
 		$veranstaltungen = $array["Lecture"];
 
 		$univis_refs = $this->_get_univis_ref($array);
@@ -314,6 +332,7 @@ class UNIVIS {
 		$this->univis_refs_ersetzen($univis_refs, $veranstaltungen);
 
 		return $veranstaltungen;
+                }
 
 	}
 
@@ -342,7 +361,10 @@ class UNIVIS {
 		}
 
 		$array = $this->xml2array($url);
-
+                if(empty($array)) {
+                    echo "Leider konnte die Organisationseinheit nicht gefunden werden.";
+                    return -1;
+                } else {
 		$veranstaltung = $array["Lecture"][0];
 
 		//Ersetze Referenzen
@@ -350,6 +372,7 @@ class UNIVIS {
 		$this->univis_refs_ersetzen($univis_refs, $veranstaltung);
 
 		return $veranstaltung;
+                }
 
 	}
 
