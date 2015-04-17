@@ -3,7 +3,7 @@
 require_once("univis_dicts.php");
 //require_once 'iCalcreator.class.php';
 
-class Render {
+class univisRender {
 
 
 	/**

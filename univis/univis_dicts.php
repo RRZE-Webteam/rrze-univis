@@ -1,6 +1,6 @@
 <?php
 	
-	class Dicts {
+	class univisDicts {
 		public static $acronyms = array(
 		    "Dr."   =>  "Doktor",
 		    "Prof." =>  "Professor",

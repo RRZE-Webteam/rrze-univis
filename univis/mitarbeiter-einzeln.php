@@ -18,7 +18,7 @@
 	$args["firstname"] = fix_for_page($name[0]);
 	$args["lastname"] = fix_for_page($name[count($name)-1]);
 
-	$controller = new Controller("mitarbeiter-einzeln", $args);
+	$controller = new univisController("mitarbeiter-einzeln", $args);
 	echo $controller->ladeHTML();
 
 

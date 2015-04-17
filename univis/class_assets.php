@@ -1,6 +1,6 @@
 <?php
 
-class Assets {
+class univisAssets {
 
 	/**
 	* Optionen

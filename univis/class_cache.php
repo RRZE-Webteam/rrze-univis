@@ -1,6 +1,6 @@
 <?PHP
 
-class Cache {
+class univisCache {
         //geändert!
 	//public static $path = "cache_dir";
         public static $path;

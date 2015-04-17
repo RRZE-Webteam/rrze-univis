@@ -214,7 +214,7 @@ class RRZE_UnivIS {
             if(isset($argv[1])) {
                 $args = (!empty($_GET)) ? $_GET:array('task'=>$argv[1]);
             }
-            $controller = new Controller("mitarbeiter-alle", NULL, $shortcode_atts);
+            $controller = new univisController("mitarbeiter-alle", NULL, $shortcode_atts);
             $ausgabe = $controller->ladeHTML();
             
 

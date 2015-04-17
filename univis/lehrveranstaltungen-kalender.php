@@ -4,7 +4,7 @@
 	// FETCH $_GET OR CRON ARGUMENTS TO AUTOMATE TASKS
 	$args = (!empty($_GET)) ? $_GET:array('task'=>$argv[1]);
 
-	$controller = new Controller("lehrveranstaltungen-kalender", $args);
+	$controller = new univisController("lehrveranstaltungen-kalender", $args);
 
 	echo $controller->ladeHTML();
 ?>

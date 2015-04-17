@@ -4,6 +4,6 @@
 	// FETCH $_GET OR CRON ARGUMENTS TO AUTOMATE TASKS
 	$args = (!empty($_GET)) ? $_GET:array('task'=>$argv[1]);
 
-	$controller = new Controller("publikationen", $args);
+	$controller = new univisController("publikationen", $args);
 	echo $controller->ladeHTML();
 ?>

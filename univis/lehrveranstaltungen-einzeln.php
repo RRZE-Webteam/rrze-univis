@@ -6,7 +6,7 @@
 
 	$args["id"] = substr($_SERVER["PATH_INFO"], 1, -6);
 
-	$controller = new Controller("lehrveranstaltungen-einzeln", $args);
+	$controller = new univisController("lehrveranstaltungen-einzeln", $args);
 	echo $controller->ladeHTML();
 
 ?>

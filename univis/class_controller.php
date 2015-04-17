@@ -6,7 +6,7 @@ require_once("class_cache.php");
 require_once("class_assets.php");
 require 'Mustache/Autoloader.php';
 
-class Controller {
+class univisController {
 
 		/**
 	* Optionen
@@ -34,7 +34,7 @@ class Controller {
 	}
 
 	function ladeHTML() {
-		$cache = new Cache($this->optionen);
+		$cache = new univisCache($this->optionen);
 		$datenAusCache = $cache->holeDaten();
 
 		if($datenAusCache != -1) {
@@ -49,11 +49,11 @@ class Controller {
 		// Pruefe ob Daten erfolgreich geladen wurden.
 		if($daten != -1) {
 			// Passe Datenstruktur fuer Templating an.
-			$render = new Render($this->optionen);
+			$render = new univisRender($this->optionen);
 			$daten = $render->bearbeiteDaten($daten);
 
 			// Lade Zusatzinformationen
-			$assets = new Assets($this->optionen);
+			$assets = new univisAssets($this->optionen);
 			$daten["assets"] = $assets->holeDaten();
 
 			// Daten rendern
@@ -168,4 +168,3 @@ class Controller {
 	}
 }
 
-?>
