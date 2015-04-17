@@ -2,6 +2,7 @@
 
 require_once('univis_dicts.php');
 
+if(!class_exists('UNIVIS')) {
 class UNIVIS {
 
 	/**
@@ -103,9 +104,13 @@ class UNIVIS {
 
 		// XML Daten Parsen
 		$daten = $this->xml2array($url);
+
                 if(empty($daten)) {
                     echo "Leider konnte die Organisationseinheit nicht gefunden werden.";
                     return -1;
+                } elseif(!isset($daten["Person"])) {
+                    echo "In dieser Organisationseinheit konnten keine Mitarbeiter gefunden werden.";
+                    return -1;                                    
                 } else {
 		if($this->optionen["Sortiere_Jobs"]) {
 
@@ -160,18 +165,18 @@ class UNIVIS {
                                 }
 			}
 
-			for ($k=0; $k < count($daten["Person"]); $k++) {
+                        for ($k=0; $k < count($daten["Person"]); $k++) {
 				$key = $daten["Person"][$k]["@attributes"]["key"];
                                 $daten["Person"][$k]["semester"] = $daten["@attributes"]["semester"];
 
 				if(isset($personen_jobs[$key])) {
 					$daten["Person"][$k]["rang"] = $personen_jobs[$key];
 				}
-			}
+                        }
                         $daten['Person'] = array_merge($daten["Person"], $daten_text);
+                        
 		} 
                 $daten['jobs'] = $jobs_vergeben;
-                
 		return $daten;
                 }
                                                          
@@ -488,4 +493,4 @@ class UNIVIS {
 	}
 
 }
-?>
+}
