@@ -93,7 +93,7 @@ class univisRender {
 				continue;
 			}
                         if(isset($person["title"])) {
-                            $person["title-long"] = $this->_str_replace_dict(Dicts::$acronyms, $person["title"]);
+                            $person["title-long"] = $this->_str_replace_dict(univisDicts::$acronyms, $person["title"]);
                         }
 			
                         if(isset($person["firstname"])&&isset($person["lastname"])) {
@@ -268,7 +268,7 @@ class univisRender {
 				continue;
 			}
                         if(isset($person["title"])) {
-                            $person["title-long"] = $this->_str_replace_dict(Dicts::$acronyms, $person["title"]);
+                            $person["title-long"] = $this->_str_replace_dict(univisDicts::$acronyms, $person["title"]);
                         }
                         $name = $person["firstname"]."-".$person["lastname"];
 			$person["nameurl"] = strtolower($this->umlaute_ersetzen($name));
@@ -333,7 +333,7 @@ class univisRender {
 
 	private function _bearbeiteMitarbeiterEinzeln($person) {
 		if(!empty($person)) {
-			$person["title-long"] = $this->_str_replace_dict(Dicts::$acronyms, $person["title"]);
+			$person["title-long"] = $this->_str_replace_dict(univisDicts::$acronyms, $person["title"]);
 			$name = $person["firstname"]."_".$person["lastname"];
 			$person["nameurl"] = strtolower($this->umlaute_ersetzen($name));
 			$person["nameurl"] = str_replace(" ", "%20", $person["nameurl"]);
@@ -357,7 +357,7 @@ class univisRender {
 
 	private function _bearbeitePublikationen($publications) {
 		if(!$publications) return NULL;
-		$this->_rename_key("hstype", $publications, Dicts::$hstypes);
+		$this->_rename_key("hstype", $publications, univisDicts::$hstypes);
 
 		// Nach Jahren gruppieren
 		$publications = $this->_group_by("year", $publications);
@@ -402,7 +402,7 @@ class univisRender {
 	private function _bearbeiteLehrveranstaltungenAlle($veranstaltungen) {
 		if(!$veranstaltungen) return NULL;
 
-		$this->_rename_key("type", $veranstaltungen, Dicts::$lecturetypen);
+		$this->_rename_key("type", $veranstaltungen, univisDicts::$lecturetypen);
 
 		for ($i=0; $i < count($veranstaltungen); $i++) {
 			// Einzelne Veranstaltung bearbeiten
@@ -419,7 +419,7 @@ class univisRender {
 	private function _bearbeiteLehrveranstaltungenKalender($veranstaltungen) {
 		if(!$veranstaltungen) return NULL;
 
-		$this->_rename_key("type", $veranstaltungen, Dicts::$lecturetypen);
+		$this->_rename_key("type", $veranstaltungen, univisDicts::$lecturetypen);
 
 		$tz     = "Europe/Berlin";                   // define time zone
 		$config = array( "unique_id" => "fau.rrze.kalender.univis" // set a (site) unique id
@@ -489,7 +489,7 @@ class univisRender {
 	private function _bearbeiteLehrveranstaltungenEinzeln($veranstaltung) {
 
 
-		$this->_rename_key("type", $veranstaltung, Dicts::$lecturetypen);
+		$this->_rename_key("type", $veranstaltung, univisDicts::$lecturetypen);
 
 		// Dozs
 		for ($i = 0; $i<count($veranstaltung["dozs"]); $i++) {
@@ -506,7 +506,7 @@ class univisRender {
 
 		//Typ
 		if($veranstaltung["type"]) {
-			$type = $this->_str_replace_dict(Dicts::$lecturetypen_short, $veranstaltung["type"]);
+			$type = $this->_str_replace_dict(univisDicts::$lecturetypen_short, $veranstaltung["type"]);
 			array_push($angaben, $type);
 		}
 
@@ -546,7 +546,7 @@ class univisRender {
 
 		//Unterrrichtssprache
 		if ($veranstaltung["leclanguage"]) {
-			$formated = $this->_str_replace_dict(Dicts::$leclanguages, $veranstaltung["leclanguage"]);
+			$formated = $this->_str_replace_dict(univisDicts::$leclanguages, $veranstaltung["leclanguage"]);
 			array_push($angaben, "Unterrichtssprache ".$formated);
 		}
 
