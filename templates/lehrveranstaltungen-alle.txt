@@ -1,4 +1,4 @@
-{{#veranstaltungen}}asasd
+{{#veranstaltungen}}
 	<h2>{{title}}</h2>
 	<ul>
 		{{#data}}
