@@ -228,8 +228,8 @@ class UNIVIS {
 		// Hole Daten von Univis
 		$url = $this->univis_url."?search=persons&department=".$this->optionen["UnivISOrgNr"]."&name=".$this->optionen["lastname"]."&firstname=".$this->optionen["firstname"]."&show=xml";
 
-		$url = $this->umlaute_ersetzen($url);
 
+		$url = $this->umlaute_ersetzen($url);
 
 
 		if(!fopen($url, "r")) {
@@ -259,11 +259,18 @@ class UNIVIS {
 		}
 
 		if ($this->optionen["Personenanzeige_Lehrveranstaltungen"]) {
+//Erst aktuelles Semester, dann folgendes:
+$this->optionen['semester']=$this->aktuellesSemester();
 			$person["lehrveranstaltungen"] = $this->_ladeLehrveranstaltungenAlle($person["id"]);
+			$person["lehrveranstaltungen_semester"]= $this->optionen['semester'];
+$this->optionen['semester']=$this->nextSemester();
+	$person["lehrveranstaltungen_next"] = $this->_ladeLehrveranstaltungenAlle($person["id"]);
+			$person["lehrveranstaltungen_next_semester"]= $this->optionen['semester'];
+
 		}
 
 		return $person;
-                }
+       }
 	}
 
 	private function _ladePublikationen($authorid = NULL) {
@@ -310,13 +317,14 @@ class UNIVIS {
 	private function _ladeLehrveranstaltungenAlle($dozentid = NULL) {
 		// Hole Daten von Univis
 
-		//&sem=2012w
+//echo $dozentid;
 		$url = "http://univis.uni-erlangen.de/prg?search=lectures&department=".$this->optionen["UnivISOrgNr"]."&show=xml&sem=".$this->optionen["semester"];//$this->aktuellesSemester();
-//echo $url;
+
 		if($dozentid) {
+//echo "dozentid gesetzt";
 			$url .= "&lecturerid=".$dozentid;
 		}
-
+//echo $url;
 		if(!fopen($url, "r")) {
 			// Univis Server ist nicht erreichbar
 			return -1;
@@ -325,7 +333,7 @@ class UNIVIS {
 
 		$array = $this->xml2array($url);
                 if(empty($array)) {
-                    echo "Leider konnte die Organisationseinheit nicht gefunden werden.";
+                    //echo "Leider konnte die Organisationseinheit nicht gefunden werden.";
                     return -1;
                 } else {
 		$veranstaltungen = $array["Lecture"];
@@ -335,7 +343,6 @@ class UNIVIS {
 
 		//Personen informationen einfügen
 		$this->univis_refs_ersetzen($univis_refs, $veranstaltungen);
-
 		return $veranstaltungen;
                 }
 
@@ -355,6 +362,7 @@ class UNIVIS {
 			}
 
 		$url = "http://univis.uni-erlangen.de/prg?search=lectures&show=xml&sem=".$this->aktuellesSemester();
+
 
 		if($this->optionen["id"]) {
 			$url .= "&id=".$this->toNumber($this->optionen["id"]);
@@ -487,6 +495,33 @@ class UNIVIS {
 		if($heute[1] < $fruehling[1]) $jahr--;
 		return $jahr . "w";
 	}
+	private function nextSemester() {
+			$aktuell = $this->aktuellesSemester();
+			$aktuelljahr= substr($aktuell,0,4);
+			$aktuellterm= substr($aktuell,4);
+
+			if($aktuellterm=='w')
+			{
+				$nextyear=intval($aktuelljahr)+1;
+				return $nextyear."s";
+			}else{
+				return $aktuelljahr."w";
+			}
+	}
+	private function lastSemester() {
+			$aktuell = $this->aktuellesSemester();
+			$aktuelljahr= substr($aktuell,0,4);
+			$aktuellterm= substr($aktuell,4);
+
+			if($aktuellterm=='w')
+			{
+				return $aktuelljahr."s";
+			}else{
+				$lastyear=intval($aktuelljahr)+1;		
+				return $lastyear."w";
+			}
+	}
+
 
 	private function toNumber($data) {
 		return (int)$data;

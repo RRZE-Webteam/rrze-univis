@@ -24,13 +24,15 @@ class univisController {
 	 * @param Pfad zu Conf Datei
 	 * @access 	public
 	 */
-	function __construct($task, $args, $confFile=NULL) {
-
-		$this->_ladeConf($confFile, $args);
-
+//	function __construct($task, $args, $confFile=NULL) {
+	function __construct($config) {
+//print_r($config);
+			$this->optionen = $config;
+/*		
+	$this->_ladeConf($confFile, $args);
 		if($task && $this->optionen)
-			$this->optionen["task"] = $task;
-
+		$this->optionen["task"] = $task;
+*/
 	}
 
 	function ladeHTML() {
@@ -103,7 +105,7 @@ class univisController {
 		return  $m->render($template, $daten);
 	}
 
-
+/*
 	private function _ladeConf($fpath, $args=NULL){
 		$options= array();
                 if(is_array($fpath)) {
@@ -153,6 +155,7 @@ class univisController {
 			$this->optionen = array_merge($this->optionen, $args);
 
 	}
+*/
 
 	function _get_template() {
 		$filename = $this->optionen['task'].".txt";

@@ -74,18 +74,19 @@ class RRZE_UnivIS {
     private static function get_defaults() {
         $defaults = array(
 			'UnivISOrgNr' => '100206',
-			'task' => 'mitarbeiter-alle',
-                        'Personenanzeige_Verzeichnis' => '',
-'firstname'=>'',
-'lastname'=>'',
+			'task' => '',
+			'Personenanzeige_Verzeichnis' => '',
+			'firstname'=>'',
+			'lastname'=>'',
+			'univis_staff_id'=>'',
 			'Personenanzeige_Bildsuche' =>	'1',
 			'Personenanzeige_ZusatzdatenInDatei' =>	'1',
 			'Personenanzeige_Publikationen'	=> '0',
-			'Personenanzeige_Lehrveranstaltung' => '1',
-                        'Lehrveranstaltung_Verzeichnis' => '',
-                        'SeitenCache' => '1',
-			'START_SOMMERSEMESTER' => '1.4',
-			'START_WINTERSEMESTER' => '1.10',
+			'Personenanzeige_Lehrveranstaltungen' => '1',
+			'Lehrveranstaltung_Verzeichnis' => '',
+			'SeitenCache' => '1',
+			'START_SOMMERSEMESTER' => '1.6',
+			'START_WINTERSEMESTER' => '1.12',
 			'semester' => '',
 			'Zeige_Sprungmarken' => '1',
 			'OrgUnit' => '',
@@ -211,15 +212,15 @@ class RRZE_UnivIS {
         $defaults = self::get_defaults();
        
         $shortcode_atts = shortcode_atts( $defaults, $atts);
-        extract($shortcode_atts);
+        //extract($shortcode_atts);
 
-        if ($UnivISOrgNr) {
+        if ($shortcode_atts['UnivISOrgNr']) {
             // FETCH $_GET OR CRON ARGUMENTS TO AUTOMATE TASKS
             if(isset($argv[1])) {
                 $args = (!empty($_GET)) ? $_GET:array('task'=>$argv[1]);
             }
   
-            		$controller = new univisController($task, NULL, $shortcode_atts);
+            		$controller = new univisController($shortcode_atts);
             		$ausgabe = $controller->ladeHTML();
           
 

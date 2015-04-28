@@ -423,21 +423,22 @@ $person['rang']= implode("|", $jobs_of_person);
 			if($publikationen) $person["publikationen"] = $publikationen;
 			else unset($person["publikationen"]);
 
-
+//echo "TEST";
+//print_r($person);
 			// Lade Lehrveranstaltungen
 			$lehrveranstaltungen = $this->_bearbeiteLehrveranstaltungenAlle($person["lehrveranstaltungen"]);
+			$lehrveranstaltungen_next = $this->_bearbeiteLehrveranstaltungenAlle($person["lehrveranstaltungen_next"]);
 
-			if($lehrveranstaltungen) $person["lehrveranstaltungen"] = $lehrveranstaltungen;
+			if($lehrveranstaltungen)$person["lehrveranstaltungen"] = $lehrveranstaltungen;
 			else unset($person["lehrveranstaltungen"]);
+			if($lehrveranstaltungen_next )$person["lehrveranstaltungen_next"] = $lehrveranstaltungen_next ;
+			else unset($person["lehrveranstaltungen_next"]);
 
-									 $user = get_user_by('slug', $person["lastname"]);
-							
+
+						$user = get_user_by('slug', $person["lastname"]);
 						$pattern = '/<img.+?src=([\'"])(.+?)\1[^>]*>/is';
-
 					preg_match($pattern, get_wp_user_avatar($user->ID, 96), $matches);
-
-$person["pictureurl"]=$matches[2];
-
+					$person["pictureurl"]=$matches[2];
 
 
 			return array("person" => $person, "optionen" =>$this->optionen);

@@ -72,9 +72,13 @@
 			{{/beschreibung}}
 		{{/assets}}
 
+
+<div style="clear:both"></div>
+
+<div id="lehrveranstaltungen">
 		<!-- Lehrveranstaltungen -->
 		{{#lehrveranstaltungen}}
-			<h3 class="active">Lehrveranstaltungen</h3>
+			<h2 class="active">Lehrveranstaltungen {{lehrveranstaltungen_semester}}</h3>
 			<div>
 				<ul>
 					{{#lehrveranstaltungen}}
@@ -92,7 +96,26 @@
 				</ul>
 			</div>
 		{{/lehrveranstaltungen}}
-
+	{{#lehrveranstaltungen_next}}
+			<h2 class="active">Lehrveranstaltungen {{lehrveranstaltungen_next_semester}}</h3>
+			<div>
+				<ul>
+					{{#lehrveranstaltungen_next}}
+						{{#veranstaltungen}}
+						<li>
+							<h3>{{title}}</h3>
+							<ul>
+								{{#data}}
+									<li><a href="/{{#optionen}}{{Lehrveranstaltung_Verzeichnis}}{{/optionen}}/{{id}}.shtml">{{name}}</a></li>
+								{{/data}}
+							</ul>
+						</li>
+						{{/veranstaltungen}}
+					{{/lehrveranstaltungen_next}}
+				</ul>
+			</div>
+		{{/lehrveranstaltungen_next}}
+</div>
 		{{#publikationen}}
 			<h3 class="active">Publikationen</h3>
 			<div>
