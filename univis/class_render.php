@@ -69,10 +69,10 @@ class univisRender {
 		//	Array: ["ORGNAME"] => Array: PERSON-ARRAY
 		////////////////
 
-
 		// Standard Aufteilung: orgname
                 $personen = $daten['Person'];
                 $jobnamen = $daten['jobs'];
+//print_r($personen[0]);
                 $such_kategorie = "orgname";
 		if($this->optionen["Sortiere_Jobs"]) {
 			// Bei Lehrstuehlen ist es aber sinnvoller nach Jobs bzw. Rang zu gliedern.
@@ -87,15 +87,24 @@ class univisRender {
                         //Text-Felder müssen auch angezeigt werden, deshalb rausgenommen
 			//if(empty($person["firstname"]))
 			//	continue;
-                        
+      
                                                 
 			if(empty($person[$such_kategorie])) {
 				continue;
 			}
+ 				 if(isset($person["atitle"])&& !isset($person["title"]))
+					{
+					$person["title"]=$person["atitle"];
+					$person["atitle"]="";
+					}
+
                         if(isset($person["title"])) {
                             $person["title-long"] = $this->_str_replace_dict(univisDicts::$acronyms, $person["title"]);
                         }
 			
+
+
+
                         if(isset($person["firstname"])&&isset($person["lastname"])) {
                             $name = $person["firstname"]."-".$person["lastname"];
                             //$name = $person["@attributes"]["key"];
@@ -108,6 +117,17 @@ class univisRender {
                             $person["nameurl"] = strtolower($this->umlaute_ersetzen($name));
                             //$person["nameurl"] = str_replace("-", "_", $person["nameurl"]);
                             $person["nameurl"] = str_replace(" ", "-", $person["nameurl"]);
+
+									 $user = get_user_by('slug', $person["lastname"]);
+							
+						$pattern = '/<img.+?src=([\'"])(.+?)\1[^>]*>/is';
+
+					preg_match($pattern, get_wp_user_avatar($user->ID, 96), $matches);
+
+$person["pictureurl"]=$matches[2];
+
+									
+
                         }
                         
                         if(isset($person['text'])) {
@@ -157,10 +177,69 @@ class univisRender {
                              $person['text'] = str_replace(PHP_EOL, '<br>', $person['text']);
                              $person['text'] = str_replace("<br>\r<br>", '<br>', $person['text']);
                         }
+
+$person['overwriteorder']=0;
+$person_specialfunctions=array();
+$jobs_of_person=  explode("|", $person['rang']);
+$jobs_of_person_priority=array();
+//schluessel sortieren
+foreach($jobs_of_person as $key => $rang)
+{
+$pos=stripos($this->optionen["Function_Jobs"],$rang);
+if($pos===FALSE)
+{
+$jobs_of_person_priority[]=1000;
+}else{
+$jobs_of_person_priority[]=$pos;
+}
+}
+array_multisort($jobs_of_person_priority, SORT_DESC, $jobs_of_person);
+//unwichtigstes funktion jetzt als erstes, wichtigste bleibt somit im zweifel als gruppe übrig.
+
+
+foreach($jobs_of_person as $key => $rang)
+{
+
+//Test ob Leitungsposition
+	if(stripos($this->optionen["Leader_Jobs"],$rang)!==FALSE)
+	{//String enthalten in Leader_jobs-->Overwrite order setzen
+		$person['overwriteorder']=$person['overwriteorder']+1;
+		$person['leaderfunction']=$rang;
+	unset($jobs_of_person[$key]);
+	}
+	else
+	{
+	//Keine Leitungsposition
+	}
+//Test auf SpecialFunktion
+	if((stripos($this->optionen["Function_Jobs"],$rang)!==FALSE) and (count($jobs_of_person)>1) )
+	{//String enthalten 
+//echo "<br>loesche ".$rang." von".$person['lastname'];
+		$person_specialfunctions[]=$rang;
+	unset($jobs_of_person[$key]);
+	}
+	else
+	{
+	//Keine SpecialFunktion
+	}
+
+}
+$person['specialfunction']=implode(", ", $person_specialfunctions);
+$person['rang']= implode("|", $jobs_of_person);
+
+
+
 			$gruppen_namen = explode("|", $person[$such_kategorie]);
-                                
+
+
 			foreach ($gruppen_namen as $gruppen_name) {
-                            if(empty($gruppen_dict[$gruppen_name])) {
+//Schleife über alle gruppen, in denen die person enthalten ist.
+
+
+
+
+         if(empty($gruppen_dict[$gruppen_name])) 
+				{
 					$gruppen_dict[$gruppen_name] = array();
 				}
 
@@ -181,25 +260,25 @@ class univisRender {
                             // Suche nach eingetragen Mailadressen bzw. URLs
                             //$suchstring = '/\[(.+?)\](\S+)/';
                             // Umsetzung in HTML-Link
-                            //$html = "<a href='$2'>$1</a>";
+                            $html = "<a href='$2'>$1</a>";
                         
                             //$gruppen_text[$gruppen_name][0]['text'] = preg_replace($suchstring, $html, $gruppen_text[$gruppen_name][0]['text']);
                             }                                 
-		}
-
+		}//ende Schleife über personen
                     foreach ($jobnamen as $gruppen_name) {
+
                             $gruppen_personen = $gruppen_dict[$gruppen_name];
                                                                                     
                             if(isset($gruppen_personen[0]['lastname'])){
-                                $gruppen_personen = $this->array_orderby($gruppen_personen, "lastname", SORT_ASC, "firstname", SORT_ASC);
+                                $gruppen_personen = $this->array_orderby($gruppen_personen,"overwriteorder", SORT_DESC,"lastname", SORT_ASC, "firstname", SORT_ASC);
                             }
                             $gruppen_obj = array(
                                     "name" => $gruppen_name,
                                     //"personen" => $this->record_sort($gruppen_personen, "lastname")
                                     "personen" => $gruppen_personen
                             );
-         
-                            array_push($gruppen, $gruppen_obj);
+         						if(count($gruppen_personen)>0){//ignore empty groups
+                            array_push($gruppen, $gruppen_obj);}
                     }                  
                 
                 //Sortierung der Ergebnisse nach dem Funktionsfeld
@@ -245,7 +324,8 @@ class univisRender {
                             $gruppen[$i]["name"] = '';
 			}                        
                 }
-
+//print_r($overwriteorder);
+//print_r($gruppen);
 		return array("gruppen" => $gruppen, "optionen" => $this->optionen);
 	}
 
@@ -254,7 +334,6 @@ class univisRender {
 		////////////////
 		//	Array: ["ORGNAME"] => Array: PERSON-ARRAY
 		////////////////
-
 
 		$such_kategorie = "orgname";
 		$gruppen = array();
@@ -351,6 +430,16 @@ class univisRender {
 			if($lehrveranstaltungen) $person["lehrveranstaltungen"] = $lehrveranstaltungen;
 			else unset($person["lehrveranstaltungen"]);
 
+									 $user = get_user_by('slug', $person["lastname"]);
+							
+						$pattern = '/<img.+?src=([\'"])(.+?)\1[^>]*>/is';
+
+					preg_match($pattern, get_wp_user_avatar($user->ID, 96), $matches);
+
+$person["pictureurl"]=$matches[2];
+
+
+
 			return array("person" => $person, "optionen" =>$this->optionen);
 		}
 	}
@@ -372,6 +461,7 @@ class univisRender {
 
 			for ($k=0; $k < count($year["data"]); $k++) {
 				$publication = $year["data"][$k];
+
 
 				for ($m=0; $m < count($publication["authors"]); $m++) {
 					$author = $publication["authors"][$m]["author"];
@@ -404,14 +494,34 @@ class univisRender {
 
 		$this->_rename_key("type", $veranstaltungen, univisDicts::$lecturetypen);
 
-		for ($i=0; $i < count($veranstaltungen); $i++) {
-			// Einzelne Veranstaltung bearbeiten
-			$veranstaltung_edit = $this->_bearbeiteLehrveranstaltungenEinzeln($veranstaltungen[$i]);
-			$veranstaltungen[$i] = $veranstaltung_edit["veranstaltung"];
-		}
+		
 
-		//Nach Jahren gruppieren
+$DelCoursesOfLectures= array();
+
+foreach($veranstaltungen as $i =>$veranstaltung){
+			// Einzelne Veranstaltung bearbeiten
+
+		if(isset($veranstaltung[courses]))
+		{$DelCoursesOfLectures[]=$veranstaltung[name];}
+		else
+		{	
+			if(in_array($veranstaltung[name],$DelCoursesOfLectures))
+			{
+			//echo "<br>loesche ".$veranstaltung[name];
+			unset($veranstaltungen[$i]);
+			}
+
+		$veranstaltung_edit = $this->_bearbeiteLehrveranstaltungenEinzeln($veranstaltung);
+		$veranstaltung=$veranstaltung_edit['Veranstaltung'];
+
+
+
+		}
+}
+
+//Nach type ordnen
 		$veranstaltungen = $this->_group_by("type", $veranstaltungen);
+
 
 		return array( "veranstaltungen" => $veranstaltungen, "optionen" => $this->optionen);
 	}

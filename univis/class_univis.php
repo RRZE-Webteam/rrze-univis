@@ -96,7 +96,6 @@ class UNIVIS {
 	private function _ladeMitarbeiterAlle() {
 		// Hole Daten von Univis
 		$url = $this->univis_url."?search=departments&number=".$this->optionen["UnivISOrgNr"]."&show=xml";
-
 		if(!fopen($url, "r")) {
 			// Univis Server ist nicht erreichbar
 			return -1;
@@ -312,7 +311,8 @@ class UNIVIS {
 		// Hole Daten von Univis
 
 		//&sem=2012w
-		$url = "http://univis.uni-erlangen.de/prg?search=lectures&department=".$this->optionen["UnivISOrgNr"]."&show=xml&sem=".$this->aktuellesSemester();
+		$url = "http://univis.uni-erlangen.de/prg?search=lectures&department=".$this->optionen["UnivISOrgNr"]."&show=xml&sem=".$this->optionen["semester"];//$this->aktuellesSemester();
+//echo $url;
 		if($dozentid) {
 			$url .= "&lecturerid=".$dozentid;
 		}

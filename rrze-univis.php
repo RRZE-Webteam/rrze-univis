@@ -22,7 +22,6 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
  */
-
 add_action('plugins_loaded', array('RRZE_UnivIS', 'instance'));
 
 register_activation_hook(__FILE__, array('RRZE_UnivIS', 'activate'));
@@ -74,22 +73,28 @@ class RRZE_UnivIS {
     
     private static function get_defaults() {
         $defaults = array(
-			'UnivISOrgNr' => '0',
+			'UnivISOrgNr' => '100206',
 			'task' => 'mitarbeiter-alle',
                         'Personenanzeige_Verzeichnis' => '',
+'firstname'=>'',
+'lastname'=>'',
 			'Personenanzeige_Bildsuche' =>	'1',
 			'Personenanzeige_ZusatzdatenInDatei' =>	'1',
 			'Personenanzeige_Publikationen'	=> '0',
 			'Personenanzeige_Lehrveranstaltung' => '1',
                         'Lehrveranstaltung_Verzeichnis' => '',
-                        'SeitenCache' => '0',
+                        'SeitenCache' => '1',
 			'START_SOMMERSEMESTER' => '1.4',
 			'START_WINTERSEMESTER' => '1.10',
-			'Zeige_Sprungmarken' => '0',
+			'semester' => '',
+			'Zeige_Sprungmarken' => '1',
 			'OrgUnit' => '',
 			'Sortiere_Alphabet' => '0',
 			'Sortiere_Jobs' => '1',
-                        'Ignoriere_Jobs' => 'Sicherheitsbeauftragter|IT-Sicherheits-Beauftragter|Webmaster|Postmaster|IT-Betreuer|UnivIS-Beauftragte',
+            'Ignoriere_Jobs' => 'Verwaltung',
+'Ehemalige_Groupname' => '',//Personen in dieser Gruppe die noch andere Aufgaben haben werden nicht als ehemalig geführt
+'Leader_Jobs' => 'Leitung|Gruppenleiter',
+'Function_Jobs' => 'Sekretariat|Gastwissenschaftler/-in|Sicherheitsbeauftragter (nach SGB VII)|IT-Sicherheits-Beauftragter|Webmaster|Postmaster|IT-Betreuer|UnivIS-Beauftragte|Ehemalige/r Mitarbeiter/-in',
                         'Datenverzeichnis' => ''
 	);
         return $defaults;
@@ -200,23 +205,23 @@ class RRZE_UnivIS {
         $screen->set_help_sidebar($help_sidebar);
     }
 
-    public static function univis($atts) {
+   public static function univis($atts, $content = null ) {
         $univis_url = self::$univis_url;
         $options = self::get_options();
         $defaults = self::get_defaults();
-        if(isset($atts['number'])) {
-            $atts['UnivISOrgNr'] = $atts['number'];
-        }
-        $shortcode_atts = shortcode_atts($defaults, $atts);
+       
+        $shortcode_atts = shortcode_atts( $defaults, $atts);
         extract($shortcode_atts);
+
         if ($UnivISOrgNr) {
             // FETCH $_GET OR CRON ARGUMENTS TO AUTOMATE TASKS
             if(isset($argv[1])) {
                 $args = (!empty($_GET)) ? $_GET:array('task'=>$argv[1]);
             }
-            $controller = new univisController("mitarbeiter-alle", NULL, $shortcode_atts);
-            $ausgabe = $controller->ladeHTML();
-            
+  
+            		$controller = new univisController($task, NULL, $shortcode_atts);
+            		$ausgabe = $controller->ladeHTML();
+          
 
         } else
             $ausgabe = sprintf('<a href="%1$s">%2$s</a>', $univis_url, $options['univis_default_link']);
