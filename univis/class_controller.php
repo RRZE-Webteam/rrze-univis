@@ -155,7 +155,7 @@ class univisController {
 	}
 
 	function _get_template() {
-		$filename = $this->optionen['task'].".tpl";
+		$filename = $this->optionen['task'].".txt";
                 //geändert!
                 //$filename = "templates/".$filename;
                 $filename = plugins_url( "../templates/".$filename, __FILE__);
