@@ -17,5 +17,3 @@
 		{{/data}}
 	</ul>
 {{/veranstaltungen}}
-
-http://20861680.shtml/
