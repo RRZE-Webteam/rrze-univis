@@ -87,7 +87,7 @@
 							<h3>{{title}}</h3>
 							<ul>
 								{{#data}}
-									<li><a href="/{{#optionen}}{{Lehrveranstaltung_Verzeichnis}}{{/optionen}}/{{id}}.shtml">{{name}}</a></li>
+											<h4><a href="http://univis.uni-erlangen.de/prg?search=lectures&department=100206{{#optionen}}&sem={{lehrveranstaltungen_semester}}{{/optionen}}&id={{id}}&show=llong" target="_blank"> {{name}}</a></h3>
 								{{/data}}
 							</ul>
 						</li>
@@ -106,7 +106,7 @@
 							<h3>{{title}}</h3>
 							<ul>
 								{{#data}}
-									<li><a href="/{{#optionen}}{{Lehrveranstaltung_Verzeichnis}}{{/optionen}}/{{id}}.shtml">{{name}}</a></li>
+											<h4><a href="http://univis.uni-erlangen.de/prg?search=lectures&department=100206{{#optionen}}&sem={{lehrveranstaltungen_next_semester}}{{/optionen}}&id={{id}}&show=llong" target="_blank"> {{name}}</a></h3>
 								{{/data}}
 							</ul>
 						</li>
