@@ -1,13 +1,47 @@
-<div id="univis-personenindex">
+<div id="staffgroup">
 
 	{{#gruppen}}
         <h4>{{ name }}</h4>
-
-        <ul>
+<table>
         {{#personen}}	    
-        <li>{{#title}}{{title}} {{/title}}{{#locations}}{{#location}}{{#email}}<a href="http://univis.uni-erlangen.de/prg?search=persons&id={{ id }}&show=info">{{/email}}{{/location}}{{/locations}}{{ lastname }}{{#firstname}}, {{ firstname }}{{/firstname}}{{#locations}}{{#location}}{{#email}}</a>{{/email}}{{/location}}{{/locations}}{{#atitle}}, {{ atitle }}{{/atitle}}{{#locations}}{{#location}}{{#tel}}, Tel. {{tel}}{{/tel}}{{/location}}{{/locations}}{{{text}}}</li>
+<tr>
+<!-- <td>{{overwriteorder}}</td> -->
+<!-- {{ id }} -->
+<td><img src={{pictureurl}}></img>
+</td>
+<td>
+{{#leaderfunction}}<b>{{leaderfunction}}</b></br> {{/leaderfunction}} 
+<a href=http://tim.lte.eei.uni-erlangen.de/wordpress/person/{{lastname}}>{{#title}}{{title}} {{/title}}{{ firstname }} {{ lastname }}</a>{{#atitle}}, {{ atitle }}{{/atitle}}
+{{#specialfunction}}</br>({{specialfunction}}){{/specialfunction}} 
+</td>
+<td><ul>
+		{{#locations}}
+			{{#location}}
+				{{#email}}
+<li>
+<a href="mailto:{{ email }}">{{ email }}</a>
+</li>		
+		{{/email}}
+
+
+{{/location}}
+</ul></td>
+{{/locations}}
+<td>
+{{#locations}}
+<ul>
+{{#location}}
+{{#tel}}
+<li>{{tel}}</li>{{/tel}}
+{{/location}}
+</ul>
+{{/locations}}
+
+<!-- <td>{{{text}}}</td> -->
         {{/personen}} 
-        </ul>
-        
+
+
+  </td>
+ </table>
 	{{/gruppen}}
 </div>

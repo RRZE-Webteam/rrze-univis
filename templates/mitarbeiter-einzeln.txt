@@ -1,12 +1,14 @@
+   <style type="text/css">
+
+      .bildlinks { float:left; width:150px;padding-right: 50px;}
+      .kontakt { float:left; }
+.clear {clear:both}
+
+    </style>
+
 {{#person}}
 <div id="univis-personenseite">
-
 	<!-- Zusatzinformationen aus Dateiverzeichnis -->
-	{{#assets}}
-		{{#bild}}
-			<img class="bildlinks" src="{{bild}}">
-		{{/bild}}
-	{{/assets}}
 
 	<div class="vcard">
     	<h2 class="fn">
@@ -14,20 +16,16 @@
             <span class="honorific-prefix"><acronym title="{{title-long}}">{{title}}</acronym></span>
             {{/title}}
             <span class="given-name">{{firstname}}</span> <span class="family-name">{{lastname}}</span>
-            {{#atitle}}
-            <span class="honorific-suffix"><acronym title="{{atitle}}">{{ atitle }}</acronym></span>
+						{{#atitle}}
+            <span class="honorific-suffix"><acronym title="{{atitle}}">({{atitle }})</acronym></span>
             {{/atitle}}
         </h2>
+		{{#pictureurl}}
+			<img class="bildlinks" src="{{pictureurl}}">
+		{{/pictureurl}}
+
 
 		<address>
-		    <p>
-			    <span class="org">
-			        <span class="organization-name">Zentrale Einrichtungen</span><br />
-			        {{#orgunits}}
-			        <span class="organization-unit">Abteilung {{orgunit}}</span><br />
-			        {{/orgunits}}
-			    </span>
-		    </p>
 
 		    {{#locations}}
 				{{#location}}
