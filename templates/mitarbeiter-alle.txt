@@ -3,6 +3,12 @@
 	{{#gruppen}}
         <h4>{{ name }}</h4>
 <table>
+  <colgroup>
+    <col width="10%">
+    <col width="35%">
+    <col width="35%">
+    <col width="20%">
+  </colgroup>
         {{#personen}}	    
 <tr>
 <!-- <td>{{overwriteorder}}</td> -->
@@ -11,7 +17,10 @@
 </td>
 <td>
 {{#leaderfunction}}<b>{{leaderfunction}}</b></br> {{/leaderfunction}} 
-<a href=http://tim.lte.eei.uni-erlangen.de/wordpress/person/{{lastname}}>{{#title}}{{title}} {{/title}}{{ firstname }} {{ lastname }}</a>{{#atitle}}, {{ atitle }}{{/atitle}}
+{{#mitarbeiterURL}}<a href={{mitarbeiterURL}}>{{/mitarbeiterURL}}
+{{#title}}{{title}} {{/title}}{{ firstname }} {{ lastname }}
+{{#mitarbeiterURL}}</a>{{/mitarbeiterURL}}
+{{#atitle}}, {{ atitle }}{{/atitle}}
 {{#specialfunction}}</br>({{specialfunction}}){{/specialfunction}} 
 </td>
 <td><ul>
@@ -22,8 +31,6 @@
 <a href="mailto:{{ email }}">{{ email }}</a>
 </li>		
 		{{/email}}
-
-
 {{/location}}
 </ul></td>
 {{/locations}}
@@ -44,4 +51,31 @@
   </td>
  </table>
 	{{/gruppen}}
+<!-- Für restliche Gruppen nur kurte info ausgeben.........................
+##########################################################################
+################################################################## -->
+	{{#OnlyShortInfo}}
+<div class="OnlyShortInfo">
+        <h4>{{ name }}</h4>
+        {{#personen}}
+{{#lastname}}	    
+<div style=" width:400px;float:left;padding-bottom:5px">
+{{#mitarbeiterURL}}<a href={{mitarbeiterURL}}>{{#title}}{{title}} {{/title}}{{ firstname }} {{ lastname }}</a>{{/mitarbeiterURL}}
+{{^mitarbeiterURL}}
+	{{#locations}}
+	{{#location}}
+					{{#email}}<a href="mailto:{{ email }}">{{#title}}{{title}} {{/title}}{{ firstname }} {{ lastname }}</a>{{/email}}
+					{{^email}}{{#title}}{{title}} {{/title}}{{ firstname }} {{ lastname }}{{/email}}
+	{{/location}}
+	{{/locations}}
+	{{^locations}}
+		{{#title}}{{title}} {{/title}}{{ firstname }} {{ lastname }}
+	{{/locations}}
+{{/mitarbeiterURL}}
+</div>
+
+{{/lastname}}	  
+{{/personen}} 
+</div>
+	{{/OnlyShortInfo}}
 </div>

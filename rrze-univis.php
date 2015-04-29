@@ -78,6 +78,7 @@ class RRZE_UnivIS {
 			'Personenanzeige_Verzeichnis' => '',
 			'firstname'=>'',
 			'lastname'=>'',
+			'wpuserid'=>'',
 			'univis_staff_id'=>'',
 			'Personenanzeige_Bildsuche' =>	'1',
 			'Personenanzeige_ZusatzdatenInDatei' =>	'1',

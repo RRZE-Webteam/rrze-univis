@@ -80,6 +80,7 @@ class univisRender {
                         $jobs = $daten['Org'][0]['jobs'][0]['job'];
 		}
 		$gruppen = array();
+		$OnlyShortInfo = array();
 		$gruppen_dict = array();
                 $gruppen_personen = array();
                 $gruppen_text = array();
@@ -117,16 +118,6 @@ class univisRender {
                             $person["nameurl"] = strtolower($this->umlaute_ersetzen($name));
                             //$person["nameurl"] = str_replace("-", "_", $person["nameurl"]);
                             $person["nameurl"] = str_replace(" ", "-", $person["nameurl"]);
-
-									 $user = get_user_by('slug', $person["lastname"]);
-							
-						$pattern = '/<img.+?src=([\'"])(.+?)\1[^>]*>/is';
-
-					preg_match($pattern, get_wp_user_avatar($user->ID, 96), $matches);
-
-$person["pictureurl"]=$matches[2];
-
-									
 
                         }
                         
@@ -177,6 +168,38 @@ $person["pictureurl"]=$matches[2];
                              $person['text'] = str_replace(PHP_EOL, '<br>', $person['text']);
                              $person['text'] = str_replace("<br>\r<br>", '<br>', $person['text']);
                         }
+
+
+
+//get_user_by('email',$person['location'])
+//print_r($person['locations']['0']['location']['0']);
+$current_email=$person['locations']['0']['location']['0']['email'];
+
+
+
+if(isset($current_email))
+{
+//echo $person['firstname']."hat mail:".$current_email."<br>";
+$correspondingUser=get_user_by('email',$current_email);
+//echo $mitarbeiterID;
+
+	if(!($correspondingUser===false))
+	{
+		$person['mitarbeiterURL']=get_author_posts_url($correspondingUser->ID);
+	  $person["pictureurl"]=get_wp_user_avatar_src($correspondingUser->ID, 96);//$matches[2];
+	}
+
+}
+else
+{
+//keine Email, kein Link zu Mitarbeiter seite
+}
+ if(!isset($person['pictureurl']))
+{//set standard-avatar
+	  $person["pictureurl"]=get_wp_user_avatar_src(false, 96);
+}
+
+
 
 $person['overwriteorder']=0;
 $person_specialfunctions=array();
@@ -272,13 +295,22 @@ $person['rang']= implode("|", $jobs_of_person);
                             if(isset($gruppen_personen[0]['lastname'])){
                                 $gruppen_personen = $this->array_orderby($gruppen_personen,"overwriteorder", SORT_DESC,"lastname", SORT_ASC, "firstname", SORT_ASC);
                             }
+													
                             $gruppen_obj = array(
                                     "name" => $gruppen_name,
                                     //"personen" => $this->record_sort($gruppen_personen, "lastname")
                                     "personen" => $gruppen_personen
                             );
-         						if(count($gruppen_personen)>0){//ignore empty groups
-                            array_push($gruppen, $gruppen_obj);}
+         						if(count($gruppen_personen)>0)
+														{//ignore empty groups
+															if(!strcmp($gruppen_name,"Ehemalige/r Mitarbeiter/-in"))
+																	{
+																		array_push($OnlyShortInfo, $gruppen_obj);
+																	}else
+																	{
+																		array_push($gruppen, $gruppen_obj);
+																	}
+														}
                     }                  
                 
                 //Sortierung der Ergebnisse nach dem Funktionsfeld
@@ -326,7 +358,7 @@ $person['rang']= implode("|", $jobs_of_person);
                 }
 //print_r($overwriteorder);
 //print_r($gruppen);
-		return array("gruppen" => $gruppen, "optionen" => $this->optionen);
+		return array("gruppen" => $gruppen, "optionen" => $this->optionen,"OnlyShortInfo" =>$OnlyShortInfo);
 	}
 
 	private function _bearbeiteMitarbeiterOrga($personen) {
@@ -435,10 +467,9 @@ $person['rang']= implode("|", $jobs_of_person);
 			else unset($person["lehrveranstaltungen_next"]);
 
 
-						$user = get_user_by('slug', $person["lastname"]);
-						$pattern = '/<img.+?src=([\'"])(.+?)\1[^>]*>/is';
-					preg_match($pattern, get_wp_user_avatar($user->ID, 96), $matches);
-					$person["pictureurl"]=$matches[2];
+				//		$user = get_user_by('slug', $person["lastname"]);
+	
+		$person["pictureurl"]=get_wp_user_avatar_src($this->optionen['wpuserid'],'large');
 
 
 			return array("person" => $person, "optionen" =>$this->optionen);
