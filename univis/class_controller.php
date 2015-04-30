@@ -52,13 +52,17 @@ class univisController {
 		if($daten != -1) {
 			// Passe Datenstruktur fuer Templating an.
 			$render = new univisRender($this->optionen);
-			$daten = $render->bearbeiteDaten($daten);
-
+			$daten= $render->bearbeiteDaten($daten);
+			$daten['Optionen']=$this->optionen;
 			// Lade Zusatzinformationen
-			$assets = new univisAssets($this->optionen);
-			$daten["assets"] = $assets->holeDaten();
+			//$assets = new univisAssets($this->optionen);
+			//$daten["assets"] = $assets->holeDaten();
 
 			// Daten rendern
+			/*print("<pre>");
+				print_r($daten);
+				print("</pre>");
+*/
 			$html = $this->_renderTemplate($daten);
 
 			if($html != -1) {	//Rendern erfolgreich?

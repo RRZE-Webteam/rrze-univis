@@ -67,7 +67,9 @@ class UNIVIS {
 				case "mitarbeiter-einzeln":
 					$this->daten = $this->_ladeMitarbeiterEinzeln();
 					break;
-
+				case "mitarbeiter-lehre":
+					$this->daten = $this->_ladeMitarbeiterLehre();
+					break;
 				case "publikationen":
 					$this->daten = $this->_ladePublikationen();
 					break;
@@ -268,9 +270,73 @@ $this->optionen['semester']=$this->nextSemester();
 			$person["lehrveranstaltungen_next_semester"]= $this->optionen['semester'];
 
 		}
+//Speichere id global für späteren Aufruf von Lehre
+if($person['lehr']==="ja"){
+		$GLOBALS['LocalUnivisID']=$person["id"];
+}
 
 		return $person;
        }
+	}
+	private function _ladeMitarbeiterLehre() {
+
+if(!($this->optionen['univis_id']))
+	{
+		//Ueberpruefe ob Vor- und Nachname gegeben sind.
+		$noetige_felder = array("firstname", "lastname");
+		foreach ($noetige_felder as $feld) {
+			if(!array_key_exists($feld, $this->optionen) || $this->optionen[$feld] == "") {
+				// Fehler: Bitte geben Sie Vor- und Nachname der gesuchten Person an
+				//echo "<div class=\"hinweis_wichtig\">Bitte geben Sie Vor- und Nachname der gesuchten Person an.</div>";
+				return -1;
+			}
+
+			if(strrpos($this->optionen[$feld], "&") !== false) {
+				echo "Ung&uuml;ltige Eingabe.";
+				return -1;
+			}
+		}
+
+		// Hole Daten von Univis
+		$url = $this->univis_url."?search=persons&department=".$this->optionen["UnivISOrgNr"]."&name=".$this->optionen["lastname"]."&firstname=".$this->optionen["firstname"]."&show=xml";
+
+
+		$url = $this->umlaute_ersetzen($url);
+
+
+		if(!fopen($url, "r")) {
+			// Univis Server ist nicht erreichbar
+			return -1;
+		}
+
+		$persArray = $this->xml2array($url);
+                if(empty($persArray)) {
+                    echo "Leider konnte die Person nicht gefunden werden.";
+                    return -1;
+                } else {
+		$person = $persArray["Person"];
+
+		if(count($persArray) == 0 ) {
+
+			// Keine Person gefunden
+			return -1;
+		}
+
+		// Falls mehrer Personen gefunden wurden, wähle die erste
+		if($person) $person = $person[0];
+$this->optionen['univis_id']=$person["id"];
+	}
+}
+//Erst aktuelles Semester, dann folgendes:
+$this->optionen['semester']=$this->aktuellesSemester();
+			$person["lehrveranstaltungen"] = $this->_ladeLehrveranstaltungenAlle($this->optionen['univis_id']);
+			$person["lehrveranstaltungen_semester"]= $this->optionen['semester'];
+$this->optionen['semester']=$this->nextSemester();
+	$person["lehrveranstaltungen_next"] = $this->_ladeLehrveranstaltungenAlle($this->optionen['univis_id']);
+			$person["lehrveranstaltungen_next_semester"]= $this->optionen['semester'];
+
+		return $person;
+      
 	}
 
 	private function _ladePublikationen($authorid = NULL) {
@@ -316,7 +382,6 @@ $this->optionen['semester']=$this->nextSemester();
 
 	private function _ladeLehrveranstaltungenAlle($dozentid = NULL) {
 		// Hole Daten von Univis
-
 //echo $dozentid;
 		$url = "http://univis.uni-erlangen.de/prg?search=lectures&department=".$this->optionen["UnivISOrgNr"]."&show=xml&sem=".$this->optionen["semester"];//$this->aktuellesSemester();
 

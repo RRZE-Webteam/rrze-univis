@@ -42,6 +42,9 @@ class univisRender {
 				case "mitarbeiter-einzeln":
 					return $this->_bearbeiteMitarbeiterEinzeln($daten);
 
+				case "mitarbeiter-lehre":
+					return $this->_bearbeiteMitarbeiterLehre($daten);
+
 				case "publikationen":
 					return $this->_bearbeitePublikationen($daten);
 
@@ -55,7 +58,7 @@ class univisRender {
 					return $this->_bearbeiteLehrveranstaltungenKalender($daten);
 
 				default:
-					echo "Fehler: Unbekannter Befehl\n";
+					echo "Fehler: Unbekannter Befehl beim Bearbeiten der Daten\n";
 					return -1;
 			}
 		}
@@ -356,8 +359,7 @@ $person['rang']= implode("|", $jobs_of_person);
                             $gruppen[$i]["name"] = '';
 			}                        
                 }
-//print_r($overwriteorder);
-//print_r($gruppen);
+
 		return array("gruppen" => $gruppen, "optionen" => $this->optionen,"OnlyShortInfo" =>$OnlyShortInfo);
 	}
 
@@ -441,7 +443,6 @@ $person['rang']= implode("|", $jobs_of_person);
 	}
 
 
-
 	private function _bearbeiteMitarbeiterEinzeln($person) {
 		if(!empty($person)) {
 			$person["title-long"] = $this->_str_replace_dict(univisDicts::$acronyms, $person["title"]);
@@ -472,9 +473,26 @@ $person['rang']= implode("|", $jobs_of_person);
 		$person["pictureurl"]=get_wp_user_avatar_src($this->optionen['wpuserid'],'large');
 
 
-			return array("person" => $person, "optionen" =>$this->optionen);
+			return array("person" =>$person);
 		}
 	}
+
+	private function _bearbeiteMitarbeiterLehre($person) {
+		if(!empty($person)) {
+			// Lade Lehrveranstaltungen
+			$lehrveranstaltungen = $this->_bearbeiteLehrveranstaltungenAlle($person["lehrveranstaltungen"]);
+
+			$lehrveranstaltungen_next = $this->_bearbeiteLehrveranstaltungenAlle($person["lehrveranstaltungen_next"]);
+
+			if($lehrveranstaltungen)$person["lehrveranstaltungen"] = $lehrveranstaltungen;
+			else unset($person["lehrveranstaltungen"]);
+			if($lehrveranstaltungen_next )$person["lehrveranstaltungen_next"] = $lehrveranstaltungen_next ;
+			else unset($person["lehrveranstaltungen_next"]);
+
+			return $person;
+		}
+	}
+
 
 	private function _bearbeitePublikationen($publications) {
 		if(!$publications) return NULL;
@@ -522,40 +540,36 @@ $person['rang']= implode("|", $jobs_of_person);
 	}
 
 	private function _bearbeiteLehrveranstaltungenAlle($veranstaltungen) {
-		if(!$veranstaltungen) return NULL;
+
+		if(!is_array($veranstaltungen)){return NULL;}
+
 
 		$this->_rename_key("type", $veranstaltungen, univisDicts::$lecturetypen);
 
-		
+			$DelCoursesOfLectures= array();
 
-$DelCoursesOfLectures= array();
+			foreach($veranstaltungen as $i =>$veranstaltung){
+						// Einzelne Veranstaltung bearbeiten
 
-foreach($veranstaltungen as $i =>$veranstaltung){
-			// Einzelne Veranstaltung bearbeiten
-
-		if(isset($veranstaltung[courses]))
-		{$DelCoursesOfLectures[]=$veranstaltung[name];}
-		else
-		{	
-			if(in_array($veranstaltung[name],$DelCoursesOfLectures))
-			{
-			//echo "<br>loesche ".$veranstaltung[name];
-			unset($veranstaltungen[$i]);
+					if(isset($veranstaltung[courses]))
+					{$DelCoursesOfLectures[]=$veranstaltung[name];}
+					else
+					{	
+						if(in_array($veranstaltung[name],$DelCoursesOfLectures))
+						{
+							//echo "<br>loesche ".$veranstaltung[name];
+							unset($veranstaltungen[$i]);
+						}
+						else{
+						$veranstaltungen[$i] = $this->_bearbeiteLehrveranstaltungenEinzeln($veranstaltung);
+						}
+					}
 			}
 
-		$veranstaltung_edit = $this->_bearbeiteLehrveranstaltungenEinzeln($veranstaltung);
-		$veranstaltung=$veranstaltung_edit['Veranstaltung'];
+			//Nach type ordnen
+			$veranstaltungen = $this->_group_by("type", $veranstaltungen);
 
-
-
-		}
-}
-
-//Nach type ordnen
-		$veranstaltungen = $this->_group_by("type", $veranstaltungen);
-
-
-		return array( "veranstaltungen" => $veranstaltungen, "optionen" => $this->optionen);
+	return array( "veranstaltungen" => $veranstaltungen);
 	}
 
 	private function _bearbeiteLehrveranstaltungenKalender($veranstaltungen) {
@@ -574,7 +588,6 @@ foreach($veranstaltungen as $i =>$veranstaltung){
 
 		foreach ($veranstaltungen as $veranstaltung) {
 			$veranstaltung = $this->_bearbeiteLehrveranstaltungenEinzeln($veranstaltung);
-			$veranstaltung = $veranstaltung["veranstaltung"];
 
 			$titel = $veranstaltung["name"];
 			$beschreibung = $veranstaltung["summary"];
@@ -783,7 +796,7 @@ foreach($veranstaltungen as $i =>$veranstaltung){
 		$veranstaltung["zusatzinfos"] = ($veranstaltung["keywords"] || $veranstaltung["turnout"] || $veranstaltung["url_description"]);
 
 
-		return array( "veranstaltung" => $veranstaltung, "optionen" => $this->optionen);
+		return $veranstaltung;
 	}
 
 	private function _str_replace_dict($dict, $str) {
