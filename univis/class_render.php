@@ -808,9 +808,11 @@ $person['rang']= implode("|", $jobs_of_person);
 
 	private function _rename_key($search_key, &$arr, $dict) {
 		foreach ($arr as &$veranstaltung) {
-			foreach ($veranstaltung as $key => &$value) {
-				if($key == $search_key) {
-					$value = $this->_str_replace_dict($dict, $value);
+			if(is_array($veranstaltung)){
+				foreach ($veranstaltung as $key => &$value) {
+					if($key == $search_key) {
+						$value = $this->_str_replace_dict($dict, $value);
+					}
 				}
 			}
 		}
