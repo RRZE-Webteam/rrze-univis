@@ -202,6 +202,8 @@ else
 	  $person["pictureurl"]=get_wp_user_avatar_src(false, 96);
 }
 
+$person=$this->person_format_convert($person);
+
 
 
 $person['overwriteorder']=0;
@@ -471,6 +473,8 @@ $person['rang']= implode("|", $jobs_of_person);
 				//		$user = get_user_by('slug', $person["lastname"]);
 	
 		$person["pictureurl"]=get_wp_user_avatar_src($this->optionen['wpuserid'],'large');
+
+$person=$this->person_format_convert($person);
 
 
 			return array("person" =>$person);
@@ -895,6 +899,27 @@ $person['rang']= implode("|", $jobs_of_person);
 		return array_pop($args);
 	}
 
+
+   private function person_format_convert($person){
+			//		print("<pre>");print_r($person);print("</pre>");
+			if(is_array($person['locations'])){
+			foreach($person['locations'][0]['location'] as $key=>$value){
+						$search_pattern=array(' ','09131/85','0911/56854','--','(');
+						$replace_pattern=array('','09131/85-','0911/56854-','-',' (');
+
+						if(!empty($value['tel'])){
+							$tel = str_replace($search_pattern,$replace_pattern,$value['tel']);
+							$person['locations'][0]['location'][$key]['tel']=$tel;
+							}
+
+						if(!empty($value['fax'])){
+							$fax = str_replace($search_pattern,$replace_pattern,$value['fax']);
+							$person['locations'][0]['location'][$key]['fax']=$fax;
+							}
+						}
+			}
+		return $person;
+	}
 
 }
 

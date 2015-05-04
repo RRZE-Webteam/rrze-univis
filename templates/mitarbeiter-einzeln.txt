@@ -28,8 +28,9 @@
 		<address>
 
 		    {{#locations}}
-				{{#location}}
 				<h3>Anschrift</h3>
+
+				{{#location}}
 			    <ul class="kontakt">
 			    	 <span class="adr">
 				    	{{#street}}
