@@ -24,6 +24,38 @@
 		    "rer."  =>  ""
 		);
 
+
+		public static $lecturetypen_short = array(
+		    "awa" => "[:de]Anleitung zu wiss. Arbeiten[:en]Scientific work introduction[:]",
+			"ag" => "Arbeitsgemeinschaft",
+			"ak" => "Aufbaukurs",
+			"ek" => "Einf&uuml;hrungskurs",
+			"ex" => "Exkursion",
+			"gk" => "Grundkurs",
+			"ts" => "Theorieseminar",
+			"sem" => "Seminar",
+			"hs" => "Hauptseminar",
+			"kk" => "Klausurenkurs",
+			"klv" => "Klinische Visite",
+			"ko" => "Kolloquium",
+			"ku" => "Kurs",
+			"ms" => "Mittelseminar",
+			"os" => "Oberseminar",
+			"pr" => "[:de]Praktikum[:en]Labs[:]",
+			"prs" => "Praxisseminar",
+			"pjs" => "Projektseminar",
+			"ps" => "Proseminar",
+			"re" => "Repetitorium",
+			"sl" => "[:de]Sonstige Lehrveranstaltungen[:en]Other classes[:]",
+			"tut" => "[:de]Tutorien[:en]Tutorials[:]",
+			"ue" => "[:de]Übungen[:en]Exercises[:]",
+			"vorl" => "[:de]Vorlesungen[:en]Lectures[:]",
+			"v-ue" => "Vorlesung mit &Uuml;bung",
+			"hvl" => "Hauptvorlesung",
+			"pf" => "Pr&uuml;fung",
+			"gsz" => "Gremiensitzung"
+		);
+/*
 		public static $lecturetypen = array(
 		    "awa" => "Anleitung zu wiss. Arbeiten  (AWA)",
 			"ag" => "Arbeitsgemeinschaft  (AG)",
@@ -54,37 +86,7 @@
 			"pf" => "Pr&uuml;fung  (PF)",
 			"gsz" => "Gremiensitzung  (GSZ)"
 		);
-
-		public static $lecturetypen_short = array(
-		    "awa" => "Anleitung zu wiss. Arbeiten",
-			"ag" => "Arbeitsgemeinschaft",
-			"ak" => "Aufbaukurs",
-			"ek" => "Einf&uuml;hrungskurs",
-			"ex" => "Exkursion",
-			"gk" => "Grundkurs",
-			"ts" => "Theorieseminar",
-			"sem" => "Seminar",
-			"hs" => "Hauptseminar",
-			"kk" => "Klausurenkurs",
-			"klv" => "Klinische Visite",
-			"ko" => "Kolloquium",
-			"ku" => "Kurs",
-			"ms" => "Mittelseminar",
-			"os" => "Oberseminar",
-			"pr" => "Praktikum",
-			"prs" => "Praxisseminar",
-			"pjs" => "Projektseminar",
-			"ps" => "Proseminar",
-			"re" => "Repetitorium",
-			"sl" => "Sonstige Lehrveranstaltung",
-			"tut" => "Tutorium",
-			"ue" => "Übung",
-			"vorl" => "Vorlesung",
-			"v-ue" => "Vorlesung mit &Uuml;bung",
-			"hvl" => "Hauptvorlesung",
-			"pf" => "Pr&uuml;fung",
-			"gsz" => "Gremiensitzung"
-		);
+*/
 
 		public static $leclanguages = array(
 		    "D" => "Deutsch"

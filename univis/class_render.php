@@ -232,8 +232,17 @@ foreach($jobs_of_person as $key => $rang)
 	if(stripos($this->optionen["Leader_Jobs"],$rang)!==FALSE)
 	{//String enthalten in Leader_jobs-->Overwrite order setzen
 		$person['overwriteorder']=$person['overwriteorder']+1;
-		$person['leaderfunction']=$rang;
+//Internationalization
+	switch($rang){
+		case "Leitung":
+					$person['leaderfunction']="[:de]Leitung[:en]Chair of Institute[:]";break;
+		case "Gruppenleiter":
+					$person['leaderfunction']="[:de]Gruppenleiter[:en]Head of team[:]";break;
+		default:
+					$person['leaderfunction']=$rang;
+	}
 	unset($jobs_of_person[$key]);
+
 	}
 	else
 	{
@@ -252,6 +261,45 @@ foreach($jobs_of_person as $key => $rang)
 	}
 
 }
+
+if(!empty($person_specialfunctions)){
+foreach($person_specialfunctions as $key=>$value){
+	switch($value){
+		case "UnivIS-Beauftragte":
+				if($person['gender']==="m")
+						 $person_specialfunctions[$key]="[:de]UnivIS-Beauftragter[:en]UnivIS editor[:]";
+				else $person_specialfunctions[$key]="[:de]UnivIS-Beauftragte[:en]UnivIS editor[:]";
+			break;
+		case "Sicherheitsbeauftragter (nach SGB VII)":
+				if($person['gender']==="m")
+						 $person_specialfunctions[$key]="[:de]Sicherheitsbeauftragter[:en]Safety advisor[:]";
+				else $person_specialfunctions[$key]="[:de]Sicherheitsbeauftragte[:en]Safety advisor[:]";
+			break;
+		case "Ehemalige/r Mitarbeiter/-in":
+				if($person['gender']==="m")
+						 $person_specialfunctions[$key]="[:de]Ehemaliger[:en]Former staff[:]";
+				else $person_specialfunctions[$key]="[:de]Ehemalige[:en]Former staff[:]";
+			break;
+		case "Gastwissenschaftler/-in":
+				if($person['gender']==="m")
+						 $person_specialfunctions[$key]="[:de]Gastwissenschaftler[:en]Guest scientist[:]";
+				else $person_specialfunctions[$key]="[:de]Gastwissenschaftlerin[:en]Guest scientist[:]";
+			break;
+		case "IT-Betreuer":
+				if($person['gender']==="m")
+						 $person_specialfunctions[$key]="[:de]IT-Betreuer[:en]Admin[:]";
+				else $person_specialfunctions[$key]="[:de]IT-Betreuerin[:en]Admin[:]";
+			break;
+		case "IT-Sicherheits-Beauftragter":
+				if($person['gender']==="m")
+						 $person_specialfunctions[$key]="[:de]IT-Sicherheits-Beauftragter[:en]IT safety advisor[:]";
+				else $person_specialfunctions[$key]="[:de]IT-Sicherheits-Beauftragte[:en]IT safety advisor[:]";
+			break;
+
+	}
+}
+}
+
 $person['specialfunction']=implode(", ", $person_specialfunctions);
 $person['rang']= implode("|", $jobs_of_person);
 
@@ -308,13 +356,8 @@ $person['rang']= implode("|", $jobs_of_person);
                             );
          						if(count($gruppen_personen)>0)
 														{//ignore empty groups
-															if(!strcmp($gruppen_name,"Ehemalige/r Mitarbeiter/-in"))
-																	{
-																		array_push($OnlyShortInfo, $gruppen_obj);
-																	}else
-																	{
-																		array_push($gruppen, $gruppen_obj);
-																	}
+																array_push($gruppen, $gruppen_obj);
+													
 														}
                     }                  
                 
@@ -361,6 +404,42 @@ $person['rang']= implode("|", $jobs_of_person);
                             $gruppen[$i]["name"] = '';
 			}                        
                 }
+
+//Localisation
+foreach($gruppen as $key =>$group)
+{
+
+$gruppen[$key]['name']=str_replace("Gruppe","[:de]Gruppe[:en]Team[:]",$group['name']);
+
+switch ($group['name']) {
+    case "Professoren/-innen":
+     $gruppen[$key]['name']="[:de]Lehrstuhlleitung[:en]Institutional administration[:]";
+			break;
+    case "Sekretariat":
+     $gruppen[$key]['name']="[:de]Sekretariat[:en]Secretariat[:]";
+			break;    
+		case "Projektkoordination":
+     $gruppen[$key]['name']="[:de]Projektkoordination[:en]Projektkoordination administration[:]";
+        break;
+		case "Gastwissenschaftler/-in":
+     $gruppen[$key]['name']="[:de]Gastwissenschaftler[:en]Guest scientist[:]";
+        break;
+		case "Ehemalige Gastwissenschaftler":
+     $gruppen[$key]['name']="[:de]Ehemalige Gastwissenschaftler[:en]Former guest scientist[:]";
+        break;
+		case "Ehemalige/r Mitarbeiter/-in":
+     $gruppen[$key]['name']="[:de]Ehemalige[:en]Former staff[:]";
+		//Show only short info, move to other array:
+			array_push($OnlyShortInfo, $group);
+			unset($gruppen[$key]);
+        break;
+}
+}
+
+
+
+
+
 
 		return array("gruppen" => $gruppen, "optionen" => $this->optionen,"OnlyShortInfo" =>$OnlyShortInfo);
 	}
@@ -558,8 +637,8 @@ $person=$this->person_format_convert($person);
 
 		if(!is_array($veranstaltungen)){return NULL;}
 
-
-		$this->_rename_key("type", $veranstaltungen, univisDicts::$lecturetypen);
+//		$this->_rename_key("type", $veranstaltungen, univisDicts::$lecturetypen);//use always short
+		$this->_rename_key("type", $veranstaltungen, univisDicts::$lecturetypen_short);
 
 			$DelCoursesOfLectures= array();
 
@@ -583,7 +662,6 @@ $person=$this->person_format_convert($person);
 
 			//Nach type ordnen
 			$veranstaltungen = $this->_group_by("type", $veranstaltungen);
-
 	return array( "veranstaltungen" => $veranstaltungen);
 	}
 
@@ -659,7 +737,8 @@ $person=$this->person_format_convert($person);
 	private function _bearbeiteLehrveranstaltungenEinzeln($veranstaltung) {
 
 
-		$this->_rename_key("type", $veranstaltung, univisDicts::$lecturetypen);
+		//$this->_rename_key("type", $veranstaltung, univisDicts::$lecturetypen);//Use always short
+		$this->_rename_key("type", $veranstaltung, univisDicts::$lecturetypen_short);
 
 		// Dozs
 		for ($i = 0; $i<count($veranstaltung["dozs"]); $i++) {
@@ -852,7 +931,6 @@ $person=$this->person_format_convert($person);
 				"title" => $gruppen_name,
 				"data" => $gruppen_data
 			);
-
 			array_push($gruppen, $gruppen_obj);
 		}
 

@@ -3,7 +3,8 @@
 	<ul>
 		{{#data}}
 		<li>
-			<h3><a href="http://univis.uni-erlangen.de/prg?search=lectures&department=100206{{#Optionen}}&sem={{semester}}{{/Optionen}}&id={{id}}&show=llong" target="_parent"> {{name}}</a></h3>
+			<h3><a href="http://univis.uni-erlangen.de/prg?search=lectures&department=100206{{#Optionen}}&sem={{semester}}{{/Optionen}}&id={{id}}&show=llong" target="_parent">
+		{{#ects_name}}[:de]{{name}}[:en]{{ects_name}}[:]{{/ects_name}}{{^ects_name}}{{name}}{{/ects_name}}</a></h3>
 			<!--<ul>
 			{{#terms}}
 				{{#term}}
