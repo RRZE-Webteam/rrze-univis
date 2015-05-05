@@ -16,11 +16,9 @@
 <td><img src={{pictureurl}}></img>
 </td>
 <td>
-{{#leaderfunction}}<b>{{leaderfunction}}</b></br> {{/leaderfunction}} 
+{{#leaderfunction}}<b>{{leaderfunction}}</b></br>{{/leaderfunction}} 
 {{#mitarbeiterURL}}<a href={{mitarbeiterURL}}>{{/mitarbeiterURL}}
-{{#title}}{{title}} {{/title}}{{ firstname }} {{ lastname }}
-{{#mitarbeiterURL}}</a>{{/mitarbeiterURL}}
-{{#atitle}}, {{ atitle }}{{/atitle}}
+{{#title}}{{title}}&nbsp;{{/title}}{{firstname}} {{lastname}}{{#atitle}}, {{atitle}}{{/atitle}}{{#mitarbeiterURL}}</a>{{/mitarbeiterURL}}
 {{#specialfunction}}</br>({{specialfunction}}){{/specialfunction}} 
 </td>
 <td><ul>

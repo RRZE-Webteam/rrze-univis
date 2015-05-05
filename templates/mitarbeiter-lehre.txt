@@ -11,7 +11,7 @@
 <div id="lehrveranstaltungen">
 		<!-- Lehrveranstaltungen -->
 		{{#lehrveranstaltungen}}
-			<h2 class="active">Lehrveranstaltungen {{lehrveranstaltungen_semester}}</h3>
+			<h2 class="active">[:de]Lehrveranstaltungen[:en]Lectures[:] {{lehrveranstaltungen_semester}}</h3>
 			<div>
 				<ul>
 					{{#veranstaltungen}}<!--wäre noch gruppiert nach Typ-->
@@ -27,7 +27,7 @@
 
 
 	{{#lehrveranstaltungen_next}}
-			<h2 class="active">Lehrveranstaltungen {{lehrveranstaltungen_next_semester}}</h3>
+			<h2 class="active">[:de]Lehrveranstaltungen[:en]Lectures[:] {{lehrveranstaltungen_next_semester}}</h3>
 			<div>
 				<ul>
 						{{#veranstaltungen}}

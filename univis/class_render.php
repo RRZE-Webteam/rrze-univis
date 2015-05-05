@@ -493,6 +493,17 @@ $person=$this->person_format_convert($person);
 			if($lehrveranstaltungen_next )$person["lehrveranstaltungen_next"] = $lehrveranstaltungen_next ;
 			else unset($person["lehrveranstaltungen_next"]);
 
+		//Lokalisierung
+		if ($person['lehrveranstaltungen_semester']{4}==='s')
+		{$person["lehrveranstaltungen_semester"]="[:de]Sommersemester[:en]Summer Term[:] ".substr($person['lehrveranstaltungen_semester'],0,-1);
+		}else{
+		$person["lehrveranstaltungen_semester"]="[:de]Wintersemester[:en]Winter Term[:] ".substr($person['lehrveranstaltungen_semester'],0,-1);
+		}
+		if ($person['lehrveranstaltungen_next_semester']{4}==='s')
+		{$person["lehrveranstaltungen_next_semester"]="[:de]Sommersemester[:en]Summer Term[:] ".substr($person['lehrveranstaltungen_next_semester'],0,-1);
+		}else{
+		$person["lehrveranstaltungen_next_semester"]="[:de]Wintersemester[:en]Winter Term[:] ".substr($person['lehrveranstaltungen_next_semester'],0,-1);
+		}
 			return $person;
 		}
 	}
