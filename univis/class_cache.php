@@ -81,8 +81,13 @@ class univisCache {
 
 	private function filepath() {
 		// Key md5 codieren
-		$key = md5($this->key());
-		return self::$path."/".$key;
+		$key=$this->key();
+		if($key===-1)
+				{
+					return -1;
+				}else{
+				return self::$path."/".md5($key);
+			}
 	}
 
 	private function key() {
