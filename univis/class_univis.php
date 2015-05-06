@@ -98,6 +98,8 @@ class UNIVIS {
 	private function _ladeMitarbeiterAlle() {
 		// Hole Daten von Univis
 		$url = $this->univis_url."?search=departments&number=".$this->optionen["UnivISOrgNr"]."&show=xml";
+
+	echo "\n<!-- UnivIS-Url: ".$url."-->\n";
 		if(!fopen($url, "r")) {
 			// Univis Server ist nicht erreichbar
 			return -1;
@@ -232,7 +234,7 @@ class UNIVIS {
 
 
 		$url = $this->umlaute_ersetzen($url);
-
+	echo "\n<!-- UnivIS-Url: ".$url."-->\n";
 
 		if(!fopen($url, "r")) {
 			// Univis Server ist nicht erreichbar
@@ -302,7 +304,7 @@ if(!($this->optionen['univis_id']))
 
 
 		$url = $this->umlaute_ersetzen($url);
-
+	echo "\n<!-- UnivIS-Url: ".$url."-->\n";
 
 		if(!fopen($url, "r")) {
 			// Univis Server ist nicht erreichbar
@@ -334,7 +336,7 @@ $this->optionen['semester']=$this->aktuellesSemester();
 $this->optionen['semester']=$this->nextSemester();
 	$person["lehrveranstaltungen_next"] = $this->_ladeLehrveranstaltungenAlle($this->optionen['univis_id']);
 			$person["lehrveranstaltungen_next_semester"]= $this->optionen['semester'];
-
+$person['@attributes']['key']=$this->optionen['personkey'];
 		return $person;
       
 	}
@@ -347,7 +349,7 @@ $this->optionen['semester']=$this->nextSemester();
 			// Suche nur Publikationen von einen bestimmten Autoren
 			$url .= "&authorid=".$authorid;
 		}
-
+	echo "\n<!-- UnivIS-Url: ".$url."-->\n";
 		if(!fopen($url, "r")) {
 			// Univis Server ist nicht erreichbar
 			return -1;
@@ -389,7 +391,7 @@ $this->optionen['semester']=$this->nextSemester();
 //echo "dozentid gesetzt";
 			$url .= "&lecturerid=".$dozentid;
 		}
-//echo $url;
+	echo "\n<!-- UnivIS-Url: ".$url."-->\n";
 		if(!fopen($url, "r")) {
 			// Univis Server ist nicht erreichbar
 			return -1;
@@ -402,13 +404,15 @@ $this->optionen['semester']=$this->nextSemester();
                     return -1;
                 } else {
 		$veranstaltungen = $array["Lecture"];
+	$this->optionen['personkey']=$array["Person"][0]['@attributes']['key'];
+
 
 		$univis_refs = $this->_get_univis_ref($array);
 
-
 		//Personen informationen einfügen
 		$this->univis_refs_ersetzen($univis_refs, $veranstaltungen);
-		return $veranstaltungen;
+//print("<pre>");print_r($veranstaltungen);print("</pre>");
+	return $veranstaltungen;
                 }
 
 	}
@@ -432,7 +436,7 @@ $this->optionen['semester']=$this->nextSemester();
 		if($this->optionen["id"]) {
 			$url .= "&id=".$this->toNumber($this->optionen["id"]);
 		}
-
+	echo "\n<!-- UnivIS-Url: ".$url."-->\n";
 		if(!fopen($url, "r")) {
 			// Univis Server ist nicht erreichbar
 			return -1;
@@ -502,20 +506,18 @@ $this->optionen['semester']=$this->nextSemester();
 	}
 
 	// Ersetzt die Referenzen von Univis durch den jeweilig dazugehoerigen Datensatz.
-	private function univis_refs_ersetzen($refs, $arr) {
-		$search_results = array();
+	private function univis_refs_ersetzen($refs, &$arr) {
 		$search_key = "UnivISRef";
 
 		foreach ($arr as &$child) {
 			if(is_array($child) && array_key_exists($search_key, $child)) {
-				$child = $refs[$child[$search_key][0]["key"]];
+				$child = $refs[$child[$search_key][0]['key']];
 			}
-
+//Maybe here an elseif?
 			if(is_array($child)) {
 				$this->univis_refs_ersetzen($refs, $child);
 			}
 		}
-		return $search_results;
 	}
 
 	private function _get_univis_ref($arr) {
