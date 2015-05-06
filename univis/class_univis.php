@@ -384,11 +384,9 @@ $person['@attributes']['key']=$this->optionen['personkey'];
 
 	private function _ladeLehrveranstaltungenAlle($dozentid = NULL) {
 		// Hole Daten von Univis
-//echo $dozentid;
 		$url = "http://univis.uni-erlangen.de/prg?search=lectures&department=".$this->optionen["UnivISOrgNr"]."&show=xml&sem=".$this->optionen["semester"];//$this->aktuellesSemester();
 
 		if($dozentid) {
-//echo "dozentid gesetzt";
 			$url .= "&lecturerid=".$dozentid;
 		}
 	echo "\n<!-- UnivIS-Url: ".$url."-->\n";

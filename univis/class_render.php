@@ -537,24 +537,19 @@ switch ($group['name']) {
 			if($publikationen) $person["publikationen"] = $publikationen;
 			else unset($person["publikationen"]);
 
-//echo "TEST";
-//print_r($person);
-			// Lade Lehrveranstaltungen
-			$lehrveranstaltungen = $this->_bearbeiteLehrveranstaltungenAlle($person["lehrveranstaltungen"]);
-			$lehrveranstaltungen_next = $this->_bearbeiteLehrveranstaltungenAlle($person["lehrveranstaltungen_next"]);
+			if ($this->optionen["Personenanzeige_Lehrveranstaltungen"]) {
+				// Lade Lehrveranstaltungen
+				$lehrveranstaltungen = $this->_bearbeiteLehrveranstaltungenAlle($person["lehrveranstaltungen"],$person['@attributes']['key']);
+				$lehrveranstaltungen_next = $this->_bearbeiteLehrveranstaltungenAlle($person["lehrveranstaltungen_next"],$person['@attributes']['key']);
 
-			if($lehrveranstaltungen)$person["lehrveranstaltungen"] = $lehrveranstaltungen;
-			else unset($person["lehrveranstaltungen"]);
-			if($lehrveranstaltungen_next )$person["lehrveranstaltungen_next"] = $lehrveranstaltungen_next ;
-			else unset($person["lehrveranstaltungen_next"]);
-
-
-				//		$user = get_user_by('slug', $person["lastname"]);
+				if($lehrveranstaltungen)$person["lehrveranstaltungen"] = $lehrveranstaltungen;
+				else unset($person["lehrveranstaltungen"]);
+				if($lehrveranstaltungen_next )$person["lehrveranstaltungen_next"] = $lehrveranstaltungen_next ;
+				else unset($person["lehrveranstaltungen_next"]);
+			}
 	
-		$person["pictureurl"]=get_wp_user_avatar_src($this->optionen['wpuserid'],'large');
-
-$person=$this->person_format_convert($person);
-
+			$person["pictureurl"]=get_wp_user_avatar_src($this->optionen['wpuserid'],'large');
+			$person=$this->person_format_convert($person);
 
 			return array("person" =>$person);
 		}
@@ -563,9 +558,10 @@ $person=$this->person_format_convert($person);
 	private function _bearbeiteMitarbeiterLehre($person) {
 		if(!empty($person)) {
 			// Lade Lehrveranstaltungen
-			$lehrveranstaltungen = $this->_bearbeiteLehrveranstaltungenAlle($person["lehrveranstaltungen"]);
 
-			$lehrveranstaltungen_next = $this->_bearbeiteLehrveranstaltungenAlle($person["lehrveranstaltungen_next"]);
+			$lehrveranstaltungen = $this->_bearbeiteLehrveranstaltungenAlle($person["lehrveranstaltungen"],$this->optionen['univis_id']);
+
+			$lehrveranstaltungen_next = $this->_bearbeiteLehrveranstaltungenAlle($person["lehrveranstaltungen_next"],$this->optionen['univis_id']);
 
 			if($lehrveranstaltungen)$person["lehrveranstaltungen"] = $lehrveranstaltungen;
 			else unset($person["lehrveranstaltungen"]);
@@ -574,14 +570,14 @@ $person=$this->person_format_convert($person);
 
 		//Lokalisierung
 		if ($person['lehrveranstaltungen_semester']{4}==='s')
-		{$person["lehrveranstaltungen_semester"]="[:de]Sommersemester[:en]Summer Term[:] ".substr($person['lehrveranstaltungen_semester'],0,-1);
+		{$person["lehrveranstaltungen_semester"]="[:de]Sommersemester[:en]Summer term[:] ".substr($person['lehrveranstaltungen_semester'],0,-1);
 		}else{
-		$person["lehrveranstaltungen_semester"]="[:de]Wintersemester[:en]Winter Term[:] ".substr($person['lehrveranstaltungen_semester'],0,-1);
+		$person["lehrveranstaltungen_semester"]="[:de]Wintersemester[:en]Winter term[:] ".substr($person['lehrveranstaltungen_semester'],0,-1);
 		}
 		if ($person['lehrveranstaltungen_next_semester']{4}==='s')
-		{$person["lehrveranstaltungen_next_semester"]="[:de]Sommersemester[:en]Summer Term[:] ".substr($person['lehrveranstaltungen_next_semester'],0,-1);
+		{$person["lehrveranstaltungen_next_semester"]="[:de]Sommersemester[:en]Summer term[:] ".substr($person['lehrveranstaltungen_next_semester'],0,-1);
 		}else{
-		$person["lehrveranstaltungen_next_semester"]="[:de]Wintersemester[:en]Winter Term[:] ".substr($person['lehrveranstaltungen_next_semester'],0,-1);
+		$person["lehrveranstaltungen_next_semester"]="[:de]Wintersemester[:en]Winter term[:] ".substr($person['lehrveranstaltungen_next_semester'],0,-1);
 		}
 			return $person;
 		}
@@ -633,32 +629,61 @@ $person=$this->person_format_convert($person);
 		return array( "years" => $publications, "optionen" => $this->optionen);
 	}
 
-	private function _bearbeiteLehrveranstaltungenAlle($veranstaltungen) {
+	private function _bearbeiteLehrveranstaltungenAlle($veranstaltungen,$person_id=NULL) {
+//echo "test";
 
 		if(!is_array($veranstaltungen)){return NULL;}
-
+//echo $person_key;
 //		$this->_rename_key("type", $veranstaltungen, univisDicts::$lecturetypen);//use always short
 		$this->_rename_key("type", $veranstaltungen, univisDicts::$lecturetypen_short);
 
 			$DelCoursesOfLectures= array();
 
-			foreach($veranstaltungen as $i =>$veranstaltung){
-						// Einzelne Veranstaltung bearbeiten
 
-					if(isset($veranstaltung[courses]))
-					{$DelCoursesOfLectures[]=$veranstaltung[name];}
-					else
-					{	
-						if(in_array($veranstaltung[name],$DelCoursesOfLectures))
-						{
-							//echo "<br>loesche ".$veranstaltung[name];
-							unset($veranstaltungen[$i]);
+	foreach($veranstaltungen as $i =>$veranstaltung){//Loeschliste anlegen und Fremdveranstaltungen loeschen
+
+	//Alle Dozenten Dieser Veranstaltung auslesen:
+	foreach($veranstaltung['dozs'][0]['doz'] as $i =>$dozent){
+		$Dozenten_IDs[$veranstaltung['@attributes']['key']][]=$dozent['id'];
+		}
+
+//echo "<pre>";print_r($Dozenten_IDs);echo "</pre>";
+	if(isset($veranstaltung[courses])){		
+		//Kursdozenten ergänzen:
+			foreach($veranstaltung['courses']['0']['course'] as $coursei=>$course){
+						foreach($course['dozs'][0]['doz'] as $i =>$dozent){
+								$Dozenten_IDs[$veranstaltung['@attributes']['key']][]=$dozent['id'];
 						}
-						else{
-						$veranstaltungen[$i] = $this->_bearbeiteLehrveranstaltungenEinzeln($veranstaltung);
-						}
-					}
 			}
+
+		$DelCoursesOfLectures[]=$veranstaltung[name];
+		}else
+		{
+			if(in_array($person_id,$Dozenten_IDs[$veranstaltung['@attributes']['key']]))
+				{
+					$SaveMyCourses[]=$veranstaltung['@attributes']['key'];
+				}
+		}
+	}
+	
+			foreach($veranstaltungen as $i =>$veranstaltung){//doppelte loeschen 2 durchgänge nötig, hauptkurs kommt nicht immer zuerst!
+
+					if(!empty($person_id) && !in_array($person_id,$Dozenten_IDs[$veranstaltung['@attributes']['key']]))
+							{//Kurse, wo nicht Dozent-> löschen
+								unset($veranstaltungen[$i]);
+								continue;
+							}
+
+						if(in_array($veranstaltung[name],$DelCoursesOfLectures)&& !isset($veranstaltung['courses']))
+						{//Nur übersichtskurse anzeigen
+							unset($veranstaltungen[$i]);
+							continue;
+						}
+
+								$veranstaltungen[$i] = $this->_bearbeiteLehrveranstaltungenEinzeln($veranstaltung);
+						
+			}
+
 
 			//Nach type ordnen
 			$veranstaltungen = $this->_group_by("type", $veranstaltungen);
