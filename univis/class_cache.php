@@ -95,10 +95,12 @@ class univisCache {
 			// Fehler in Konifguration
 			return -1; 
 		}
-		
 		switch ($optionen["task"]) {
 			case 'mitarbeiter-alle':				return $optionen["task"]."/".$optionen["UnivISOrgNr"];
 			case 'mitarbeiter-einzeln':				return $optionen["task"]."/".$optionen["lastname"]."-".$optionen["firstname"];
+			case 'mitarbeiter-lehre':
+										if(empty($optionen["univis_id"])){return -1;}
+										return $optionen["task"]."/".$optionen["univis_id"];
 			case 'lehrveranstaltungen-alle':		return $optionen["task"]."/".$optionen["UnivISOrgNr"];
 			case 'lehrveranstaltungen-einzeln':		return $optionen["task"]."/".$optionen["id"];
 			case 'publikationen':					return $optionen["task"]."/".$optionen["UnivISOrgNr"];
