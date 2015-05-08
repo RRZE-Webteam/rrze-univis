@@ -26,8 +26,8 @@ class univisCache {
 	function __construct($optionen) {
             //self::$path = plugins_url( "cache_dir", __FILE__);
            // self::$path = dirname( plugin_basename( __FILE__ ) )."/cache_dir";
-					self::$path = plugin_dir_path( __FILE__ )."cache_dir";
-				$this->optionen = $optionen;
+		self::$path = plugin_dir_path( __FILE__ )."cache_dir";
+		$this->optionen = $optionen;
 		
 	}
 
@@ -53,9 +53,9 @@ class univisCache {
 
 	public function setzeDaten($data) {
 				$filepath = $this->filepath();
-        if(is_dir(self::$path)) {
-							file_put_contents($filepath, $data);
-       }
+        	if(is_dir(self::$path)) {
+			file_put_contents($filepath, $data);
+       		}
 	}
 
 	private function sucheDatei() {
@@ -83,11 +83,11 @@ class univisCache {
 		// Key md5 codieren
 		$key=$this->key();
 		if($key===-1)
-				{
-					return -1;
-				}else{
-				return self::$path."/".md5($key);
-			}
+		{
+			return -1;
+		}else{
+			return self::$path."/".md5($key);
+		}
 	}
 
 	private function key() {
