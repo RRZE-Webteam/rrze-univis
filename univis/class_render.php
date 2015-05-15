@@ -174,34 +174,6 @@ class univisRender {
 
 
 
-//get_user_by('email',$person['location'])
-//print_r($person['locations']['0']['location']['0']);
-$current_email=$person['locations']['0']['location']['0']['email'];
-
-
-
-if(isset($current_email))
-{
-//echo $person['firstname']."hat mail:".$current_email."<br>";
-$correspondingUser=get_user_by('email',$current_email);
-//echo $mitarbeiterID;
-
-	if(!($correspondingUser===false))
-	{
-		$person['mitarbeiterURL']=get_author_posts_url($correspondingUser->ID);
-	  $person["pictureurl"]=get_wp_user_avatar_src($correspondingUser->ID, 96);//$matches[2];
-	}
-
-}
-else
-{
-//keine Email, kein Link zu Mitarbeiter seite
-}
- if(!isset($person['pictureurl']))
-{//set standard-avatar
-	  $person["pictureurl"]=get_wp_user_avatar_src(false, 96);
-}
-
 $person=$this->person_format_convert($person);
 
 
@@ -547,8 +519,8 @@ switch ($group['name']) {
 				if($lehrveranstaltungen_next )$person["lehrveranstaltungen_next"] = $lehrveranstaltungen_next ;
 				else unset($person["lehrveranstaltungen_next"]);
 			}
-	
-			$person["pictureurl"]=get_wp_user_avatar_src($this->optionen['wpuserid'],'large');
+		 
+      
 			$person=$this->person_format_convert($person);
 
 			return array("person" =>$person);
@@ -1015,6 +987,43 @@ switch ($group['name']) {
 
 
    private function person_format_convert($person){
+   
+   $current_email=$person['locations']['0']['location']['0']['email'];
+
+    if(isset($current_email))
+    {
+    $correspondingUser=get_user_by('email',$current_email);
+   }
+
+   
+   
+   
+    switch($this->optionen['task']){
+      case 'mitarbeiter-einzeln':
+        $picwidth=150;
+        $picheight=200;
+        $UserID=$this->optionen['wpuserid'];
+        break;
+      default:
+        $UserID=$correspondingUser->ID;
+        $picwidth=96;
+        $picheight=128;
+   }      
+   //Set url to author-page
+    if(!empty($UserID))
+	    {
+		    $person['mitarbeiterURL']=get_author_posts_url($correspondingUser->ID);
+	    }
+   
+   
+      if(function_exists('get_avatar'))
+			 {
+	      $imageTag=get_avatar($UserID,'','NOLINK','',array('width'=>$picwidth,'height'=>$picheight));
+        preg_match('%<img.*?src=["\'](.*?)["\'].*?/>%i', $imageTag , $result);
+        $person["pictureurl"]=$result[1];
+       }
+   
+   
 			//		print("<pre>");print_r($person);print("</pre>");
 			if(is_array($person['locations'])){
 			foreach($person['locations'][0]['location'] as $key=>$value){

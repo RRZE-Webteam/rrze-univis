@@ -30,7 +30,20 @@
 
 				{{#location}}
 			    <ul class="kontakt">
-			    	 <span class="adr">
+			    	 	{{#email}}
+	                <li>[:de]E-Mail[:en]Mail[:]: <a class="email" href="mailto:{{email}}">{{email}}</a></li>
+	                {{/email}}
+	                {{#tel}}
+	                <li>[:de]Telefon[:en]Phone[:]: <span class="tel">{{tel}}</span></li>
+	                {{/tel}}
+	                {{#fax}}
+	                <li>Fax: <span class="fax">{{fax}}</span></li>
+	                {{/fax}}
+	                {{#office}}
+	                <li>[:de]Raum[:en]Room[:]: <span class="office">{{office}}</span></li>
+	                {{/office}}
+
+			     <span class="adr">
 				    	{{#street}}
 				        <span class="street-address">{{street}}</span><br>
 				        {{/street}}
@@ -38,19 +51,7 @@
 				        <span class="locality">{{ort}}</span>
 				        {{/ort}}
 				    </span>
-			    	{{#email}}
-	                <li>E-Mail: <a class="email" href="mailto:{{email}}">{{email}}</a></li>
-	                {{/email}}
-	                {{#tel}}
-	                <li>Telefon: <span class="tel">{{tel}}</span></li>
-	                {{/tel}}
-	                {{#fax}}
-	                <li>Fax: <span class="fax">{{fax}}</span></li>
-	                {{/fax}}
-	                {{#office}}
-	                <li>Raum: <span class="office">{{office}}</span></li>
-	                {{/office}}
-			    </ul>
+				    			    </ul>
 			    {{/location}}
 		    </address>
 			{{/locations}}
