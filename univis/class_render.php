@@ -602,28 +602,31 @@ switch ($group['name']) {
 	}
 
 	private function _bearbeiteLehrveranstaltungenAlle($veranstaltungen,$person_id=NULL) {
-//echo "test";
+
 
 		if(!is_array($veranstaltungen)){return NULL;}
-//echo $person_key;
+
 //		$this->_rename_key("type", $veranstaltungen, univisDicts::$lecturetypen);//use always short
 		$this->_rename_key("type", $veranstaltungen, univisDicts::$lecturetypen_short);
 
 			$DelCoursesOfLectures= array();
 
 
-	foreach($veranstaltungen as $i =>$veranstaltung){//Loeschliste anlegen und Fremdveranstaltungen loeschen
+	foreach($veranstaltungen as $k =>$veranstaltung){//Loeschliste anlegen und Fremdveranstaltungen loeschen
 
 	//Alle Dozenten Dieser Veranstaltung auslesen:
 	foreach($veranstaltung['dozs'][0]['doz'] as $i =>$dozent){
 		$Dozenten_IDs[$veranstaltung['@attributes']['key']][]=$dozent['id'];
+		$user= get_user_by('email',$dozent['locations'][0]['location'][0]['email']);
+		if($user)$veranstaltungen[$k]['dozs'][0]['doz'][$i]['wp_authorurl']=get_author_posts_url($user->ID);
 		}
+	
 
 //echo "<pre>";print_r($Dozenten_IDs);echo "</pre>";
 	if(isset($veranstaltung[courses])){		
 		//Kursdozenten ergänzen:
 			foreach($veranstaltung['courses']['0']['course'] as $coursei=>$course){
-						foreach($course['dozs'][0]['doz'] as $i =>$dozent){
+						foreach($course['dozs'][0]['doz'] as $j =>$dozent){
 								$Dozenten_IDs[$veranstaltung['@attributes']['key']][]=$dozent['id'];
 						}
 			}
@@ -651,14 +654,16 @@ switch ($group['name']) {
 							unset($veranstaltungen[$i]);
 							continue;
 						}
-
-								$veranstaltungen[$i] = $this->_bearbeiteLehrveranstaltungenEinzeln($veranstaltung);
+						//echo "<pre>";print_r($veranstaltung['dozs'][0]['doz'][0]);	echo "</pre>";
 						
+								$veranstaltungen[$i] = $this->_bearbeiteLehrveranstaltungenEinzeln($veranstaltung);
+				
 			}
 
 
 			//Nach type ordnen
 			$veranstaltungen = $this->_group_by("type", $veranstaltungen);
+
 	return array( "veranstaltungen" => $veranstaltungen);
 	}
 
@@ -758,7 +763,7 @@ switch ($group['name']) {
 
 		//Schein
 		if($veranstaltung["schein"] && $veranstaltung["schein"] == "ja") {
-			array_push($angaben, "Schein");
+			array_push($angaben, "[:de]Schein[:en][:]");
 		}
 
 		//SWS
@@ -768,21 +773,21 @@ switch ($group['name']) {
 
 		//ECTS
 		if($veranstaltung["ects"] && $veranstaltung["ects"] == "ja") {
-			array_push($angaben, "ECTS-Studium");
+		//	array_push($angaben, "ECTS-Studium");
 		}
 
 		if($veranstaltung["ects_cred"]) {
-			array_push($angaben, "ECTS-Credits: ".$veranstaltung["ects_cred"]);
+			array_push($angaben, $veranstaltung["ects_cred"]." ECTS-Credits");
 		}
 
 		//Anfänger
 		if($veranstaltung["beginners"] && $veranstaltung["beginners"] == "ja") {
-			array_push($angaben, "für Anfänger geeignet");
+			array_push($angaben, "[:de]für Anfänger geeignet[:en]for beginners[:]");
 		}
 
 		//Gasthörer
 		if($veranstaltung["gast"] && $veranstaltung["gast"] == "ja") {
-			array_push($angaben, "für Gasthörer zugelassen");
+			array_push($angaben, "[:de]für Gasthörer zugelassen[:en]Guest students allowed[:]");
 		}
 
 		//Evaluation
@@ -793,12 +798,13 @@ switch ($group['name']) {
 		//Unterrrichtssprache
 		if ($veranstaltung["leclanguage"]) {
 			$formated = $this->_str_replace_dict(univisDicts::$leclanguages, $veranstaltung["leclanguage"]);
-			array_push($angaben, "Unterrichtssprache ".$formated);
+			array_push($angaben, "[:de]Unterrichtssprache[:en]Presentation language[:] ".$formated);
 		}
 
 		//Comment
 		if($veranstaltung["comment"]) {
-			array_push($angaben, $veranstaltung["comment"]);
+		$tmp=str_replace('Mündliche Prüfung','[:de]Mündliche Prüfung[:en]Oral exam[:]',$veranstaltung["comment"]);
+			array_push($angaben, $tmp);
 		}
 
 		$veranstaltung["angaben"] = implode(", ", $angaben);
@@ -891,9 +897,10 @@ switch ($group['name']) {
 	}
 
 	private function _str_replace_dict($dict, $str) {
+    if(is_array($str)) return $str;
 		foreach ($dict as $key => $value) {
-			$str = str_replace($key, $value, $str);
-		}
+		  if ($key===$str){return $value;}
+    }
 		return $str;
 	}
 

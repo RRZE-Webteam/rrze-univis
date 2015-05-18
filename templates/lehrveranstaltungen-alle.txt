@@ -1,19 +1,79 @@
 {{#veranstaltungen}}
+<script type="text/javascript">
+function toggle(control){
+    var elem = document.getElementById(control);
+    if(elem.style.display == "none"){elem.style.display = "block";}else{elem.style.display = "none";}
+    }
+</script>
+
 	<h2>{{title}}</h2>
 	<ul>
 		{{#data}}
 		<li>
-			<h3><a href="http://univis.uni-erlangen.de/prg?search=lectures&department=100206{{#Optionen}}&sem={{semester}}{{/Optionen}}&id={{id}}&show=llong" target="_parent">
+			<h3><a href="javascript:toggle('{{id}}')">
 		{{#ects_name}}[:de]{{name}}[:en]{{ects_name}}[:]{{/ects_name}}{{^ects_name}}{{name}}{{/ects_name}}</a></h3>
-			<!--<ul>
-			{{#terms}}
-				{{#term}}
-					<li>{{date}} {{starttime}}-{{endtime}} Uhr, {{room_short}}{{#exclude}} (außer {{exclude}}){{/exclude}}</li>
-				{{/term}}
-				<br/>
-			{{/terms}}
-			</ul>-->
-	
+		<div id={{id}} style="display:none">
+
+{{#dozs}}
+		<!--<h3>[:de]Dozent/in[:en]Lecturer[:]</h3>-->
+		{{#doz}}<h6>
+		{{#wp_authorurl}}<a href="{{wp_authorurl}}">{{/wp_authorurl}}{{title}} {{firstname}} {{lastname}}
+		{{#wp_authorurl}}</a>{{/wp_authorurl}}</h6>
+		{{/doz}}
+	{{/dozs}}
+
+{{#angaben}}
+<!--<h3>Angaben</h3>-->
+	<p>
+	{{angaben}}<br>
+	</p>
+{{/angaben}}
+
+	{{#terms}}
+	<h4>[:de]Zeit und Ort[:en]Time and room informations[:]</h4>
+	<ul style="class:timeroom">
+		{{#term}}
+			<li>{{date}} {{starttime}}-{{endtime}}, {{room_short}}{{#exclude}} ([:de]außer[:en]except[:] {{exclude}}){{/exclude}}</li>
+		{{/term}}
+		<br/>
+	</ul>
+	{{/terms}}
+
+	{{#organizational}}
+	<h4>Voraussetzungen / Organisatorisches</h4>
+	<p>
+	{{{organizational}}}
+	</p>
+	{{/organizational}}
+
+	{{#summary}}
+	<h4>[:de]Inhalt[:en]Content[:]</h4>
+	<p>
+	[:de]{{{summary}}}[:en]{{{ects_summary}}}[:]
+	</p>
+	{{/summary}}
+
+
+
+	{{#ects_literature}}
+		<h5>Literature:</h5>
+		<p>{{ects_literature}}</p>
+	{{/ects_literature}}
+
+	{{#zusatzinfos}}
+	<h4>[:de]Zus&auml;tzliche Informationen[:en]Additional Informations[:]</h4>
+	<p>
+		{{#keywords}}
+			[:de]Schlagw&ouml;rter[:en]Keywords[:]: {{keywords}} <br/>
+		{{/keywords}}
+
+		{{#turnout}}
+			[:de]Erwartete Teilnehmerzahl[:en]Students expected[:]: {{turnout}} {{#maxturnout}}(max. {{maxturnout}}){{/maxturnout}}<br/>
+		{{/turnout}}
+	</p>
+	{{/zusatzinfos}}
+<a href="http://univis.uni-erlangen.de/prg?search=lectures&department=100206{{#Optionen}}&sem={{semester}}{{/Optionen}}&id={{id}}&show=llong" target="_parent">[:de]Weitere Informationen[:en]Full Information[:]</a>
+	      </div>
 		</li>
 		{{/data}}
 	</ul>

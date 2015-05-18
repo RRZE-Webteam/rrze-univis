@@ -89,7 +89,8 @@
 */
 
 		public static $leclanguages = array(
-		    "D" => "Deutsch"
+		    "D" => "deutsch",
+		    "E" => "english"
 		);
 
 		public static $pubtypes = array(
