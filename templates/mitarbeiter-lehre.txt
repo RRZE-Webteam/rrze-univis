@@ -163,7 +163,7 @@ function toggle(control){
 	{{/zusatzinfos}}
 	
 	{{#courses}}
-<h3>[:de]Kurse[:en]Courses</h3>
+<h3>[:de]Kurse[:en]Courses[:]</h3>
 <table style="class:courses; width:250px">
 {{#course}}
 <tr>

@@ -71,7 +71,7 @@ function toggle(control){
 	</p>
 		{{/zusatzinfos}}
 {{#courses}}
-<h3>[:de]Kurse[:en]Courses</h3>
+<h3>[:de]Kurse[:en]Courses[:]</h3>
 <table style="class:courses; width:250px">
 {{#course}}
 <tr>
@@ -96,6 +96,7 @@ function toggle(control){
 {{/course}}
 </table>
 {{/courses}}
+
 
 <a href="http://univis.uni-erlangen.de/prg?search=lectures&department=100206{{#Optionen}}&sem={{semester}}{{/Optionen}}&id={{id}}&show=llong" target="_parent">[:de]Weitere Informationen[:en]Full Information[:]</a>
 
