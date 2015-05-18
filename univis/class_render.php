@@ -542,14 +542,14 @@ switch ($group['name']) {
 
 		//Lokalisierung
 		if ($person['lehrveranstaltungen_semester']{4}==='s')
-		{$person["lehrveranstaltungen_semester"]="[:de]Sommersemester[:en]Summer term[:] ".substr($person['lehrveranstaltungen_semester'],0,-1);
+		{$person["lehrveranstaltungen_semester_human"]="[:de]Sommersemester[:en]Summer term[:] ".substr($person['lehrveranstaltungen_semester'],0,-1);
 		}else{
-		$person["lehrveranstaltungen_semester"]="[:de]Wintersemester[:en]Winter term[:] ".substr($person['lehrveranstaltungen_semester'],0,-1);
+		$person["lehrveranstaltungen_semester_human"]="[:de]Wintersemester[:en]Winter term[:] ".substr($person['lehrveranstaltungen_semester'],0,-1);
 		}
-		if ($person['lehrveranstaltungen_next_semester']{4}==='s')
-		{$person["lehrveranstaltungen_next_semester"]="[:de]Sommersemester[:en]Summer term[:] ".substr($person['lehrveranstaltungen_next_semester'],0,-1);
+		if ($person['lehrveranstaltungen_next_semester_human']{4}==='s')
+		{$person["lehrveranstaltungen_next_semester_human"]="[:de]Sommersemester[:en]Summer term[:] ".substr($person['lehrveranstaltungen_next_semester'],0,-1);
 		}else{
-		$person["lehrveranstaltungen_next_semester"]="[:de]Wintersemester[:en]Winter term[:] ".substr($person['lehrveranstaltungen_next_semester'],0,-1);
+		$person["lehrveranstaltungen_next_semester_human"]="[:de]Wintersemester[:en]Winter term[:] ".substr($person['lehrveranstaltungen_next_semester'],0,-1);
 		}
 			return $person;
 		}
@@ -617,8 +617,8 @@ switch ($group['name']) {
 	//Alle Dozenten Dieser Veranstaltung auslesen:
 	foreach($veranstaltung['dozs'][0]['doz'] as $i =>$dozent){
 		$Dozenten_IDs[$veranstaltung['@attributes']['key']][]=$dozent['id'];
-		$user= get_user_by('email',$dozent['locations'][0]['location'][0]['email']);
-		if($user)$veranstaltungen[$k]['dozs'][0]['doz'][$i]['wp_authorurl']=get_author_posts_url($user->ID);
+		//$user= get_user_by('email',$dozent['locations'][0]['location'][0]['email']);
+		//if($user)$veranstaltungen[$k]['dozs'][0]['doz'][$i]['wp_authorurl']=get_author_posts_url($user->ID);
 		}
 	
 
@@ -878,6 +878,84 @@ switch ($group['name']) {
 				}
 			}
 		}//end Zeit und Ort
+		
+		//Schleife über courses
+		if(is_array($veranstaltung['courses']['0']['course'])){
+		foreach($veranstaltung['courses']['0']['course']  as $idx=>$course)
+		{
+		//echo "<br>".$course['name'];
+		
+		//Begin Zeit und Ort fuer Courses
+		for ($_terms=0; $_terms < count($course["terms"]); $_terms++) {
+			for ($_term=0; $_term < count($course["terms"][$_terms]["term"]); $_term++) {
+				$lecture = &$veranstaltung['courses']['0']['course'][$idx]["terms"][$_terms]["term"][$_term];
+
+				$date = array();
+
+				$repeat = explode(" ", $lecture["repeat"]);
+				if($repeat) {
+					$dict = array(
+						"w1" => "",
+						"w2" => "Alle zwei Wochen",
+						"w2" => "Alle drei Wochen",
+						"w2" => "Alle vier Wochen",
+						"s1" => "Einzeltermin am"
+					);
+
+					if(array_key_exists($repeat[0], $dict))
+						array_push($date, $dict[$repeat[0]]);
+
+					if($repeat[0] == "s1") {
+						$formated = date("d.m.Y", strtotime($lecture["startdate"]));
+						array_push($date, $formated);
+					}
+
+					if(count($repeat)>0) {
+						$days_short = array(
+							1 => "Mo",
+							2 => "Di",
+							3 => "Mi",
+							4 => "Do",
+							5 => "Fr",
+							6 => "Sa",
+							7 => "So"
+						);
+
+						$days_long = array(
+							1 => "Montag",
+							2 => "Dienstag",
+							3 => "Mittwoch",
+							4 => "Donnerstag",
+							5 => "Freitag",
+							6 => "Samstag",
+							7 => "Sonntag"
+						);
+
+						array_push($date, $days_short[$repeat[1]]);
+
+					}
+				}
+
+				$lecture["date"] = implode(" ", $date);
+
+				$lecture["room_short"] = $lecture["room"][0]["short"];
+
+				if($lecture["exclude"]) {
+					$dates = explode(",", $lecture["exclude"]);
+
+					for ($i=0; $i < count($dates); $i++) {
+						if($dates[$i]=="vac")
+							unset($dates[$i]);
+						else
+							$dates[$i] = date("d.m.Y", strtotime($dates[$i]));
+					}
+
+					$lecture["exclude"] = implode(", ", $dates);
+				}
+			}
+		}//end Zeit und Ort fuer Courses
+				
+		}}//Ende Schleife über Courses
 
 
 		//Summary
@@ -1019,7 +1097,7 @@ switch ($group['name']) {
    //Set url to author-page
     if(!empty($UserID))
 	    {
-		    $person['mitarbeiterURL']=get_author_posts_url($correspondingUser->ID);
+		    $person['wp_authorurl']=get_author_posts_url($correspondingUser->ID);
 	    }
    
    

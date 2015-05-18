@@ -5,20 +5,88 @@
 .clear {clear:both}
 
     </style>
+    <script type="text/javascript">
+function toggle(control){
+    var elem = document.getElementById(control);
+    if(elem.style.display == "none"){elem.style.display = "block";}else{elem.style.display = "none";}
+    }
+</script>
+
 
 <div style="clear:both"></div>
 
 <div id="lehrveranstaltungen">
 		<!-- Lehrveranstaltungen -->
 		{{#lehrveranstaltungen}}
-			<h2 class="active">[:de]Lehrveranstaltungen[:en]Lectures[:] {{lehrveranstaltungen_semester}}</h3>
+			<h2 class="active">[:de]Lehrveranstaltungen[:en]Lectures[:] {{lehrveranstaltungen_semester_human}}</h3>
 			<div>
 				<ul>
 					{{#veranstaltungen}}<!--wäre noch gruppiert nach Typ-->
 						{{#data}}
-								<li>	
-								<a href="http://univis.uni-erlangen.de/prg?search=lectures&department=100206{{#Optionen}}&sem={{lehrveranstaltungen_semester}}{{/Optionen}}&id={{id}}&show=llong" target="_parent"> {{name}}</a>
-						</li>	
+										<li>
+			<h3><a href="javascript:toggle('{{id}}')">
+		{{#ects_name}}[:de]{{name}}[:en]{{ects_name}}[:]{{/ects_name}}{{^ects_name}}{{name}}{{/ects_name}}</a></h3>
+		<div id={{id}} style="display:none">
+
+{{#dozs}}
+		<!--<h3>[:de]Dozent/in[:en]Lecturer[:]</h3>-->
+		{{#doz}}<h6>
+		{{#wp_authorurl}}<a href="{{wp_authorurl}}">{{/wp_authorurl}}{{title}} {{firstname}} {{lastname}}
+		{{#wp_authorurl}}</a>{{/wp_authorurl}}</h6>
+		{{/doz}}
+	{{/dozs}}
+
+{{#angaben}}
+<!--<h3>Angaben</h3>-->
+	<p>
+	{{angaben}}<br>
+	</p>
+{{/angaben}}
+
+	{{#terms}}
+	<h4>[:de]Zeit und Ort[:en]Time and room informations[:]</h4>
+	<ul style="class:timeroom">
+		{{#term}}
+			<li>{{date}} {{starttime}}-{{endtime}}, {{room_short}}{{#exclude}} ([:de]außer[:en]except[:] {{exclude}}){{/exclude}}</li>
+		{{/term}}
+		<br/>
+	</ul>
+	{{/terms}}
+
+	{{#organizational}}
+	<h4>Voraussetzungen / Organisatorisches</h4>
+	<p>
+	{{{organizational}}}
+	</p>
+	{{/organizational}}
+
+	{{#summary}}
+	<h4>[:de]Inhalt[:en]Content[:]</h4>
+	<p>
+	[:de]{{{summary}}}[:en]{{{ects_summary}}}[:]
+	</p>
+	{{/summary}}
+
+	{{#ects_literature}}
+		<h5>Literature:</h5>
+		<p>{{ects_literature}}</p>
+	{{/ects_literature}}
+
+	{{#zusatzinfos}}
+	<h4>[:de]Zus&auml;tzliche Informationen[:en]Additional Informations[:]</h4>
+	<p>
+		{{#keywords}}
+			[:de]Schlagw&ouml;rter[:en]Keywords[:]: {{keywords}} <br/>
+		{{/keywords}}
+
+		{{#turnout}}
+			[:de]Erwartete Teilnehmerzahl[:en]Students expected[:]: {{turnout}} {{#maxturnout}}(max. {{maxturnout}}){{/maxturnout}}<br/>
+		{{/turnout}}
+	</p>
+	{{/zusatzinfos}}
+<a href="http://univis.uni-erlangen.de/prg?search=lectures&department=100206&sem={{lehrveranstaltungen_semester}}&id={{id}}&show=llong" target="_parent">[:de]Weitere Informationen[:en]Full Information[:]</a>
+	      </div>
+		</li>
 								{{/data}}
 						{{/veranstaltungen}}
 				</ul>
@@ -27,14 +95,103 @@
 
 
 	{{#lehrveranstaltungen_next}}
-			<h2 class="active">[:de]Lehrveranstaltungen[:en]Lectures[:] {{lehrveranstaltungen_next_semester}}</h3>
+			<h2 class="active">[:de]Lehrveranstaltungen[:en]Lectures[:] {{lehrveranstaltungen_next_semester_human}}</h3>
 			<div>
 				<ul>
 						{{#veranstaltungen}}
 								{{#data}}
-											<li>
-									<a href="http://univis.uni-erlangen.de/prg?search=lectures&department=100206{{#Optionen}}&sem={{lehrveranstaltungen_next_semester}}{{/Optionen}}&id={{id}}&show=llong" target="_parent"> {{name}}</a>
-									</li>
+		<li>
+			<h3><a href="javascript:toggle('{{id}}')">
+		{{#ects_name}}[:de]{{name}}[:en]{{ects_name}}[:]{{/ects_name}}{{^ects_name}}{{name}}{{/ects_name}}</a></h3>
+		<div id={{id}} style="display:none">
+
+{{#dozs}}
+		<!--<h3>[:de]Dozent/in[:en]Lecturer[:]</h3>-->
+		{{#doz}}<h6>
+		{{#wp_authorurl}}<a href="{{wp_authorurl}}">{{/wp_authorurl}}{{title}} {{firstname}} {{lastname}}
+		{{#wp_authorurl}}</a>{{/wp_authorurl}}</h6>
+		{{/doz}}
+	{{/dozs}}
+
+{{#angaben}}
+<!--<h3>Angaben</h3>-->
+	<p>
+	{{angaben}}<br>
+	</p>
+{{/angaben}}
+
+	{{#terms}}
+	<h4>[:de]Zeit und Ort[:en]Time and room informations[:]</h4>
+	<ul style="class:timeroom">
+		{{#term}}
+			<li>{{date}} {{starttime}}-{{endtime}}, {{room_short}}{{#exclude}} ([:de]außer[:en]except[:] {{exclude}}){{/exclude}}</li>
+		{{/term}}
+		<br/>
+	</ul>
+	{{/terms}}
+
+	{{#organizational}}
+	<h4>Voraussetzungen / Organisatorisches</h4>
+	<p>
+	{{{organizational}}}
+	</p>
+	{{/organizational}}
+
+	{{#summary}}
+	<h4>[:de]Inhalt[:en]Content[:]</h4>
+	<p>
+	[:de]{{{summary}}}[:en]{{{ects_summary}}}[:]
+	</p>
+	{{/summary}}
+
+	{{#ects_literature}}
+		<h5>Literature:</h5>
+		<p>{{ects_literature}}</p>
+	{{/ects_literature}}
+
+	{{#zusatzinfos}}
+	<h4>[:de]Zus&auml;tzliche Informationen[:en]Additional Informations[:]</h4>
+	<p>
+		{{#keywords}}
+			[:de]Schlagw&ouml;rter[:en]Keywords[:]: {{keywords}} <br/>
+		{{/keywords}}
+
+		{{#turnout}}
+			[:de]Erwartete Teilnehmerzahl[:en]Students expected[:]: {{turnout}} {{#maxturnout}}(max. {{maxturnout}}){{/maxturnout}}<br/>
+		{{/turnout}}
+	</p>
+	{{/zusatzinfos}}
+	
+	{{#courses}}
+<h3>[:de]Kurse[:en]Courses</h3>
+<table style="class:courses; width:250px">
+{{#course}}
+<tr>
+	{{#terms}}
+	<td style="border:0">
+		{{#term}}
+			{{date}} {{starttime}}-{{endtime}} {{room_short}}</br>
+		{{/term}}
+		</td>
+	{{/terms}}
+	<td style="border:0">
+		{{#dozs}}
+		<ul>
+		{{#doz}}<li><em>
+		{{#wp_authorurl}}<a href="{{wp_authorurl}}">{{/wp_authorurl}}{{firstname}} {{lastname}}
+		{{#wp_authorurl}}</a>{{/wp_authorurl}}</em></li>
+		{{/doz}}
+		</ul>
+	{{/dozs}}
+	</td>
+</tr>
+{{/course}}
+</table>
+{{/courses}}
+	
+<a href="http://univis.uni-erlangen.de/prg?search=lectures&department=100206&sem={{lehrveranstaltungen_next_semester}}&id={{id}}&show=llong" target="_parent">[:de]Weitere Informationen[:en]Full Information[:]</a>
+	      </div>
+		</li>
 								{{/data}}
 					{{/veranstaltungen}}
 				</ul>

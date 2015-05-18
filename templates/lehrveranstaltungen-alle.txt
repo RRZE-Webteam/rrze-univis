@@ -53,8 +53,6 @@ function toggle(control){
 	</p>
 	{{/summary}}
 
-
-
 	{{#ects_literature}}
 		<h5>Literature:</h5>
 		<p>{{ects_literature}}</p>
@@ -71,8 +69,36 @@ function toggle(control){
 			[:de]Erwartete Teilnehmerzahl[:en]Students expected[:]: {{turnout}} {{#maxturnout}}(max. {{maxturnout}}){{/maxturnout}}<br/>
 		{{/turnout}}
 	</p>
-	{{/zusatzinfos}}
+		{{/zusatzinfos}}
+{{#courses}}
+<h3>[:de]Kurse[:en]Courses</h3>
+<table style="class:courses; width:250px">
+{{#course}}
+<tr>
+	{{#terms}}
+	<td style="border:0">
+		{{#term}}
+			{{date}} {{starttime}}-{{endtime}} {{room_short}}</br>
+		{{/term}}
+		</td>
+	{{/terms}}
+	<td style="border:0">
+		{{#dozs}}
+		<ul>
+		{{#doz}}<li><em>
+		{{#wp_authorurl}}<a href="{{wp_authorurl}}">{{/wp_authorurl}}{{firstname}} {{lastname}}
+		{{#wp_authorurl}}</a>{{/wp_authorurl}}</em></li>
+		{{/doz}}
+		</ul>
+	{{/dozs}}
+	</td>
+</tr>
+{{/course}}
+</table>
+{{/courses}}
+
 <a href="http://univis.uni-erlangen.de/prg?search=lectures&department=100206{{#Optionen}}&sem={{semester}}{{/Optionen}}&id={{id}}&show=llong" target="_parent">[:de]Weitere Informationen[:en]Full Information[:]</a>
+
 	      </div>
 		</li>
 		{{/data}}

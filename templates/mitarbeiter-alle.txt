@@ -16,7 +16,7 @@
 <td>{{#pictureurl}}<img src="{{pictureurl}}">{{/pictureurl}}</td>
 <td>
 {{#leaderfunction}}<b>{{leaderfunction}}</b></br>{{/leaderfunction}} 
-{{#mitarbeiterURL}}<a href={{mitarbeiterURL}}>{{/mitarbeiterURL}}
+{{#wp_authorurl}}<a href={{wp_authorurl}}>{{/wp_authorurl}}
 {{#title}}{{title}}&nbsp;{{/title}}{{firstname}} {{lastname}}{{#atitle}}, {{atitle}}{{/atitle}}{{#mitarbeiterURL}}</a>{{/mitarbeiterURL}}
 {{#specialfunction}}</br>({{specialfunction}}){{/specialfunction}} 
 </td>

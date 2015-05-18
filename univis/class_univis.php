@@ -264,11 +264,11 @@ class UNIVIS {
 
 		if ($this->optionen["Personenanzeige_Lehrveranstaltungen"]) {
 //Erst aktuelles Semester, dann folgendes:
-$this->optionen['semester']=$this->aktuellesSemester();
+  $this->optionen['semester']=$this->aktuellesSemester();
 			$person["lehrveranstaltungen"] = $this->_ladeLehrveranstaltungenAlle($person["id"]);
 			$person["lehrveranstaltungen_semester"]= $this->optionen['semester'];
-$this->optionen['semester']=$this->nextSemester();
-	$person["lehrveranstaltungen_next"] = $this->_ladeLehrveranstaltungenAlle($person["id"]);
+  $this->optionen['semester']=$this->nextSemester();
+	    $person["lehrveranstaltungen_next"] = $this->_ladeLehrveranstaltungenAlle($person["id"]);
 			$person["lehrveranstaltungen_next_semester"]= $this->optionen['semester'];
 
 		}
@@ -506,10 +506,20 @@ $person['@attributes']['key']=$this->optionen['personkey'];
 	// Ersetzt die Referenzen von Univis durch den jeweilig dazugehoerigen Datensatz.
 	private function univis_refs_ersetzen($refs, &$arr) {
 		$search_key = "UnivISRef";
-
 		foreach ($arr as &$child) {
 			if(is_array($child) && array_key_exists($search_key, $child)) {
+        $type=$child['UnivISRef'][0]['type'];
 				$child = $refs[$child[$search_key][0]['key']];
+
+				if($type==='Person'){//name gefunden
+					$user= get_user_by('email',$child['locations'][0]['location'][0]['email']);
+		      if($user)$child['wp_authorurl']=get_author_posts_url($user->ID);
+		      }
+		  //  if($type==='Lecture'){//Course/lecture gefunden
+		  //  echo $child['name']."<br>";
+    // echo "<pre>";		    print_r($child['terms']);echo "</pre>";
+		    //}
+		     
 			}
 //Maybe here an elseif?
 			if(is_array($child)) {
