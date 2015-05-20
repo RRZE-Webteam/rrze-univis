@@ -1,20 +1,11 @@
-   <style type="text/css">
-
-      .bildlinks { float:left; width:150px;padding-right: 50px;}
-      .kontakt { float:left; }
-.clear {clear:both}
-
-    </style>
-    <script type="text/javascript">
-function toggle(control){
+<script type="text/javascript">
+  function toggle(control){
     var elem = document.getElementById(control);
     if(elem.style.display == "none"){elem.style.display = "block";}else{elem.style.display = "none";}
-    }
+  }
 </script>
 
-
 <div style="clear:both"></div>
-
 <div id="lehrveranstaltungen">
 		<!-- Lehrveranstaltungen -->
 		{{#lehrveranstaltungen}}

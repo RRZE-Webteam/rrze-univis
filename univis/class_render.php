@@ -546,7 +546,7 @@ switch ($group['name']) {
 		}else{
 		$person["lehrveranstaltungen_semester_human"]="[:de]Wintersemester[:en]Winter term[:] ".substr($person['lehrveranstaltungen_semester'],0,-1);
 		}
-		if ($person['lehrveranstaltungen_next_semester_human']{4}==='s')
+		if ($person['lehrveranstaltungen_next_semester']{4}==='s')
 		{$person["lehrveranstaltungen_next_semester_human"]="[:de]Sommersemester[:en]Summer term[:] ".substr($person['lehrveranstaltungen_next_semester'],0,-1);
 		}else{
 		$person["lehrveranstaltungen_next_semester_human"]="[:de]Wintersemester[:en]Winter term[:] ".substr($person['lehrveranstaltungen_next_semester'],0,-1);
