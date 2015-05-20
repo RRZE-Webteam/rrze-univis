@@ -12,7 +12,7 @@ function toggle(control){
 		<li>
 			<h3><a href="javascript:toggle('{{id}}')">
 		{{#ects_name}}[:de]{{name}}[:en]{{ects_name}}[:]{{/ects_name}}{{^ects_name}}{{name}}{{/ects_name}}</a></h3>
-		<div id={{id}} style="display:none">
+		<div id={{id}} style="display:none" class="lecture_detail">
 
 {{#dozs}}
 		<!--<h3>[:de]Dozent/in[:en]Lecturer[:]</h3>-->
@@ -72,11 +72,11 @@ function toggle(control){
 		{{/zusatzinfos}}
 {{#courses}}
 <h3>[:de]Kurse[:en]Courses[:]</h3>
-<table style="class:courses; width:250px">
+<table class="courses">
 {{#course}}
 <tr>
 	{{#terms}}
-	<td style="border:0">
+	<td style="border:0; width:30%;">
 		{{#term}}
 			{{date}} {{starttime}}-{{endtime}} {{room_short}}</br>
 		{{/term}}

@@ -4,8 +4,8 @@
         <h4>{{ name }}</h4>
 <table>
   <colgroup>
-   <col width="10%">
-    <col width="45%">
+   <col width="6%">
+    <col width="40%">
     <col width="30%">
     <col width="15%">
   </colgroup>
@@ -13,12 +13,12 @@
 <tr>
 <!-- <td>{{overwriteorder}}</td> -->
 <!-- {{ id }} -->
-<td>{{#pictureurl}}<img src="{{pictureurl}}">{{/pictureurl}}</td>
+<td>{{#pictureurl}}<img src="{{pictureurl}}">{{/pictureurl}}{{^pictureurl}}<div class="no_image"></div>{{/pictureurl}}</td>
 <td>
-{{#leaderfunction}}<b>{{leaderfunction}}</b></br>{{/leaderfunction}} 
+{{#leaderfunction}}<b>{{leaderfunction}}</b><br/>{{/leaderfunction}} 
 {{#wp_authorurl}}<a href={{wp_authorurl}}>{{/wp_authorurl}}
-{{#title}}{{title}}&nbsp;{{/title}}{{firstname}} {{lastname}}{{#atitle}}, {{atitle}}{{/atitle}}{{#mitarbeiterURL}}</a>{{/mitarbeiterURL}}
-{{#specialfunction}}</br>({{specialfunction}}){{/specialfunction}} 
+{{#title}}{{title}}&nbsp;{{/title}}{{firstname}} {{lastname}}{{#atitle}}, {{atitle}}{{/atitle}}{{#wp_authorurl}}</a>{{/wp_authorurl}}
+{{#specialfunction}}<br/>({{specialfunction}}){{/specialfunction}} 
 </td>
 <td><ul>
 		{{#locations}}
