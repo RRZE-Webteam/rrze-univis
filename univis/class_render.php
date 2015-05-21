@@ -96,11 +96,6 @@ class univisRender {
 			if(empty($person[$such_kategorie])) {
 				continue;
 			}
- 				 if(isset($person["atitle"])&& !isset($person["title"]))
-					{
-					$person["title"]=$person["atitle"];
-					$person["atitle"]="";
-					}
 
                         if(isset($person["title"])) {
                             $person["title-long"] = $this->_str_replace_dict(univisDicts::$acronyms, $person["title"]);
@@ -1072,6 +1067,12 @@ switch ($group['name']) {
 
 
    private function person_format_convert($person){
+   
+		if(isset($person["atitle"])&& !isset($person["title"]))
+		{
+		  $person["title"]=$person["atitle"];
+		  $person["atitle"]="";
+		}
    
    $current_email=$person['locations']['0']['location']['0']['email'];
 
