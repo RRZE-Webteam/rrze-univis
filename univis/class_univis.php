@@ -512,8 +512,10 @@ $person['@attributes']['key']=$this->optionen['personkey'];
 				$child = $refs[$child[$search_key][0]['key']];
 
 				if($type==='Person'){//name gefunden
-					$user= get_user_by('email',$child['locations'][0]['location'][0]['email']);
-		      if($user)$child['wp_authorurl']=get_author_posts_url($user->ID);
+					if(isset($child['locations'])&&isset($child['locations'][0]['location'][0]['email']))
+					{$user= get_user_by('email',$child['locations'][0]['location'][0]['email']);}
+					else{$user=false;}
+		      if($user){$child['wp_authorurl']=get_author_posts_url($user->ID);}
 		      }
 		  //  if($type==='Lecture'){//Course/lecture gefunden
 		  //  echo $child['name']."<br>";

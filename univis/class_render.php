@@ -310,8 +310,11 @@ $person['rang']= implode("|", $jobs_of_person);
 		}//ende Schleife über personen
                     foreach ($jobnamen as $gruppen_name) {
 
+                   if(isset($gruppen_dict[$gruppen_name]))
                             $gruppen_personen = $gruppen_dict[$gruppen_name];
-                                                                                    
+                            else
+                            $gruppen_personen = null;
+                                                                 
                             if(isset($gruppen_personen[0]['lastname'])){
                                 $gruppen_personen = $this->array_orderby($gruppen_personen,"overwriteorder", SORT_DESC,"lastname", SORT_ASC, "firstname", SORT_ASC);
                             }
@@ -498,11 +501,15 @@ switch ($group['name']) {
 			$person["nameurl"] = strtolower($this->umlaute_ersetzen($name));
 			$person["nameurl"] = str_replace(" ", "%20", $person["nameurl"]);
 
+
+			if(isset($person["publikationen"]))
+			{
 			// Lade Publikationen
 			$publikationen = $this->_bearbeitePublikationen($person["publikationen"]);
-
-			if($publikationen) $person["publikationen"] = $publikationen;
-			else unset($person["publikationen"]);
+			 $person["publikationen"] = $publikationen;
+			}
+			else
+			{ unset($person["publikationen"]);}
 
 			if ($this->optionen["Personenanzeige_Lehrveranstaltungen"]) {
 				// Lade Lehrveranstaltungen
@@ -618,7 +625,7 @@ switch ($group['name']) {
 	
 
 //echo "<pre>";print_r($Dozenten_IDs);echo "</pre>";
-	if(isset($veranstaltung[courses])){		
+	if(isset($veranstaltung['courses'])){		
 		//Kursdozenten ergänzen:
 			foreach($veranstaltung['courses']['0']['course'] as $coursei=>$course){
 						foreach($course['dozs'][0]['doz'] as $j =>$dozent){
@@ -626,7 +633,7 @@ switch ($group['name']) {
 						}
 			}
 
-		$DelCoursesOfLectures[]=$veranstaltung[name];
+		$DelCoursesOfLectures[]=$veranstaltung['name'];
 		}else
 		{
 			if(in_array($person_id,$Dozenten_IDs[$veranstaltung['@attributes']['key']]))
@@ -644,7 +651,7 @@ switch ($group['name']) {
 								continue;
 							}
 
-						if(in_array($veranstaltung[name],$DelCoursesOfLectures)&& !isset($veranstaltung['courses']))
+						if(in_array($veranstaltung['name'],$DelCoursesOfLectures)&& !isset($veranstaltung['courses']))
 						{//Nur übersichtskurse anzeigen
 							unset($veranstaltungen[$i]);
 							continue;
@@ -740,8 +747,9 @@ switch ($group['name']) {
 		// Dozs
 		for ($i = 0; $i<count($veranstaltung["dozs"]); $i++) {
 			for ($k = 0; $k < count($veranstaltung["dozs"][$i]["doz"]); $k++) {
-
-				$veranstaltung["dozs"][$i]["doz"][$k]["firstname_small"] = strtolower($this->umlaute_ersetzen($veranstaltung["dozs"][$i]["doz"][$k]["firstname"]));
+				if(isset($veranstaltung["dozs"][$i]["doz"][$k]["firstname"]))
+				  $veranstaltung["dozs"][$i]["doz"][$k]["firstname_small"] = strtolower($this->umlaute_ersetzen($veranstaltung["dozs"][$i]["doz"][$k]["firstname"]));
+				if(isset($veranstaltung["dozs"][$i]["doz"][$k]["lastname"]))			  
 				$veranstaltung["dozs"][$i]["doz"][$k]["lastname_small"] = strtolower($this->umlaute_ersetzen($veranstaltung["dozs"][$i]["doz"][$k]["lastname"]));
 			}
 		}
@@ -751,68 +759,70 @@ switch ($group['name']) {
 		$angaben = array();
 
 		//Typ
-		if($veranstaltung["type"]) {
+		if(isset($veranstaltung["type"])) {
 			$type = $this->_str_replace_dict(univisDicts::$lecturetypen_short, $veranstaltung["type"]);
 			array_push($angaben, $type);
 		}
 
 		//Schein
-		if($veranstaltung["schein"] && $veranstaltung["schein"] == "ja") {
+		if(isset($veranstaltung["schein"]) && $veranstaltung["schein"] == "ja") {
 			array_push($angaben, "[:de]Schein[:en][:]");
 		}
 
 		//SWS
-		if ($veranstaltung["sws"]) {
+		if (isset($veranstaltung["sws"])) {
 			array_push($angaben, $veranstaltung["sws"]." SWS");
 		}
 
 		//ECTS
-		if($veranstaltung["ects"] && $veranstaltung["ects"] == "ja") {
+		if(isset($veranstaltung["ects"])&& $veranstaltung["ects"] == "ja") {
 		//	array_push($angaben, "ECTS-Studium");
 		}
 
-		if($veranstaltung["ects_cred"]) {
+		if(isset($veranstaltung["ects_cred"])) {
 			array_push($angaben, $veranstaltung["ects_cred"]." ECTS-Credits");
 		}
 
 		//Anfänger
-		if($veranstaltung["beginners"] && $veranstaltung["beginners"] == "ja") {
+		if(isset($veranstaltung["beginners"]) && $veranstaltung["beginners"] == "ja") {
 			array_push($angaben, "[:de]für Anfänger geeignet[:en]for beginners[:]");
 		}
 
 		//Gasthörer
-		if($veranstaltung["gast"] && $veranstaltung["gast"] == "ja") {
+		if(isset($veranstaltung["gast"])&& $veranstaltung["gast"] == "ja") {
 			array_push($angaben, "[:de]für Gasthörer zugelassen[:en]Guest students allowed[:]");
 		}
 
 		//Evaluation
-		if($veranstaltung["evaluation"] && $veranstaltung["evaluation"] == "ja") {
+		if(isset($veranstaltung["evaluation"])&& $veranstaltung["evaluation"] == "ja") {
 			array_push($angaben, "Evaluation");
 		}
 
 		//Unterrrichtssprache
-		if ($veranstaltung["leclanguage"]) {
+		if (isset($veranstaltung["leclanguage"])) {
 			$formated = $this->_str_replace_dict(univisDicts::$leclanguages, $veranstaltung["leclanguage"]);
 			array_push($angaben, "[:de]Unterrichtssprache[:en]Presentation language[:] ".$formated);
 		}
 
 		//Comment
-		if($veranstaltung["comment"]) {
+		if(isset($veranstaltung["comment"])) {
 		$tmp=str_replace('Mündliche Prüfung','[:de]Mündliche Prüfung[:en]Oral exam[:]',$veranstaltung["comment"]);
 			array_push($angaben, $tmp);
 		}
-
-		$veranstaltung["angaben"] = implode(", ", $angaben);
+    if(isset($angaben)){$veranstaltung["angaben"] = implode(", ", $angaben);}
 
 		//Begin Zeit und Ort
+		if(isset($veranstaltung["terms"])&&is_array($veranstaltung["terms"])){
 		for ($_terms=0; $_terms < count($veranstaltung["terms"]); $_terms++) {
 			for ($_term=0; $_term < count($veranstaltung["terms"][$_terms]["term"]); $_term++) {
 				$lecture = &$veranstaltung["terms"][$_terms]["term"][$_term];
 
 				$date = array();
-
+				
+      if(isset($lecture["repeat"])){
 				$repeat = explode(" ", $lecture["repeat"]);
-				if($repeat) {
+				}
+				if(isset($repeat)) {
 					$dict = array(
 						"w1" => "",
 						"w2" => "Alle zwei Wochen",
@@ -850,7 +860,7 @@ switch ($group['name']) {
 							7 => "Sonntag"
 						);
 
-						array_push($date, $days_short[$repeat[1]]);
+						if(isset($repeat[1])&&isset($days_short[$repeat[1]])){array_push($date, $days_short[$repeat[1]]);}
 
 					}
 				}
@@ -859,7 +869,7 @@ switch ($group['name']) {
 
 				$lecture["room_short"] = $lecture["room"][0]["short"];
 
-				if($lecture["exclude"]) {
+				if(isset($lecture["exclude"])) {
 					$dates = explode(",", $lecture["exclude"]);
 
 					for ($i=0; $i < count($dates); $i++) {
@@ -872,23 +882,26 @@ switch ($group['name']) {
 					$lecture["exclude"] = implode(", ", $dates);
 				}
 			}
-		}//end Zeit und Ort
+		}}//end Zeit und Ort
 		
 		//Schleife über courses
-		if(is_array($veranstaltung['courses']['0']['course'])){
+		if(isset($veranstaltung['courses'])&&is_array($veranstaltung['courses']['0']['course'])){
 		foreach($veranstaltung['courses']['0']['course']  as $idx=>$course)
 		{
 		//echo "<br>".$course['name'];
 		
 		//Begin Zeit und Ort fuer Courses
+		if(isset($course["terms"])){
 		for ($_terms=0; $_terms < count($course["terms"]); $_terms++) {
 			for ($_term=0; $_term < count($course["terms"][$_terms]["term"]); $_term++) {
 				$lecture = &$veranstaltung['courses']['0']['course'][$idx]["terms"][$_terms]["term"][$_term];
 
 				$date = array();
 
-				$repeat = explode(" ", $lecture["repeat"]);
-				if($repeat) {
+        if(isset($lecture["repeat"]))
+        {$repeat = explode(" ", $lecture["repeat"]);}
+
+				if(isset($repeat)) {
 					$dict = array(
 						"w1" => "",
 						"w2" => "Alle zwei Wochen",
@@ -925,8 +938,9 @@ switch ($group['name']) {
 							6 => "Samstag",
 							7 => "Sonntag"
 						);
-
-						array_push($date, $days_short[$repeat[1]]);
+            if(isset($repeat[1])){
+						  array_push($date, $days_short[$repeat[1]]);
+						}
 
 					}
 				}
@@ -950,20 +964,20 @@ switch ($group['name']) {
 			}
 		}//end Zeit und Ort fuer Courses
 				
-		}}//Ende Schleife über Courses
+		}}}//Ende Schleife über Courses
 
 
 		//Summary
-		$veranstaltung["summary"] = str_replace("\n", "<br/>", $veranstaltung["summary"]);
+		if(isset($veranstaltung["summary"])){$veranstaltung["summary"] = str_replace("\n", "<br/>", $veranstaltung["summary"]);}
 
 		//Organizational
-		$veranstaltung["organizational"] = str_replace("\n", "<br/>", $veranstaltung["organizational"]);
+		if(isset($veranstaltung["organizational"])){		$veranstaltung["organizational"] = str_replace("\n", "<br/>", $veranstaltung["organizational"]);}
 
 		//ECTS Summary
-		$veranstaltung["ects_summary"] = str_replace("\n", "<br/>", $veranstaltung["ects_summary"]);
+		if(isset($veranstaltung["ects_summary"])){		$veranstaltung["ects_summary"] = str_replace("\n", "<br/>", $veranstaltung["ects_summary"]);}
 
-		$veranstaltung["ects_infos"] = ($veranstaltung["ects_name"] || $veranstaltung["ects_summary"] || $veranstaltung["ects_literature"]);
-		$veranstaltung["zusatzinfos"] = ($veranstaltung["keywords"] || $veranstaltung["turnout"] || $veranstaltung["url_description"]);
+		$veranstaltung["ects_infos"] = (isset($veranstaltung["ects_name"]) || isset($veranstaltung["ects_summary"]) || isset($veranstaltung["ects_literature"]));
+		$veranstaltung["zusatzinfos"] = (isset($veranstaltung["keywords"]) || isset($veranstaltung["turnout"]) || isset($veranstaltung["url_description"]));
 
 
 		return $veranstaltung;
@@ -998,9 +1012,12 @@ switch ($group['name']) {
 
 			$gruppenName = $child[$key_name];
 
-			if($gruppen_dict[$gruppenName]==NULL)
-				$gruppen_dict[$gruppenName] = array();
+			if(!isset($gruppen_dict[$gruppenName])||($gruppen_dict[$gruppenName]==NULL))
+			{	$gruppen_dict[$gruppenName] = array();}
+			
+			
 			array_push($gruppen_dict[$gruppenName], $child);
+			
 		}
 
 		foreach ($gruppen_dict as $gruppen_name => $gruppen_data) {
@@ -1073,13 +1090,16 @@ switch ($group['name']) {
 		  $person["title"]=$person["atitle"];
 		  $person["atitle"]="";
 		}
-   
+   if(isset($person['locations'])&&isset($person['locations']['0']['location']['0']['email']))
    $current_email=$person['locations']['0']['location']['0']['email'];
 
     if(isset($current_email))
     {
     $correspondingUser=get_user_by('email',$current_email);
-   }
+    }else 
+    {
+    $correspondingUser=false;
+    }
 
    
    
@@ -1091,7 +1111,7 @@ switch ($group['name']) {
         $UserID=$this->optionen['wpuserid'];
         break;
       default:
-        $UserID=$correspondingUser->ID;
+        if($correspondingUser)$UserID=$correspondingUser->ID;
         $picwidth=96;
         $picheight=128;
    }      
@@ -1102,16 +1122,16 @@ switch ($group['name']) {
 	    }
    
    
-      if(function_exists('get_avatar'))
+      if(function_exists('get_avatar')&&isset($UserID))
 			 {
 	      $imageTag=get_avatar($UserID,'','NOLINK','',array('width'=>$picwidth,'height'=>$picheight));
-        preg_match('%<img.*?src=["\'](.*?)["\'].*?/>%i', $imageTag , $result);
+        if(preg_match('%<img.*?src=["\'](.*?)["\'].*?/>%i', $imageTag , $result))
         $person["pictureurl"]=$result[1];
        }
    
    
 			//		print("<pre>");print_r($person);print("</pre>");
-			if(is_array($person['locations'])){
+			if(isset($person['locations'])&&is_array($person['locations'])){
 			foreach($person['locations'][0]['location'] as $key=>$value){
 						$search_pattern=array(' ','09131/85','0911/56854','--','(');
 						$replace_pattern=array('','09131/85-','0911/56854-','-',' (');
