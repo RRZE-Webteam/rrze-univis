@@ -72,7 +72,7 @@ class univisController {
       
       if($daten['person']['lehr']==="ja"){
 	    $html= "<!-- UnivIS-ID:".$daten['person']["id"]."-->\n".$html;
-	    $GLOBALS['LocalUnivisID']=$person["id"];
+	    $GLOBALS['LocalUnivisID']=$daten['person']["id"];
       }      
 
 			if($html != -1) {	//Rendern erfolgreich?
@@ -91,7 +91,6 @@ class univisController {
 			if($datenAusCache != -1) {
 			      $search = '/^\<\!\-\- UnivIS-ID\:([0-9]+).*/';
             preg_match($search, $datenAusCache, $match);
-            echo "<!-- UnivIS-ID:".$univisid."-->\n";
 	          $GLOBALS['LocalUnivisID']=$match[1];
 	          return $datenAusCache;
 			}else{
