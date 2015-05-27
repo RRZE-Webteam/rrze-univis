@@ -41,7 +41,11 @@ class univisController {
 
 		if($datenAusCache != -1) {
 			// Daten wurden aus Cache geladen
-			return $datenAusCache;
+      $search = '/^\<\!\-\- UnivIS-ID\:([0-9]+).*/';
+      preg_match($search, $datenAusCache, $match);
+      echo "<!-- UnivIS-ID:".$univisid."-->\n";
+	    $GLOBALS['LocalUnivisID']=$match[1];
+	    return $datenAusCache;
 		}
 
 		// Lade Daten von Univis
@@ -65,6 +69,11 @@ class univisController {
 				print("</pre>");
 */
 			$html = $this->_renderTemplate($daten);
+      
+      if($daten['person']['lehr']==="ja"){
+	    $html= "<!-- UnivIS-ID:".$daten['person']["id"]."-->\n".$html;
+	    $GLOBALS['LocalUnivisID']=$person["id"];
+      }      
 
 			if($html != -1) {	//Rendern erfolgreich?
 
@@ -80,21 +89,15 @@ class univisController {
 			$datenAusCache = $cache->holeDaten(true);
 
 			if($datenAusCache != -1) {
-				return $datenAusCache;
+			      $search = '/^\<\!\-\- UnivIS-ID\:([0-9]+).*/';
+            preg_match($search, $datenAusCache, $match);
+            echo "<!-- UnivIS-ID:".$univisid."-->\n";
+	          $GLOBALS['LocalUnivisID']=$match[1];
+	          return $datenAusCache;
 			}else{
 				// Konnte keine Daten laden. Alternativausgabe laden
-				if($this->optionen["task"] == "mitarbeiter-einzeln") {
-					// Lade Mitarbeiter Alle
-					echo "<div class=\"hinweis_wichtig\"><h4>Fehler: Konnte Person nicht finden.</h4><p>Bitte wählen sie eine Person aus der Liste.</p></div><br class=\"clear\" />";
-					$this->optionen["task"] = "mitarbeiter-alle";
-					return $this->ladeHTML();
-				}
-				if ($this->optionen["task"] == "lehrveranstaltungen-einzeln") {
-					// Lade Lehrveranstaltungen Alle
-					echo "<div class=\"hinweis_wichtig\"><h4>Fehler: Konnte Lehrveranstaltungen nicht finden.</h4><p>Bitte wählen sie eine Lehrveranstaltung aus der Liste.</p></div><br class=\"clear\" />";
-					$this->optionen["task"] = "lehrveranstaltungen-alle";
-					return $this->ladeHTML();
-				}
+					echo "<div class=\"hinweis_wichtig\"><h4>Fehler im Univis-Plugin!.</h4><p>Es konnten keine Daten geladen werden</p></div><br class=\"clear\" />";
+
 			}
 		}
 	}

@@ -272,10 +272,6 @@ class UNIVIS {
 			$person["lehrveranstaltungen_next_semester"]= $this->optionen['semester'];
 
 		}
-//Speichere id global für späteren Aufruf von Lehre
-if($person['lehr']==="ja"){
-		$GLOBALS['LocalUnivisID']=$person["id"];
-}
 
 		return $person;
        }
