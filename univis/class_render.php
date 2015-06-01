@@ -389,7 +389,7 @@ switch ($group['name']) {
      $gruppen[$key]['name']="[:de]Sekretariat[:en]Secretariat[:]";
 			break;    
 		case "Projektkoordination":
-     $gruppen[$key]['name']="[:de]Projektkoordination[:en]Projektkoordination administration[:]";
+     $gruppen[$key]['name']="[:de]Projektkoordination[:en]Project administration[:]";
         break;
 		case "Gastwissenschaftler/-in":
      $gruppen[$key]['name']="[:de]Gastwissenschaftler[:en]Guest scientist[:]";
