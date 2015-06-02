@@ -539,6 +539,7 @@ switch ($group['name']) {
 
 			if($lehrveranstaltungen)$person["lehrveranstaltungen"] = $lehrveranstaltungen;
 			else unset($person["lehrveranstaltungen"]);
+			
 			if($lehrveranstaltungen_next )$person["lehrveranstaltungen_next"] = $lehrveranstaltungen_next ;
 			else unset($person["lehrveranstaltungen_next"]);
 
@@ -612,10 +613,13 @@ switch ($group['name']) {
 		$this->_rename_key("type", $veranstaltungen, univisDicts::$lecturetypen_short);
 
 			$DelCoursesOfLectures= array();
+	//echo "<br>".$person_id."<br>";
+	
 
 
 	foreach($veranstaltungen as $k =>$veranstaltung){//Loeschliste anlegen und Fremdveranstaltungen loeschen
-
+//	echo $veranstaltung['name'].":<br>";
+//echo "<pre>";print_r($veranstaltung);echo "</pre>";
 	//Alle Dozenten Dieser Veranstaltung auslesen:
 	foreach($veranstaltung['dozs'][0]['doz'] as $i =>$dozent){
 		$Dozenten_IDs[$veranstaltung['@attributes']['key']][]=$dozent['id'];
@@ -642,11 +646,13 @@ switch ($group['name']) {
 				}
 		}
 	}
-	
+
+
 			foreach($veranstaltungen as $i =>$veranstaltung){//doppelte loeschen 2 durchgänge nötig, hauptkurs kommt nicht immer zuerst!
 
 					if(!empty($person_id) && !in_array($person_id,$Dozenten_IDs[$veranstaltung['@attributes']['key']]))
 							{//Kurse, wo nicht Dozent-> löschen
+						
 								unset($veranstaltungen[$i]);
 								continue;
 							}

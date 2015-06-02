@@ -493,8 +493,8 @@ $person['@attributes']['key']=$this->optionen['personkey'];
 	}
 
 	private function umlaute_ersetzen($text){
-		$such_array  = array ('ä', 'ö', 'ü', 'ß');
-		$ersetzen_array = array ('ae', 'oe', 'ue', 'ss');
+		$such_array  = array ('ä', 'ö', 'ü', 'ß',' ');
+		$ersetzen_array = array ('ae', 'oe', 'ue', 'ss', '%20');
 		$neuer_text  = str_replace($such_array, $ersetzen_array, $text);
 		return $neuer_text;
 	}

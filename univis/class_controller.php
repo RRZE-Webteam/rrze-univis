@@ -63,8 +63,8 @@ class univisController {
 			//$daten["assets"] = $assets->holeDaten();
 
 			// Daten rendern
-	/*
-			print("<pre>");
+	
+			/*print("<pre>");
 				print_r($daten);
 				print("</pre>");
 */
