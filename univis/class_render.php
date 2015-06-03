@@ -376,7 +376,7 @@ $person['rang']= implode("|", $jobs_of_person);
                 }
 
 //Localisation
-foreach($gruppen as $key =>$group)
+foreach($gruppen as $key =>&$group)
 {
 
 $gruppen[$key]['name']=str_replace("Gruppe","[:de]Gruppe[:en]Team[:]",$group['name']);
@@ -391,11 +391,17 @@ switch ($group['name']) {
 		case "Projektkoordination":
      $gruppen[$key]['name']="[:de]Projektkoordination[:en]Project administration[:]";
         break;
+    case "Lehrbeauftragte":
+     $gruppen[$key]['name']="[:de]Lehrbeauftragte[:en]Guest lecturer[:]";
+        break;
 		case "Gastwissenschaftler/-in":
-     $gruppen[$key]['name']="[:de]Gastwissenschaftler[:en]Guest scientist[:]";
+     $gruppen[$key]['name']="[:de]Gastwissenschaftler[:en]Guest scientists[:]";
         break;
 		case "Ehemalige Gastwissenschaftler":
      $gruppen[$key]['name']="[:de]Ehemalige Gastwissenschaftler[:en]Former guest scientist[:]";
+		//Show only short info, move to other array:
+			array_push($OnlyShortInfo, $group);
+			unset($gruppen[$key]);
         break;
 		case "Ehemalige/r Mitarbeiter/-in":
      $gruppen[$key]['name']="[:de]Ehemalige[:en]Former staff[:]";
