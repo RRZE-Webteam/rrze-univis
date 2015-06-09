@@ -57,7 +57,7 @@
         <h4>{{ name }}</h4>
         {{#personen}}
 {{#lastname}}	    
-<div style=" width:400px;float:left;padding-bottom:5px">
+<div style=" width:280px;float:left;padding-bottom:5px">
 {{#mitarbeiterURL}}<a href={{mitarbeiterURL}}>{{#title}}{{title}} {{/title}}{{ firstname }} {{ lastname }}</a>{{/mitarbeiterURL}}
 {{^mitarbeiterURL}}
 	{{#locations}}
