@@ -4,8 +4,8 @@
         <h4>{{ name }}</h4>
 <table>
   <colgroup>
-   <col width="6%">
-    <col width="40%">
+   <col width="50px">
+    <col>
     <col width="30%">
     <col width="15%">
   </colgroup>
@@ -53,6 +53,7 @@
 ################################################################## -->
 	{{#OnlyShortInfo}}
 <div class="OnlyShortInfo">
+        {{#name}}
         <h4>{{ name }}</h4>
         {{#personen}}
 {{#lastname}}	    
@@ -70,9 +71,10 @@
 	{{/locations}}
 {{/mitarbeiterURL}}
 </div>
-
 {{/lastname}}	  
-{{/personen}} 
+{{/personen}}
+{{/name}}
+<div style="clear:both;"></div>
 </div>
 	{{/OnlyShortInfo}}
 </div>

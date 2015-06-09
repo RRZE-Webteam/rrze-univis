@@ -276,7 +276,7 @@ class UNIVIS {
 		return $person;
        }
 	}
-	private function _ladeMitarbeiterLehre() {
+private function _ladeMitarbeiterLehre() {
 
 if(!($this->optionen['univis_id']))
 	{
@@ -398,10 +398,12 @@ $person['@attributes']['key']=$this->optionen['personkey'];
                     return -1;
                 } else {
 		$veranstaltungen = $array["Lecture"];
-	$this->optionen['personkey']=$array["Person"][0]['@attributes']['key'];
+	//$this->optionen['personkey']=$array["Person"][0]['@attributes']['key'];
 
 
 		$univis_refs = $this->_get_univis_ref($array);
+		echo $array["veranstaltung"][0]['@attributes']['key'];
+//print("<pre>");print_r($univis_refs);print("</pre>");
 
 		//Personen informationen einfügen
 		$this->univis_refs_ersetzen($univis_refs, $veranstaltungen);
@@ -528,12 +530,14 @@ $person['@attributes']['key']=$this->optionen['personkey'];
 
 	private function _get_univis_ref($arr) {
 		$univis_refs = array();
-
 		$dict = array("Room", "Person", "Title", "Lecture");
 		foreach ($dict as $type) {
+		  if(isset($arr[$type]))
+		  {
 			$univis_refs = array_merge($univis_refs, $arr[$type]);
+			}
 		}
-
+	
 		$refs = array();
 		foreach ($univis_refs as $ref) {
 			if($ref["@attributes"]["key"]) {

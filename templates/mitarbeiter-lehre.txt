@@ -15,9 +15,9 @@
 					{{#veranstaltungen}}<!--wäre noch gruppiert nach Typ-->
 						{{#data}}
 										<li>
-			<h3><a href="javascript:toggle('{{id}}')">
+			<h3><a href="javascript:toggle('{{id}}-{{lehrveranstaltungen_semester}}')">
 		{{#ects_name}}[:de]{{name}}[:en]{{ects_name}}[:]{{/ects_name}}{{^ects_name}}{{name}}{{/ects_name}}</a></h3>
-		<div id={{id}} style="display:none" class="lecture_detail">
+		<div id="{{id}}-{{lehrveranstaltungen_semester}}" style="display:none" class="lecture_detail">
 
 {{#dozs}}
 		<!--<h3>[:de]Dozent/in[:en]Lecturer[:]</h3>-->
@@ -75,6 +75,32 @@
 		{{/turnout}}
 	</p>
 	{{/zusatzinfos}}
+		{{#courses}}
+<h3>[:de]Kurse[:en]Courses[:]</h3>
+<table class="courses" style="width:250px;">
+{{#course}}
+<tr>
+	{{#terms}}
+	<td style="border:0">
+		{{#term}}
+			{{date}} {{starttime}}-{{endtime}} {{room_short}}</br>
+		{{/term}}
+		</td>
+	{{/terms}}
+	<td style="border:0">
+		{{#dozs}}
+		<ul>
+		{{#doz}}<li><em>
+		{{#wp_authorurl}}<a href="{{wp_authorurl}}">{{/wp_authorurl}}{{firstname}} {{lastname}}
+		{{#wp_authorurl}}</a>{{/wp_authorurl}}</em></li>
+		{{/doz}}
+		</ul>
+	{{/dozs}}
+	</td>
+</tr>
+{{/course}}
+</table>
+{{/courses}}
 <a href="http://univis.uni-erlangen.de/prg?search=lectures&department=100206&sem={{lehrveranstaltungen_semester}}&id={{id}}&show=llong" target="_parent">[:de]Weitere Informationen[:en]Full Information[:]</a>
 	      </div>
 		</li>
@@ -85,16 +111,16 @@
 		{{/lehrveranstaltungen}}
 
 
-	{{#lehrveranstaltungen_next}}
+{{#lehrveranstaltungen_next}}
 			<h2 class="active">[:de]Lehrveranstaltungen[:en]Lectures[:] {{lehrveranstaltungen_next_semester_human}}</h3>
 			<div>
 				<ul>
 						{{#veranstaltungen}}
 								{{#data}}
 		<li>
-			<h3><a href="javascript:toggle('{{id}}')">
+			<h3><a href="javascript:toggle('{{id}}-{{lehrveranstaltungen_next_semester}}')">
 		{{#ects_name}}[:de]{{name}}[:en]{{ects_name}}[:]{{/ects_name}}{{^ects_name}}{{name}}{{/ects_name}}</a></h3>
-		<div id={{id}} style="display:none" class="lecture_detail">
+		<div id="{{id}}-{{lehrveranstaltungen_next_semester}}" style="display:none" class="lecture_detail">
 
 {{#dozs}}
 		<!--<h3>[:de]Dozent/in[:en]Lecturer[:]</h3>-->

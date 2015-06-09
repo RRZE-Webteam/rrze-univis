@@ -621,14 +621,14 @@ switch ($group['name']) {
 			$DelCoursesOfLectures= array();
 	//echo "<br>".$person_id."<br>";
 	
-
+//Lecture.tech.IE.LETE.arb
 
 	foreach($veranstaltungen as $k =>$veranstaltung){//Loeschliste anlegen und Fremdveranstaltungen loeschen
 //	echo $veranstaltung['name'].":<br>";
 //echo "<pre>";print_r($veranstaltung);echo "</pre>";
 	//Alle Dozenten Dieser Veranstaltung auslesen:
 	foreach($veranstaltung['dozs'][0]['doz'] as $i =>$dozent){
-		$Dozenten_IDs[$veranstaltung['@attributes']['key']][]=$dozent['id'];
+  if(is_numeric($dozent['id'])){$Dozenten_IDs[$veranstaltung['@attributes']['key']][]=$dozent['id'];}
 		//$user= get_user_by('email',$dozent['locations'][0]['location'][0]['email']);
 		//if($user)$veranstaltungen[$k]['dozs'][0]['doz'][$i]['wp_authorurl']=get_author_posts_url($user->ID);
 		}
@@ -639,7 +639,7 @@ switch ($group['name']) {
 		//Kursdozenten ergänzen:
 			foreach($veranstaltung['courses']['0']['course'] as $coursei=>$course){
 						foreach($course['dozs'][0]['doz'] as $j =>$dozent){
-								$Dozenten_IDs[$veranstaltung['@attributes']['key']][]=$dozent['id'];
+								if(is_numeric($dozent['id'])){$Dozenten_IDs[$veranstaltung['@attributes']['key']][]=$dozent['id'];}
 						}
 			}
 
@@ -653,12 +653,11 @@ switch ($group['name']) {
 		}
 	}
 
-
 			foreach($veranstaltungen as $i =>$veranstaltung){//doppelte loeschen 2 durchgänge nötig, hauptkurs kommt nicht immer zuerst!
 
-					if(!empty($person_id) && !in_array($person_id,$Dozenten_IDs[$veranstaltung['@attributes']['key']]))
+					if(!empty($person_id) && !empty($Dozenten_IDs[$veranstaltung['@attributes']['key']]) &&!in_array($person_id,$Dozenten_IDs[$veranstaltung['@attributes']['key']]))
 							{//Kurse, wo nicht Dozent-> löschen
-						
+						//echo "nicht dozent, loesche ".$veranstaltung['@attributes']['key'];
 								unset($veranstaltungen[$i]);
 								continue;
 							}
@@ -673,7 +672,7 @@ switch ($group['name']) {
 								$veranstaltungen[$i] = $this->_bearbeiteLehrveranstaltungenEinzeln($veranstaltung);
 				
 			}
-
+if(count($veranstaltungen)==0){return false;}
 
 			//Nach type ordnen
 			$veranstaltungen = $this->_group_by("type", $veranstaltungen);
