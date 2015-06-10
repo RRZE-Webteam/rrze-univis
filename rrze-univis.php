@@ -85,7 +85,7 @@ class RRZE_UnivIS {
 			'Personenanzeige_Publikationen'	=> '0',
 			'Personenanzeige_Lehrveranstaltungen' => '0',
 			'Lehrveranstaltung_Verzeichnis' => '',
-			'SeitenCache' => '1',//Datenverfallszeit aus cache in sekunden
+			'SeitenCache' => '60',//Datenverfallszeit aus cache in sekunden
 			'START_SOMMERSEMESTER' => '1.7.',
 			'START_WINTERSEMESTER' => '31.12.',//Start WS muss nach Start SS liegen!!!
 			'semester' => '',
