@@ -26,6 +26,7 @@
 			    	 	{{#email}}
 	                <li>[:de]E-Mail[:en]Mail[:]: <a class="email" href="mailto:{{email}}">{{email}}</a></li>
 	                {{/email}}
+	                {{^email}}<li>&nbsp;</li>{{/email}}
 	                {{#tel}}
 	                <li>[:de]Telefon[:en]Phone[:]: <span class="tel">{{tel}}</span></li>
 	                {{/tel}}
