@@ -106,7 +106,7 @@ class univisCache {
 			case 'mitarbeiter-lehre':
 										if(empty($optionen["univis_id"])){return -1;}
 										return $optionen["task"]."/".$optionen["semester"]."/".$optionen["univis_id"];
-			case 'lehrveranstaltungen-alle':		return $optionen["task"]."/".$optionen["UnivISOrgNr"];
+			case 'lehrveranstaltungen-alle':		return $optionen["task"]."/".$optionen["UnivISOrgNr"]."/".$optionen["semester"];
 			case 'lehrveranstaltungen-einzeln':		return $optionen["task"]."/".$optionen["semester"]."/".$optionen["id"];
 			case 'publikationen':					return $optionen["task"]."/".$optionen["UnivISOrgNr"];
 				

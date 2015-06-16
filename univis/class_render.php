@@ -664,6 +664,7 @@ switch ($group['name']) {
 
 						if(in_array($veranstaltung['name'],$DelCoursesOfLectures)&& !isset($veranstaltung['courses']))
 						{//Nur übersichtskurse anzeigen
+						//echo "nicht überischtskurs, loesche ".$veranstaltung['@attributes']['key'];
 							unset($veranstaltungen[$i]);
 							continue;
 						}
