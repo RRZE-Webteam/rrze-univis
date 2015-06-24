@@ -85,7 +85,7 @@ class RRZE_UnivIS {
 			'Personenanzeige_Publikationen'	=> '0',
 			'Personenanzeige_Lehrveranstaltungen' => '0',
 			'Lehrveranstaltung_Verzeichnis' => '',
-			'SeitenCache' => '60',//Datenverfallszeit aus cache in sekunden
+			'SeitenCache' => '1',//Datenverfallszeit aus cache in sekunden
 			'START_SOMMERSEMESTER' => '1.7.',
 			'START_WINTERSEMESTER' => '31.12.',//Start WS muss nach Start SS liegen!!!
 			'semester' => '',
@@ -95,9 +95,9 @@ class RRZE_UnivIS {
 			'Sortiere_Jobs' => '1',
             'Ignoriere_Jobs' => 'Verwaltung',
 'Ehemalige_Groupname' => '',//Personen in dieser Gruppe die noch andere Aufgaben haben werden nicht als ehemalig geführt
-'Leader_Jobs' => 'Leitung|Gruppenleiter',
-'Function_Jobs' => 'Sekretariat|Gastwissenschaftler/-in|Sicherheitsbeauftragter (nach SGB VII)|IT-Sicherheits-Beauftragter|Webmaster|Postmaster|IT-Betreuer|UnivIS-Beauftragte|Ehemalige/r Mitarbeiter/-in',
-                        'Datenverzeichnis' => ''
+'Leader_Jobs' => 'Leitung|Gruppenleiter|Vorzimmer',
+'Function_Jobs' => 'Gastwissenschaftler/-in|Sicherheitsbeauftragter (nach SGB VII)|IT-Sicherheits-Beauftragter|Webmaster|Postmaster|IT-Betreuer|UnivIS-Beauftragte|Ehemalige/r Mitarbeiter/-in',
+      'Datenverzeichnis' => ''
 	);
         return $defaults;
     }

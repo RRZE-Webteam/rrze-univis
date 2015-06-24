@@ -11,8 +11,6 @@
   </colgroup>
         {{#personen}}	    
 <tr>
-<!-- <td>{{overwriteorder}}</td> -->
-<!-- {{ id }} -->
 <td>{{#pictureurl}}<img src="{{pictureurl}}">{{/pictureurl}}{{^pictureurl}}<div class="no_image"></div>{{/pictureurl}}</td>
 <td>
 {{#leaderfunction}}<b>{{leaderfunction}}</b><br/>{{/leaderfunction}} 
@@ -48,7 +46,7 @@
   </td>
  </table>
 	{{/gruppen}}
-<!-- Für restliche Gruppen nur kurte info ausgeben.........................
+<!-- Für restliche Gruppen nur kurze info ausgeben.........................
 ##########################################################################
 ################################################################## -->
 	{{#OnlyShortInfo}}

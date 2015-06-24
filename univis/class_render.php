@@ -205,6 +205,8 @@ foreach($jobs_of_person as $key => $rang)
 					$person['leaderfunction']="[:de]Leitung[:en]Chair of Institute[:]";break;
 		case "Gruppenleiter":
 					$person['leaderfunction']="[:de]Gruppenleiter[:en]Head of team[:]";break;
+	  case "Vorzimmer":
+					$person['leaderfunction']="[:de]Vorzimmer[:en]Secretary[:]";break;
 		default:
 					$person['leaderfunction']=$rang;
 	}
@@ -1124,8 +1126,8 @@ if(count($veranstaltungen)==0){return false;}
         break;
       default:
         if($correspondingUser)$UserID=$correspondingUser->ID;
-        $picwidth=96;
-        $picheight=128;
+        $picwidth=64;
+        $picheight=85;
    }      
    //Set url to author-page
     if(!empty($UserID))
