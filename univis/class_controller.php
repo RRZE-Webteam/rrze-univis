@@ -50,13 +50,16 @@ class univisController {
 
 		// Lade Daten von Univis
 		$univis = new UNIVIS($this->optionen);
+
 		$daten = $univis->ladeDaten();
 
 		// Pruefe ob Daten erfolgreich geladen wurden.
 		if($daten != -1) {
 			// Passe Datenstruktur fuer Templating an.
 			$render = new univisRender($this->optionen);
+
 			$daten= $render->bearbeiteDaten($daten);
+
 			$daten['Optionen']=$this->optionen;
 			// Lade Zusatzinformationen
 			//$assets = new univisAssets($this->optionen);
@@ -66,10 +69,9 @@ class univisController {
 	
 			/*print("<pre>");
 				print_r($daten);
-				print("</pre>");
-*/
+				print("</pre>");*/
+
 			$html = $this->_renderTemplate($daten);
-      
       if($daten['person']['lehr']==="ja"){
 	    $html= "<!-- UnivIS-ID:".$daten['person']["id"]."-->\n".$html;
 	    $GLOBALS['LocalUnivisID']=$daten['person']["id"];
@@ -78,7 +80,9 @@ class univisController {
 			if($html != -1) {	//Rendern erfolgreich?
 
 				// Gerenderte Daten in Cache speichern
+
 				$cache->setzeDaten($html);
+
 				return $html;
 			}else{
 				return "Template Fehler: Konnte Template Datei nicht finden.";
@@ -103,10 +107,8 @@ class univisController {
 
 	private function _renderTemplate($daten) {
 		Mustache_Autoloader::register();
-
 		$m = new Mustache_Engine;
 		$template = $this->_get_template();
-
 		if($template == -1) return -1;
 
 		return  $m->render($template, $daten);
@@ -166,14 +168,8 @@ class univisController {
 
 	function _get_template() {
 		$filename = $this->optionen['task'].".txt";
-                //geändert!
-                //$filename = "templates/".$filename;
-                $filename = plugins_url( "../templates/".$filename, __FILE__);
-		$handle = fopen($filename, "r");
-                //geändert!
-                //$contents = fread($handle, filesize($filename));
-                $contents = stream_get_contents($handle);
-		fclose($handle);
+		$filename = dirname(__FILE__)."/../templates/".$filename;
+		$contents = file_get_contents($filename);
 		return $contents;
 	}
 }
