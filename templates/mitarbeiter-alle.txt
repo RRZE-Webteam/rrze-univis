@@ -9,41 +9,40 @@
     <col width="30%">
     <col width="15%">
   </colgroup>
-        {{#personen}}	    
-<tr>
-<td>{{#pictureurl}}<img src="{{pictureurl}}">{{/pictureurl}}{{^pictureurl}}<div class="no_image"></div>{{/pictureurl}}</td>
-<td>
-{{#leaderfunction}}<b>{{leaderfunction}}</b><br/>{{/leaderfunction}} 
-{{#wp_authorurl}}<a href={{wp_authorurl}}>{{/wp_authorurl}}
-{{#title}}{{title}}&nbsp;{{/title}}{{firstname}} {{lastname}}{{#atitle}}, {{atitle}}{{/atitle}}{{#wp_authorurl}}</a>{{/wp_authorurl}}
-{{#specialfunction}}<br/>({{specialfunction}}){{/specialfunction}} 
-</td>
-<td><ul>
-		{{#locations}}
+{{#personen}}
+<tr onlick="alert('test');">
+	<td>
+		{{#pictureurl}}{{#wp_authorurl}}<a href={{wp_authorurl}}>{{/wp_authorurl}}<img src="{{pictureurl}}">{{/pictureurl}}{{^pictureurl}}<div class="no_image"></div>{{#wp_authorurl}}</a>{{/wp_authorurl}}{{/pictureurl}}
+	</td>
+	<td>
+		{{#leaderfunction}}<b>{{leaderfunction}}</b><br/>{{/leaderfunction}} 
+		{{#wp_authorurl}}<a href={{wp_authorurl}}>{{/wp_authorurl}}
+		{{#title}}{{title}}&nbsp;{{/title}}{{firstname}} {{lastname}}{{#atitle}}, {{atitle}}{{/atitle}}{{#wp_authorurl}}</a>{{/wp_authorurl}}
+		{{#specialfunction}}<br/>({{specialfunction}}){{/specialfunction}} 
+	</td>
+	<td>
+		<ul>
+			{{#locations}}
 			{{#location}}
-				{{#email}}
-<li>
-<a href="mailto:{{ email }}">{{ email }}</a>
-</li>		
-		{{/email}}
-{{/location}}
-</ul></td>
-{{/locations}}
-<td>
-{{#locations}}
-<ul>
-{{#location}}
-{{#tel}}
-<li>{{tel}}</li>{{/tel}}
-{{/location}}
-</ul>
-{{/locations}}
+			{{#email}}
+			<li>
+				<a href="mailto:{{ email }}">{{ email }}</a>
+			</li>		
+			{{/email}}
+			{{/location}}
+		</ul>
+	</td>
+		{{/locations}}
+	<td>
+		{{#locations}}
+		<ul>
+			{{#location}}{{#tel}}<li>{{tel}}</li>{{/tel}}{{/location}}
+		</ul>
+		{{/locations}}
+	</td>
+</tr>
+{{/personen}} 
 
-<!-- <td>{{{text}}}</td> -->
-        {{/personen}} 
-
-
-  </td>
  </table>
 	{{/gruppen}}
 <!-- Für restliche Gruppen nur kurze info ausgeben.........................
