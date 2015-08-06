@@ -626,32 +626,38 @@ switch ($group['name']) {
 //Lecture.tech.IE.LETE.arb
 
 	foreach($veranstaltungen as $k =>$veranstaltung){//Loeschliste anlegen und Fremdveranstaltungen loeschen
-//	echo $veranstaltung['name'].":<br>";
-//echo "<pre>";print_r($veranstaltung);echo "</pre>";
-	//Alle Dozenten Dieser Veranstaltung auslesen:
-	foreach($veranstaltung['dozs'][0]['doz'] as $i =>$dozent){
-  if(is_numeric($dozent['id'])){$Dozenten_IDs[$veranstaltung['@attributes']['key']][]=$dozent['id'];}
-		//$user= get_user_by('email',$dozent['locations'][0]['location'][0]['email']);
-		//if($user)$veranstaltungen[$k]['dozs'][0]['doz'][$i]['wp_authorurl']=get_author_posts_url($user->ID);
-		}
-	
+    //	echo $veranstaltung['name'].":<br>";
+    //echo "<pre>";print_r($veranstaltung);echo "</pre>";
+	  //Alle Dozenten Dieser Veranstaltung auslesen:
+	  foreach($veranstaltung['dozs'][0]['doz'] as $i =>$dozent){
+      if(is_numeric($dozent['id']))
+      {
+        $Dozenten_IDs[$veranstaltung['@attributes']['key']][]=$dozent['id'];
+      }
+		  $veranstaltungen[$k]['dozs'][0]['doz'][$i]=$this->person_format_convert($dozent);
+	  }
 
-//echo "<pre>";print_r($Dozenten_IDs);echo "</pre>";
-	if(isset($veranstaltung['courses'])){		
-		//Kursdozenten ergänzen:
-			foreach($veranstaltung['courses']['0']['course'] as $coursei=>$course){
-						foreach($course['dozs'][0]['doz'] as $j =>$dozent){
-								if(is_numeric($dozent['id'])){$Dozenten_IDs[$veranstaltung['@attributes']['key']][]=$dozent['id'];}
-						}
-			}
 
-		$DelCoursesOfLectures[]=$veranstaltung['name'];
-		}else
-		{
-			if(in_array($person_id,$Dozenten_IDs[$veranstaltung['@attributes']['key']]))
-				{
-					$SaveMyCourses[]=$veranstaltung['@attributes']['key'];
-				}
+    //echo "<pre>";print_r($veranstaltung['dozs'][0]['doz']);echo "</pre>";
+	  if(isset($veranstaltung['courses'])){		
+		  //Kursdozenten ergänzen:
+			  foreach($veranstaltung['courses']['0']['course'] as $coursei=>$course){
+						  foreach($course['dozs'][0]['doz'] as $j =>$dozent){
+								  if(is_numeric($dozent['id']))
+								  {
+								    $Dozenten_IDs[$veranstaltung['@attributes']['key']][]=$dozent['id'];
+								  }
+						  $veranstaltungen[$k]['courses'][0]['course'][$coursei]['dozs'][0]['doz'][$j]=$this->person_format_convert($dozent);
+						  }
+			  }
+
+		  $DelCoursesOfLectures[]=$veranstaltung['name'];
+		  }else
+		  {
+			  if(in_array($person_id,$Dozenten_IDs[$veranstaltung['@attributes']['key']]))
+				  {
+					  $SaveMyCourses[]=$veranstaltung['@attributes']['key'];
+				  }
 		}
 	}
 

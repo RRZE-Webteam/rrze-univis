@@ -68,7 +68,7 @@ class univisController {
 			// Daten rendern
 	
 			/*print("<pre>");
-				print_r($daten);
+				print_r($daten['lehrveranstaltungen']['veranstaltungen'][0]['data'][0]['dozs'][0]['doz']);
 				print("</pre>");*/
 
 			$html = $this->_renderTemplate($daten);
@@ -80,7 +80,6 @@ class univisController {
 			if($html != -1) {	//Rendern erfolgreich?
 
 				// Gerenderte Daten in Cache speichern
-
 				$cache->setzeDaten($html);
 
 				return $html;
