@@ -1,8 +1,9 @@
 <?php
 /**
- * Plugin Name: RRZE-UnivIS
+  Plugin Name: RRZE-UnivIS
+  Plugin URI: https://github.com/RRZE-Webteam/rrze-univis
  * Description: Einbindung von Daten aus UnivIS für den Geschäftsverteilungsplan auf Basis des UnivIS-Plugins des Webbaukastens.
- * Version: 1.0.4
+ * Version: 1.0.5
  * Author: RRZE-Webteam (Karin Kimpan)
  * Author URI: http://blogs.fau.de/webworking/
  * License: GPLv2 or later
@@ -29,9 +30,10 @@ register_activation_hook(__FILE__, array('RRZE_UnivIS', 'activate'));
 register_deactivation_hook(__FILE__, array('RRZE_UnivIS', 'deactivate'));
 require_once('univis/class_controller.php');
 
+
 class RRZE_UnivIS {
 
-    const version = '1.0.4';
+    const version = '1.0.5';
     const option_name = '_rrze_univis';
     const version_option_name = '_rrze_univis_version';
     const textdomain = 'rrze-univis';
@@ -42,16 +44,32 @@ class RRZE_UnivIS {
     private static $univis_option_page = null;
     private static $univis_url = "http://univis.uni-erlangen.de";
 
+   
     public static function instance() {
 
         if (null == self::$instance) {
             self::$instance = new self;
-            self::$instance->init();
         }
 
         return self::$instance;
     }
 
+
+    private function __construct() {
+        // Sprachdateien werden eingebunden.
+        load_plugin_textdomain(self::textdomain, false, sprintf('%s/languages/', dirname(plugin_basename(__FILE__))));
+
+
+        add_action('admin_init', array($this, 'admin_init'));
+        add_action('admin_menu', array($this, 'add_options_page'));
+        add_shortcode('univis', array($this, 'univis'));
+
+	add_action('admin_init', array($this, 'univis_shortcodes_rte_button'));
+
+    }
+    
+    
+    
     private static function get_options() {
         $defaults = self::default_options();
 
@@ -95,12 +113,7 @@ class RRZE_UnivIS {
         return $defaults;
     }
 
-    private function init() {
-        load_plugin_textdomain(self::textdomain, false, dirname(plugin_basename(__FILE__)) . '/languages/');
-        add_action('admin_init', array(__CLASS__, 'admin_init'));
-        add_action('admin_menu', array(__CLASS__, 'add_options_page'));
-        add_shortcode('univis', array(__CLASS__, 'univis'));
-    }
+
 
     public static function activate() {
         self::version_compare();
@@ -223,7 +236,19 @@ class RRZE_UnivIS {
 
         return $ausgabe;
     }
+    public function univis_shortcodes_rte_button() {
+        if( current_user_can('edit_posts') &&  current_user_can('edit_pages') ) {
+            add_filter( 'mce_external_plugins', array($this, 'univis_rte_add_buttons' ));
+        }
+    }
 
+    public function univis_rte_add_buttons( $plugin_array ) {
+        $plugin_array['univisrteshortcodes'] = plugin_dir_url(__FILE__) . 'js/tinymce-shortcodes.js';
+        return $plugin_array;
+    }
+    
+    
+    
     ///////////////////////////////////////////////////////////////
     /////		Hilfsmethoden
     ///////////////////////////////////////////////////////////////
