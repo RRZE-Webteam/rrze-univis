@@ -264,6 +264,12 @@ foreach($person_specialfunctions as $key=>$value){
 						 $person_specialfunctions[$key]="[:de]IT-Sicherheits-Beauftragter[:en]IT safety advisor[:]";
 				else $person_specialfunctions[$key]="[:de]IT-Sicherheits-Beauftragte[:en]IT safety advisor[:]";
 			break;
+                case "Lehrbeauftragte":
+                                if($person['gender']==="m")
+                                                 $person_specialfunctions[$key]="[:de]Lehrbeauftragter[:en]Lecturer[:]";
+                                else $person_specialfunctions[$key]="[:de]Lehrbeauftragte[:en]Lecturer[:]";
+                        break;
+
 
 	}
 }
