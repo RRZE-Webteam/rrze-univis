@@ -652,6 +652,7 @@ class univisRender {
 	}
 
 	private function _rename_key($search_key, &$arr, $dict) {
+            //_rrze_debug($search_key);
 		foreach ($arr as &$veranstaltung) {
 			foreach ($veranstaltung as $key => &$value) {
 				if($key == $search_key) {
