@@ -505,60 +505,61 @@ class univisRender {
 		$angaben = array();
 
 		//Typ
-		if($veranstaltung["type"]) {
+		if(isset($veranstaltung["type"])) {
 			$type = $this->_str_replace_dict(univisDicts::$lecturetypen_short, $veranstaltung["type"]);
 			array_push($angaben, $type);
 		}
 
 		//Schein
-		if($veranstaltung["schein"] && $veranstaltung["schein"] == "ja") {
+		if(isset($veranstaltung["schein"]) && $veranstaltung["schein"] == "ja") {
 			array_push($angaben, "Schein");
 		}
 
 		//SWS
-		if ($veranstaltung["sws"]) {
+		if (isset($veranstaltung["sws"])) {
 			array_push($angaben, $veranstaltung["sws"]." SWS");
 		}
 
 		//ECTS
-		if($veranstaltung["ects"] && $veranstaltung["ects"] == "ja") {
+		if(isset($veranstaltung["ects"]) && $veranstaltung["ects"] == "ja") {
 			array_push($angaben, "ECTS-Studium");
 		}
 
-		if($veranstaltung["ects_cred"]) {
+		if(isset($veranstaltung["ects_cred"])) {
 			array_push($angaben, "ECTS-Credits: ".$veranstaltung["ects_cred"]);
 		}
 
 		//Anfänger
-		if($veranstaltung["beginners"] && $veranstaltung["beginners"] == "ja") {
+		if(isset($veranstaltung["beginners"]) && $veranstaltung["beginners"] == "ja") {
 			array_push($angaben, "für Anfänger geeignet");
 		}
 
 		//Gasthörer
-		if($veranstaltung["gast"] && $veranstaltung["gast"] == "ja") {
+		if(isset($veranstaltung["gast"]) && $veranstaltung["gast"] == "ja") {
 			array_push($angaben, "für Gasthörer zugelassen");
 		}
 
 		//Evaluation
-		if($veranstaltung["evaluation"] && $veranstaltung["evaluation"] == "ja") {
+		if(isset($veranstaltung["evaluation"]) && $veranstaltung["evaluation"] == "ja") {
 			array_push($angaben, "Evaluation");
 		}
 
 		//Unterrrichtssprache
-		if ($veranstaltung["leclanguage"]) {
+		if (isset($veranstaltung["leclanguage"])) {
 			$formated = $this->_str_replace_dict(univisDicts::$leclanguages, $veranstaltung["leclanguage"]);
 			array_push($angaben, "Unterrichtssprache ".$formated);
 		}
 
 		//Comment
-		if($veranstaltung["comment"]) {
+		if(isset($veranstaltung["comment"])) {
 			array_push($angaben, $veranstaltung["comment"]);
 		}
 
-		$veranstaltung["angaben"] = implode(", ", $angaben);
+		if(isset($veranstaltung["angaben"])) $veranstaltung["angaben"] = implode(", ", $angaben);
 
 		//Begin Zeit und Ort
-		for ($_terms=0; $_terms < count($veranstaltung["terms"]); $_terms++) {
+                if(isset($veranstaltung["terms"])) {
+                    for ($_terms=0; $_terms < count($veranstaltung["terms"]); $_terms++) {
 			for ($_term=0; $_term < count($veranstaltung["terms"][$_terms]["term"]); $_term++) {
 				$lecture = &$veranstaltung["terms"][$_terms]["term"][$_term];
 
@@ -582,7 +583,7 @@ class univisRender {
 						array_push($date, $formated);
 					}
 
-					if(count($repeat)>0) {
+					if(count($repeat)>1) {
 						$days_short = array(
 							1 => "Mo",
 							2 => "Di",
@@ -602,7 +603,7 @@ class univisRender {
 							6 => "Samstag",
 							7 => "Sonntag"
 						);
-
+                                                _rrze_debug($repeat);
 						array_push($date, $days_short[$repeat[1]]);
 
 					}
@@ -612,7 +613,7 @@ class univisRender {
 
 				$lecture["room_short"] = $lecture["room"][0]["short"];
 
-				if($lecture["exclude"]) {
+				if(isset($lecture["exclude"])) {
 					$dates = explode(",", $lecture["exclude"]);
 
 					for ($i=0; $i < count($dates); $i++) {
@@ -625,20 +626,21 @@ class univisRender {
 					$lecture["exclude"] = implode(", ", $dates);
 				}
 			}
-		}//end Zeit und Ort
+                    }
+                }//end Zeit und Ort
 
 
 		//Summary
-		$veranstaltung["summary"] = str_replace("\n", "<br/>", $veranstaltung["summary"]);
+		if(isset($veranstaltung["summary"])) $veranstaltung["summary"] = str_replace("\n", "<br/>", $veranstaltung["summary"]);
 
 		//Organizational
-		$veranstaltung["organizational"] = str_replace("\n", "<br/>", $veranstaltung["organizational"]);
+		if(isset($veranstaltung["organizational"])) $veranstaltung["organizational"] = str_replace("\n", "<br/>", $veranstaltung["organizational"]);
 
 		//ECTS Summary
-		$veranstaltung["ects_summary"] = str_replace("\n", "<br/>", $veranstaltung["ects_summary"]);
+		if(isset($veranstaltung["ects_summary"])) $veranstaltung["ects_summary"] = str_replace("\n", "<br/>", $veranstaltung["ects_summary"]);
 
-		$veranstaltung["ects_infos"] = ($veranstaltung["ects_name"] || $veranstaltung["ects_summary"] || $veranstaltung["ects_literature"]);
-		$veranstaltung["zusatzinfos"] = ($veranstaltung["keywords"] || $veranstaltung["turnout"] || $veranstaltung["url_description"]);
+		if(isset($veranstaltung["ects_infos"])) $veranstaltung["ects_infos"] = ($veranstaltung["ects_name"] || $veranstaltung["ects_summary"] || $veranstaltung["ects_literature"]);
+		if(isset($veranstaltung["zusatzinfos"])) $veranstaltung["zusatzinfos"] = ($veranstaltung["keywords"] || $veranstaltung["turnout"] || $veranstaltung["url_description"]);
 
 
 		return array( "veranstaltung" => $veranstaltung, "optionen" => $this->optionen);
@@ -652,13 +654,14 @@ class univisRender {
 	}
 
 	private function _rename_key($search_key, &$arr, $dict) {
-            //_rrze_debug($search_key);
 		foreach ($arr as &$veranstaltung) {
+                    if(is_array($veranstaltung)) {
 			foreach ($veranstaltung as $key => &$value) {
 				if($key == $search_key) {
 					$value = $this->_str_replace_dict($dict, $value);
 				}
 			}
+                    }
 		}
 	}
 
@@ -671,7 +674,7 @@ class univisRender {
 
 			$gruppenName = $child[$key_name];
 
-			if($gruppen_dict[$gruppenName]==NULL)
+			if(!isset($gruppen_dict[$gruppenName]))
 				$gruppen_dict[$gruppenName] = array();
 			array_push($gruppen_dict[$gruppenName], $child);
 		}

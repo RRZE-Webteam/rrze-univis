@@ -312,7 +312,6 @@ class UNIVIS {
 		// Hole Daten von Univis
 
 		//&sem=2012w
-                //$url = $this->univis_url."?search=departments&number=".$this->optionen["UnivISOrgNr"]."&show=xml";
 		$url = $this->univis_url."?search=lectures&department=".$this->optionen["UnivISOrgNr"]."&show=xml&sem=".$this->aktuellesSemester();
 
 		if($dozentid) {
@@ -330,14 +329,12 @@ class UNIVIS {
                     echo "Leider konnte die Organisationseinheit nicht gefunden werden.";
                     return -1;
                 } else {
-		$veranstaltungen = $array["Lecture"];
+                    $veranstaltungen = $array["Lecture"];
 
-		$univis_refs = $this->_get_univis_ref($array);
-                //_rrze_debug($univis_refs);
+                    $univis_refs = $this->_get_univis_ref($array);
 
-		//Personen informationen einfügen
-		$this->univis_refs_ersetzen($univis_refs, $veranstaltungen);
-                                                _rrze_debug($veranstaltungen);
+		//Referenzinformationen einfügen
+                $this->univis_refs_ersetzen($univis_refs, $veranstaltungen);
 		return $veranstaltungen;
                 }
 
@@ -355,8 +352,7 @@ class UNIVIS {
 				echo "<div class=\"hinweis_wichtig\">Bitte geben Sie eine Lehrveranstaltung an.</div>";
 				return -1;
 			}
-
-		$url = "http://univis.uni-erlangen.de/prg?search=lectures&show=xml&sem=".$this->aktuellesSemester();
+		$url = $this->univis_url."?search=lectures&show=xml&sem=".$this->aktuellesSemester();
 
 		if($this->optionen["id"]) {
 			$url .= "&id=".$this->toNumber($this->optionen["id"]);
@@ -431,25 +427,18 @@ class UNIVIS {
 	}
 
 	// Ersetzt die Referenzen von Univis durch den jeweilig dazugehoerigen Datensatz.
-	private function univis_refs_ersetzen($refs, $arr) {
-            //_rrze_debug($arr);
+	private function univis_refs_ersetzen($refs, &$arr) {
 		$search_results = array();
 		$search_key = "UnivISRef";
 
 		foreach ($arr as &$child) {
-                    //_rrze_debug($child);
-                    if(is_array($child)) {
-			if(array_key_exists($search_key, $child)) {
-                                                                            //_rrze_debug($refs[$child[$search_key][0]["key"]]);
-				$child = $refs[$child[$search_key][0]["key"]];
+			if(@array_key_exists($search_key, $child)) {                   
+				$child = $refs[$child[$search_key][0]["key"]];             
 			}
-                    //}
-			//if(is_array($child)) {
+			if(is_array($child)) {
 				$this->univis_refs_ersetzen($refs, $child);
-                                _rrze_debug($child);
 			}
 		}
-               //_rrze_debug($search_results);
 		return $search_results;
 	}
 
