@@ -95,8 +95,8 @@ class UNIVIS {
 
 	private function _ladeMitarbeiterAlle() {
 		// Hole Daten von Univis
-		$url = $this->univis_url."?search=departments&number=".$this->optionen["UnivISOrgNr"]."&show=xml";
-
+		$url = esc_url_raw( $this->univis_url."?search=departments&number=".$this->optionen["UnivISOrgNr"]."&show=xml" );
+                
 		if(!fopen($url, "r")) {
 			// Univis Server ist nicht erreichbar
 			return -1;
@@ -191,7 +191,7 @@ class UNIVIS {
 
 	private function _ladeMitarbeiterOrga() {
 		// Hole Daten von Univis
-		$url = $this->univis_url."?search=persons&department=".$this->optionen["UnivISOrgNr"]."&show=xml";
+		$url = esc_url_raw( $this->univis_url."?search=persons&department=".$this->optionen["UnivISOrgNr"]."&show=xml" );
 
 		if(!fopen($url, "r")) {
 			// Univis Server ist nicht erreichbar
@@ -227,7 +227,7 @@ class UNIVIS {
 		}
 
 		// Hole Daten von Univis
-		$url = $this->univis_url."?search=persons&department=".$this->optionen["UnivISOrgNr"]."&name=".$this->optionen["lastname"]."&firstname=".$this->optionen["firstname"]."&show=xml";
+		$url = esc_url_raw( $this->univis_url."?search=persons&name=".$this->optionen["lastname"]."&firstname=".$this->optionen["firstname"]."&show=xml" );
 
 		$url = $this->umlaute_ersetzen($url);
 
@@ -269,11 +269,15 @@ class UNIVIS {
 
 	private function _ladePublikationen($authorid = NULL) {
 		// Hole Daten von Univis
-		$url = $this->univis_url."?search=publications&show=xml&department=" . $this->optionen["UnivISOrgNr"];
+		$url = esc_url_raw( $this->univis_url."?search=publications&show=xml" );
+                if($this->optionen["UnivISOrgNr"]) {
+                    //Suche Publikationen zu einer UnivISOrgNr
+                    $url .= "&department=" . $this->optionen["UnivISOrgNr"];
+                }
 
 		if($authorid) {
 			// Suche nur Publikationen von einen bestimmten Autoren
-			$url .= "&authorid=".$authorid;
+			$url .= "&authorid=" . $authorid;
 		}
 
 		if(!fopen($url, "r")) {
@@ -312,10 +316,13 @@ class UNIVIS {
 		// Hole Daten von Univis
 
 		//&sem=2012w
-		$url = $this->univis_url."?search=lectures&department=".$this->optionen["UnivISOrgNr"]."&show=xml&sem=".$this->aktuellesSemester();
+		$url = esc_url_raw( $this->univis_url."?search=lectures&show=xml&sem=".$this->aktuellesSemester() );
+                if( $this->optionen["UnivISOrgNr"] ) {
+                    $url .= "&department=" . $this->optionen["UnivISOrgNr"];
+                }
 
-		if($dozentid) {
-			$url .= "&lecturerid=".$dozentid;
+		if( $dozentid ) {
+			$url .= "&lecturerid=" . $dozentid;
 		}
 
 		if(!fopen($url, "r")) {
@@ -346,16 +353,15 @@ class UNIVIS {
 
 	private function _ladeLehrveranstaltungenEinzeln() {
 		// Hole Daten von Univis
-
 		if($this->optionen["id"] == "") {
 				// Fehler: Bitte geben Sie eine Lehrveranstaltung an
 				echo "<div class=\"hinweis_wichtig\">Bitte geben Sie eine Lehrveranstaltung an.</div>";
 				return -1;
 			}
-		$url = $this->univis_url."?search=lectures&show=xml&sem=".$this->aktuellesSemester();
+		$url = $this->univis_url."?search=lectures&show=xml&sem=".$this->aktuellesSemester() ;
 
 		if($this->optionen["id"]) {
-			$url .= "&id=".$this->toNumber($this->optionen["id"]);
+			$url .=  "&id=".$this->toNumber($this->optionen["id"]) ;
 		}
 
 		if(!fopen($url, "r")) {

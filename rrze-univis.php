@@ -97,8 +97,8 @@ class RRZE_UnivIS {
                         'Personenanzeige_Verzeichnis' => '',
 			'Personenanzeige_Bildsuche' =>	'1',
 			'Personenanzeige_ZusatzdatenInDatei' =>	'1',
-			'Personenanzeige_Publikationen'	=> '0',
-			'Personenanzeige_Lehrveranstaltung' => '1',
+			'Personenanzeige_Publikationen'	=> '1',
+			'Personenanzeige_Lehrveranstaltungen' => '1',
                         'Lehrveranstaltung_Verzeichnis' => '',
                         'SeitenCache' => '0',
 			'START_SOMMERSEMESTER' => '1.4',
@@ -108,7 +108,10 @@ class RRZE_UnivIS {
 			'Sortiere_Alphabet' => '0',
 			'Sortiere_Jobs' => '1',
                         'Ignoriere_Jobs' => 'Sicherheitsbeauftragter|IT-Sicherheits-Beauftragter|Webmaster|Postmaster|IT-Betreuer|UnivIS-Beauftragte',
-                        'Datenverzeichnis' => ''
+                        'Datenverzeichnis' => '',
+                        'id' => '',
+                        'firstname' => '',
+                        'lastname' => ''
 	);
         return $defaults;
     }
@@ -213,35 +216,61 @@ class RRZE_UnivIS {
         $screen->set_help_sidebar($help_sidebar);
     }
 
-    public static function univis($atts) {
+    public static function univis( $atts ) {
         $univis_url = self::$univis_url;
         $options = self::get_options();
         $defaults = self::get_defaults();
-        if(isset($atts['number'])) {
-            $atts['UnivISOrgNr'] = $atts['number'];
+        $univis_link = sprintf('<a href="%1$s">%2$s</a>', $univis_url, $options['univis_default_link']);
+        if( isset( $atts['number'] ) ) {
+            $atts['UnivISOrgNr'] = (int) wp_kses( $atts['number'], array() );
         }
-        $shortcode_atts = shortcode_atts($defaults, $atts);
+        if( isset( $atts['id'] ) ) {
+            $atts['id'] = (int) wp_kses( $atts['id'], array() );
+        }
+        $shortcode_atts = shortcode_atts( $defaults, $atts );
         extract($shortcode_atts);
-        if ($UnivISOrgNr) {
-            // FETCH $_GET OR CRON ARGUMENTS TO AUTOMATE TASKS
+        /*if( isset( $atts['task'] ) ) {
+            $task = $atts['task'];
+        } else {
+            $task = $defaults['task'];
+        }*/
+        // FETCH $_GET OR CRON ARGUMENTS TO AUTOMATE TASKS
             /*if(isset($argv[1])) {
                 $args = (!empty($_GET)) ? $_GET:array('task'=>$argv[1]);
             }*/
-            if(isset($atts['task'])) {
-                $task = $atts['task'];
-            } else {
-                $task = $defaults['task'];
+        switch( $task ) {
+            case 'mitarbeiter-alle':
+            case 'mitarbeiter-orga':
+            case 'lehrveranstaltungen-alle':
+            //case 'lehrveranstaltungen-kalender':
+            case 'publikationen':
+                if( !$UnivISOrgNr ) {
+                    $ausgabe = '<p>' . __('Bitte geben Sie eine gültige UnivIS-Organisationsnummer an.', self::textdomain) . '</p>';
+                    break;
+                }
+                $controller = new univisController($task, NULL, $shortcode_atts);
+                $ausgabe = $controller->ladeHTML();
+                break;
+            case 'lehrveranstaltungen-einzeln':
+                if( !$id ) {
+                    $ausgabe = '<p>' . __('Bitte geben Sie eine gültige Lehrveranstaltungs-ID an.', self::textdomain). '</p>';
+                    break;
+                }
+            case 'mitarbeiter-einzeln':        
+                if( !$firstname && !$lastname ) {
+                    $ausgabe = '<p>' . __('Bitte geben Sie eine gültige Lehrveranstaltungs-ID an.', self::textdomain). '</p>';
+                    break;
+                }
+                $controller = new univisController($task, NULL, $shortcode_atts);
+                $ausgabe = $controller->ladeHTML();
+                break;
+            default:
+                $ausgabe = $univis_link;
             }
-            $controller = new univisController($task, NULL, $shortcode_atts);
-            //$controller = new univisController("mitarbeiter-alle", NULL, $shortcode_atts);
-            $ausgabe = $controller->ladeHTML();
-            
-
-        } else
-            $ausgabe = sprintf('<a href="%1$s">%2$s</a>', $univis_url, $options['univis_default_link']);
 
         return $ausgabe;
     }
+    
     public function univis_shortcodes_rte_button() {
         if( current_user_can('edit_posts') &&  current_user_can('edit_pages') ) {
             add_filter( 'mce_external_plugins', array($this, 'univis_rte_add_buttons' ));

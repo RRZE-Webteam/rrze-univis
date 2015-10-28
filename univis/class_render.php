@@ -337,19 +337,23 @@ class univisRender {
 			$name = $person["firstname"]."_".$person["lastname"];
 			$person["nameurl"] = strtolower($this->umlaute_ersetzen($name));
 			$person["nameurl"] = str_replace(" ", "%20", $person["nameurl"]);
-
+                        
 			// Lade Publikationen
-			$publikationen = $this->_bearbeitePublikationen($person["publikationen"]);
+			if( isset($person["publikationen"]) ) {
+                            $publikationen = $this->_bearbeitePublikationen($person["publikationen"]);
 
-			if($publikationen) $person["publikationen"] = $publikationen;
-			else unset($person["publikationen"]);
+                            if($publikationen) $person["publikationen"] = $publikationen;
+                            else unset($person["publikationen"]);
+                        }
 
 
 			// Lade Lehrveranstaltungen
-			$lehrveranstaltungen = $this->_bearbeiteLehrveranstaltungenAlle($person["lehrveranstaltungen"]);
+			if( isset($person["lehrveranstaltungen"]) ) {
+                            $lehrveranstaltungen = $this->_bearbeiteLehrveranstaltungenAlle($person["lehrveranstaltungen"]);
 
-			if($lehrveranstaltungen) $person["lehrveranstaltungen"] = $lehrveranstaltungen;
-			else unset($person["lehrveranstaltungen"]);
+                            if($lehrveranstaltungen) $person["lehrveranstaltungen"] = $lehrveranstaltungen;
+                            else unset($person["lehrveranstaltungen"]);
+                        }
 
 			return array("person" => $person, "optionen" =>$this->optionen);
 		}
@@ -412,6 +416,7 @@ class univisRender {
 
 		//Nach Jahren gruppieren
 		$veranstaltungen = $this->_group_by("type", $veranstaltungen);
+
 
 		return array( "veranstaltungen" => $veranstaltungen, "optionen" => $this->optionen);
 	}
@@ -603,15 +608,15 @@ class univisRender {
 							6 => "Samstag",
 							7 => "Sonntag"
 						);
-                                                _rrze_debug($repeat);
 						array_push($date, $days_short[$repeat[1]]);
 
 					}
 				}
 
-				$lecture["date"] = implode(" ", $date);
-
-				$lecture["room_short"] = $lecture["room"][0]["short"];
+                                    $lecture["date"] = implode(" ", $date);
+                                
+                                if(isset($lecture["room"])) 
+                                    $lecture["room_short"] = $lecture["room"][0]["short"];
 
 				if(isset($lecture["exclude"])) {
 					$dates = explode(",", $lecture["exclude"]);
@@ -641,7 +646,6 @@ class univisRender {
 
 		if(isset($veranstaltung["ects_infos"])) $veranstaltung["ects_infos"] = ($veranstaltung["ects_name"] || $veranstaltung["ects_summary"] || $veranstaltung["ects_literature"]);
 		if(isset($veranstaltung["zusatzinfos"])) $veranstaltung["zusatzinfos"] = ($veranstaltung["keywords"] || $veranstaltung["turnout"] || $veranstaltung["url_description"]);
-
 
 		return array( "veranstaltung" => $veranstaltung, "optionen" => $this->optionen);
 	}
