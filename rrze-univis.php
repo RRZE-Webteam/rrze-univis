@@ -85,7 +85,7 @@ class RRZE_UnivIS {
         $linktext = '<b><i>Univ</i>IS</b> - Informationssystem der FAU';
         $options = array(
             'univis_default_link' => $linktext,
-            
+            'UnivISOrgNr' => ''            
         );
         return $options;
     }
@@ -171,12 +171,14 @@ class RRZE_UnivIS {
         register_setting('univis_options', self::option_name, array(__CLASS__, 'options_validate'));
         add_settings_section('univis_default_section', false, '__return_false', 'univis_options');
         add_settings_field('univis_default', __('Linktext zu <b><i>Univ</i>IS</b>', self::textdomain), array(__CLASS__, 'univis_default'), 'univis_options', 'univis_default_section');
+        add_settings_field('UnivISOrgNr', __('<b><i>Univ</i>IS</b>-OrgNr.', self::textdomain), array(__CLASS__, 'univis_orgnr'), 'univis_options', 'univis_default_section');        
     }
 
     public static function options_validate($input) {
         $defaults = self::default_options();
         $options = self::get_options();
         $input['univis_default_link'] = !empty($input['univis_default_link']) ? $input['univis_default_link'] : $defaults['univis_default_link'];
+        $input['UnivISOrgNr'] = !empty($input['UnivISOrgNr']) ? $input['UnivISOrgNr'] : $defaults['UnivISOrgNr'];
         return $input;
     }
 
@@ -184,6 +186,13 @@ class RRZE_UnivIS {
         $options = self::get_options();
         ?>
         <input type='text' name="<?php printf('%s[univis_default_link]', self::option_name); ?>" value="<?php echo $options['univis_default_link']; ?>">
+        <?php
+    }
+    
+    public static function univis_orgnr() {
+        $options = self::get_options();
+        ?>
+        <input type='text' name="<?php printf('%s[UnivISOrgNr]', self::option_name); ?>" value="<?php echo $options['UnivISOrgNr']; ?>">
         <?php
     }
 
@@ -223,6 +232,8 @@ class RRZE_UnivIS {
         $univis_link = sprintf('<a href="%1$s">%2$s</a>', $univis_url, $options['univis_default_link']);
         if( isset( $atts['number'] ) ) {
             $atts['UnivISOrgNr'] = (int) wp_kses( $atts['number'], array() );
+        } else {
+            $atts['UnivISOrgNr'] = $options['UnivISOrgNr'];
         }
         if( isset( $atts['id'] ) ) {
             $atts['id'] = (int) wp_kses( $atts['id'], array() );
