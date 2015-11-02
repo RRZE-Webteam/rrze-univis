@@ -230,6 +230,10 @@ class RRZE_UnivIS {
         $options = self::get_options();
         $defaults = self::get_defaults();
         $univis_link = sprintf('<a href="%1$s">%2$s</a>', $univis_url, $options['univis_default_link']);
+        if( empty( $atts )) {
+            $ausgabe = $univis_link;
+            echo "ich bin hier";
+        } else {
         if( isset( $atts['number'] ) ) {
             $atts['UnivISOrgNr'] = (int) wp_kses( $atts['number'], array() );
         } else {
@@ -278,7 +282,7 @@ class RRZE_UnivIS {
             default:
                 $ausgabe = $univis_link;
             }
-
+        }
         return $ausgabe;
     }
     
