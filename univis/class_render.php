@@ -497,13 +497,15 @@ class univisRender {
 		$this->_rename_key("type", $veranstaltung, univisDicts::$lecturetypen);
 
 		// Dozs
-		for ($i = 0; $i<count($veranstaltung["dozs"]); $i++) {
+                if( isset( $veranstaltung["dozs"] ) ) {
+                    for ($i = 0; $i<count($veranstaltung["dozs"]); $i++) {
 			for ($k = 0; $k < count($veranstaltung["dozs"][$i]["doz"]); $k++) {
 
 				$veranstaltung["dozs"][$i]["doz"][$k]["firstname_small"] = strtolower($this->umlaute_ersetzen($veranstaltung["dozs"][$i]["doz"][$k]["firstname"]));
 				$veranstaltung["dozs"][$i]["doz"][$k]["lastname_small"] = strtolower($this->umlaute_ersetzen($veranstaltung["dozs"][$i]["doz"][$k]["lastname"]));
 			}
-		}
+                    }
+                }
 
 
 		//Begin: Angaben
@@ -569,9 +571,11 @@ class univisRender {
 				$lecture = &$veranstaltung["terms"][$_terms]["term"][$_term];
 
 				$date = array();
+                                
+                                if( isset( $lecture["repeat"] ) )
+                                    $repeat = explode(",", $lecture["repeat"]);
 
-				$repeat = explode(" ", $lecture["repeat"]);
-				if($repeat) {
+				if( isset( $repeat ) ) {
 					$dict = array(
 						"w1" => "",
 						"w2" => "Alle zwei Wochen",
