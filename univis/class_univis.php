@@ -453,6 +453,9 @@ class UNIVIS {
 
 		$dict = array("Room", "Person", "Title", "Lecture");
 		foreach ($dict as $type) {
+                    if( !isset( $arr[$type] ) ) {
+                        $arr[$type] = array();
+                    }
 			$univis_refs = array_merge($univis_refs, $arr[$type]);
 		}
 
