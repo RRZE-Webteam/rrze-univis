@@ -3,8 +3,8 @@
   Plugin Name: RRZE-UnivIS
   Plugin URI: https://github.com/RRZE-Webteam/rrze-univis
  * Description: Einbindung von Daten aus UnivIS für den Geschäftsverteilungsplan auf Basis des UnivIS-Plugins des Webbaukastens.
- * Version: 1.0.5
- * Author: RRZE-Webteam (Karin Kimpan)
+ * Version: 1.1
+ * Author: RRZE-Webteam
  * Author URI: http://blogs.fau.de/webworking/
  * License: GPLv2 or later
  */
@@ -85,7 +85,7 @@ class RRZE_UnivIS {
         $linktext = '<b><i>Univ</i>IS</b> - Informationssystem der FAU';
         $options = array(
             'univis_default_link' => $linktext,
-            
+            'UnivISOrgNr' => ''            
         );
         return $options;
     }
@@ -97,8 +97,8 @@ class RRZE_UnivIS {
                         'Personenanzeige_Verzeichnis' => '',
 			'Personenanzeige_Bildsuche' =>	'1',
 			'Personenanzeige_ZusatzdatenInDatei' =>	'1',
-			'Personenanzeige_Publikationen'	=> '0',
-			'Personenanzeige_Lehrveranstaltung' => '1',
+			'Personenanzeige_Publikationen'	=> '1',
+			'Personenanzeige_Lehrveranstaltungen' => '1',
                         'Lehrveranstaltung_Verzeichnis' => '',
                         'SeitenCache' => '0',
 			'START_SOMMERSEMESTER' => '1.4',
@@ -108,7 +108,10 @@ class RRZE_UnivIS {
 			'Sortiere_Alphabet' => '0',
 			'Sortiere_Jobs' => '1',
                         'Ignoriere_Jobs' => 'Sicherheitsbeauftragter|IT-Sicherheits-Beauftragter|Webmaster|Postmaster|IT-Betreuer|UnivIS-Beauftragte',
-                        'Datenverzeichnis' => ''
+                        'Datenverzeichnis' => '',
+                        'id' => '',
+                        'firstname' => '',
+                        'lastname' => ''
 	);
         return $defaults;
     }
@@ -168,12 +171,14 @@ class RRZE_UnivIS {
         register_setting('univis_options', self::option_name, array(__CLASS__, 'options_validate'));
         add_settings_section('univis_default_section', false, '__return_false', 'univis_options');
         add_settings_field('univis_default', __('Linktext zu <b><i>Univ</i>IS</b>', self::textdomain), array(__CLASS__, 'univis_default'), 'univis_options', 'univis_default_section');
+        add_settings_field('UnivISOrgNr', __('<b><i>Univ</i>IS</b>-OrgNr.', self::textdomain), array(__CLASS__, 'univis_orgnr'), 'univis_options', 'univis_default_section');        
     }
 
     public static function options_validate($input) {
         $defaults = self::default_options();
         $options = self::get_options();
         $input['univis_default_link'] = !empty($input['univis_default_link']) ? $input['univis_default_link'] : $defaults['univis_default_link'];
+        $input['UnivISOrgNr'] = !empty($input['UnivISOrgNr']) ? $input['UnivISOrgNr'] : $defaults['UnivISOrgNr'];
         return $input;
     }
 
@@ -181,6 +186,13 @@ class RRZE_UnivIS {
         $options = self::get_options();
         ?>
         <input type='text' name="<?php printf('%s[univis_default_link]', self::option_name); ?>" value="<?php echo $options['univis_default_link']; ?>">
+        <?php
+    }
+    
+    public static function univis_orgnr() {
+        $options = self::get_options();
+        ?>
+        <input type='text' name="<?php printf('%s[UnivISOrgNr]', self::option_name); ?>" value="<?php echo $options['UnivISOrgNr']; ?>">
         <?php
     }
 
@@ -213,29 +225,66 @@ class RRZE_UnivIS {
         $screen->set_help_sidebar($help_sidebar);
     }
 
-    public static function univis($atts) {
+    public static function univis( $atts ) {
         $univis_url = self::$univis_url;
         $options = self::get_options();
         $defaults = self::get_defaults();
-        if(isset($atts['number'])) {
-            $atts['UnivISOrgNr'] = $atts['number'];
+        $univis_link = sprintf('<a href="%1$s">%2$s</a>', $univis_url, $options['univis_default_link']);
+        if( empty( $atts )) {
+            $ausgabe = $univis_link;
+        } else {
+        if( isset( $atts['number'] ) ) {
+            $atts['UnivISOrgNr'] = (int) wp_kses( $atts['number'], array() );
+        } else {
+            $atts['UnivISOrgNr'] = $options['UnivISOrgNr'];
         }
-        $shortcode_atts = shortcode_atts($defaults, $atts);
+        if( isset( $atts['id'] ) ) {
+            $atts['id'] = (int) wp_kses( $atts['id'], array() );
+        }
+        $shortcode_atts = shortcode_atts( $defaults, $atts );
         extract($shortcode_atts);
-        if ($UnivISOrgNr) {
-            // FETCH $_GET OR CRON ARGUMENTS TO AUTOMATE TASKS
-            if(isset($argv[1])) {
+        /*if( isset( $atts['task'] ) ) {
+            $task = $atts['task'];
+        } else {
+            $task = $defaults['task'];
+        }*/
+        // FETCH $_GET OR CRON ARGUMENTS TO AUTOMATE TASKS
+            /*if(isset($argv[1])) {
                 $args = (!empty($_GET)) ? $_GET:array('task'=>$argv[1]);
+            }*/
+        switch( $task ) {
+            case 'mitarbeiter-alle':
+            case 'mitarbeiter-orga':
+            case 'lehrveranstaltungen-alle':
+            //case 'lehrveranstaltungen-kalender':
+            case 'publikationen':
+                if( !$UnivISOrgNr ) {
+                    $ausgabe = '<p>' . __('Bitte geben Sie eine gültige UnivIS-Organisationsnummer an.', self::textdomain) . '</p>';
+                    break;
+                }
+                $controller = new univisController($task, NULL, $shortcode_atts);
+                $ausgabe = $controller->ladeHTML();
+                break;
+            /* case 'lehrveranstaltungen-einzeln':
+                if( !$id ) {
+                    $ausgabe = '<p>' . __('Bitte geben Sie eine gültige Lehrveranstaltungs-ID an.', self::textdomain). '</p>';
+                    break;
+                } 
+            case 'mitarbeiter-einzeln':        
+                if( !$firstname && !$lastname ) {
+                    $ausgabe = '<p>' . __('Bitte geben Sie einen Vor- und Nachnamen an.', self::textdomain). '</p>';
+                    break;
+                } */
+                $controller = new univisController($task, NULL, $shortcode_atts);
+                $ausgabe = $controller->ladeHTML();
+                break;
+            default:
+                $ausgabe = $univis_link;
             }
-            $controller = new univisController("mitarbeiter-alle", NULL, $shortcode_atts);
-            $ausgabe = $controller->ladeHTML();
-            
-
-        } else
-            $ausgabe = sprintf('<a href="%1$s">%2$s</a>', $univis_url, $options['univis_default_link']);
-
+        }
         return $ausgabe;
     }
+    
     public function univis_shortcodes_rte_button() {
         if( current_user_can('edit_posts') &&  current_user_can('edit_pages') ) {
             add_filter( 'mce_external_plugins', array($this, 'univis_rte_add_buttons' ));

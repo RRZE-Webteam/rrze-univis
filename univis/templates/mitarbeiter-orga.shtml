@@ -13,20 +13,7 @@
 	<h2><a name="{{ name }}">{{ name }}</a></h2>
 	<ul>
 		{{#personen}}
-		    <li class="vcard">
-		        <span class="fn n">
-			        <a class="url" href="/{{#optionen}}{{Personenanzeige_Verzeichnis}}{{/optionen}}/{{nameurl}}.shtml">
-			            
-			            {{#title}}
-			            <span class="honorific-prefix"><acronym title="{{ title-long }}">{{title}}</acronym></span>
-			            {{/title}}
-			            <span class="given-name">{{ firstname }}</span>
-			            <span class="family-name">{{ lastname }}</span>{{#atitle}},
-			            <span class="honorific-suffix"><acronym title="">{{ atitle }}</acronym></span>
-			            {{/atitle}}
-			        </a>
-		        </span>
-		    </li>
+		    <li class="vcard"><span class="fn n"><a class="url" href="http://univis.uni-erlangen.de/prg?search=persons&id={{ id }}&show=info">{{#title}}<span class="honorific-prefix"><acronym title="{{ title-long }}">{{title}}</acronym></span> {{/title}}<span class="given-name">{{ firstname }}</span> <span class="family-name">{{ lastname }}</span>{{#atitle}}, <span class="honorific-suffix"><acronym title="">{{ atitle }}</acronym></span>{{/atitle}}</a></span></li>
 	    {{/personen}}
 	</ul>
 

@@ -85,7 +85,7 @@
 							<h3>{{title}}</h3>
 							<ul>
 								{{#data}}
-									<li><a href="/{{#optionen}}{{Lehrveranstaltung_Verzeichnis}}{{/optionen}}/{{id}}.shtml">{{name}}</a></li>
+									<li><a href="http://univis.uni-erlangen.de/prg?search=lectures&id={{id}}&show=long">{{name}}</a></li>
 								{{/data}}
 							</ul>
 						</li>
@@ -110,7 +110,7 @@
 					{{#author}}
 						{{#pkey}}
 							{{#full-profile}}
-								<a href="/{{#optionen}}{{Personenanzeige_Verzeichnis}}{{/optionen}}/{{firstname_small}}-{{lastname_small}}.shtml">{{lastname}}, {{firstname}}</a>;
+								<a href="http://univis.uni-erlangen.de/prg?search=persons&id={{ id }}&show=info">{{lastname}}, {{firstname}}</a>;
 							{{/full-profile}}
 
 							{{^full-profile}}
