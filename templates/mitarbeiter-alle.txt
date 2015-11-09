@@ -55,8 +55,8 @@
         {{#personen}}
 {{#lastname}}	    
 <div style=" width:280px;float:left;padding-bottom:5px">
-{{#mitarbeiterURL}}<a href={{mitarbeiterURL}}>{{#title}}{{title}} {{/title}}{{ firstname }} {{ lastname }}</a>{{/mitarbeiterURL}}
-{{^mitarbeiterURL}}
+{{#wp_authorurl}}<a href={{wp_authorurl}}>{{#title}}{{title}} {{/title}}{{ firstname }} {{ lastname }}</a>{{/wp_authorurl}}
+{{^wp_authorurl}}
 	{{#locations}}
 	{{#location}}
 					{{#email}}<a href="mailto:{{ email }}">{{#title}}{{title}} {{/title}}{{ firstname }} {{ lastname }}</a>{{/email}}
@@ -66,7 +66,7 @@
 	{{^locations}}
 		{{#title}}{{title}} {{/title}}{{ firstname }} {{ lastname }}
 	{{/locations}}
-{{/mitarbeiterURL}}
+{{/wp_authorurl}}
 </div>
 {{/lastname}}	  
 {{/personen}}
