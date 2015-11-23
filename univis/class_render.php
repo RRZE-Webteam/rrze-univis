@@ -1161,6 +1161,7 @@ if(count($veranstaltungen)==0){return false;}
 			foreach($person['locations'][0]['location'] as $key=>$value){
 						$search_pattern=array(' ','09131/85','0911/56854','--','(');
 						$replace_pattern=array('','09131/85-','0911/56854-','-',' (');
+						
 
 						if(!empty($value['tel'])){
 							$tel = str_replace($search_pattern,$replace_pattern,$value['tel']);
@@ -1172,6 +1173,13 @@ if(count($veranstaltungen)==0){return false;}
 							$person['locations'][0]['location'][$key]['fax']=$fax;
 							}
 						}
+						
+					if($key>0&&
+					    isset($person['locations']['0']['location'][$key]['email'])&&
+					    $person['locations']['0']['location'][$key]['email']==$person['locations']['0']['location']['0']['email'])
+					    {
+              unset($person['locations']['0']['location'][$key]['email']);
+           }					
 			}
 		return $person;
 	}
