@@ -115,17 +115,23 @@ class UNIVIS {
                     echo "In dieser Organisationseinheit konnten keine Mitarbeiter gefunden werden.";
                     return -1;                                    
                 } else {
+                
+			$jobs = $daten["Org"][0]["jobs"][0]["job"];
+      foreach ($jobs as $key=>$job)
+			{
+			 $tmp = explode(" - ", $job['description']);
+			 $jobs[$key]['description']=$tmp[0];
+			 //- Gruppenleiter und -Teamleiter entfernen
+			}
+			
+			
 		if($this->optionen["Sortiere_Jobs"]) {
 
-			$jobs = $daten["Org"][0]["jobs"][0]["job"];
                         $jobnamen = array();
                         $jobs_vergeben = array();
 			$xjobs = array();
 
-                        foreach ($jobs as $job)
-			{
-				$jobnamen[] = $job['description'];
-			}
+
 
 			if($this->optionen["Ignoriere_Jobs"]) {
 				$xjobs = explode("|", $this->optionen["Ignoriere_Jobs"]);

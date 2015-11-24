@@ -180,13 +180,13 @@ $jobs_of_person_priority=array();
 //schluessel sortieren
 foreach($jobs_of_person as $key => $rang)
 {
-$pos=stripos($this->optionen["Function_Jobs"],$rang);
-if($pos===FALSE)
-{
-$jobs_of_person_priority[]=1000;
-}else{
-$jobs_of_person_priority[]=$pos;
-}
+  $pos=stripos($this->optionen["Function_Jobs"],$rang);
+  if($pos===FALSE)
+  {
+    $jobs_of_person_priority[]=1000;
+  }else{
+    $jobs_of_person_priority[]=$pos;
+  }
 }
 array_multisort($jobs_of_person_priority, SORT_DESC, $jobs_of_person);
 //unwichtigstes funktion jetzt als erstes, wichtigste bleibt somit im zweifel als gruppe übrig.
@@ -194,7 +194,6 @@ array_multisort($jobs_of_person_priority, SORT_DESC, $jobs_of_person);
 
 foreach($jobs_of_person as $key => $rang)
 {
-
 //Test ob Leitungsposition
 	if(stripos($this->optionen["Leader_Jobs"],$rang)!==FALSE)
 	{//String enthalten in Leader_jobs-->Overwrite order setzen
@@ -203,8 +202,8 @@ foreach($jobs_of_person as $key => $rang)
 	switch($rang){
 		case "Leitung":
 					$person['leaderfunction']="[:de]Leitung[:en]Chair of Institute[:]";break;
-		case "Gruppenleiter":
-					$person['leaderfunction']="[:de]Gruppenleiter[:en]Head of team[:]";break;
+		case "Teamleitung":
+					$person['leaderfunction']="[:de]Teamleitung[:en]Head of team[:]";break;
 	  case "Vorzimmer":
 					$person['leaderfunction']="[:de]Vorzimmer[:en]Secretary[:]";break;
 		default:
@@ -264,17 +263,19 @@ foreach($person_specialfunctions as $key=>$value){
 						 $person_specialfunctions[$key]="[:de]IT-Sicherheits-Beauftragter[:en]IT safety advisor[:]";
 				else $person_specialfunctions[$key]="[:de]IT-Sicherheits-Beauftragte[:en]IT safety advisor[:]";
 			break;
-                case "Lehrbeauftragte":
-                                if($person['gender']==="m")
-                                                 $person_specialfunctions[$key]="[:de]Lehrbeauftragter[:en]Lecturer[:]";
-                                else $person_specialfunctions[$key]="[:de]Lehrbeauftragte[:en]Lecturer[:]";
-                        break;
+    case "Lehrbeauftragte":
+        if($person['gender']==="m")
+             $person_specialfunctions[$key]="[:de]Lehrbeauftragter[:en]Lecturer[:]";
+        else $person_specialfunctions[$key]="[:de]Lehrbeauftragte[:en]Lecturer[:]";
+      break;
 
 
 	}
 }
 }
-
+//echo "<pre>";
+//print_r($jobs_of_person);
+//echo "</pre>";
 $person['specialfunction']=implode(", ", $person_specialfunctions);
 $person['rang']= implode("|", $jobs_of_person);
 
@@ -316,6 +317,10 @@ $person['rang']= implode("|", $jobs_of_person);
                             //$gruppen_text[$gruppen_name][0]['text'] = preg_replace($suchstring, $html, $gruppen_text[$gruppen_name][0]['text']);
                             }                                 
 		}//ende Schleife über personen
+		
+		
+		
+		//gruppieren nach gruppen:
                     foreach ($jobnamen as $gruppen_name) {
 
                    if(isset($gruppen_dict[$gruppen_name]))
@@ -326,12 +331,46 @@ $person['rang']= implode("|", $jobs_of_person);
                             if(isset($gruppen_personen[0]['lastname'])){
                                 $gruppen_personen = $this->array_orderby($gruppen_personen,"overwriteorder", SORT_DESC,"lastname", SORT_ASC, "firstname", SORT_ASC);
                             }
+                            echo $gruppen_name.strpos($gruppen_name,"Gruppe")."<br>";
+   
+                       
 													
                             $gruppen_obj = array(
                                     "name" => $gruppen_name,
                                     //"personen" => $this->record_sort($gruppen_personen, "lastname")
                                     "personen" => $gruppen_personen
                             );
+                                                   $groupstart=false;
+                            
+                             $gruppen_obj["groupid"]="groupid".$groupid;
+                            if((strpos($gruppen_name,'Gruppe')===0) || (strpos($gruppen_name,'Group')===0))
+                            {
+                            
+                                if(++$groupid>1)
+                                {
+                                $gruppen_obj["groupcss_start"]="</div><div class=\"group\" id=\"".$groupid."\">";
+                                }
+                                else{
+                                $gruppen_obj["groupcss_start"]="<div class=\"group\" id=\"".$groupid."\">";
+                                                                }
+                                $gruppen_obj["groupid"]="groupleader".$groupid;
+                                $gruppen_obj["groupleader"]="true";
+                                foreach($gruppen_obj["personen"] as $key=>$person)
+                                {
+                                 $gruppen_obj["personen"][$key]["leaderfunction"]="[:de]Gruppenleitung[:en]Group leader[:]";
+                                }
+                              
+                            }else if(strpos($gruppen_name,"Team Technology (TE)")===0)
+                            {
+                            $gruppen_obj["groupcss_start"]="</div>";
+                              $groupid=0;
+                            }
+                            
+                             
+                            
+                            
+                            
+                            
          						if(count($gruppen_personen)>0)
 														{//ignore empty groups
 																array_push($gruppen, $gruppen_obj);
@@ -872,6 +911,7 @@ if(count($veranstaltungen)==0){return false;}
 							3 => "Mi",
 							4 => "Do",
 							5 => "Fr",
+
 							6 => "Sa",
 							7 => "So"
 						);
@@ -1159,8 +1199,8 @@ if(count($veranstaltungen)==0){return false;}
 			//		print("<pre>");print_r($person);print("</pre>");
 			if(isset($person['locations'])&&is_array($person['locations'])){
 			foreach($person['locations'][0]['location'] as $key=>$value){
-						$search_pattern=array(' ','09131/85','0911/56854','--','(');
-						$replace_pattern=array('','09131/85-','0911/56854-','-',' (');
+						$search_pattern=array(' ','09131/85','+49913185','0911/56854','--','(');
+						$replace_pattern=array('','09131/85-','09131/85-','0911/56854-','-',' (');
 						
 
 						if(!empty($value['tel'])){
