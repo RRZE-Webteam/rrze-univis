@@ -331,7 +331,7 @@ $person['rang']= implode("|", $jobs_of_person);
                             if(isset($gruppen_personen[0]['lastname'])){
                                 $gruppen_personen = $this->array_orderby($gruppen_personen,"overwriteorder", SORT_DESC,"lastname", SORT_ASC, "firstname", SORT_ASC);
                             }
-                            echo $gruppen_name.strpos($gruppen_name,"Gruppe")."<br>";
+                            //echo $gruppen_name.strpos($gruppen_name,"Gruppe")."<br>";
    
                        
 													
@@ -345,14 +345,14 @@ $person['rang']= implode("|", $jobs_of_person);
                              $gruppen_obj["groupid"]="groupid".$groupid;
                             if((strpos($gruppen_name,'Gruppe')===0) || (strpos($gruppen_name,'Group')===0))
                             {
-                            
-                                if(++$groupid>1)
+                              ++$groupid;
+                                if($groupid>1)
                                 {
-                                $gruppen_obj["groupcss_start"]="</div><div class=\"group\" id=\"".$groupid."\">";
+                                  $gruppen_obj["groupcss_start"]="</div><div class=\"group\" id=\"".$groupid."\">";
                                 }
                                 else{
-                                $gruppen_obj["groupcss_start"]="<div class=\"group\" id=\"".$groupid."\">";
-                                                                }
+                                  $gruppen_obj["groupcss_start"]="<div class=\"group\" id=\"".$groupid."\">";
+                                }
                                 $gruppen_obj["groupid"]="groupleader".$groupid;
                                 $gruppen_obj["groupleader"]="true";
                                 foreach($gruppen_obj["personen"] as $key=>$person)
@@ -364,8 +364,9 @@ $person['rang']= implode("|", $jobs_of_person);
                             {
                             $gruppen_obj["groupcss_start"]="</div>";
                               $groupid=0;
+                              $gruppen_obj["groupid"]="groupid".$groupid;
                             }
-                            
+
                              
                             
                             
@@ -426,7 +427,7 @@ $person['rang']= implode("|", $jobs_of_person);
 foreach($gruppen as $key =>&$group)
 {
 
-$gruppen[$key]['name']=str_replace("Gruppe","[:de]Gruppe[:en]Team[:]",$group['name']);
+$gruppen[$key]['name']=str_replace("Gruppe","[:de]Gruppe[:en]Group[:]",$group['name']);
 
 switch ($group['name']) {
     case "Professoren/-innen":
@@ -434,12 +435,18 @@ switch ($group['name']) {
 			break;
     case "Sekretariat":
      $gruppen[$key]['name']="[:de]Sekretariat[:en]Secretariat[:]";
+			break;  
+		case "Verwaltung":
+     $gruppen[$key]['name']="[:de]Verwaltung[:en]Administration[:]";
 			break;    
 		case "Projektkoordination":
      $gruppen[$key]['name']="[:de]Projektkoordination[:en]Project administration[:]";
         break;
     case "Lehrbeauftragte":
      $gruppen[$key]['name']="[:de]Lehrbeauftragte[:en]Guest lecturer[:]";
+        break;
+    case "Externe Doktoranden":
+     $gruppen[$key]['name']="[:de]Externe Doktoranden[:en]External doctoral students[:]";
         break;
 		case "Gastwissenschaftler/-in":
      $gruppen[$key]['name']="[:de]Gastwissenschaftler[:en]Guest scientists[:]";

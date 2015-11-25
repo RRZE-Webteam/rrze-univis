@@ -8,8 +8,8 @@
   <colgroup>
    <col width="50px">
     <col>
-    <col width="30%">
-    <col width="15%">
+    <col width="33%">
+    <col width="16%">
   </colgroup>
 {{#personen}}
 	<td>
