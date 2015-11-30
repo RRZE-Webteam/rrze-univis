@@ -2,7 +2,7 @@
 	{{#gruppen}}
 	{{{groupcss_start}}}
 	<div class={{groupid}}>
-	{{#groupleader}}<h3>{{ name }}</h3>{{/groupleader}}
+	{{#groupleader}}<h3 class="group">{{ name }}</h3>{{/groupleader}}
 	{{^groupleader}}<h4>{{ name }}</h4>{{/groupleader}}
  <table>
   <colgroup>

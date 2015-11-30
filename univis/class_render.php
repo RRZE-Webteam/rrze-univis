@@ -243,12 +243,12 @@ foreach($person_specialfunctions as $key=>$value){
 						 $person_specialfunctions[$key]="[:de]Sicherheitsbeauftragter[:en]Safety advisor[:]";
 				else $person_specialfunctions[$key]="[:de]Sicherheitsbeauftragte[:en]Safety advisor[:]";
 			break;
-		case "Ehemalige/r Mitarbeiter/-in":
+		case "Ehemalige Mitarbeiter/-innen":
 				if($person['gender']==="m")
 						 $person_specialfunctions[$key]="[:de]Ehemaliger[:en]Former staff[:]";
 				else $person_specialfunctions[$key]="[:de]Ehemalige[:en]Former staff[:]";
 			break;
-		case "Gastwissenschaftler/-in":
+		case "Gastwissenschaftler/-innen":
 				if($person['gender']==="m")
 						 $person_specialfunctions[$key]="[:de]Gastwissenschaftler[:en]Guest scientist[:]";
 				else $person_specialfunctions[$key]="[:de]Gastwissenschaftlerin[:en]Guest scientist[:]";
@@ -268,7 +268,11 @@ foreach($person_specialfunctions as $key=>$value){
              $person_specialfunctions[$key]="[:de]Lehrbeauftragter[:en]Lecturer[:]";
         else $person_specialfunctions[$key]="[:de]Lehrbeauftragte[:en]Lecturer[:]";
       break;
-
+		case "Externe Doktoranden/-innen":
+				if($person['gender']==="m")
+						 $person_specialfunctions[$key]="[:de]Externer Doktorand[:en]External doctoral student[:]";
+				else $person_specialfunctions[$key]="[:de]Externe Doktorandin[:en]External doctoral student[:]";
+			break;
 
 	}
 }
@@ -321,6 +325,7 @@ $person['rang']= implode("|", $jobs_of_person);
 		
 		
 		//gruppieren nach gruppen:
+		      $groupid=0;
                     foreach ($jobnamen as $gruppen_name) {
 
                    if(isset($gruppen_dict[$gruppen_name]))
@@ -333,7 +338,7 @@ $person['rang']= implode("|", $jobs_of_person);
                             }
                             //echo $gruppen_name.strpos($gruppen_name,"Gruppe")."<br>";
    
-                       
+                 
 													
                             $gruppen_obj = array(
                                     "name" => $gruppen_name,
@@ -343,7 +348,7 @@ $person['rang']= implode("|", $jobs_of_person);
                                                    $groupstart=false;
                             
                              $gruppen_obj["groupid"]="groupid".$groupid;
-                            if((strpos($gruppen_name,'Gruppe')===0) || (strpos($gruppen_name,'Group')===0))
+                            if((strpos($gruppen_name,'Gruppe ')===0) || (strpos($gruppen_name,'Group ')===0))
                             {
                               ++$groupid;
                                 if($groupid>1)
@@ -366,11 +371,17 @@ $person['rang']= implode("|", $jobs_of_person);
                               $groupid=0;
                               $gruppen_obj["groupid"]="groupid".$groupid;
                             }
+                            if($groupid===0){
+                            $gruppen_obj["groupleader"]="true";
+                            }
 
-                             
-                            
-                            
-                            
+                           if(strpos($gruppen_name,"Gruppenleitung")===0)
+                           {
+                              foreach($gruppen_obj["personen"] as $key=>$person)
+                                {
+                                 $gruppen_obj["personen"][$key]["leaderfunction"]="";
+                                }
+                           }  
                             
          						if(count($gruppen_personen)>0)
 														{//ignore empty groups
@@ -426,49 +437,47 @@ $person['rang']= implode("|", $jobs_of_person);
 //Localisation
 foreach($gruppen as $key =>&$group)
 {
-
 $gruppen[$key]['name']=str_replace("Gruppe","[:de]Gruppe[:en]Group[:]",$group['name']);
+  switch ($group['name']) {
+      case "Professoren/-innen":
+       $gruppen[$key]['name']="[:de]Lehrstuhlleitung[:en]Institutional administration[:]";
+			  break;
+	  case "[:de]Gruppe[:en]Group[:]nleitung":
+       $gruppen[$key]['name']="[:de]Postdoktoranden[:en]Postdocs[:]";
+			  break;  
+       case "Sekretariat":
+       $gruppen[$key]['name']="[:de]Sekretariat[:en]Secretariat[:]";
+			  break;  
+	  case "Verwaltung":
+       $gruppen[$key]['name']="[:de]Verwaltung[:en]Administration[:]";
+			  break;    
+	  case "Projektkoordination":
+       $gruppen[$key]['name']="[:de]Projektkoordination[:en]Project administration[:]";
+          break;
+      case "Lehrbeauftragte":
+       $gruppen[$key]['name']="[:de]Lehrbeauftragte[:en]Guest lecturer[:]";
+          break;
+      case "Externe Doktoranden":
+       $gruppen[$key]['name']="[:de]Externe Doktoranden[:en]External doctoral students[:]";
+          break;
+		  case "Gastwissenschaftler/-innen":
+       $gruppen[$key]['name']="[:de]Gastwissenschaftler[:en]Guest scientists[:]";
+          break;
+		  case "Ehemalige Gastwissenschaftler/-innen":
+       $gruppen[$key]['name']="[:de]Ehemalige Gastwissenschaftler[:en]Former guest scientist[:]";
+		  //Show only short info, move to other array:
+		   array_push($OnlyShortInfo, $group);
+			  unset($gruppen[$key]);
+          break;
+		  case "Ehemalige Mitarbeiter/-innen":
+       $gruppen[$key]['name']="[:de]Ehemalige[:en]Former staff[:]";
+		  //Show only short info, move to other array:
+			  array_push($OnlyShortInfo, $group);
+			  unset($gruppen[$key]);
+          break;
+  }
 
-switch ($group['name']) {
-    case "Professoren/-innen":
-     $gruppen[$key]['name']="[:de]Lehrstuhlleitung[:en]Institutional administration[:]";
-			break;
-    case "Sekretariat":
-     $gruppen[$key]['name']="[:de]Sekretariat[:en]Secretariat[:]";
-			break;  
-		case "Verwaltung":
-     $gruppen[$key]['name']="[:de]Verwaltung[:en]Administration[:]";
-			break;    
-		case "Projektkoordination":
-     $gruppen[$key]['name']="[:de]Projektkoordination[:en]Project administration[:]";
-        break;
-    case "Lehrbeauftragte":
-     $gruppen[$key]['name']="[:de]Lehrbeauftragte[:en]Guest lecturer[:]";
-        break;
-    case "Externe Doktoranden":
-     $gruppen[$key]['name']="[:de]Externe Doktoranden[:en]External doctoral students[:]";
-        break;
-		case "Gastwissenschaftler/-in":
-     $gruppen[$key]['name']="[:de]Gastwissenschaftler[:en]Guest scientists[:]";
-        break;
-		case "Ehemalige Gastwissenschaftler":
-     $gruppen[$key]['name']="[:de]Ehemalige Gastwissenschaftler[:en]Former guest scientist[:]";
-		//Show only short info, move to other array:
-			array_push($OnlyShortInfo, $group);
-			unset($gruppen[$key]);
-        break;
-		case "Ehemalige/r Mitarbeiter/-in":
-     $gruppen[$key]['name']="[:de]Ehemalige[:en]Former staff[:]";
-		//Show only short info, move to other array:
-			array_push($OnlyShortInfo, $group);
-			unset($gruppen[$key]);
-        break;
 }
-}
-
-
-
-
 
 
 		return array("gruppen" => $gruppen, "optionen" => $this->optionen,"OnlyShortInfo" =>$OnlyShortInfo);
@@ -1116,6 +1125,7 @@ if(count($veranstaltungen)==0){return false;}
 								 'e', 'e', 'e', 'e', 'e', 'e', 'e',
 								 'ss');
 		$neuer_text  = str_replace($such_array, $ersetzen_array, $text);
+
 		return $neuer_text;
 	}
 
