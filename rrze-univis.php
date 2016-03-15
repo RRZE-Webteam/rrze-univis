@@ -265,12 +265,12 @@ class RRZE_UnivIS {
                 $controller = new univisController($task, NULL, $shortcode_atts);
                 $ausgabe = $controller->ladeHTML();
                 break;
-            /* case 'lehrveranstaltungen-einzeln':
+            case 'lehrveranstaltungen-einzeln':
                 if( !$id ) {
                     $ausgabe = '<p>' . __('Bitte geben Sie eine gültige Lehrveranstaltungs-ID an.', self::textdomain). '</p>';
                     break;
                 } 
-            case 'mitarbeiter-einzeln':        
+            /* case 'mitarbeiter-einzeln':        
                 if( !$firstname && !$lastname ) {
                     $ausgabe = '<p>' . __('Bitte geben Sie einen Vor- und Nachnamen an.', self::textdomain). '</p>';
                     break;

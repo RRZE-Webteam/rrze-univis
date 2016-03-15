@@ -500,9 +500,12 @@ class univisRender {
                 if( isset( $veranstaltung["dozs"] ) ) {
                     for ($i = 0; $i<count($veranstaltung["dozs"]); $i++) {
 			for ($k = 0; $k < count($veranstaltung["dozs"][$i]["doz"]); $k++) {
-
+                            if( isset( $veranstaltung["dozs"][$i]["doz"][$k]["firstname"] ) ) {
 				$veranstaltung["dozs"][$i]["doz"][$k]["firstname_small"] = strtolower($this->umlaute_ersetzen($veranstaltung["dozs"][$i]["doz"][$k]["firstname"]));
+                            }
+                            if( isset( $veranstaltung["dozs"][$i]["doz"][$k]["lastname"] ) ) {
 				$veranstaltung["dozs"][$i]["doz"][$k]["lastname_small"] = strtolower($this->umlaute_ersetzen($veranstaltung["dozs"][$i]["doz"][$k]["lastname"]));
+                            }
 			}
                     }
                 }

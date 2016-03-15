@@ -369,20 +369,19 @@ class UNIVIS {
 			return -1;
 		}
 
-		$array = $this->xml2array($url);
-                if(empty($array)) {
-                    echo "Leider konnte die Organisationseinheit nicht gefunden werden.";
-                    return -1;
-                } else {
-		$veranstaltung = $array["Lecture"][0];
+                    $array = $this->xml2array($url);
+                    if(empty($array)) {
+                        echo "Leider konnte die Organisationseinheit nicht gefunden werden.";
+                        return -1;
+                    } else {
+                        $veranstaltung = $array["Lecture"][0];                   
 
-		//Ersetze Referenzen
-		$univis_refs = $this->_get_univis_ref($array);
-		$this->univis_refs_ersetzen($univis_refs, $veranstaltung);
+                        //Ersetze Referenzen
+                        $univis_refs = $this->_get_univis_ref($array);
+                        $this->univis_refs_ersetzen($univis_refs, $veranstaltung);
 
-		return $veranstaltung;
+                        return $veranstaltung;
                 }
-
 	}
 
 

@@ -4,7 +4,7 @@
 	{{#dozs}}
 		<h3>Dozent/in</h3>
 		{{#doz}}
-			<h6><a href="/{{#optionen}}{{Personenanzeige_Verzeichnis}}{{/optionen}}/{{firstname_small}}-{{lastname_small}}.shtml">{{title}} {{firstname}} {{lastname}}</a></h6>
+			<h6><a href="http://univis.uni-erlangen.de/prg?search=persons&id={{ id }}&show=info">{{title}} {{firstname}} {{lastname}}</a></h6>
 		{{/doz}}
 	{{/dozs}}
 

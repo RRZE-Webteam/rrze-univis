@@ -84,9 +84,13 @@ class univisController {
 				}
 				if ($this->optionen["task"] == "lehrveranstaltungen-einzeln") {
 					// Lade Lehrveranstaltungen Alle
-					echo "<div class=\"hinweis_wichtig\"><h4>Fehler: Konnte Lehrveranstaltungen nicht finden.</h4><p>Bitte wählen sie eine Lehrveranstaltung aus der Liste.</p></div><br class=\"clear\" />";
-					$this->optionen["task"] = "lehrveranstaltungen-alle";
-					return $this->ladeHTML();
+					echo "<div class=\"hinweis_wichtig\"><h4>Fehler: Konnte Lehrveranstaltungen nicht finden.</h4>";
+                                        
+                                        if( !empty($this->optionen["UnivISOrgNr"])) {
+                                            echo "<p>Bitte wählen sie eine Lehrveranstaltung aus der Liste.</p></div><br class=\"clear\" />";                                        
+                                            $this->optionen["task"] = "lehrveranstaltungen-alle";
+                                            return $this->ladeHTML();
+                                        }
 				}
 			}
 		}
