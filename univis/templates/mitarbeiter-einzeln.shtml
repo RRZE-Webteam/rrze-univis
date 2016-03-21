@@ -1,22 +1,10 @@
 {{#person}}
 <div id="univis-personenseite">
 
-	<!-- Zusatzinformationen aus Dateiverzeichnis -->
-	{{#assets}}
-		{{#bild}}
-			<img class="bildlinks" src="{{bild}}">
-		{{/bild}}
-	{{/assets}}
 
 	<div class="vcard">
     	<h2 class="fn">
-    		{{#title}}
-            <span class="honorific-prefix"><acronym title="{{title-long}}">{{title}}</acronym></span>
-            {{/title}}
-            <span class="given-name">{{firstname}}</span> <span class="family-name">{{lastname}}</span>
-            {{#atitle}}
-            <span class="honorific-suffix"><acronym title="{{atitle}}">{{ atitle }}</acronym></span>
-            {{/atitle}}
+    		{{#title}}<span class="honorific-prefix"><acronym title="{{title-long}}">{{title}}</acronym></span>{{/title}} <span class="given-name">{{firstname}}</span> <span class="family-name">{{lastname}}</span> {{#atitle}}<span class="honorific-suffix"><acronym title="{{atitle}}">{{ atitle }}</acronym></span>{{/atitle}}
         </h2>
 
 		<address>
@@ -33,14 +21,14 @@
 				{{#location}}
 				<h3>Anschrift</h3>
 			    <ul class="kontakt">
-			    	 <span class="adr">
+			    	 <li class="adr">
 				    	{{#street}}
 				        <span class="street-address">{{street}}</span><br>
 				        {{/street}}
 				        {{#ort}}
 				        <span class="locality">{{ort}}</span>
 				        {{/ort}}
-				    </span>
+				    </li>
 			    	{{#email}}
 	                <li>E-Mail: <a class="email" href="mailto:{{email}}">{{email}}</a></li>
 	                {{/email}}
