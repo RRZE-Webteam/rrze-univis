@@ -333,7 +333,9 @@ class univisRender {
 
 	private function _bearbeiteMitarbeiterEinzeln($person) {
 		if(!empty($person)) {
+                    if(!empty($person["title"])) {
 			$person["title-long"] = $this->_str_replace_dict(univisDicts::$acronyms, $person["title"]);
+                    }
 			$name = $person["firstname"]."_".$person["lastname"];
 			$person["nameurl"] = strtolower($this->umlaute_ersetzen($name));
 			$person["nameurl"] = str_replace(" ", "%20", $person["nameurl"]);
@@ -404,21 +406,27 @@ class univisRender {
 	}
 
 	private function _bearbeiteLehrveranstaltungenAlle($veranstaltungen) {
-		if(!$veranstaltungen) return NULL;
+		if($veranstaltungen === -1) {
+                    echo "Es konnten keine Lehrveranstaltungen gefunden werden.";
+                    return -1;
+                } else {
 
-		$this->_rename_key("type", $veranstaltungen, univisDicts::$lecturetypen);
-
-		for ($i=0; $i < count($veranstaltungen); $i++) {
+        		$this->_rename_key("type", $veranstaltungen, univisDicts::$lecturetypen);
+                        
+                    for ($i=0; $i < count($veranstaltungen); $i++) {
 			// Einzelne Veranstaltung bearbeiten
 			$veranstaltung_edit = $this->_bearbeiteLehrveranstaltungenEinzeln($veranstaltungen[$i]);
+
 			$veranstaltungen[$i] = $veranstaltung_edit["veranstaltung"];
-		}
+                    }   
 
-		//Nach Jahren gruppieren
-		$veranstaltungen = $this->_group_by("type", $veranstaltungen);
+                    //Nach Jahren gruppieren
+                    $veranstaltungen = $this->_group_by("type", $veranstaltungen);
 
 
-		return array( "veranstaltungen" => $veranstaltungen, "optionen" => $this->optionen);
+                    return array( "veranstaltungen" => $veranstaltungen, "optionen" => $this->optionen);
+                }
+                
 	}
 
 	private function _bearbeiteLehrveranstaltungenKalender($veranstaltungen) {
@@ -500,9 +508,12 @@ class univisRender {
                 if( isset( $veranstaltung["dozs"] ) ) {
                     for ($i = 0; $i<count($veranstaltung["dozs"]); $i++) {
 			for ($k = 0; $k < count($veranstaltung["dozs"][$i]["doz"]); $k++) {
-
+                            if( isset( $veranstaltung["dozs"][$i]["doz"][$k]["firstname"] ) ) {
 				$veranstaltung["dozs"][$i]["doz"][$k]["firstname_small"] = strtolower($this->umlaute_ersetzen($veranstaltung["dozs"][$i]["doz"][$k]["firstname"]));
+                            }
+                            if( isset( $veranstaltung["dozs"][$i]["doz"][$k]["lastname"] ) ) {
 				$veranstaltung["dozs"][$i]["doz"][$k]["lastname_small"] = strtolower($this->umlaute_ersetzen($veranstaltung["dozs"][$i]["doz"][$k]["lastname"]));
+                            }
 			}
                     }
                 }
@@ -662,6 +673,7 @@ class univisRender {
 	}
 
 	private function _rename_key($search_key, &$arr, $dict) {
+            if( is_array( $arr ) ) {
 		foreach ($arr as &$veranstaltung) {
                     if(is_array($veranstaltung)) {
 			foreach ($veranstaltung as $key => &$value) {
@@ -671,13 +683,15 @@ class univisRender {
 			}
                     }
 		}
+            }
 	}
 
 	private function _group_by($key_name, $arr) {
 
-		$gruppen = array();
+            $gruppen = array();
 
-		$gruppen_dict = array();
+            $gruppen_dict = array();
+            if( is_array( $arr ) ) {    
 		foreach ($arr as $child) {
 
 			$gruppenName = $child[$key_name];
@@ -686,6 +700,7 @@ class univisRender {
 				$gruppen_dict[$gruppenName] = array();
 			array_push($gruppen_dict[$gruppenName], $child);
 		}
+            }
 
 		foreach ($gruppen_dict as $gruppen_name => $gruppen_data) {
 			$gruppen_obj = array(
