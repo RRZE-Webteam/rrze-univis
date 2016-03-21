@@ -4,6 +4,14 @@ rrze-univis
 WordPress Plugin
 ----------------
 
+Neu in Version 1.2:
+
+- Bei der Anzeige von Lehrveranstaltungen wird automatisch das Semester angezeigt, dass gerade bei UnivIS als aktuelles Semester eingestellt ist    
+- [univis task="mitarbeiter-einzeln" firstname="Max" lastname="Mustermann"]: Bindet die Daten der einen Person ein. Die Person muss dabei der Organisationseinheit angehören, die in Einstellungen - UnivIS eingegeben wurde.    
+- [univis task="lehrveranstaltungen-einzeln" id="21101522"]: Zeigt die Daten zur Lehrveranstaltung mit dieser ID. Die Lehrveranstaltung muss dabei der Organisationseinheit zugeordnet sein, die in Einstellungen - UnivIS eingegeben wurde, und außerdem aus dem aktuellen Semester stammen.    
+- [univis task="lehrveranstaltungen-alle" dozentid="21555666"]: Zeigt alle Lehrveranstaltungen der Person mit dieser ID. Der Dozent muss dabei der Organisationseinheit angehören, die in Einstellungen - UnivIS eingegeben wurde.    
+- [univis task="lehrveranstaltungen-alle" dozentname="Mustermann,Max"]: Zeigt alle Lehrveranstaltungen der Person mit dem Namen Max Mustermann. Der Dozent muss dabei der Organisationseinheit angehören, die in Einstellungen - UnivIS eingegeben wurde. Der Name des Dozenten muss in der Form Nachname,Vorname angegeben werden (ohne Leerzeichen!).    
+
 Einbindung von UnivIS-Daten auf WordPress-Seiten mittels Shortcode:
 
 - [univis]: Anzeige eines Links zur UnivIS-Startseite, der Linktext kann unter Einstellungen - UnivIS modifiziert werden    
