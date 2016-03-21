@@ -3,7 +3,7 @@
   Plugin Name: RRZE-UnivIS
   Plugin URI: https://github.com/RRZE-Webteam/rrze-univis
  * Description: Einbindung von Daten aus UnivIS für den Geschäftsverteilungsplan auf Basis des UnivIS-Plugins des Webbaukastens.
- * Version: 1.1
+ * Version: 1.2
  * Author: RRZE-Webteam
  * Author URI: http://blogs.fau.de/webworking/
  * License: GPLv2 or later
@@ -111,7 +111,9 @@ class RRZE_UnivIS {
                         'Datenverzeichnis' => '',
                         'id' => '',
                         'firstname' => '',
-                        'lastname' => ''
+                        'lastname' => '',
+                        'dozentid' => '',
+                        'dozentname' => ''
 	);
         return $defaults;
     }
@@ -241,6 +243,12 @@ class RRZE_UnivIS {
         if( isset( $atts['id'] ) ) {
             $atts['id'] = (int) wp_kses( $atts['id'], array() );
         }
+        if( isset( $atts['dozentid'] ) ) {
+            $atts['dozentid'] = (int) wp_kses( $atts['dozentid'], array() );
+        }
+        if( isset( $atts['dozentname'] ) ) {
+            $atts['dozentname'] = wp_kses( str_replace(' ', '', $atts['dozentname']), array() );
+        }
         $shortcode_atts = shortcode_atts( $defaults, $atts );
         extract($shortcode_atts);
         /*if( isset( $atts['task'] ) ) {
@@ -270,11 +278,11 @@ class RRZE_UnivIS {
                     $ausgabe = '<p>' . __('Bitte geben Sie eine gültige Lehrveranstaltungs-ID an.', self::textdomain). '</p>';
                     break;
                 } 
-            /* case 'mitarbeiter-einzeln':        
+            case 'mitarbeiter-einzeln':        
                 if( !$firstname && !$lastname ) {
                     $ausgabe = '<p>' . __('Bitte geben Sie einen Vor- und Nachnamen an.', self::textdomain). '</p>';
                     break;
-                } */
+                } 
                 $controller = new univisController($task, NULL, $shortcode_atts);
                 $ausgabe = $controller->ladeHTML();
                 break;
