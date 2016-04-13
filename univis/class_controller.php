@@ -30,7 +30,6 @@ class univisController {
 
 		if($task && $this->optionen)
 			$this->optionen["task"] = $task;
-
 	}
 
 	function ladeHTML() {

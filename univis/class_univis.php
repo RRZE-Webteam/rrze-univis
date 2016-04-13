@@ -366,11 +366,15 @@ class UNIVIS {
                     $dozentid = $this->optionen["dozentid"];
                 }
 		if( $dozentid ) {
-			$url .= "&lecturerid=" . $dozentid;
+                    $url .= "&lecturerid=" . $dozentid;
 		}
                 
                 if( $this->optionen["dozentname"] ) {
-                    	$url .= "&lecturer=" . $this->optionen["dozentname"];
+                    $url .= "&lecturer=" . $this->optionen["dozentname"];
+                }
+                
+                if( $this->optionen["type"] ) {
+                    $url .= "&type=" . $this->optionen["type"];
                 }
 
 		if(!fopen($url, "r")) {

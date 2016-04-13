@@ -4,6 +4,11 @@ rrze-univis
 WordPress Plugin
 ----------------
 
+Neu in Version 1.2.1:    
+
+- Filterung nach Lehrveranstaltungstyp möglich: [univis task="lehrveranstaltungen-alle" id="21101522" type="vorl"] gibt z.B. alle Vorlesungen der Org-Nr. 21101522 aus. Bei type müssen die Kürzel wie im Vorlesungsverzeichnis angegeben werden.    
+- Übersetzungsdatei für Britisch-Englisch ergänzt
+
 Neu in Version 1.2:
 
 - Bei der Anzeige von Lehrveranstaltungen wird automatisch das Semester angezeigt, dass gerade bei UnivIS als aktuelles Semester eingestellt ist    
