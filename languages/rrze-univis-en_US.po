@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: RRZE-Mathjax\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2014-08-19 14:05+0100\n"
+"POT-Creation-Date: 2016-04-13 15:23+0100\n"
 "PO-Revision-Date: \n"
 "Last-Translator: \n"
 "Language-Team: RRZE-Webteam\n"
@@ -17,7 +17,7 @@ msgstr ""
 "X-Generator: Poedit 1.6.5\n"
 "X-Poedit-SearchPath-0: ..\n"
 
-#: ../rrze-univis.php:109
+#: ../rrze-univis.php:133
 #, php-format
 msgid ""
 "Ihre PHP-Version %s ist veraltet. Bitte aktualisieren Sie mindestens auf die "
@@ -26,7 +26,7 @@ msgstr ""
 "Your server is running PHP version %s. Please upgrade at least to PHP "
 "version %s."
 
-#: ../rrze-univis.php:113
+#: ../rrze-univis.php:137
 #, php-format
 msgid ""
 "Ihre Wordpress-Version %s ist veraltet. Bitte aktualisieren Sie mindestens "
@@ -35,19 +35,23 @@ msgstr ""
 "Your Wordpress version is %s. Please upgrade at least to Wordpress version "
 "%s."
 
-#: ../rrze-univis.php:128
+#: ../rrze-univis.php:152
 msgid "<b><i>Univ</i>IS</b>"
 msgstr "<b><i>Univ</i>IS</b>"
 
-#: ../rrze-univis.php:136
+#: ../rrze-univis.php:160
 msgid "Einstellungen &rsaquo; <b><i>Univ</i>IS</b>"
 msgstr "Settings &rsaquo; <b><i>Univ</i>IS</b>"
 
-#: ../rrze-univis.php:152
+#: ../rrze-univis.php:176
 msgid "Linktext zu <b><i>Univ</i>IS</b>"
 msgstr "Text for link to <b><i>Univ</i>IS</b>"
 
-#: ../rrze-univis.php:172
+#: ../rrze-univis.php:177
+msgid "<b><i>Univ</i>IS</b>-OrgNr."
+msgstr "<b><i>Univ</i>IS</b>-OrgNr."
+
+#: ../rrze-univis.php:205
 msgid ""
 "<b><i>Univ</i>IS</b>-Daten können im XML-Format über einen Shortcode in die "
 "Seiten eingebunden werden."
@@ -55,11 +59,11 @@ msgstr ""
 "<b><i>Univ</i>IS</b> data can be included in xml format via a shortcode into "
 "pages."
 
-#: ../rrze-univis.php:173
+#: ../rrze-univis.php:206
 msgid "Shortcode:"
 msgstr "Shortcode:"
 
-#: ../rrze-univis.php:174
+#: ../rrze-univis.php:207
 msgid ""
 "<b>[univis]</b>: bindet den Link zu <b><i>Univ</i>IS</b> ein. Der Linktext "
 "kann unten gesetzt werden."
@@ -67,7 +71,7 @@ msgstr ""
 "<b>[univis]</b>: shows a link to <b><i>Univ</i>IS</b>. The text that is "
 "shown can be set below."
 
-#: ../rrze-univis.php:175
+#: ../rrze-univis.php:208
 msgid ""
 "<b>[univis number=321601]</b>: liefert alle Informationen zur Org.-Nr. "
 "321601 aus der Institutionendatenbank."
@@ -75,11 +79,11 @@ msgstr ""
 "<b>[univis number=321601]</b>: shows all informations for Org.-Nr. 321601 "
 "from the institution data base."
 
-#: ../rrze-univis.php:181
+#: ../rrze-univis.php:214
 msgid "Übersicht"
 msgstr "Overview"
 
-#: ../rrze-univis.php:185
+#: ../rrze-univis.php:218
 msgid ""
 "<p><strong>Für mehr Information:</strong></p><p><a href=\"http://blogs.fau."
 "de/webworking\">RRZE-Webworking</a></p><p><a href=\"https://github.com/RRZE-"
@@ -88,6 +92,18 @@ msgstr ""
 "<p><strong>For more information:</strong></p><p><a href=\"http://blogs.fau."
 "de/webworking\">RRZE-Webworking</a></p><p><a href=\"https://github.com/RRZE-"
 "Webteam\">RRZE-Webteam in Github</a></p>"
+
+#: ../rrze-univis.php:277
+msgid "Bitte geben Sie eine gültige UnivIS-Organisationsnummer an."
+msgstr "Please enter a valid UnivIS-OrgNr."
+
+#: ../rrze-univis.php:285
+msgid "Bitte geben Sie eine gültige Lehrveranstaltungs-ID an."
+msgstr "Please enter a valid lecture-ID."
+
+#: ../rrze-univis.php:290
+msgid "Bitte geben Sie einen Vor- und Nachnamen an."
+msgstr "Please enter a first and last name."
 
 #~ msgid "UnivIS"
 #~ msgstr "<b><i>Univ</i>IS</b>"
