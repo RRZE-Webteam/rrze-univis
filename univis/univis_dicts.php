@@ -28,7 +28,7 @@
 		    "awa" => "Anleitung zu wiss. Arbeiten  (AWA)",
 			"ag" => "Arbeitsgemeinschaft  (AG)",
 			"ak" => "Aufbaukurs  (AK)",
-			"ek" => "Einf&uuml;hrungskurs  (EK)",
+			"ek" => "Einführungskurs  (EK)",
 			"ex" => "Exkursion  (EX)",
 			"gk" => "Grundkurs  (GK)",
 			"ts" => "Theorieseminar  (TS)",
@@ -49,9 +49,9 @@
 			"tut" => "Tutorium  (TUT)",
 			"ue" => "Übung  (UE)",
 			"vorl" => "Vorlesung  (VORL)",
-			"v-ue" => "Vorlesung mit &Uuml;bung  (V/UE)",
+			"v-ue" => "Vorlesung mit Übung  (V/UE)",
 			"hvl" => "Hauptvorlesung  (HVL)",
-			"pf" => "Pr&uuml;fung  (PF)",
+			"pf" => "Prüfung  (PF)",
 			"gsz" => "Gremiensitzung  (GSZ)"
 		);
 
@@ -59,7 +59,7 @@
 		    "awa" => "Anleitung zu wiss. Arbeiten",
 			"ag" => "Arbeitsgemeinschaft",
 			"ak" => "Aufbaukurs",
-			"ek" => "Einf&uuml;hrungskurs",
+			"ek" => "Einführungskurs",
 			"ex" => "Exkursion",
 			"gk" => "Grundkurs",
 			"ts" => "Theorieseminar",
@@ -80,9 +80,9 @@
 			"tut" => "Tutorium",
 			"ue" => "Übung",
 			"vorl" => "Vorlesung",
-			"v-ue" => "Vorlesung mit &Uuml;bung",
+			"v-ue" => "Vorlesung mit Übung",
 			"hvl" => "Hauptvorlesung",
-			"pf" => "Pr&uuml;fung",
+			"pf" => "Prüfung",
 			"gsz" => "Gremiensitzung"
 		);
 
