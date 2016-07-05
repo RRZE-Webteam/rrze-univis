@@ -3,7 +3,7 @@
   Plugin Name: RRZE-UnivIS
   Plugin URI: https://github.com/RRZE-Webteam/rrze-univis
  * Description: Einbindung von Daten aus UnivIS für den Geschäftsverteilungsplan auf Basis des UnivIS-Plugins des Webbaukastens.
- * Version: 1.2.2
+ * Version: 1.2.3
  * Author: RRZE-Webteam
  * Author URI: http://blogs.fau.de/webworking/
  * License: GPLv2 or later
@@ -33,12 +33,13 @@ require_once('univis/class_controller.php');
 
 class RRZE_UnivIS {
 
-    const version = '1.0.5';
+    const version = '1.2.3';
     const option_name = '_rrze_univis';
     const version_option_name = '_rrze_univis_version';
     const textdomain = 'rrze-univis';
-    const php_version = '5.3'; // Minimal erforderliche PHP-Version
-    const wp_version = '3.8'; // Minimal erforderliche WordPress-Version
+    const php_version = '5.4'; // Minimal erforderliche PHP-Version
+    const wp_version = '4.4'; // Minimal erforderliche WordPress-Version
+    const search_univis_id_transient = 'oku_1k4fu7056Kl17a5';
 
     protected static $instance = null;
     private static $univis_option_page = null;
@@ -175,6 +176,8 @@ class RRZE_UnivIS {
         add_settings_section('univis_default_section', false, '__return_false', 'univis_options');
         add_settings_field('univis_default', __('Linktext zu <b><i>Univ</i>IS</b>', self::textdomain), array(__CLASS__, 'univis_default'), 'univis_options', 'univis_default_section');
         add_settings_field('UnivISOrgNr', __('<b><i>Univ</i>IS</b>-OrgNr.', self::textdomain), array(__CLASS__, 'univis_orgnr'), 'univis_options', 'univis_default_section');        
+        add_settings_section('univis_search', false, '__return_false', 'univis_options');
+        add_settings_field('search_lv_id', __('Suche nach Lehrveranstaltungs-ID', self::textdomain), array(__CLASS__, 'search_lv_id'), 'univis_options', 'univis_search');
     }
 
     public static function options_validate($input) {
@@ -312,6 +315,75 @@ class RRZE_UnivIS {
     public function univis_rte_add_buttons( $plugin_array ) {
         $plugin_array['univisrteshortcodes'] = plugin_dir_url(__FILE__) . 'js/tinymce-shortcodes.js';
         return $plugin_array;
+    }
+    
+    public static function search_lv_id() {
+        $transient = get_transient(self::search_univis_id_transient);
+        $name = isset($transient['name']) ? $transient['name'] : '';
+        $lecturer = isset($transient['lecturer']) ? $transient['lecturer'] : '';
+        if(class_exists( 'Univis_Data' ) ) {
+            $person = sync_helper::get_univisdata(0, $firstname, $givenname);           
+        } else {
+            $person = array();
+        }
+        ?>
+        <div class="wrap">
+            <?php screen_icon(); ?>
+            <h2><?php echo esc_html(__('Suche nach UnivIS-ID', FAU_PERSON_TEXTDOMAIN)); ?></h2>
+
+            <form method="post">
+                <?php
+                settings_fields('search_univis_id_options');
+                do_settings_sections('search_univis_id_options');
+                submit_button(esc_html(__('Person suchen', FAU_PERSON_TEXTDOMAIN)), 'primary', 'settings_page_options-univis');
+                ?>
+            </form>            
+        </div>
+        <div class="wrap">
+            <?php
+                settings_fields('find_univis_id_options');
+                do_settings_sections('find_univis_id_options');
+                if(empty($person) || empty($person[0])) {
+                    echo __('Es konnten keine Daten zur Person gefunden werden. Bitte verändern Sie Ihre Suchwerte und stellen Sie sicher, dass das Plugin Univis-Data aktiviert ist.', FAU_PERSON_TEXTDOMAIN);
+                } else {
+                    $person = $this->array_orderby($person,"lastname", SORT_ASC, "firstname", SORT_ASC );
+                    $no_univis_data = __('keine Daten in UnivIS eingepflegt', FAU_PERSON_TEXTDOMAIN);
+                    foreach($person as $key=>$value) {
+                        if(array_key_exists('locations', $person[$key]) && array_key_exists('location', $person[$key]['locations'][0]) && array_key_exists('email', $person[$key]['locations'][0]['location'][0])) {
+                            $email = $person[$key]['locations'][0]['location'][0]['email'];
+                        } else {
+                            $email = $no_univis_data;
+                        }
+                        if(array_key_exists('id', $person[$key])) {
+                            $id = $person[$key]['id'];
+                        } else {
+                            $id = $no_univis_data;
+                        }
+                        if(array_key_exists('firstname', $person[$key])) {
+                            $firstname = $person[$key]['firstname'];
+                        } else {
+                            $firstname = __('Vorname', FAU_PERSON_TEXTDOMAIN) . ": " . $no_univis_data . ", ";
+                        }
+                        if(array_key_exists('lastname', $person[$key])) {
+                            $lastname = $person[$key]['lastname'];
+                        } else {
+                            $lastname = __('Nachname', FAU_PERSON_TEXTDOMAIN) . ": " . $no_univis_data;
+                        }
+                        if(array_key_exists('orgname', $person[$key])) {
+                            $orgname = $person[$key]['orgname'];
+                        } else {
+                            $orgname = $no_univis_data;
+                        }
+                        //echo sprintf(__('UnivIS-ID %1$s: %2$s %3$s, E-Mail: %4$s, Organisation: %5$s', FAU_PERSON_TEXTDOMAIN), $id, $firstname, $lastname, $email, $orgname);
+                        //$output = __('UnivIS-ID', FAU_PERSON_TEXTDOMAIN) . ' '. $id . ': '. $firstname . ' ' . $lastname . ', ' . __('E-Mail', FAU_PERSON_TEXTDOMAIN) . ': ' . $email. ', ' . __('Organisation', FAU_PERSON_TEXTDOMAIN) . ': ' . $orgname;
+                        echo 'UnivIS-ID '. $id . ': '. $firstname . ' ' . $lastname . ', E-Mail: ' . $email. ', Organisation: ' . $orgname;
+                        echo "<br>";
+                    }
+                }
+            ?>
+        </div>
+        <?php
+            delete_transient(self::search_univis_id_transient);
     }
     
     
