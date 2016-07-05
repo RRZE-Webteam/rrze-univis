@@ -3,7 +3,7 @@
   Plugin Name: RRZE-UnivIS
   Plugin URI: https://github.com/RRZE-Webteam/rrze-univis
  * Description: Einbindung von Daten aus UnivIS für den Geschäftsverteilungsplan auf Basis des UnivIS-Plugins des Webbaukastens.
- * Version: 1.2.1
+ * Version: 1.2.2
  * Author: RRZE-Webteam
  * Author URI: http://blogs.fau.de/webworking/
  * License: GPLv2 or later
@@ -285,6 +285,9 @@ class RRZE_UnivIS {
                     $ausgabe = '<p>' . __('Bitte geben Sie eine gültige Lehrveranstaltungs-ID an.', self::textdomain). '</p>';
                     break;
                 } 
+                $controller = new univisController($task, NULL, $shortcode_atts);
+                $ausgabe = $controller->ladeHTML();
+                break;
             case 'mitarbeiter-einzeln':        
                 if( !$firstname && !$lastname ) {
                     $ausgabe = '<p>' . __('Bitte geben Sie einen Vor- und Nachnamen an.', self::textdomain). '</p>';
