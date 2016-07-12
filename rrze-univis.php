@@ -239,16 +239,16 @@ class RRZE_UnivIS {
         if( empty( $atts )) {
             $ausgabe = $univis_link;
         } else {
-        if( isset( $atts['number'] ) ) {
-            $atts['UnivISOrgNr'] = (int) wp_kses( $atts['number'], array() );
+        if( isset( $atts['number'] ) && ctype_digit( $atts['number'] ) ) {
+            $atts['UnivISOrgNr'] = wp_kses( $atts['number'], array() );
         } else {
             $atts['UnivISOrgNr'] = $options['UnivISOrgNr'];
         }
-        if( isset( $atts['id'] ) ) {
-            $atts['id'] = (int) wp_kses( $atts['id'], array() );
+        if( isset( $atts['id'] ) && ctype_digit( $atts['id'] ) ) {
+            $atts['id'] = wp_kses( $atts['id'], array() );
         }
-        if( isset( $atts['dozentid'] ) ) {
-            $atts['dozentid'] = (int) wp_kses( $atts['dozentid'], array() );
+        if( isset( $atts['dozentid'] ) && ctype_digit( $atts['dozentid'] ) ) {
+            $atts['dozentid'] = wp_kses( $atts['dozentid'], array() );
         }
         if( isset( $atts['dozentname'] ) ) {
             $atts['dozentname'] = wp_kses( str_replace(' ', '', $atts['dozentname']), array() );
