@@ -96,7 +96,7 @@ class UNIVIS {
 	private function _ladeMitarbeiterAlle() {
 		// Hole Daten von Univis
 		$url = esc_url_raw( $this->univis_url."?search=departments&number=".$this->optionen["UnivISOrgNr"]."&show=xml" );
-                
+ 
 		if(!fopen($url, "r")) {
                         echo "Leider konnte zu UnivIS keine Verbindung aufgebaut werden.";
 			// Univis Server ist nicht erreichbar
@@ -509,8 +509,9 @@ class UNIVIS {
 		$search_results = array();
 		$search_key = "UnivISRef";
 
-		foreach ($arr as &$child) {
-			if(@array_key_exists($search_key, $child)) {                   
+		foreach ($arr as &$child) { 
+			if(@array_key_exists($search_key, $child)) {     
+                            if( array_key_exists($child[$search_key][0]["key"], $refs) )
 				$child = $refs[$child[$search_key][0]["key"]];             
 			}
 			if(is_array($child)) {

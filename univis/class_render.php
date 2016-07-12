@@ -584,17 +584,17 @@ class univisRender {
 				$date = array();
                                 
                                 if( isset( $lecture["repeat"] ) )
-                                    $repeat = explode(",", $lecture["repeat"]);
+                                    $repeat = explode(" ", $lecture["repeat"]);
 
 				if( isset( $repeat ) ) {
 					$dict = array(
 						"w1" => "",
 						"w2" => "Alle zwei Wochen",
-						"w2" => "Alle drei Wochen",
-						"w2" => "Alle vier Wochen",
+						"w3" => "Alle drei Wochen",
+						"w4" => "Alle vier Wochen",
 						"s1" => "Einzeltermin am"
 					);
-
+                                        
 					if(array_key_exists($repeat[0], $dict))
 						array_push($date, $dict[$repeat[0]]);
 
@@ -627,7 +627,7 @@ class univisRender {
 
 					}
 				}
-
+                                    
                                     $lecture["date"] = implode(" ", $date);
                                 
                                 if(isset($lecture["room"])) 
