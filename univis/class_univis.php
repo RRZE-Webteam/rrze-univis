@@ -509,9 +509,9 @@ class UNIVIS {
 		$search_results = array();
 		$search_key = "UnivISRef";
 
-		foreach ($arr as &$child) { 
-			if(@array_key_exists($search_key, $child)) {     
-                            if( array_key_exists($child[$search_key][0]["key"], $refs) )
+		foreach ($arr as &$child) {
+			if(@array_key_exists($search_key, $child)) {    
+                            if( array_key_exists( $child[$search_key][0]["key"], $refs ) )
 				$child = $refs[$child[$search_key][0]["key"]];             
 			}
 			if(is_array($child)) {

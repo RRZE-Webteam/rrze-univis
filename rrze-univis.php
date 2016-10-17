@@ -3,7 +3,7 @@
   Plugin Name: RRZE-UnivIS
   Plugin URI: https://github.com/RRZE-Webteam/rrze-univis
  * Description: Einbindung von Daten aus UnivIS für den Geschäftsverteilungsplan auf Basis des UnivIS-Plugins des Webbaukastens.
- * Version: 1.2.3
+ * Version: 1.2.4
  * Author: RRZE-Webteam
  * Author URI: http://blogs.fau.de/webworking/
  * License: GPLv2 or later
@@ -33,13 +33,12 @@ require_once('univis/class_controller.php');
 
 class RRZE_UnivIS {
 
-    const version = '1.2.3';
+    const version = '1.2.4';
     const option_name = '_rrze_univis';
     const version_option_name = '_rrze_univis_version';
     const textdomain = 'rrze-univis';
     const php_version = '5.4'; // Minimal erforderliche PHP-Version
-    const wp_version = '4.4'; // Minimal erforderliche WordPress-Version
-    const search_univis_id_transient = 'oku_1k4fu7056Kl17a5';
+    const wp_version = '4.1'; // Minimal erforderliche WordPress-Version
 
     protected static $instance = null;
     private static $univis_option_page = null;
@@ -247,7 +246,7 @@ class RRZE_UnivIS {
         if( isset( $atts['id'] ) && ctype_digit( $atts['id'] ) ) {
             $atts['id'] = wp_kses( $atts['id'], array() );
         }
-        if( isset( $atts['dozentid'] ) && ctype_digit( $atts['dozentid'] ) ) {
+        if( isset( $atts['dozentid'] ) && ctype_digit( $atts['dozentid'] )) {
             $atts['dozentid'] = wp_kses( $atts['dozentid'], array() );
         }
         if( isset( $atts['dozentname'] ) ) {

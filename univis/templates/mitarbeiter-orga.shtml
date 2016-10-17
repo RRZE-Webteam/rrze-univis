@@ -17,8 +17,5 @@
 	    {{/personen}}
 	</ul>
 
-	<p class="noprint">
-	    <a href="#seitenmarke">Nach oben</a>
-	</p>
 	{{/gruppen}}
 </div>
