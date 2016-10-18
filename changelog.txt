@@ -1,6 +1,6 @@
 Versionsänderungen:
 ===================
 ####Version 1.2.5:     
-- Ergänzung von ES = Examensseminar    
+- Ergänzung von lecturetypen ES (Examensseminar), KS (Kombiseminar), MAS (Masterseminar), GS (Grundseminar), AS (Aufbauseminar)    
 - Bugfix: Blockveranstaltung fehlerhaft ausgegeben    
 - Fix #19: Fehlerergänzung um ID (Lehrveranstaltungen) bzw. Vor- und Nachname (Person)    
