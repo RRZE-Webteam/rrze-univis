@@ -96,7 +96,7 @@ class UNIVIS {
 	private function _ladeMitarbeiterAlle() {
 		// Hole Daten von Univis
 		$url = esc_url_raw( $this->univis_url."?search=departments&number=".$this->optionen["UnivISOrgNr"]."&show=xml" );
-                
+ 
 		if(!fopen($url, "r")) {
                         echo "Leider konnte zu UnivIS keine Verbindung aufgebaut werden.";
 			// Univis Server ist nicht erreichbar

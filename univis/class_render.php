@@ -450,7 +450,7 @@ class univisRender {
 			$titel = $veranstaltung["name"];
 			$beschreibung = $veranstaltung["summary"];
 			$details = $veranstaltung["details"];
-
+                        
 			foreach ($veranstaltung["terms"] as $terms) {
 				foreach ($terms as $term) {
 					foreach ($term as $ev) {
@@ -582,24 +582,30 @@ class univisRender {
 				$lecture = &$veranstaltung["terms"][$_terms]["term"][$_term];
 
 				$date = array();
-                                
                                 if( isset( $lecture["repeat"] ) )
                                     $repeat = explode(" ", $lecture["repeat"]);
-
 				if( isset( $repeat ) ) {
 					$dict = array(
 						"w1" => "",
 						"w2" => "Alle zwei Wochen",
 						"w3" => "Alle drei Wochen",
 						"w4" => "Alle vier Wochen",
-						"s1" => "Einzeltermin am"
+						"s1" => "Einzeltermin am",
+                                                "bd" => "Blockveranstaltung"
 					);
-
+                                        
 					if(array_key_exists($repeat[0], $dict))
 						array_push($date, $dict[$repeat[0]]);
 
 					if($repeat[0] == "s1") {
 						$formated = date("d.m.Y", strtotime($lecture["startdate"]));
+						array_push($date, $formated);
+					}
+                                        
+                                        if($repeat[0] == "bd") {
+						$formated_start = date("d.m.Y", strtotime($lecture["startdate"]));
+                                                $formated_end = date("d.m.Y", strtotime($lecture["enddate"]));
+                                                $formated = $formated_start . "-" . $formated_end;
 						array_push($date, $formated);
 					}
 
@@ -627,7 +633,7 @@ class univisRender {
 
 					}
 				}
-
+                                    
                                     $lecture["date"] = implode(" ", $date);
                                 
                                 if(isset($lecture["room"])) 
