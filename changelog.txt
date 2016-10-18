@@ -2,3 +2,4 @@ Versionsänderungen:
 ===================
 ####Version 1.2.5:     
 - Ergänzung von ES = Examensseminar    
+- Bugfix: Blockveranstaltung fehlerhaft ausgegeben    
