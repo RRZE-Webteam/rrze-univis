@@ -176,7 +176,7 @@ class RRZE_UnivIS {
         add_settings_field('univis_default', __('Linktext zu <b><i>Univ</i>IS</b>', self::textdomain), array(__CLASS__, 'univis_default'), 'univis_options', 'univis_default_section');
         add_settings_field('UnivISOrgNr', __('<b><i>Univ</i>IS</b>-OrgNr.', self::textdomain), array(__CLASS__, 'univis_orgnr'), 'univis_options', 'univis_default_section');        
         add_settings_section('univis_search', false, '__return_false', 'univis_options');
-        add_settings_field('search_lv_id', __('Suche nach Lehrveranstaltungs-ID', self::textdomain), array(__CLASS__, 'search_lv_id'), 'univis_options', 'univis_search');
+        //add_settings_field('search_lv_id', __('Suche nach Lehrveranstaltungs-ID', self::textdomain), array(__CLASS__, 'search_lv_id'), 'univis_options', 'univis_search');
     }
 
     public static function options_validate($input) {
