@@ -393,12 +393,19 @@ class UNIVIS {
                 fclose($handle);
              
 		$array = $this->xml2array($url);
+                //_rrze_debug($array);
                 if(empty($array)) {
                     echo "Leider konnten keine Lehrveranstaltungen gefunden werden.";
                     return -1;
                 } else {
                     $veranstaltungen = $array["Lecture"];
-
+                    for ( $i=0; $i<count($veranstaltungen); $i++ ) {
+                        if( isset( $veranstaltungen[$i]["import_parent_id"] ) ) {
+                            //_rrze_debug("Hallo");
+                            unset($veranstaltungen[$i]);
+                        } 
+                    }
+                    _rrze_debug($veranstaltungen);
                     $univis_refs = $this->_get_univis_ref($array);
 
                     //Referenzinformationen einfügen

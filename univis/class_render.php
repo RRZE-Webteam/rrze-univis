@@ -406,6 +406,7 @@ class univisRender {
 	}
 
 	private function _bearbeiteLehrveranstaltungenAlle($veranstaltungen) {
+            
 		if($veranstaltungen === -1) {
                     echo "Es konnten keine Lehrveranstaltungen gefunden werden.";
                     return -1;
@@ -424,7 +425,7 @@ class univisRender {
 
                 //Import
                     for ($i=0; $i < count($veranstaltungen); $i++) { 
-                        _rrze_debug($veranstaltungen);
+                                
                 if( isset( $veranstaltungen[$i]["data"][0]["import_parent_id"] ) ) {
                         unset($veranstaltungen[$i]);
                 }
