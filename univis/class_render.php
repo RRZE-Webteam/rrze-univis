@@ -422,14 +422,6 @@ class univisRender {
 
                     //Nach Jahren gruppieren
                     $veranstaltungen = $this->_group_by("type", $veranstaltungen);
-
-                //Import
-                    for ($i=0; $i < count($veranstaltungen); $i++) { 
-                                
-                if( isset( $veranstaltungen[$i]["data"][0]["import_parent_id"] ) ) {
-                        unset($veranstaltungen[$i]);
-                }
-                    }
                     return array( "veranstaltungen" => $veranstaltungen, "optionen" => $this->optionen);
                 }
                 

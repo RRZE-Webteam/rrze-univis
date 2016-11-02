@@ -114,7 +114,8 @@ class RRZE_UnivIS {
                         'lastname' => '',
                         'dozentid' => '',
                         'dozentname' => '',
-                        'type' => ''
+                        'type' => '',           // für Selektion nach Lehrveranstaltungstypen wie vorl
+                        'lv_import' => '1'      // importierte Lehrveranstaltungen werden mit angezeigt, ausblenden über Shortcode
 	);
         return $defaults;
     }
@@ -268,6 +269,7 @@ class RRZE_UnivIS {
             case 'mitarbeiter-alle':
             case 'mitarbeiter-orga':
             case 'lehrveranstaltungen-alle':
+                // Selektion nach Lehrveranstaltungstypen über Shortcodeparameter (z.B. vorl)
                 if( $type ) {
                     $controller = new univisController($task, $type, $shortcode_atts);
                     $ausgabe = $controller->ladeHTML();
