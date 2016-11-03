@@ -3,7 +3,7 @@
   Plugin Name: RRZE-UnivIS
   Plugin URI: https://github.com/RRZE-Webteam/rrze-univis
  * Description: Einbindung von Daten aus UnivIS für den Geschäftsverteilungsplan auf Basis des UnivIS-Plugins des Webbaukastens.
- * Version: 1.2.5
+ * Version: 1.2.6
  * Author: RRZE-Webteam
  * Author URI: http://blogs.fau.de/webworking/
  * License: GPLv2 or later
@@ -33,7 +33,7 @@ require_once('univis/class_controller.php');
 
 class RRZE_UnivIS {
 
-    const version = '1.2.5';
+    const version = '1.2.6';
     const option_name = '_rrze_univis';
     const version_option_name = '_rrze_univis_version';
     const textdomain = 'rrze-univis';
@@ -114,7 +114,8 @@ class RRZE_UnivIS {
                         'lastname' => '',
                         'dozentid' => '',
                         'dozentname' => '',
-                        'type' => ''
+                        'type' => '',           // für Selektion nach Lehrveranstaltungstypen wie vorl
+                        'lv_import' => '1'      // importierte Lehrveranstaltungen werden mit angezeigt, ausblenden über Shortcode
 	);
         return $defaults;
     }
@@ -176,7 +177,7 @@ class RRZE_UnivIS {
         add_settings_field('univis_default', __('Linktext zu <b><i>Univ</i>IS</b>', self::textdomain), array(__CLASS__, 'univis_default'), 'univis_options', 'univis_default_section');
         add_settings_field('UnivISOrgNr', __('<b><i>Univ</i>IS</b>-OrgNr.', self::textdomain), array(__CLASS__, 'univis_orgnr'), 'univis_options', 'univis_default_section');        
         add_settings_section('univis_search', false, '__return_false', 'univis_options');
-        add_settings_field('search_lv_id', __('Suche nach Lehrveranstaltungs-ID', self::textdomain), array(__CLASS__, 'search_lv_id'), 'univis_options', 'univis_search');
+        //add_settings_field('search_lv_id', __('Suche nach Lehrveranstaltungs-ID', self::textdomain), array(__CLASS__, 'search_lv_id'), 'univis_options', 'univis_search');
     }
 
     public static function options_validate($input) {
@@ -268,6 +269,7 @@ class RRZE_UnivIS {
             case 'mitarbeiter-alle':
             case 'mitarbeiter-orga':
             case 'lehrveranstaltungen-alle':
+                // Selektion nach Lehrveranstaltungstypen über Shortcodeparameter (z.B. vorl)
                 if( $type ) {
                     $controller = new univisController($task, $type, $shortcode_atts);
                     $ausgabe = $controller->ladeHTML();

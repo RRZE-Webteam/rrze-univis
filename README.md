@@ -4,6 +4,10 @@ rrze-univis
 WordPress Plugin
 ----------------
 
+Neu in Version 1.2.6:    
+
+- Ausblenden importierter Lehrveranstaltungen möglich: [univis task="lehrveranstaltungen-alle" id="49680223" lv_import="0"] blendet alle importierten Lehrveranstaltungen aus, um doppelte Ausgaben zu vermeiden.     
+
 Neu in Version 1.2.1:    
 
 - Filterung nach Lehrveranstaltungstyp möglich: [univis task="lehrveranstaltungen-alle" id="21101522" type="vorl"] gibt z.B. alle Vorlesungen der Org-Nr. 21101522 aus. Bei type müssen die Kürzel wie im Vorlesungsverzeichnis angegeben werden.    

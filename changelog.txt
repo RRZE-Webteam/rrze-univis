@@ -1,5 +1,8 @@
 Versionsänderungen:
 ===================
+####Version 1.2.6:     
+- Ausblenden importierter Lehrveranstaltungen mittels Shortcode-Parameter lv_import="0"    
+
 ####Version 1.2.5:     
 - Ergänzung von lecturetypen ES (Examensseminar), KS (Kombiseminar), MAS (Masterseminar), GS (Grundseminar), AS (Aufbauseminar)    
 - Bugfix: Blockveranstaltung fehlerhaft ausgegeben    
