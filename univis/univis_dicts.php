@@ -35,9 +35,10 @@ class univisDicts {
         "sem" => "Seminar  (SEM)",
         "ts" => "Theorieseminar  (TS)",
         "es" => "Examensseminar  (ES)",
-        "mas" => "MA-Seminar  (MAS)", 
-        "as" => "Aufbauseminar  (AS)",
+        "mas" => "Masterseminar  (MAS)", 
         "gs" => "Grundseminar  (GS)",
+        "us" => "Übungsseminar (US)",
+        "as" => "Aufbauseminar  (AS)",
         "hs" => "Hauptseminar  (HS)",
         "re" => "Repetitorium  (RE)",
         "kk" => "Klausurenkurs  (KK)",
@@ -59,7 +60,9 @@ class univisDicts {
         "vorl" => "Vorlesung  (VORL)",
         "hvl" => "Hauptvorlesung  (HVL)",
         "pf" => "Prüfung  (PF)",
-        "gsz" => "Gremiensitzung  (GSZ)"
+        "gsz" => "Gremiensitzung  (GSZ)",
+        "ppu" => "Propädeutische Übung (PPU)",
+        "his" => "Sprachhistorisches Seminar (HIS)"
     );
     public static $lecturetypen_short = array(
         "awa" => "Anleitung zu wiss. Arbeiten",
@@ -71,8 +74,9 @@ class univisDicts {
         "ts" => "Theorieseminar",
         "es" => "Examensseminar",
         "mas" => "Masterseminar",
-        "as" => "Aufbauseminar",
         "gs" => "Grundseminar",
+        "us" => "Übungsseminar",
+        "as" => "Aufbauseminar",
         "hs" => "Hauptseminar",
         "re" => "Repetitorium",
         "kk" => "Klausurenkurs",
@@ -94,7 +98,9 @@ class univisDicts {
         "vorl" => "Vorlesung",
         "hvl" => "Hauptvorlesung",
         "pf" => "Prüfung",
-        "gsz" => "Gremiensitzung"
+        "gsz" => "Gremiensitzung",
+        "ppu" => "Propädeutische Übung",
+        "his" => "Sprachhistorisches Seminar"
     );
     public static $leclanguages = array(
         "D" => "Deutsch"
