@@ -1,5 +1,8 @@
 Versionsänderungen:
 ===================
+####Version 1.2.7:     
+- Erweiterung lecturetypen HIS (Sprachhistorisches Seminar), US (Übungsseminar), PPU (Propädeutische Übung)    
+
 ####Version 1.2.6:     
 - Ausblenden importierter Lehrveranstaltungen mittels Shortcode-Parameter lv_import="0"    
 
