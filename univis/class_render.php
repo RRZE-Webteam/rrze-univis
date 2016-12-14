@@ -233,6 +233,11 @@ foreach($jobs_of_person as $key => $rang)
 if(!empty($person_specialfunctions)){
 foreach($person_specialfunctions as $key=>$value){
 	switch($value){
+			case "Projektkoordination":
+				if($person['gender']==="m")
+						 $person_specialfunctions[$key]="[:de]Projektkoordination[:en]Project administration[:]";
+				else $person_specialfunctions[$key]="[:de]Projektkoordination[:en]Project administration[:]";
+			break;
 		case "UnivIS-Beauftragte":
 				if($person['gender']==="m")
 						 $person_specialfunctions[$key]="[:de]UnivIS-Beauftragter[:en]UnivIS editor[:]";
@@ -455,7 +460,10 @@ $gruppen[$key]['name']=str_replace("Gruppe","[:de]Gruppe[:en]Group[:]",$group['n
        $gruppen[$key]['name']="[:de]Projektkoordination[:en]Project administration[:]";
           break;
       case "Lehrbeauftragte":
-       $gruppen[$key]['name']="[:de]Lehrbeauftragte[:en]Guest lecturer[:]";
+       $gruppen[$key]['name']="[:de]Lehrbeauftragte[:en]External lecturers[:]";
+          break;
+     case "Gastdozent/-in":
+       $gruppen[$key]['name']="[:de]Gastdozenten[:en]Guest lecturers[:]";
           break;
       case "Externe Doktoranden":
        $gruppen[$key]['name']="[:de]Externe Doktoranden[:en]External doctoral students[:]";
