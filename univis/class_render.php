@@ -448,7 +448,7 @@ $gruppen[$key]['name']=str_replace("Gruppe","[:de]Gruppe[:en]Group[:]",$group['n
        $gruppen[$key]['name']="[:de]Lehrstuhlleitung[:en]Institutional administration[:]";
 			  break;
 	  case "[:de]Gruppe[:en]Group[:]nleitung":
-       $gruppen[$key]['name']="[:de]Postdoktoranden[:en]Postdocs[:]";
+       $gruppen[$key]['name']="[:de]Gruppenleiter[:en]Group leaders[:]";
 			  break;  
        case "Sekretariat":
        $gruppen[$key]['name']="[:de]Sekretariat[:en]Secretariat[:]";
