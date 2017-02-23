@@ -353,7 +353,7 @@ class UNIVIS {
 
 	private function _ladeLehrveranstaltungenAlle($dozentid = NULL) {
 		// Hole Daten von Univis
-
+                _rrze_debug($this->optionen);
 		//&sem=2012w
                 $url = esc_url_raw( $this->univis_url."?search=lectures&show=xml" );
                 //Auskommentiert, da das aktuelle Semester in UnivIS beliebieg zum Ende der vorlesungsfreien Zeit umgestellt wird
@@ -375,6 +375,12 @@ class UNIVIS {
                 
                 if( $this->optionen["type"] ) {
                     $url .= "&type=" . $this->optionen["type"];
+                }
+                
+                if( $this->optionen["sem"] ) {
+                    $url .= "&sem=" . $this->optionen["sem"];
+                } else {
+                    $this->optionen["sem"] = $this->aktuellesSemester();
                 }
 
 		if(!fopen($url, "r")) {

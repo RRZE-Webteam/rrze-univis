@@ -79,16 +79,19 @@ class univisRender {
 			$such_kategorie = "rang";
                         $jobs = $daten['Org'][0]['jobs'][0]['job'];
 		}
+                //_rrze_debug($daten['Person']);
 		$gruppen = array();
 		$gruppen_dict = array();
                 $gruppen_personen = array();
                 $gruppen_text = array();
+                //_rrze_debug($personen);
+                //_rrze_debug_log($personen[0]['orgname']);
 		foreach ($personen as $person) {
                         //Text-Felder müssen auch angezeigt werden, deshalb rausgenommen
 			//if(empty($person["firstname"]))
 			//	continue;
-                        
-                                                
+                    
+                        //_rrze_debug_log($person['firstname'] . ' ' . $person['lastname'] . '; ' . $person['id']);                        
 			if(empty($person[$such_kategorie])) {
 				continue;
 			}
@@ -422,6 +425,7 @@ class univisRender {
 
                     //Nach Jahren gruppieren
                     $veranstaltungen = $this->_group_by("type", $veranstaltungen);
+                    _rrze_debug(array( "veranstaltungen" => $veranstaltungen, "optionen" => $this->optionen));
                     return array( "veranstaltungen" => $veranstaltungen, "optionen" => $this->optionen);
                 }
                 

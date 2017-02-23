@@ -59,7 +59,7 @@ class RRZE_UnivIS {
         // Sprachdateien werden eingebunden.
         load_plugin_textdomain(self::textdomain, false, sprintf('%s/languages/', dirname(plugin_basename(__FILE__))));
 
-
+	   
         add_action('admin_init', array($this, 'admin_init'));
         add_action('admin_menu', array($this, 'add_options_page'));
         add_shortcode('univis', array($this, 'univis'));
@@ -115,7 +115,8 @@ class RRZE_UnivIS {
                         'dozentid' => '',
                         'dozentname' => '',
                         'type' => '',           // für Selektion nach Lehrveranstaltungstypen wie vorl
-                        'lv_import' => '1'      // importierte Lehrveranstaltungen werden mit angezeigt, ausblenden über Shortcode
+                        'lv_import' => '1',      // importierte Lehrveranstaltungen werden mit angezeigt, ausblenden über Shortcode
+                        'sem' => ''             // Semesterauswahl
 	);
         return $defaults;
     }
@@ -253,6 +254,10 @@ class RRZE_UnivIS {
         if( isset( $atts['dozentname'] ) ) {
             $atts['dozentname'] = wp_kses( str_replace(' ', '', $atts['dozentname']), array() );
         }
+        if( isset( $atts['sem'] ) ) {
+            $sem = wp_kses( str_replace(' ', '', $atts['sem']), array() );
+            if( preg_match( '/[12]\d{3}[ws]/', $sem ) )     $atts['sem'] = $sem;
+        } 
         $shortcode_atts = shortcode_atts( $defaults, $atts );
         extract($shortcode_atts);
         /*if( isset( $atts['task'] ) ) {
