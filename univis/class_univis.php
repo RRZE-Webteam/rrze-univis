@@ -379,9 +379,7 @@ class UNIVIS {
                 
                 if( $this->optionen["sem"] ) {
                     $url .= "&sem=" . $this->optionen["sem"];
-                } else {
-                    $this->optionen["sem"] = $this->aktuellesSemester();
-                }
+                } 
 
 		if(!fopen($url, "r")) {
                         echo "Leider konnte zu UnivIS keine Verbindung aufgebaut werden.";
