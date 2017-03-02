@@ -97,6 +97,8 @@ class univisCache {
 		
 		switch ($optionen["task"]) {
 			case 'mitarbeiter-alle':				return $optionen["task"]."/".$optionen["UnivISOrgNr"];
+			case 'mitarbeiter-orga':				return $optionen["task"]."/".$optionen["UnivISOrgNr"];	//lapmk 02.03.2017: diese Zeile hat gefehlt
+			case 'mitarbeiter-telefonbuch':				return $optionen["task"]."/".$optionen["UnivISOrgNr"];	//lapmk 02.03.2017: neues Template "mitarbeiter_telefonbuch"
 			case 'mitarbeiter-einzeln':				return $optionen["task"]."/".$optionen["lastname"]."-".$optionen["firstname"];
 			case 'lehrveranstaltungen-alle':		return $optionen["task"]."/".$optionen["UnivISOrgNr"];
 			case 'lehrveranstaltungen-einzeln':		return $optionen["task"]."/".$optionen["id"];
