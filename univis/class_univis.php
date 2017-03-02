@@ -64,6 +64,11 @@ class UNIVIS {
 					$this->daten = $this->_ladeMitarbeiterOrga();
 					break;
 
+				//lapmk 02.03.2017: neues Template "mitarbeiter_telefonbuch"
+				case "mitarbeiter-telefonbuch":
+					$this->daten = $this->_ladeMitarbeiterTelefonbuch();
+					break;         
+					
 				case "mitarbeiter-einzeln":
 					$this->daten = $this->_ladeMitarbeiterEinzeln();
 					break;
@@ -122,7 +127,7 @@ class UNIVIS {
                     echo "In dieser Organisationseinheit konnten keine Mitarbeiter gefunden werden.";
                     return -1;                                    
                 } else {
-		if($this->optionen["Sortiere_Jobs"]) {
+		if($this->optionen["sortiere_jobs"]) {	//lapmk 02.03.2017: shortcodes immer in Kleinbuchstaben
 
 			$jobs = $daten["Org"][0]["jobs"][0]["job"];
                         $jobnamen = array();
@@ -285,11 +290,11 @@ class UNIVIS {
 		if($person) $person = $person[0];
 
 		// Lade Publikationen und Lehrveranstaltungen falls noetig
-		if ($this->optionen["Personenanzeige_Publikationen"]) {
+		if ($this->optionen["personenanzeige_publikationen"]) {	//lapmk 02.03.2017: shortcodes immer in Kleinbuchstaben
 			$person["publikationen"] = $this->_ladePublikationen($person["id"]);
 		}
 
-		if ($this->optionen["Personenanzeige_Lehrveranstaltungen"]) {
+		if ($this->optionen["personenanzeige_lehrveranstaltungen"]) {	//lapmk 02.03.2017: shortcodes immer in Kleinbuchstaben
 			$person["lehrveranstaltungen"] = $this->_ladeLehrveranstaltungenAlle($person["id"]);
 		}
 
