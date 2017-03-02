@@ -115,19 +115,20 @@ class univisController {
                 }
 
 		// defaults
+		//lapmk 02.03.2017: shortcodes immer Kleinbuchstaben
 		$defaults = array(
 			'UnivISOrgNr' => '0',
 			'task' => 'mitarbeiter-alle',
-			'Personenanzeige_Bildsuche' =>	'1',
-			'Personenanzeige_ZusatzdatenInDatei' =>	'1',
-			'Personenanzeige_Publikationen'	=> '0',
-			'Personenanzeige_Lehrveranstaltung' => '1',
+			'personenanzeige_bildsuche' =>	'1',
+			'personenanzeige_zusatzdatenindatei' =>	'1',
+			'personenanzeige_publikationen'	=> '0',
+			'personenanzeige_lehrveranstaltung' => '1',
 			'START_SOMMERSEMESTER' => '1.4',
 			'START_WINTERSEMESTER' => '1.10',
-			'Zeige_Sprungmarken' => '1',
-			'OrgUnit' => '',
-			'Sortiere_Alphabet' => '0',
-			'Sortiere_Jobs' => '1'
+			'zeige_sprungmarken' => '1',
+			'orgunit' => '',
+			'sortiere_alphabet' => '0',
+			'sortiere_jobs' => '1'
 		);
 
 		// load options
