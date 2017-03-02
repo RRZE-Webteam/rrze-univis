@@ -1,11 +1,11 @@
 <div id="univis-personenindex">
 	<ul class="groupindex">
 		{{#optionen}}
-			{{#Zeige_Sprungmarken}}
+			{{#zeige_sprungmarken}}
 				{{#gruppen}}
 					<li><a href="#{{name}}">{{name}}</a></li>
 				{{/gruppen}}
-			{{/Zeige_Sprungmarken}}
+			{{/zeige_sprungmarken}}
 		{{/optionen}}
 	</ul>
 
