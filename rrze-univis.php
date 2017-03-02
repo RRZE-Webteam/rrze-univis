@@ -91,31 +91,39 @@ class RRZE_UnivIS {
     }
     
     private static function get_defaults() {
+	/*
+	lapmk 02.03.2017: shortcode-Parameter in Kleinbuchstaben geändert, da sonst kein Aufruf über Wordpress-shortcode möglich ist;
+	Grund: In der Callback-Funktion univis() wird shortcode_atts() zur Zusammenführung der shortcodes mit den Default-Parametern
+	verwendet; shortcode_atts() wandelt aber alle shortcodes in Kleinbuchstaben um. Daher waren die Parameter bislang per
+	Shortcode nicht nutzbar bzw. wurden ignoriert;
+	UnivISOrgNr wird aus shortcode "number" befüllt; daher hier keine Änderung
+	*/
         $defaults = array(
 			'UnivISOrgNr' => '0',
 			'task' => 'mitarbeiter-alle',
-                        'Personenanzeige_Verzeichnis' => '',
-			'Personenanzeige_Bildsuche' =>	'1',
-			'Personenanzeige_ZusatzdatenInDatei' =>	'1',
-			'Personenanzeige_Publikationen'	=> '1',
-			'Personenanzeige_Lehrveranstaltungen' => '1',
-                        'Lehrveranstaltung_Verzeichnis' => '',
-                        'SeitenCache' => '0',
+                        'personenanzeige_verzeichnis' => '',
+			'personenanzeige_bildsuche' =>	'1',
+			'personenanzeige_zusatzdatenindatei' =>	'1',
+			'personenanzeige_publikationen'	=> '1',
+			'personenanzeige_lehrveranstaltungen' => '1',
+                        'lehrveranstaltung_verzeichnis' => '',
+                        'seitencache' => '0',
 			'START_SOMMERSEMESTER' => '1.4',
 			'START_WINTERSEMESTER' => '1.10',
-			'Zeige_Sprungmarken' => '0',
-			'OrgUnit' => '',
-			'Sortiere_Alphabet' => '0',
-			'Sortiere_Jobs' => '1',
-                        'Ignoriere_Jobs' => 'Sicherheitsbeauftragter|IT-Sicherheits-Beauftragter|Webmaster|Postmaster|IT-Betreuer|UnivIS-Beauftragte',
-                        'Datenverzeichnis' => '',
+			'zeige_sprungmarken' => '0',
+			'orgunit' => '',
+			'sortiere_alphabet' => '0',
+			'sortiere_jobs' => '1',
+                        'ignoriere_jobs' => 'Sicherheitsbeauftragter|IT-Sicherheits-Beauftragter|Webmaster|Postmaster|IT-Betreuer|UnivIS-Beauftragte',
+                        'datenverzeichnis' => '',
                         'id' => '',
                         'firstname' => '',
                         'lastname' => '',
                         'dozentid' => '',
                         'dozentname' => '',
                         'type' => '',           // für Selektion nach Lehrveranstaltungstypen wie vorl
-                        'lv_import' => '1'      // importierte Lehrveranstaltungen werden mit angezeigt, ausblenden über Shortcode
+                        'lv_import' => '1',     // importierte Lehrveranstaltungen werden mit angezeigt, ausblenden über Shortcode
+			'link_telefonbuch' => '0'	//lapmk 02.03.2017: bei "mitarbeiter-telefonbuch" wird auf der Visitenkartenseite der Rücksprunglink zur Mitarbeiterliste eingeblendet
 	);
         return $defaults;
     }
@@ -253,7 +261,19 @@ class RRZE_UnivIS {
         if( isset( $atts['dozentname'] ) ) {
             $atts['dozentname'] = wp_kses( str_replace(' ', '', $atts['dozentname']), array() );
         }
+	$atts=array_merge($atts,$_GET); //lapmk 02.03.2017: erlaubt die Verwendung von GET (verwendet in mitarbeiter-telefonbuch); unzulässige Keys werden durch shortcode_atts() aussortiert
         $shortcode_atts = shortcode_atts( $defaults, $atts );
+		
+	/*
+	lapmk 02.03.2017
+	Neue Funktion in task "mitarbeiter-telefonbuch": wenn im GET lastname und firstname übergeben werden, dann wird
+	statt der alphabetischen Mitarbeiterliste eine einzelne Mitarbeiterseite "mitarbeiter-einzeln" angezeigt
+	*/
+        if ($shortcode_atts['task']=='mitarbeiter-telefonbuch' && $shortcode_atts['firstname'] && $shortcode_atts['lastname']) {  
+        	$shortcode_atts['task']='mitarbeiter-einzeln'; 
+        	$shortcode_atts['link_telefonbuch']='1'; 
+        } 
+		
         extract($shortcode_atts);
         /*if( isset( $atts['task'] ) ) {
             $task = $atts['task'];
@@ -268,6 +288,7 @@ class RRZE_UnivIS {
         switch( $task ) {
             case 'mitarbeiter-alle':
             case 'mitarbeiter-orga':
+	    case 'mitarbeiter-telefonbuch': //lapmk 02.03.2017: neues Template
             case 'lehrveranstaltungen-alle':
                 // Selektion nach Lehrveranstaltungstypen über Shortcodeparameter (z.B. vorl)
                 if( $type ) {
