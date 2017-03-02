@@ -36,7 +36,7 @@ class univisAssets {
 
 	public function holeBild() {
 		// Pruefe ob Bild geladen werden soll.
-		if(!$this->optionen["Personenanzeige_Bildsuche"])	return NULL;
+		if(!$this->optionen["personenanzeige_bildsuche"])	return NULL;	//lapmk 02.03.2017: shortcodes immer Kleinbuchstaben
 
 		$datentypen = array(".png", ".jpg", ".gif");
 
@@ -54,7 +54,7 @@ class univisAssets {
 
 	private function holeBeschreibung() {
 		// Pruefe ob Zusatzdatei geladen werden soll
-		if(!$this->optionen["Personenanzeige_ZusatzdatenInDatei"]) return NULL;
+		if(!$this->optionen["personenanzeige_zusatzdatenindatei"]) return NULL;	//lapmk 02.03.2017: shortcodes immer Kleinbuchstaben
 
 		$filepath = $this->filepath().".txt";
 		if(!file_exists($filepath)) {
