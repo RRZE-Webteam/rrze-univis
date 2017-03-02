@@ -67,7 +67,7 @@ class univisCache {
 			return -1;
 		}
 
-		$expire = $this->optionen["SeitenCache"];
+		$expire = $this->optionen["seitencache"];	//lapmk 02.03.2017: shortcodes immer Kleinbuchstaben
 		// Ueberpruefe Date auf Gueltigkeit
 		if(time() < (filemtime($filepath) + $expire)) {
 			// Datei gueltig
