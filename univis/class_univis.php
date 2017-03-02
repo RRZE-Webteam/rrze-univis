@@ -233,6 +233,37 @@ class UNIVIS {
                 }
 	}
 
+	
+	//lapmk 02.03.2017: neue Funktion für neues Template "mitarbeiter_telefonbuch"; basiert auf _ladeMitarbeiterOrga()
+  	private function _ladeMitarbeiterTelefonbuch() {
+		// Hole Daten von Univis
+		$url = esc_url_raw( $this->univis_url."?search=persons&department=".$this->optionen["UnivISOrgNr"]."&show=xml" );
+
+		if(!fopen($url, "r")) {
+                        echo "Leider konnte zu UnivIS keine Verbindung aufgebaut werden.";
+			// Univis Server ist nicht erreichbar
+			return -1;
+		}
+                
+                $handle = fopen($url, "r");
+                $content = fread($handle, 100);
+                if( substr( $content, 0, 5) != '<?xml' ) {
+                    echo "Leider brachte Ihre Suche kein Ergebnis. Bitte überprüfen Sie die Suchparameter.";
+                    // Univis Server ist nicht erreichbar
+                    return -1;
+                } 
+                fclose($handle);                
+
+		// XML Daten Parsen
+		$daten = $this->xml2array($url);
+                if(empty($daten)) {
+                    echo "Leider konnte die Organisationseinheit nicht gefunden werden.";
+                    return -1;
+                } else {
+                    return $daten["Person"];
+                }
+	}
+	
 
 	private function _ladeMitarbeiterEinzeln() {
 
