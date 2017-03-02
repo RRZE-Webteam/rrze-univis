@@ -74,7 +74,7 @@ class univisRender {
                 $personen = $daten['Person'];
                 $jobnamen = $daten['jobs'];
                 $such_kategorie = "orgname";
-		if($this->optionen["Sortiere_Jobs"]) {
+		if($this->optionen["sortiere_jobs"]) {	//lapmk 02.03.2017: shortcodes immer Kleinbuchstaben
 			// Bei Lehrstuehlen ist es aber sinnvoller nach Jobs bzw. Rang zu gliedern.
 			$such_kategorie = "rang";
                         $jobs = $daten['Org'][0]['jobs'][0]['job'];
@@ -205,16 +205,16 @@ class univisRender {
                 //Sortierung der Ergebnisse nach dem Funktionsfeld
                 //$gruppen = $this->record_sort($gruppen, "name");
                         
-		if($this->optionen["OrgUnit"] != "") {
+		if($this->optionen["orgunit"] != "") {	//lapmk 02.03.2017: shortcodes immer Kleinbuchstaben
 			$gruppe = array(
-				"name" => $this->optionen["OrgUnit"],
-				"personen" => $gruppen_dict[$this->optionen["OrgUnit"]]
+				"name" => $this->optionen["orgunit"],	//lapmk 02.03.2017: shortcodes immer Kleinbuchstaben
+				"personen" => $gruppen_dict[$this->optionen["orgunit"]]	//lapmk 02.03.2017: shortcodes immer Kleinbuchstaben
 			);
                         $gruppen = array($gruppe);
 		}
 
 		// Sollen die Personen alphabetisch sortiert werden?
-		if($this->optionen["Sortiere_Alphabet"] != 0) {
+		if($this->optionen["sortiere_alphabet"] != 0) {	//lapmk 02.03.2017: shortcodes immer Kleinbuchstaben
 			$personen = array();
 
 
@@ -236,7 +236,7 @@ class univisRender {
 
 		// Zeige keine Sprungmarken falls nur eine OrgUnit vorhanden ist.
 		if(count($gruppen) <= 1) {
-			$this->optionen["Zeige_Sprungmarken"] = 0;
+			$this->optionen["zeige_sprungmarken"] = 0;	//lapmk 02.03.2017: shortcodes immer Kleinbuchstaben
 		}
 
                 //Workaround für die Ausgabe [leer]
@@ -296,16 +296,16 @@ class univisRender {
 		}
 
 		// Soll nur eine bestimmte Org-Einheit angezeigt werden?
-		if($this->optionen["OrgUnit"] != "") {
+		if($this->optionen["orgunit"] != "") {	//lapmk 02.03.2017: shortcodes immer Kleinbuchstaben
 			$gruppe = array(
-				"name" => $this->optionen["OrgUnit"],
-				"personen" => $gruppen_dict[$this->optionen["OrgUnit"]]
+				"name" => $this->optionen["orgunit"],	//lapmk 02.03.2017: shortcodes immer Kleinbuchstaben
+				"personen" => $gruppen_dict[$this->optionen["orgunit"]]	//lapmk 02.03.2017: shortcodes immer Kleinbuchstaben
 			);
 			$gruppen = array($gruppe);
 		}
 
 		// Sollen die Personen alphabetisch sortiert werden?
-		if($this->optionen["Sortiere_Alphabet"] != 0) {
+		if($this->optionen["sortiere_alphabet"] != 0) {	//lapmk 02.03.2017: shortcodes immer Kleinbuchstaben
 			$personen = array();
 
 			foreach ($gruppen as $gruppe) {
@@ -323,13 +323,69 @@ class univisRender {
 
 		// Zeige keine Sprungmarken falls nur eine OrgUnit vorhanden ist.
 		if(count($gruppen) <= 1) {
-			$this->optionen["Zeige_Sprungmarken"] = 0;
+			$this->optionen["zeige_sprungmarken"] = 0;	//lapmk 02.03.2017: shortcodes immer Kleinbuchstaben
 		}
 
 		return array("gruppen" => $gruppen, "optionen" => $this->optionen);
 	}
 
 
+	//lapmk 02.03.2017: neue Funktion zum neuen Template "mitarbeiter_telefonbuch"; Funktion basiert auf _bearbeiteMitarbeiterOrga($personen)
+	private function _bearbeiteMitarbeiterTelefonbuch($personen) {  
+		/////////	Daten Formatieren
+		////////////////
+		//	Array: ["ORGNAME"] => Array: PERSON-ARRAY
+		////////////////
+
+
+		$such_kategorie = "orgname";
+		$gruppen = array();
+		$gruppen_dict = array();
+
+		foreach ($personen as $person) {
+			if(empty($person["firstname"]))
+				continue;
+
+			if(empty($person[$such_kategorie])) {
+				continue;
+			}
+                        if(isset($person["title"])) {
+                            $person["title-long"] = $this->_str_replace_dict(univisDicts::$acronyms, $person["title"]);
+                        }
+                        $name = $person["firstname"]."-".$person["lastname"];
+			$person["nameurl"] = strtolower($this->umlaute_ersetzen($name));
+			$person["nameurl"] = str_replace(" ", "-", $person["nameurl"]);
+
+			$gruppen_name = substr($person["lastname"],0,1);
+
+     			if(empty($gruppen_dict[$gruppen_name])) {
+				$gruppen_dict[$gruppen_name] = array();
+			}
+
+			array_push($gruppen_dict[$gruppen_name], $person);
+		}
+
+    		ksort($gruppen_dict);
+    
+		foreach ($gruppen_dict as $gruppen_name => $gruppen_personen) {
+      			$gruppen_personen = $this->record_sort($gruppen_personen, "lastname");
+			$gruppen_obj = array(
+				"name" => $gruppen_name,
+				"personen" => $gruppen_personen
+			);
+
+			array_push($gruppen, $gruppen_obj);
+		}
+
+		// Zeige keine Sprungmarken falls nur eine OrgUnit vorhanden ist.
+		if(count($gruppen) <= 1) {
+			$this->optionen["zeige_sprungmarken"] = 0;  //lapmk 02.03.2017: shortcodes immer Kleinbuchstaben
+		}
+
+		return array("gruppen" => $gruppen, "optionen" => $this->optionen);
+	}
+	
+	
 
 	private function _bearbeiteMitarbeiterEinzeln($person) {
 		if(!empty($person)) {
