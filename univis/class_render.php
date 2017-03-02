@@ -38,6 +38,10 @@ class univisRender {
 
 				case "mitarbeiter-orga":
 					return $this->_bearbeiteMitarbeiterOrga($daten);
+					
+				//lapmk 02.03.2017: neues Template "mitarbeiter_telefonbuch"
+				case "mitarbeiter-telefonbuch":
+					return $this->_bearbeiteMitarbeiterTelefonbuch($daten);
 
 				case "mitarbeiter-einzeln":
 					return $this->_bearbeiteMitarbeiterEinzeln($daten);
