@@ -525,7 +525,7 @@ class UNIVIS {
 	      $a[$sxi->key()][] = $this->sxiToArray($sxi->current());
 	    }
 	    else{
-	      $a[$sxi->key()] = strval($sxi->current());
+	      $a[$sxi->key()][] = strval($sxi->current());	//lapmk 03.03.2017: bugfix, $a[...] muss array sein
 
 	      //Fuege die UnivisRef Informationen ein.
 	      if($sxi->UnivISRef) {
