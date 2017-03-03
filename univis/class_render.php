@@ -360,7 +360,7 @@ class univisRender {
 			$person["nameurl"] = strtolower($this->umlaute_ersetzen($name));
 			$person["nameurl"] = str_replace(" ", "-", $person["nameurl"]);
 
-			$gruppen_name = substr($person["lastname"],0,1);
+			$gruppen_name = strtoupper(substr($person["lastname"],0,1));
 
      			if(empty($gruppen_dict[$gruppen_name])) {
 				$gruppen_dict[$gruppen_name] = array();
