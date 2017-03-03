@@ -1,58 +1,41 @@
 {{#person}}
-	<div class="person" itemscope itemtype="http://schema.org/Person">
-		<div class="page">
-			<h2>
-				<span itemprop="name">
-					{{#title}}<span itemprop="honorificPrefix">{{title}}</span> {{/title}}<span itemprop="givenName">{{firstname}}</span> <span itemprop="familyName">{{lastname}}</span>{{#atitle}}, <span itemprop="honorificSuffix">{{atitle}}</span>{{/atitle}}
-				</span>
-			</h2>
-			<ul class="person-info">
-				{{#orgunits}}
-					<li class="person-info-abteilung">
-						<span class="screen-reader-text">Abteilung: </span><span itemprop="worksFor">{{orgunit}}</span>
-					</li>
-				{{/orgunits}}
-			</ul>
-			{{#locations}}
-				{{#location}}
-					<ul class="person-info">
-						{{#tel}}
-							<li class="person-info-phone">
-								<span class="screen-reader-text">Telefonnummer: </span><span itemprop="telephone">{{tel}}</span>
-							</li>
-						{{/tel}}
-						{{#fax}}
-							<li class="person-info-fax">
-								<span class="screen-reader-text">Faxnummer: </span><span itemprop="faxNumber">{{fax}}</span>
-							</li>
-						{{/fax}}
-						{{#email}}
-							<li class="person-info-email">
-								<span class="screen-reader-text">E-Mail: </span><a itemprop="email" href="mailto:{{email}}">{{email}}</a>
-							</li>
-						{{/email}}
-						{{#url}}
-							<li class="person-info-www">
-								<span class="screen-reader-text">Webseite: </span><a itemprop="url" href="{{url}}">{{url}}</a>
-							</li>
-						{{/url}}
-						<li class="person-info-address">
-							<span class="screen-reader-text">Adresse: <br></span>
-							<div itemprop="address" itemscope itemtype="http://schema.org/PostalAddress">
-								{{#street}}<span class="person-info-street" itemprop="streetAddress">{{street}}</span><br>{{/street}}
-								{{#ort}}<span itemprop="addressLocality">{{ort}}</span>{{/ort}}
-							</div>
-							{{#office}}<div class="person-info-room" itemprop="workLocation" itemscope itemtype="http://schema.org/Person">Raum {{office}}</div>{{/office}}
-						</li>
-					</ul>
-				{{/location}}
-			{{/locations}}
-		</div>
-	</div>
+<div class="person" itemscope itemtype="http://schema.org/Person">
+<div class="page">
+<h2><span itemprop="name">{{#title}}<span itemprop="honorificPrefix">{{title}}</span> {{/title}}<span itemprop="givenName">{{firstname}}</span> <span itemprop="familyName">{{lastname}}</span>{{#atitle}}, <span itemprop="honorificSuffix">{{atitle}}</span>{{/atitle}}</span></h2>
+<ul class="person-info">
+{{#orgunits}}
+<li class="person-info-abteilung"><span class="screen-reader-text">Abteilung: </span><span itemprop="worksFor">{{orgunit}}</span></li>
+{{/orgunits}}
+</ul>
+{{#locations}}
+{{#location}}
+<ul class="person-info">
+{{#tel}}
+<li class="person-info-phone"><span class="screen-reader-text">Telefonnummer: </span><span itemprop="telephone">{{tel}}</span></li>
+{{/tel}}
+{{#fax}}
+<li class="person-info-fax"><span class="screen-reader-text">Faxnummer: </span><span itemprop="faxNumber">{{fax}}</span></li>
+{{/fax}}
+{{#email}}
+<li class="person-info-email"><span class="screen-reader-text">E-Mail: </span><a itemprop="email" href="mailto:{{email}}">{{email}}</a></li>
+{{/email}}
+{{#url}}
+<li class="person-info-www"><span class="screen-reader-text">Webseite: </span><a itemprop="url" href="{{url}}">{{url}}</a></li>
+{{/url}}
+<li class="person-info-address">
+<span class="screen-reader-text">Adresse: <br></span>
+<div itemprop="address" itemscope itemtype="http://schema.org/PostalAddress">{{#street}}<span class="person-info-street" itemprop="streetAddress">{{street}}</span><br>{{/street}}{{#ort}}<span itemprop="addressLocality">{{ort}}</span>{{/ort}}</div>
+{{#office}}<div class="person-info-room" itemprop="workLocation" itemscope itemtype="http://schema.org/Person">Raum {{office}}</div>{{/office}}
+</li>
+</ul>
+{{/location}}
+{{/locations}}
+</div>
+</div>
 {{/person}}
 
 {{#optionen}}
-  {{#link_telefonbuch}}
-    <p><a class="url" href="?">Zur&uuml;ck zur &Uuml;bersicht</a></p>
-  {{/link_telefonbuch}}
+{{#link_telefonbuch}}
+<p><a class="url" href="?">Zur&uuml;ck zur &Uuml;bersicht</a></p>
+{{/link_telefonbuch}}
 {{/optionen}}
