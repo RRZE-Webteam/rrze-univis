@@ -274,7 +274,12 @@ class univisRender {
                         if(isset($person["title"])) {
                             $person["title-long"] = $this->_str_replace_dict(univisDicts::$acronyms, $person["title"]);
                         }
-                        $name = $person["firstname"]."-".$person["lastname"];
+
+			//lapmk 03.03.2017: Sortierung mit ersetzten deutschen Umlauten
+                        $name = $person["lastname"]." ".$person["firstname"];
+			$person["namesort"] = strtolower($this->umlaute_ersetzen($name));
+			
+			$name = $person["firstname"]."-".$person["lastname"];
 			$person["nameurl"] = strtolower($this->umlaute_ersetzen($name));
 			$person["nameurl"] = str_replace(" ", "-", $person["nameurl"]);
 
@@ -318,7 +323,7 @@ class univisRender {
 				}
 			}
 
-			$personen = $this->record_sort($personen, "lastname");
+			$personen = $this->record_sort($personen, "namesort");	//lapmk 03.03.2017: verbesserte Sortierung mit deutschen Umlauten
 
 			$gruppe = array("name" => "Alle Mitarbeiter", "personen" => $personen);
 			$gruppen = array($gruppe);
@@ -356,10 +361,15 @@ class univisRender {
                         if(isset($person["title"])) {
                             $person["title-long"] = $this->_str_replace_dict(univisDicts::$acronyms, $person["title"]);
                         }
+			
+			//lapmk 03.03.2017: Sortierung mit ersetzten deutschen Umlauten
+                        $name = $person["lastname"]." ".$person["firstname"];
+			$person["namesort"] = strtolower($this->umlaute_ersetzen($name));
+			
                         $name = $person["firstname"]."-".$person["lastname"];
 			$person["nameurl"] = strtolower($this->umlaute_ersetzen($name));
 			$person["nameurl"] = str_replace(" ", "-", $person["nameurl"]);
-
+			
 			$gruppen_name = strtoupper(substr($person["lastname"],0,1));
 
      			if(empty($gruppen_dict[$gruppen_name])) {
@@ -372,7 +382,7 @@ class univisRender {
     		ksort($gruppen_dict);
     
 		foreach ($gruppen_dict as $gruppen_name => $gruppen_personen) {
-      			$gruppen_personen = $this->record_sort($gruppen_personen, "lastname");
+      			$gruppen_personen = $this->record_sort($gruppen_personen, "namesort");  //lapmk 03.03.2017: verbesserte Sortierung mit deutschen Umlauten
 			$gruppen_obj = array(
 				"name" => $gruppen_name,
 				"personen" => $gruppen_personen
@@ -800,7 +810,7 @@ class univisRender {
 	        $hash[$record[$field]] = $record;
 	    }
 
-	    ($reverse)? krsort($hash) : ksort($hash);
+	    ($reverse)? krsort($hash,SORT_NATURAL|SORT_FLAG_CASE) : ksort($hash,SORT_NATURAL|SORT_FLAG_CASE);	//lapmk 03.03.2017: Sortierung case-insensitive
 
 	    $records = array();
 
