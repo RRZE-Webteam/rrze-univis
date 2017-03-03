@@ -123,7 +123,8 @@ class RRZE_UnivIS {
                         'dozentname' => '',
                         'type' => '',           // für Selektion nach Lehrveranstaltungstypen wie vorl
                         'lv_import' => '1',     // importierte Lehrveranstaltungen werden mit angezeigt, ausblenden über Shortcode
-			'link_telefonbuch' => '0'	//lapmk 02.03.2017: bei "mitarbeiter-telefonbuch" wird auf der Visitenkartenseite der Rücksprunglink zur Mitarbeiterliste eingeblendet
+			'link_telefonbuch' => '0',	//lapmk 02.03.2017: bei "mitarbeiter-telefonbuch" wird auf der Visitenkartenseite der Rücksprunglink zur Mitarbeiterliste eingeblendet
+			'mitarbeiter-einzeln-version' => '0'	//lapmk 03.03.2017: neues mitarbeiter-einzeln-Template über mitarbeiter-einzeln-version=1
 	);
         return $defaults;
     }
