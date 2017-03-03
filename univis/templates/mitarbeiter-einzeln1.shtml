@@ -12,8 +12,10 @@
 						<span class="screen-reader-text">Abteilung: </span><span itemprop="worksFor">{{orgunit}}</span>
 					</li>
 				{{/orgunits}}
-				{{#locations}}
-					{{#location}}
+			</ul>
+			{{#locations}}
+				{{#location}}
+					<ul class="person-info">
 						{{#tel}}
 							<li class="person-info-phone">
 								<span class="screen-reader-text">Telefonnummer: </span><span itemprop="telephone">{{tel}}</span>
@@ -42,9 +44,9 @@
 							</div>
 							{{#office}}<div class="person-info-room" itemprop="workLocation" itemscope itemtype="http://schema.org/Person">Raum {{office}}</div>{{/office}}
 						</li>
-					{{/location}}
-				{{/locations}}
-			</ul>
+					</ul>
+				{{/location}}
+			{{/locations}}
 		</div>
 	</div>
 {{/person}}
