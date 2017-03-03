@@ -10,7 +10,7 @@
 	</p>
 
 	{{#gruppen}}
-	<a name="{{ name }}">{{name}}</a>
+	<a name="{{ name }}"></a>{{name}}
 	<ul>
 		{{#personen}}
 		    <li class="vcard"><span class="fn n"><a class="url" href="?lastname={{ lastname }}&firstname={{ firstname }}"><span class="family-name">{{ lastname }}</span>{{#atitle}}, <span class="honorific-suffix"><acronym title="">{{ atitle }}</acronym></span>{{/atitle}}, {{#title}}<span class="honorific-prefix"><acronym title="{{ title-long }}">{{title}}</acronym></span> {{/title}}<span class="given-name">{{ firstname }}</span></a></span></li>
