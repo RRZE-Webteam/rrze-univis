@@ -29,11 +29,11 @@
 								<span class="screen-reader-text">E-Mail: </span><a itemprop="email" href="mailto:{{email}}">{{email}}</a>
 							</li>
 						{{/email}}
-						{{#webpage}}
+						{{#url}}
 							<li class="person-info-www">
-								<span class="screen-reader-text">Webseite: </span><a itemprop="url" href="{{webpage}}">{{webpage}}</a>
+								<span class="screen-reader-text">Webseite: </span><a itemprop="url" href="{{url}}">{{url}}</a>
 							</li>
-						{{/webpage}}
+						{{/url}}
 						<li class="person-info-address">
 							<span class="screen-reader-text">Adresse: <br></span>
 							<div itemprop="address" itemscope itemtype="http://schema.org/PostalAddress">
