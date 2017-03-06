@@ -10,6 +10,11 @@
 {{#locations}}
 {{#location}}
 <ul class="person-info">
+<li class="person-info-address">
+<span class="screen-reader-text">Adresse: <br /></span>
+<div itemprop="address" itemscope itemtype="http://schema.org/PostalAddress">{{#street}}<span class="person-info-street" itemprop="streetAddress">{{street}}</span><br>{{/street}}{{#ort}}<span itemprop="addressLocality">{{ort}}</span>{{/ort}}</div>
+{{#office}}<div class="person-info-room" itemprop="workLocation" itemscope itemtype="http://schema.org/Person">Raum {{office}}</div>{{/office}}
+</li>
 {{#tel}}
 <li class="person-info-phone"><span class="screen-reader-text">Telefonnummer: </span><span itemprop="telephone">{{tel}}</span></li>
 {{/tel}}
@@ -22,17 +27,14 @@
 {{#url}}
 <li class="person-info-www"><span class="screen-reader-text">Webseite: </span><a itemprop="url" href="{{url}}">{{url}}</a></li>
 {{/url}}
-<li class="person-info-address">
-<span class="screen-reader-text">Adresse: <br></span>
-<div itemprop="address" itemscope itemtype="http://schema.org/PostalAddress">{{#street}}<span class="person-info-street" itemprop="streetAddress">{{street}}</span><br>{{/street}}{{#ort}}<span itemprop="addressLocality">{{ort}}</span>{{/ort}}</div>
-{{#office}}<div class="person-info-room" itemprop="workLocation" itemscope itemtype="http://schema.org/Person">Raum {{office}}</div>{{/office}}
-</li>
 </ul>
 {{/location}}
 {{/locations}}
 </div>
 </div>
 {{/person}}
+
+<br />
 
 {{#optionen}}
 {{#link_telefonbuch}}
