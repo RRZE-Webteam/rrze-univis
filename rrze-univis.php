@@ -124,7 +124,8 @@ class RRZE_UnivIS {
                         'type' => '',           // für Selektion nach Lehrveranstaltungstypen wie vorl
                         'lv_import' => '1',     // importierte Lehrveranstaltungen werden mit angezeigt, ausblenden über Shortcode
 			'link_telefonbuch' => '0',	//lapmk 02.03.2017: bei "mitarbeiter-telefonbuch" wird auf der Visitenkartenseite der Rücksprunglink zur Mitarbeiterliste eingeblendet
-			'mitarbeiter_einzeln_version' => '0'	//lapmk 03.03.2017: neues mitarbeiter-einzeln-Template über mitarbeiter_einzeln_version=1
+			'mitarbeiter_einzeln_version' => '0',	//lapmk 03.03.2017: neues mitarbeiter-einzeln-Template über mitarbeiter_einzeln_version=1
+			'univisid' => ''	//lapmk 06.03.2017: zum Aufruf eines einzelnen Mitarbeiters aus "mitarbeiter-telefonbuch"
 	);
         return $defaults;
     }
@@ -270,7 +271,7 @@ class RRZE_UnivIS {
 	Neue Funktion in task "mitarbeiter-telefonbuch": wenn im GET lastname und firstname übergeben werden, dann wird
 	statt der alphabetischen Mitarbeiterliste eine einzelne Mitarbeiterseite "mitarbeiter-einzeln" angezeigt
 	*/
-        if ($shortcode_atts['task']=='mitarbeiter-telefonbuch' && $shortcode_atts['firstname'] && $shortcode_atts['lastname']) {  
+        if ($shortcode_atts['task']=='mitarbeiter-telefonbuch' && $shortcode_atts['univisid']) {  
         	$shortcode_atts['task']='mitarbeiter-einzeln'; 
         	$shortcode_atts['link_telefonbuch']='1'; 
         } 
@@ -315,8 +316,8 @@ class RRZE_UnivIS {
                 $ausgabe = $controller->ladeHTML();
                 break;
             case 'mitarbeiter-einzeln':        
-                if( !$firstname && !$lastname ) {
-                    $ausgabe = '<p>' . __('Bitte geben Sie einen Vor- und Nachnamen an.', self::textdomain). '</p>';
+                if( !$firstname && !$lastname && !$univisid) {
+                    $ausgabe = '<p>' . __('Bitte geben Sie einen Vor- und Nachnamen oder die UnivIS-ID an.', self::textdomain). '</p>';
                     break;
                 } 
                 $controller = new univisController($task, NULL, $shortcode_atts);
