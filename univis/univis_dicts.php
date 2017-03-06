@@ -28,12 +28,12 @@ class univisDicts {
     // Reihenfolge wichtig, da sonst Mehrfachersetzung von z.B. sem
     public static $lecturetypen = array(
         "awa" => "Anleitung zu wiss. Arbeiten  (AWA)",
+        "ts" => "Theorieseminar  (TS)",
         "ag" => "Arbeitsgemeinschaft  (AG)",
         "ak" => "Aufbaukurs  (AK)",
         "ex" => "Exkursion  (EX)",
         "gk" => "Grundkurs  (GK)",
         "sem" => "Seminar  (SEM)",
-        "ts" => "Theorieseminar  (TS)",
         "es" => "Examensseminar  (ES)",
         "mas" => "Masterseminar  (MAS)", 
         "gs" => "Grundseminar  (GS)",
@@ -66,12 +66,12 @@ class univisDicts {
     );
     public static $lecturetypen_short = array(
         "awa" => "Anleitung zu wiss. Arbeiten",
+        "ts" => "Theorieseminar",
         "ag" => "Arbeitsgemeinschaft",
         "ak" => "Aufbaukurs",
         "ex" => "Exkursion",
         "gk" => "Grundkurs",
         "sem" => "Seminar",
-        "ts" => "Theorieseminar",
         "es" => "Examensseminar",
         "mas" => "Masterseminar",
         "gs" => "Grundseminar",
