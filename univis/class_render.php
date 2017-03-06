@@ -352,6 +352,10 @@ class univisRender {
 		$gruppen_dict = array();
 
 		foreach ($personen as $person) {
+			//lapmk 06.03.2017: nur Personen mit visible=ja in UnivIS darstellen
+			if(empty($person["visible"]) || $person["visible"]!='ja')
+				continue;
+			
 			if(empty($person["firstname"]))
 				continue;
 
