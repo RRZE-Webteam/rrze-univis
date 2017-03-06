@@ -36,6 +36,9 @@
 
 {{#optionen}}
 {{#link_telefonbuch}}
-<p><br /><a class="url" href="?">Zur&uuml;ck zur &Uuml;bersicht</a></p>
+
+<p>
+<br /><a class="url" href="?">Zur&uuml;ck zur &Uuml;bersicht</a>
+</p>
 {{/link_telefonbuch}}
 {{/optionen}}
