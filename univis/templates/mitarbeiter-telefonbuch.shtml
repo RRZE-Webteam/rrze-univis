@@ -11,7 +11,7 @@
 <h2><a name="{{name}}"></a>{{name}}</h2>
 <ul>
 {{#personen}}
-<li class="vcard"><span class="fn n"><a class="url" href="?lastname={{lastname}}&firstname={{firstname}}"><span class="family-name">{{lastname}}</span>{{#atitle}}, <span class="honorific-suffix">{{atitle}}</span>{{/atitle}}, {{#title}}<span class="honorific-prefix">{{title}}</span> {{/title}}<span class="given-name">{{firstname}}</span></a></span></li>
+<li class="vcard"><span class="fn n"><a class="url" href="?univisid={{id}}"><span class="family-name">{{lastname}}</span>{{#atitle}}, <span class="honorific-suffix">{{atitle}}</span>{{/atitle}}, {{#title}}<span class="honorific-prefix">{{title}}</span> {{/title}}<span class="given-name">{{firstname}}</span></a></span></li>
 {{/personen}}
 </ul>
 {{/gruppen}}
