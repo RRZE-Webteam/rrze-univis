@@ -268,7 +268,7 @@ class RRZE_UnivIS {
 		
 	/*
 	lapmk 02.03.2017
-	Neue Funktion in task "mitarbeiter-telefonbuch": wenn im GET lastname und firstname übergeben werden, dann wird
+	Neue Funktion in task "mitarbeiter-telefonbuch": wenn im GET univisid übergeben wird, dann wird
 	statt der alphabetischen Mitarbeiterliste eine einzelne Mitarbeiterseite "mitarbeiter-einzeln" angezeigt
 	*/
         if ($shortcode_atts['task']=='mitarbeiter-telefonbuch' && $shortcode_atts['univisid']) {  
