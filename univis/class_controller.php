@@ -161,7 +161,7 @@ class univisController {
 	function _get_template() {
 		//lapmk 03.03.2017: neue Version 1 für mitarbeiter-einzeln-Template eingefügt; hier erfolgt Dateiauswahl
 		$task=$this->optionen['task'];
-		if ($task=='mitarbeiter-einzeln' && $this->optionen['mitarbeiter-einzeln-version']==1) $task.='1';
+		if ($task=='mitarbeiter-einzeln' && $this->optionen['mitarbeiter_einzeln_version']==1) $task.='1';
 		$filename = $task.".shtml";
                 //geändert!
                 //$filename = "templates/".$filename;
