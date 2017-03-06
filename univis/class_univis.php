@@ -267,23 +267,29 @@ class UNIVIS {
 
 	private function _ladeMitarbeiterEinzeln() {
 
-		//Ueberpruefe ob Vor- und Nachname gegeben sind.
-		$noetige_felder = array("firstname", "lastname");
-		foreach ($noetige_felder as $feld) {
-			if(!array_key_exists($feld, $this->optionen) || $this->optionen[$feld] == "") {
-				// Fehler: Bitte geben Sie Vor- und Nachname der gesuchten Person an
-				echo "<div class=\"hinweis_wichtig\">Bitte geben Sie Vor- und Nachname der gesuchten Person an.</div>";
-				return -1;
+		//lapmk 06.03.2017: Ueberpruefe ob UnivIS-ID gegeben ist.
+		if (!array_key_exists("univisid",$this->optionen) || $this->optionen["univisid"]=="") {
+			//Ueberpruefe ob Vor- und Nachname gegeben sind.
+			$noetige_felder = array("firstname", "lastname");
+			foreach ($noetige_felder as $feld) {
+				if(!array_key_exists($feld, $this->optionen) || $this->optionen[$feld] == "") {
+					// Fehler: Bitte geben Sie Vor- und Nachname der gesuchten Person an
+					echo "<div class=\"hinweis_wichtig\">Bitte geben Sie Vor- und Nachname der gesuchten Person an.</div>";
+					return -1;
+				}
+	
+				if(strrpos($this->optionen[$feld], "&") !== false) {
+					echo "Ung&uuml;ltige Eingabe.";
+					return -1;
+				}
 			}
-
-			if(strrpos($this->optionen[$feld], "&") !== false) {
-				echo "Ung&uuml;ltige Eingabe.";
-				return -1;
-			}
+			// Hole Daten von Univis mit lastname und firstname
+			$url = esc_url_raw( $this->univis_url."?search=persons&name=".$this->optionen["lastname"]."&firstname=".$this->optionen["firstname"]."&show=xml" );
 		}
-
-		// Hole Daten von Univis
-		$url = esc_url_raw( $this->univis_url."?search=persons&name=".$this->optionen["lastname"]."&firstname=".$this->optionen["firstname"]."&show=xml" );
+		else {
+			// Hole Daten von Univis mit univisid
+			$url = esc_url_raw( $this->univis_url."?search=persons&id=".$this->optionen["univisid"]."&show=xml" );
+		}
 
 		$url = $this->umlaute_ersetzen($url);
 
