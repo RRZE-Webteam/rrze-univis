@@ -373,7 +373,7 @@ class UNIVIS {
                 if( $this->optionen["sem"] ) {
                     $url .= "&sem=" . $this->optionen["sem"];
                 } 
-
+                //_rrze_debug($url);
 		if(!fopen($url, "r")) {
                         echo "Leider konnte zu UnivIS keine Verbindung aufgebaut werden.";
 			// Univis Server ist nicht erreichbar

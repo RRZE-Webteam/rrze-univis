@@ -425,7 +425,7 @@ class univisRender {
 
                     //Nach Jahren gruppieren
                     $veranstaltungen = $this->_group_by("type", $veranstaltungen);
-                    _rrze_debug(array( "veranstaltungen" => $veranstaltungen, "optionen" => $this->optionen));
+                    //_rrze_debug(array( "veranstaltungen" => $veranstaltungen, "optionen" => $this->optionen));
                     return array( "veranstaltungen" => $veranstaltungen, "optionen" => $this->optionen);
                 }
                 
