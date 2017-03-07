@@ -158,16 +158,9 @@ class univisController {
 	}
 
 	function _get_template() {
-		$filename = $this->optionen['task'].".shtml";
-                //geändert!
-                //$filename = "templates/".$filename;
-                $filename = plugins_url( "templates/".$filename, __FILE__);
-		$handle = fopen($filename, "r");
-                //geändert!
-                //$contents = fread($handle, filesize($filename));
-                $contents = stream_get_contents($handle);
-		fclose($handle);
-		return $contents;
+                $filename = plugin_dir_path(__FILE__) . "templates/" . $this->optionen['task'].".shtml";
+                $template = file_get_contents($filename);
+		return $template;
 	}
 }
 
