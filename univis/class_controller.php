@@ -4,7 +4,6 @@ require_once("class_univis.php");
 require_once("class_render.php");
 require_once("class_cache.php");
 require_once("class_assets.php");
-require 'Mustache/Autoloader.php';
 
 class univisController {
 
@@ -96,16 +95,32 @@ class univisController {
 	}
 
 	private function _renderTemplate($daten) {
-		Mustache_Autoloader::register();
+            
+                $daten = $this->_convertToObject($daten);
 
-		$m = new Mustache_Engine;
-		$template = $this->_get_template();
-
-		if($template == -1) return -1;
-
-		return  $m->render($template, $daten);
+                $filename = plugin_dir_path(__FILE__) . "templates/" . $this->optionen['task'].".php";
+                
+                if (is_file($filename)) {
+                    ob_start();
+                    include $filename;
+                    return str_replace("\n", " ", ob_get_clean());
+                }
+                
+                return -1;           
 	}
 
+        private function _convertToObject($array) {
+            $object = new stdClass();
+            foreach ($array as $key => $value) {
+                if (is_array($value)) {
+                    $value = $this->_convertToObject($value);
+                }
+                
+                $key = preg_replace('/[^a-z0-9_]/', '_', strtolower($key));
+                $object->$key = $value;
+            }
+            return $object;
+        }
 
 	private function _ladeConf($fpath, $args=NULL){
 		$options= array();
@@ -157,10 +172,5 @@ class univisController {
 
 	}
 
-	function _get_template() {
-                $filename = plugin_dir_path(__FILE__) . "templates/" . $this->optionen['task'].".shtml";
-                $template = file_get_contents($filename);
-		return $template;
-	}
 }
 

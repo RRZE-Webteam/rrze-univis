@@ -1,0 +1,17 @@
+{{#veranstaltungen}}
+	<h2>{{title}}</h2>
+	<ul>
+		{{#data}}
+		<li><h3><a href="http://univis.uni-erlangen.de/prg?search=lectures&id={{id}}&show=long{{#optionen}}&sem={{sem}}{{/optionen}}"> {{name}}</a></h3>
+			<ul>
+			{{#terms}}
+				{{#term}}
+					<li>{{date}} {{starttime}}-{{endtime}} Uhr, {{room_short}}{{#exclude}} (außer {{exclude}}){{/exclude}}</li>
+				{{/term}}
+			{{/terms}}
+			</ul>
+	
+		</li>
+		{{/data}}
+	</ul>
+{{/veranstaltungen}}
