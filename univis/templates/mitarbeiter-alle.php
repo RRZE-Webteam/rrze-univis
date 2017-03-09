@@ -1,41 +1,36 @@
 <div id="univis-personenindex">
-    <?php foreach ($daten->gruppen as $gruppe) : ?>
-    <h2><?php echo $gruppe->name;?></h2>
+    <?php foreach ($daten['gruppen'] as $gruppe) : ?>
+    <h2><?php echo $gruppe['name'];?></h2>
     <ul>
-        <?php foreach ($gruppe->personen as $person) : ?>
-            <li>
-                <span itemprop="name" class="person liste-person" itemscope itemtype="http://schema.org/Person">
-                <?php if (!empty($person->title)) : ?>
-                <span itemprop="honorificPrefix">
-                    <acronym title="<?php echo $person->title_long;?>"><?php echo $person->title;?></acronym>
-                </span>
-                <?php endif; ?>
-                <a class="url" href="http://univis.uni-erlangen.de/prg?search=persons&id=<?php echo $person->id;?>&show=info">
-                    <span itemprop="familyName"><?php echo $person->lastname;?></span><?php if (!empty($person->firstname)) : ?>, <?php endif; ?>
-                    <?php if (!empty($person->firstname)) : ?>
-                    <span itemprop="givenName"><?php echo $person->firstname;?></span><?php if (!empty($person->atitle)) : ?>, <?php endif; ?>
+        <?php foreach ($gruppe['personen'] as $person) : ?>
+            <li>                
+                <?php if (!empty($person['lastname'])) : ?>
+                    <span itemprop="name" class="person liste-person" itemscope itemtype="http://schema.org/Person">
+                    <?php if (!empty($person['title'])) : ?>
+                    <span itemprop="honorificPrefix">
+                        <acronym title="<?php echo $person['title_long'];?>"><?php echo $person['title'];?></acronym>
+                    </span>
                     <?php endif; ?>
-                </a>
-                <?php if (!empty($person->atitle)) : ?>
-                <span itemprop="honorificSuffix"><acronym title=""><?php echo $person->atitle;?></acronym></span>
+                    <a class="url" href="http://univis.uni-erlangen.de/prg?search=persons&id=<?php echo $person['id'];?>&show=info">
+                        <span itemprop="familyName"><?php echo $person['lastname'];?></span><?php if (!empty($person['firstname'])) : ?>, <?php endif; ?>
+                        <?php if (!empty($person['firstname'])) : ?>
+                        <span itemprop="givenName"><?php echo $person['firstname'];?></span><?php if (!empty($person['atitle'])) : ?>, <?php endif; ?>
+                        <?php endif; ?>
+                    </a>
+                    <?php if (!empty($person['atitle'])) : ?>
+                    <span itemprop="honorificSuffix"><acronym title="<?php echo $person['atitle_long'];?>"><?php echo $person['atitle'];?></acronym></span>
+                    <?php endif; ?>
+                    </span>
+                    <?php $location = $person['locations'][0]['location'][0];  ?>
+                                <?php if (!empty($location['tel'])) : ?>
+                                <span class="person-info-phone">
+                                    <span itemprop="telephone">, Tel. <?php echo $location['tel']; ?></span>
+                                </span>
+                                <?php endif; 
+                endif;
+                if (!empty($person['text'])): ?>
+                <span><?php echo $person['text']; ?></span>
                 <?php endif; ?>
-                </span>
-                <?php $i = 0; $j = 0; 
-                foreach ($person->locations as $locations) :
-                    if ( $i < 1 ) :
-                    foreach ($locations->location as $location) : 
-                        if ( $j < 1 ) : ?>
-                            <?php if (!empty($location->tel)) : ?>
-                            <span class="person-info-phone">
-                                <span class="screen-reader-text"><?php _e('Telefonnummer', FAU_PERSON_TEXTDOMAIN); ?>: </span><span itemprop="telephone">, Tel. <?php echo $location->tel; ?></span>
-                            </span>
-                            <?php endif; ?>     
-                        <?php endif;
-                        $j++;
-                    endforeach; 
-                    endif;
-                    $i++;
-                endforeach; ?>
             </li>            
         <?php endforeach; ?>
     </ul>
