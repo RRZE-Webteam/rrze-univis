@@ -258,7 +258,27 @@ class RRZE_UnivIS {
             $sem = wp_kses( str_replace(' ', '', $atts['sem']), array() );
             if( preg_match( '/[12]\d{3}[ws]/', $sem ) )     $atts['sem'] = $sem;
         } 
+        
+        
+        // *** Eingefügt von lapmk ***
+        $atts=array_merge($atts,$_GET); //lapmk 02.03.2017: erlaubt die Verwendung von GET (verwendet in mitarbeiter-telefonbuch); unzulässige Keys werden durch shortcode_atts() aussortiert
+        // *** ENDE ***
+        
         $shortcode_atts = shortcode_atts( $defaults, $atts );
+        
+        // *** Eingefügt von lapmk ***        
+        /*
+	lapmk 02.03.2017
+	Neue Funktion in task "mitarbeiter-telefonbuch": wenn im GET lastname und firstname übergeben werden, dann wird
+	statt der alphabetischen Mitarbeiterliste eine einzelne Mitarbeiterseite "mitarbeiter-einzeln" angezeigt
+	*/
+        if ($shortcode_atts['task']=='mitarbeiter-telefonbuch' && $shortcode_atts['firstname'] && $shortcode_atts['lastname']) {  
+        	$shortcode_atts['task']='mitarbeiter-einzeln'; 
+        	$shortcode_atts['link_telefonbuch']='1'; 
+        } 
+        // *** ENDE ***    
+        
+        
         extract($shortcode_atts);
         /*if( isset( $atts['task'] ) ) {
             $task = $atts['task'];
@@ -273,6 +293,9 @@ class RRZE_UnivIS {
         switch( $task ) {
             case 'mitarbeiter-alle':
             case 'mitarbeiter-orga':
+            // *** Eingefügt von lapmk ***        
+            // case 'mitarbeiter-telefonbuch':
+            // *** ENDE ***
             case 'lehrveranstaltungen-alle':
                 // Selektion nach Lehrveranstaltungstypen über Shortcodeparameter (z.B. vorl)
                 if( $type ) {
