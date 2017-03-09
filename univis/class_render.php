@@ -98,6 +98,10 @@ class univisRender {
                         if(isset($person["title"])) {
                             $person["title-long"] = $this->_str_replace_dict(univisDicts::$acronyms, $person["title"]);
                         }
+                        
+                        if(isset($person["atitle"])) {
+                            $person["atitle-long"] = $this->_str_replace_dict(univisDicts::$acronyms, $person["atitle"]);
+                        }
 			
                         if(isset($person["firstname"])&&isset($person["lastname"])) {
                             $name = $person["firstname"]."-".$person["lastname"];
@@ -273,6 +277,9 @@ class univisRender {
                         if(isset($person["title"])) {
                             $person["title-long"] = $this->_str_replace_dict(univisDicts::$acronyms, $person["title"]);
                         }
+                        if(isset($person["atitle"])) {
+                            $person["atitle-long"] = $this->_str_replace_dict(univisDicts::$acronyms, $person["atitle"]);
+                        }
                         $name = $person["firstname"]."-".$person["lastname"];
 			$person["nameurl"] = strtolower($this->umlaute_ersetzen($name));
 			$person["nameurl"] = str_replace(" ", "-", $person["nameurl"]);
@@ -338,6 +345,9 @@ class univisRender {
 		if(!empty($person)) {
                     if(!empty($person["title"])) {
 			$person["title-long"] = $this->_str_replace_dict(univisDicts::$acronyms, $person["title"]);
+                    }
+                    if(isset($person["atitle"])) {
+                            $person["atitle-long"] = $this->_str_replace_dict(univisDicts::$acronyms, $person["atitle"]);
                     }
 			$name = $person["firstname"]."_".$person["lastname"];
 			$person["nameurl"] = strtolower($this->umlaute_ersetzen($name));
@@ -772,6 +782,7 @@ class univisRender {
 		return array_pop($args);
 	}
 
+        
 
 }
 
