@@ -12,6 +12,12 @@ class univisDicts {
         "Ing." => "Ingenieurwissenschaft",
         "B.A." => "Bakkalaureus",
         "M.A." => "Magister Artium",
+//        "M.Sc." => "Master of Science",
+//        //"M. Sc." => "Master of Science",
+//        "M.Eng." => "Master of Engineering",
+//        //"M. Eng." => "Master of Engineering",        
+//        "M.Ed." => "Master of Education",
+//        //"M. Ed." => "Master of Education",
         "phil." => "Geisteswissenschaft",
         "pol." => "Politikwissenschaft",
         "nat." => "Naturwissenschaft",
@@ -24,17 +30,18 @@ class univisDicts {
         "jur." => "Recht",
         "rer." => ""
     );
-    
+   
     // Reihenfolge wichtig, da sonst Mehrfachersetzung von z.B. sem
     public static $lecturetypen = array(
         "awa" => "Anleitung zu wiss. Arbeiten  (AWA)",
-        "ts" => "Theorieseminar  (TS)",
-        "ag" => "Arbeitsgemeinschaft  (AG)",
+        "ku" => "Kurs  (KU)",
         "ak" => "Aufbaukurs  (AK)",
         "ex" => "Exkursion  (EX)",
         "gk" => "Grundkurs  (GK)",
         "sem" => "Seminar  (SEM)",
         "es" => "Examensseminar  (ES)",
+        "ts" => "Theorieseminar  (TS)",
+        "ag" => "Arbeitsgemeinschaft  (AG)",
         "mas" => "Masterseminar  (MAS)", 
         "gs" => "Grundseminar  (GS)",
         "us" => "Übungsseminar (US)",
@@ -45,7 +52,6 @@ class univisDicts {
         "klv" => "Klinische Visite  (KLV)",
         "ko" => "Kolloquium  (KO)",
         "ks" => "Kombiseminar  (KS)",
-        "ku" => "Kurs  (KU)",
         "ek" => "Einführungskurs  (EK)",
         "ms" => "Mittelseminar  (MS)",
         "os" => "Oberseminar  (OS)",
