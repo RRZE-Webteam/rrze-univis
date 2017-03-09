@@ -96,7 +96,7 @@ class univisController {
 
 	private function _renderTemplate($daten) {
             
-                $daten = $this->_convertToObject($daten);
+                $daten = self::_sanitize_key($daten);
 
                 $filename = plugin_dir_path(__FILE__) . "templates/" . $this->optionen['task'].".php";
                 
@@ -108,18 +108,35 @@ class univisController {
                 
                 return -1;           
 	}
+        
+        private static function get_key($array, $key, $option) {
+            if( !is_array( $array)) {
+                return false;
+            }
+            foreach ($array as $k => $v) {
+                if($k == $key && is_array($v) && isset($v[$option])){
+                    return $v;
+                }
+                $data = self::get_key($v, $key, $option);
+                if($data != false){
+                    return $data;        
+                }
+            }
 
-        private function _convertToObject($array) {
-            $object = new stdClass();
+            return false;
+        }
+        
+        private static function _sanitize_key($array) {
+            $data = array();
             foreach ($array as $key => $value) {
                 if (is_array($value)) {
-                    $value = $this->_convertToObject($value);
+                    $value = self::_sanitize_key($value);
                 }
                 
                 $key = preg_replace('/[^a-z0-9_]/', '_', strtolower($key));
-                $object->$key = $value;
+                $data[$key] = $value;
             }
-            return $object;
+            return $data;
         }
 
 	private function _ladeConf($fpath, $args=NULL){
