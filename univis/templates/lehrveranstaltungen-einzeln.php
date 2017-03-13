@@ -1,3 +1,15 @@
+<?php if ($daten['veranstaltung']) :
+    _rrze_debug($daten['veranstaltung']['name']);
+    foreach ($daten['veranstaltung'] as $veranstaltung) : ?>
+	<h2><?php echo $veranstaltung['name'];?></h2>
+        <?php 
+        
+        
+        ?>
+    <?php endforeach;
+                
+endif; ?>
+
 {{#veranstaltung}}
 	<h2>{{name}}</h2>
 
