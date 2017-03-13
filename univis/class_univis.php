@@ -433,6 +433,9 @@ class UNIVIS {
 		if($this->optionen["id"]) {
 			$url .=  "&id=".$this->toNumber($this->optionen["id"]) ;
 		}
+                if( $this->optionen["sem"] ) {
+                    $url .= "&sem=" . $this->optionen["sem"];
+                } 
 
 		if(!fopen($url, "r")) {
                         echo "Leider konnte zu UnivIS keine Verbindung aufgebaut werden.";
