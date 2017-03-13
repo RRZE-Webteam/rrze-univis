@@ -622,6 +622,7 @@ class univisRender {
 
 					if(count($repeat)>1) {
 						$days_short = array(
+                                                        0 => "So",
 							1 => "Mo",
 							2 => "Di",
 							3 => "Mi",
@@ -632,6 +633,7 @@ class univisRender {
 						);
 
 						$days_long = array(
+                                                        0 => "Sonntag",
 							1 => "Montag",
 							2 => "Dienstag",
 							3 => "Mittwoch",
@@ -640,7 +642,16 @@ class univisRender {
 							6 => "Samstag",
 							7 => "Sonntag"
 						);
-						array_push($date, $days_short[$repeat[1]]);
+                                                if( strpos($repeat[1], ',') ) {
+                                                    $repeat_days = explode(',', $repeat[1]);
+                                                    foreach($repeat_days as $key => $value) {
+                                                        $repeat_days[$key] = $days_short[$value];
+                                                    }
+                                                    $formated = implode(', ', $repeat_days);
+                                                } else {
+                                                    $formated = $days_short[$repeat[1]];
+                                                }
+						array_push($date, $formated);
 
 					}
 				}
