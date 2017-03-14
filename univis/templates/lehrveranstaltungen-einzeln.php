@@ -37,11 +37,42 @@
         if (array_key_exists('terms', $veranstaltung) && array_key_exists('term', $veranstaltung['terms'][0])) {
             //if (!empty(univisController::get_key($veranstaltung, 'terms', 0)) && !empty(univisController::get_key($veranstaltung['terms'], 'term', 0))) {
             foreach ($veranstaltung['terms'][0]['term'] as $term) :
+                if(!empty($term['date'])) :
+                    $t['date'] = $term['date'];
+                endif;
+                
+                if(!empty($term['starttime'])) :
+                    $time['starttime'] = $term['starttime'];
+                endif;  
+                if(!empty($term['endtime'])) :
+                    $time['endtime'] = $term['endtime'];
+                endif; 
+                if(!empty($time)) :
+                    $time['endtime'] = $term['endtime'];
+                else:
+                    $t['time'] = __('Zeit n.V.', RRZE_UnivIS::textdomain);
+                endif;                 
+
+                if(!empty($term['room_short'])) :
+                    if(!empty($t)) :
+                        $room_short = ', ';
+                    else:
+                        $room_short = $term['room_short'];
+                    endif;
+                    $t['room_short'] = $room_short;
+                endif;
+                
+                if(!empty($term['exclude'])) :
+                    $t['exclude'] = '(' . __('außer', RRZE_UnivIS::textdomain) . ' ' . $term['exclude'] . ')';
+                endif;
+                
+                
                 if (!empty($term['starttime']) || !empty($term['endtime'])) {
                     $term_time = ' ' . $term['starttime'] . '-' . $term['endtime'] . ' ' . __('Uhr', RRZE_UnivIS::textdomain) . ', ';
                 } else {
                     $term_time = ' ' . __('Zeit n.V.', RRZE_UnivIS::textdomain) . ', ';
                 }
+         
                 $term_formatted = $term['date'] . $term_time . $term['room_short'];
                 if (!empty($term['exclude']))
                     $term_formatted .= ' (' . __('außer', RRZE_UnivIS::textdomain) . ' ' . $term['exclude'] . ')';
