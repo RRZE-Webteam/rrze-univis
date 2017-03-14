@@ -37,6 +37,7 @@
         if (array_key_exists('terms', $veranstaltung) && array_key_exists('term', $veranstaltung['terms'][0])) {
             //if (!empty(univisController::get_key($veranstaltung, 'terms', 0)) && !empty(univisController::get_key($veranstaltung['terms'], 'term', 0))) {
             foreach ($veranstaltung['terms'][0]['term'] as $term) :
+                _rrze_debug($term);
                 if(!empty($term['date'])) :
                     $t['date'] = $term['date'];
                 endif;
@@ -48,14 +49,17 @@
                     $time['endtime'] = $term['endtime'];
                 endif; 
                 if(!empty($time)) :
-                    $time['endtime'] = $term['endtime'];
+                    $t['time'] = $time['starttime'] . '-' . $time['endtime'] . ' ' . __('Uhr', RRZE_UnivIS::textdomain);
                 else:
                     $t['time'] = __('Zeit n.V.', RRZE_UnivIS::textdomain);
-                endif;                 
+                endif;              
+//                if((!empty($term['date']) || !empty($term['time'])) && !empty($term['room_short'])) :
+//                    
+//                endif;
 
                 if(!empty($term['room_short'])) :
                     if(!empty($t)) :
-                        $room_short = ', ';
+                        $room_short = ', ' . $term['room_short'];
                     else:
                         $room_short = $term['room_short'];
                     endif;
@@ -65,17 +69,20 @@
                 if(!empty($term['exclude'])) :
                     $t['exclude'] = '(' . __('außer', RRZE_UnivIS::textdomain) . ' ' . $term['exclude'] . ')';
                 endif;
+                _rrze_debug($t);
+                
+                $term_formatted = implode(' ', $t);
                 
                 
-                if (!empty($term['starttime']) || !empty($term['endtime'])) {
-                    $term_time = ' ' . $term['starttime'] . '-' . $term['endtime'] . ' ' . __('Uhr', RRZE_UnivIS::textdomain) . ', ';
-                } else {
-                    $term_time = ' ' . __('Zeit n.V.', RRZE_UnivIS::textdomain) . ', ';
-                }
-         
-                $term_formatted = $term['date'] . $term_time . $term['room_short'];
-                if (!empty($term['exclude']))
-                    $term_formatted .= ' (' . __('außer', RRZE_UnivIS::textdomain) . ' ' . $term['exclude'] . ')';
+//                if (!empty($term['starttime']) || !empty($term['endtime'])) {
+//                    $term_time = ' ' . $term['starttime'] . '-' . $term['endtime'] . ' ' . __('Uhr', RRZE_UnivIS::textdomain) . ', ';
+//                } else {
+//                    $term_time = ' ' . __('Zeit n.V.', RRZE_UnivIS::textdomain) . ', ';
+//                }
+//         
+//                $term_formatted = $term['date'] . $term_time . $term['room_short'];
+//                if (!empty($term['exclude']))
+//                    $term_formatted .= ' (' . __('außer', RRZE_UnivIS::textdomain) . ' ' . $term['exclude'] . ')';
                 ?>
                 <li><?php echo $term_formatted; ?></li>
             <?php endforeach;
