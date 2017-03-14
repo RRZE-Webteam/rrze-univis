@@ -12,7 +12,7 @@
                 <h3><a href="<?php echo $url;?>"><?php echo $data['name'];?></a></h3>
                     <ul>
                     <?php 
-                    if (array_key_exists('terms', $data)) {
+                    if (array_key_exists('terms', $data) && array_key_exists('term', $data['terms'][0])) {
                     //if (!empty(univisController::get_key($data, 'terms', 0)) && !empty(univisController::get_key($data['terms'], 'term', 0))) {
                         foreach ($data['terms'][0]['term'] as $term) : 
                         if( !empty($term['starttime']) || !empty($term['endtime']) ) {

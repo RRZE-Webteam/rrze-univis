@@ -1,105 +1,139 @@
 <?php if ($daten['veranstaltung']) :
-    _rrze_debug($daten['veranstaltung']['name']);
-    foreach ($daten['veranstaltung'] as $veranstaltung) : ?>
-	<h2><?php echo $veranstaltung['name'];?></h2>
-        <?php 
-        
-        
+    $veranstaltung = $daten['veranstaltung'];
+    ?>
+    <h2><?php echo $veranstaltung['name']; ?></h2>
+
+    <?php if (array_key_exists('dozs', $veranstaltung) && array_key_exists('doz', $veranstaltung['dozs'][0])) : ?>
+        <h3>Dozent/in</h3> 
+        <?php
+        foreach ($veranstaltung['dozs'][0]['doz'] as $doz) :
+            if (!empty($doz['title'])) :
+                $name['title'] = '<span itemprop="honorificPrefix">' . $doz['title'] . '</span>';
+            endif;
+            if (!empty($doz['firstname'])) :
+                $name['firstname'] = '<span itemprop="givenName">' . $doz['firstname'] . '</span>';
+            endif;
+            if (!empty($doz['lastname'])) :
+                $name['lastname'] = '<span itemprop="familyName">' . $doz['lastname'] . '</span>';
+            endif;
+            $fullname = implode(' ', $name);
+            ?>
+
+            <h6 itemprop="name" itemscope itemtype="http://schema.org/Person"><a href="http://univis.uni-erlangen.de/prg?search=persons&id=<?php echo $doz['id']; ?>&show=info"><?php echo $fullname; ?></a></h6>
+            <?php
+        endforeach;
+    endif;
+    ?>
+
+    <h3>Angaben</h3>   
+    
+    <?php if (!empty($veranstaltung['angaben'])): ?>               
+        <p><?php echo $veranstaltung['angaben']; ?></p>
+    <?php endif; ?>
+
+    <h4>Zeit und Ort:</h4>        
+    <ul>
+        <?php
+        if (array_key_exists('terms', $veranstaltung) && array_key_exists('term', $veranstaltung['terms'][0])) {
+            //if (!empty(univisController::get_key($veranstaltung, 'terms', 0)) && !empty(univisController::get_key($veranstaltung['terms'], 'term', 0))) {
+            foreach ($veranstaltung['terms'][0]['term'] as $term) :
+                if (!empty($term['starttime']) || !empty($term['endtime'])) {
+                    $term_time = ' ' . $term['starttime'] . '-' . $term['endtime'] . ' ' . __('Uhr', RRZE_UnivIS::textdomain) . ', ';
+                } else {
+                    $term_time = ' ' . __('Zeit n.V.', RRZE_UnivIS::textdomain) . ', ';
+                }
+                $term_formatted = $term['date'] . $term_time . $term['room_short'];
+                if (!empty($term['exclude']))
+                    $term_formatted .= ' (' . __('außer', RRZE_UnivIS::textdomain) . ' ' . $term['exclude'] . ')';
+                ?>
+                <li><?php echo $term_formatted; ?></li>
+            <?php endforeach;
+        } else {
+            ?>
+            <li><?php _e('Zeit/Ort n.V.', RRZE_UnivIS::textdomain); ?></li>
+    <?php } ?>
+    </ul>
+
+        <?php if (array_key_exists('studs', $veranstaltung) && array_key_exists('stud', $veranstaltung['studs'][0])) : ?>
+        <h4>Studienfächer / Studienrichtungen</h4>                 
+        <ul>  
+            <?php
+            foreach ($veranstaltung['studs'][0]['stud'] as $stud) :
+                if (!empty($stud['pflicht'])) :
+                    $s['pflicht'] = $stud['pflicht'];
+                endif;
+                if (!empty($stud['richt'])) :
+                    $s['richt'] = $stud['richt'];
+                endif;
+                if (!empty($stud['sem'])) :
+                    $s['sem'] = $stud['sem'];
+                endif;
+                if (!empty($stud['credits'])) :
+                    $s['credits'] = '(ECTS-Credits: ' . $stud['credits'] . ')';
+                endif;
+                $studinfo = implode(' ', $s);
+                ?>
+                <li><?php echo $studinfo; ?></li>
+        <?php endforeach; ?>
+        </ul>
+    <?php endif; ?> 
+
+
+    <?php if (!empty($veranstaltung['organizational'])) : ?>
+        <h4>Voraussetzungen / Organisatorisches</h4>                
+        <p><?php echo $veranstaltung['organizational']; ?></p>
+        <?php endif;
+    ?>
+
+
+    <?php if (!empty($veranstaltung['summary'])) : ?>
+        <h4>Inhalt</h4>              
+        <p><?php echo $veranstaltung['summary']; ?></p>
+        <?php endif;
+    ?>
+
+
+
+
+    <?php if (!empty($veranstaltung['ects_infos'])) : ?>
+        <h4>ECTS-Informationen</h4>              
+        <?php if (!empty($veranstaltung['ects_name'])) : ?>
+            <h5>Title:</h5>
+            <p><?php echo $veranstaltung['ects_name']; ?></p>          
+        <?php endif; ?>                
+        <?php if (!empty($veranstaltung['ects_content'])) : ?>
+            <h5>Content:</h5>
+            <p><?php echo $veranstaltung['ects_summary']; ?></p>  
+        <?php endif; ?>
+        <?php if (!empty($veranstaltung['ects_literature'])) : ?>
+            <h5>Literature:</h5>
+            <p><?php echo $veranstaltung['ects_literature']; ?></p>  
+        <?php endif; ?>
+        <?php endif; ?>
+
+
+
+        <?php if (!empty($veranstaltung['zusatzinfos'])) : ?>
+        <h4>Zusätzliche Informationen</h4>  
+        <p>
+            <?php if (!empty($veranstaltung['keywords'])) : ?>
+                Schlagwörter: <?php echo $veranstaltung['keywords']; ?><br>          
+            <?php endif; ?>                
+        <?php if (!empty($veranstaltung['turnout'])) : ?>
+                Erwartete Teilnehmerzahl: <?php echo $veranstaltung['turnout']; ?><br>  
+        <?php endif; ?>
+        <?php if (!empty($veranstaltung['url_description'])) : ?>
+                www: <a href="<?php echo $veranstaltung['url_description']; ?>"><?php echo $veranstaltung['url_description']; ?></a> <br>
+        <?php endif; ?>
+        </p> 
+    <?php endif;
+endif;
+?>
+
+<?php if ($daten['assets']) :
+    if (!empty($daten['assets']['download_link'])) :
         ?>
-    <?php endforeach;
-                
-endif; ?>
-
-{{#veranstaltung}}
-	<h2>{{name}}</h2>
-
-	{{#dozs}}
-		<h3>Dozent/in</h3>
-		{{#doz}}
-			<h6><a href="http://univis.uni-erlangen.de/prg?search=persons&id={{ id }}&show=info">{{title}} {{firstname}} {{lastname}}</a></h6>
-		{{/doz}}
-	{{/dozs}}
-
-	<h3>Angaben</h3>
-
-	<p>
-	{{{angaben}}}<br>
-	</p>
-
-	<h4>Zeit und Ort:</h4>
-	<ul>
-	{{#terms}}
-		{{#term}}
-			<li>{{date}} {{starttime}}-{{endtime}} Uhr, {{room_short}}{{#exclude}} (außer {{exclude}}){{/exclude}}</li>
-		{{/term}}
-		<br/>
-	{{/terms}}
-	</ul>
-
-	<h4>Studienf&auml;cher / Studienrichtungen</h4>
-	<p>
-	{{#studs}}
-		{{#stud}}
-			{{pflicht}} {{richt}} {{sem}} (ECTS-Credits: {{credits}})<br>
-		{{/stud}}
-	{{/studs}}
-	</p>
-
-	{{#organizational}}
-	<h4>Voraussetzungen / Organisatorisches</h4>
-	<p>
-	{{{organizational}}}
-	</p>
-	{{/organizational}}
-
-	{{#summary}}
-	<h4>Inhalt</h4>
-	<p>
-	{{{summary}}}
-	</p>
-	{{/summary}}
-
-
-	{{#ects_infos}}
-	<h4>ECTS-Informationen</h4>
-		
-	{{#ects_name}}
-		<h5>Title:</h5>
-		<p>{{ects_name}}</p>
-	{{/ects_name}}
-
-	{{#ects_content}}
-		<h5>Content:</h5>
-		<p>{{{ects_summary}}}</p>
-	{{/ects_content}}
-
-	{{#ects_literature}}
-		<h5>Literature:</h5>
-		<p>{{ects_literature}}</p>
-	{{/ects_literature}}
-	{{/ects_infos}}
-
-	{{#zusatzinfos}}
-	<h4>Zus&auml;tzliche Informationen</h4>
-	<p>
-		{{#keywords}}
-			Schlagw&ouml;rter: {{keywords}} <br/>
-		{{/keywords}}
-
-		{{#turnout}}
-			Erwartete Teilnehmerzahl: {{turnout}} <br/>
-		{{/turnout}}
-
-
-		{{#url_description}}
-			www: <a href="{{url_description}}">{{url_description}}</a> <br/>
-		{{/url_description}}
-	</p>
-	{{/zusatzinfos}}
-{{/veranstaltung}}
-
-{{#assets}}
-	{{#download_link}}
-		<a href="{{download_link}}"> Download </a>
-	{{/download_link}}
-{{/assets}}
+        <a href="<?php echo $daten['assets']['download_link']; ?>"> Download </a>                
+    <?php endif;
+endif;
+?>
