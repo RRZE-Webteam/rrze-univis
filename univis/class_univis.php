@@ -267,7 +267,7 @@ class UNIVIS {
                     return -1;
                 } 
                 fclose($handle);                
-                
+                _rrze_debug($url);
 		$persArray = $this->xml2array($url);
                 if(empty($persArray)) {
                     echo "Leider konnte die Person nicht gefunden werden.";
@@ -292,7 +292,7 @@ class UNIVIS {
 		if ($this->optionen["Personenanzeige_Lehrveranstaltungen"]) {
 			$person["lehrveranstaltungen"] = $this->_ladeLehrveranstaltungenAlle($person["id"]);
 		}
-
+                _rrze_debug($person);
 		return $person;
                 }
 	}
@@ -487,8 +487,11 @@ class UNIVIS {
 	    }
 	    if($sxi->hasChildren()){
 	      $a[$sxi->key()][] = $this->sxiToArray($sxi->current());
-	    }
-	    else{
+            } elseif($sxi->key() === 'orgunit') {
+                $a[$sxi->key()][] = strval($sxi->current());
+            } elseif($sxi->key() === 'orgunit_en') {
+                $a[$sxi->key()][] = strval($sxi->current());
+	    } else{
 	      $a[$sxi->key()] = strval($sxi->current());
 
 	      //Fuege die UnivisRef Informationen ein.

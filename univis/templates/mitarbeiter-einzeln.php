@@ -1,35 +1,73 @@
-{{#person}}
 <div id="univis-personenseite">
+<?php if ( $daten['person'] ) :
+    $person = $daten['person'];?>
+<?php //_rrze_debug($daten); ?>
+	<div class="person" class="person liste-person" itemscope itemtype="http://schema.org/Person">
+
+            <?php  
+            if (!empty($person['title'])) :
+                $name['title'] = '<span class="honorific-prefix" itemprop="honorificPrefix"><acronym title="' . $person['title_long'] . '">' . $person['title'] . '</acronym></span>';
+            endif;
+            if (!empty($person['firstname'])) :
+                $name['firstname'] = '<span class="given-name" itemprop="givenName">' . $person['firstname'] . '</span>';
+            endif;
+            if (!empty($person['lastname'])) :
+                $name['lastname'] = '<span class="family-name" itemprop="familyName">' . $person['lastname'] . '</span>';
+                if(!empty($person['atitle'])) :
+                    $name['lastname'] .= ',';
+                endif;
+            endif;
+            if (!empty($person['atitle'])) :
+                $name['atitle'] = '<span class="honorific-suffix" itemprop="honorificSuffix"><acronym title="' . $person['atitle_long'] . '">' . $person['atitle'] . '</span>';
+            endif;
+            $fullname = implode(' ', $name);                
+                ?>
+            <h2><span itemprop="name"><?php echo $fullname;?></span></h2>
+            <ul class="person-info">    
+                <?php if (!empty($person['work'])) : ?>
+                        <li class="person-info-position"><span class="screen-reader-text"><?php _e('Tätigkeit', RRZE_UnivIS::textdomain);?>: </span><strong><span itemprop="jobTitle"><?php echo $person['work']; ?></span></strong></li>
+                    <?php endif;?>
+
+                <?php if ( array_key_exists('orgunits', $person) && array_key_exists('orgunit', $person['orgunits'][0])) :
+                    $person_orgunits = $person['orgunits'][0]['orgunit'];
+                    $i = count($person_orgunits);
+                    if(count($person_orgunits)>1) {
+                        $i = count($person_orgunits)-2;
+                    }
+                    $orgunit = $person_orgunits[$i];
+                        
+                        ?>
+                     <li class="person-info-institution"><span class="screen-reader-text"><?php _e('Organisation', RRZE_UnivIS::textdomain);?>: </span><span itemprop="worksFor"><?php echo $orgunit;?></span></li>                
+                    <?php endif;?>
+                        
+                        
+                <?php if (!empty($person['orgname'])) : ?>
+                    <li class="person-info-abteilung"><span class="screen-reader-text"><?php _e('Abteilung', RRZE_UnivIS::textdomain);?>: </span><?php echo $person['orgname']; ?></li>
+                    <?php endif;?>  
+                        
+                    
+                 <?php if ( array_key_exists('locations', $person) && array_key_exists('location', $person['locations'][0])) : 
+                    $location = $person['locations'][0]['location'][0]; ?>
+                    <li class="person-info-phone"><span class="screen-reader-text"><?php _e('Telefonnummer', RRZE_UnivIS::textdomain);?>: </span><span itemprop="telephone"><?php echo $location['tel'];?></span></li>                        
+                    <li class="person-info-email"><span class="screen-reader-text"><?php _e('E-Mail', RRZE_UnivIS::textdomain);?>: </span><a itemprop="email" href="mailto:<?php echo $location['email'];?>"><?php echo $location['email'];?></a></li>                        
+                    <li class="person-info-www"><span class="screen-reader-text"><?php _e('Webseite', RRZE_UnivIS::textdomain);?>: </span><a itemprop="url" href="<?php echo $location['url'];?>"><?php echo $location['url'];?></a></li>     
+                    <li class="person-info-address"><span class="screen-reader-text"><?php _e('Adresse', RRZE_UnivIS::textdomain);?>: <br></span>
+                        <div itemprop="address" itemscope="" itemtype="http://schema.org/PostalAddress"><span class="person-info-street" itemprop="streetAddress"><?php echo $location['street'];?></span><br>
+                        <span itemprop="addressLocality"><?php echo $location['ort'];?></span></div><div class="person-info-room" itemprop="workLocation" itemscope="" itemtype="http://schema.org/Person"><?php echo $location['office'];?></div></li>
+    <?php // FAX FEHLT
+    endif; ?>
+                    
+    <li class="person-info-office"><span itemprop="hoursAvailable" itemtype="http://schema.org/ContactPoint"><span class="screen-reader-text">Sprechzeiten: </span>Jede Woche Di, 15:30 - 16:30, Raum 2.054,</span></li>
+</ul>
+</div>
+</div>                
+
+				
 
 
-	<div class="vcard">
-    	<h2 class="fn">
-    		{{#title}}<span class="honorific-prefix"><acronym title="{{title-long}}">{{title}}</acronym></span>{{/title}} <span class="given-name">{{firstname}}</span> <span class="family-name">{{lastname}}</span> {{#atitle}}<span class="honorific-suffix"><acronym title="{{atitle}}">{{ atitle }}</acronym></span>{{/atitle}}
-        </h2>
 
-		<address>
-		    <p>
-			    <span class="org">
-			        <span class="organization-name">Zentrale Einrichtungen</span><br />
-			        {{#orgunits}}
-			        <span class="organization-unit">Abteilung {{orgunit}}</span><br />
-			        {{/orgunits}}
-			    </span>
-		    </p>
 
-		    {{#locations}}
-				{{#location}}
-				<h3>Anschrift</h3>
-			    <ul class="kontakt">
-			    	 <li class="adr">
-				    	{{#street}}
-				        <span class="street-address">{{street}}</span><br>
-				        {{/street}}
-				        {{#ort}}
-				        <span class="locality">{{ort}}</span>
-				        {{/ort}}
-				    </li>
-			    	{{#email}}
+{{#email}}
 	                <li>E-Mail: <a class="email" href="mailto:{{email}}">{{email}}</a></li>
 	                {{/email}}
 	                {{#tel}}
@@ -211,4 +249,3 @@
 		});
 </script>
 </div>
-{{/person}}

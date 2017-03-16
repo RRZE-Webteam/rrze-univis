@@ -11,7 +11,7 @@
                         <acronym title="<?php echo $person['title_long'];?>"><?php echo $person['title'];?></acronym>
                     </span>
                     <?php endif; ?>
-                    <a class="url" href="http://univis.uni-erlangen.de/prg?search=persons&id=<?php echo $person['id'];?>&show=info">
+                    <a class="url" href="http://univis.uni-erlangen.de/prg?search=persons&id=<?php echo $person['id'];?>&show=info" itemprop="name">
                         <span itemprop="familyName"><?php echo $person['lastname'];?></span><?php if (!empty($person['firstname'])) : ?>, <?php endif; ?>
                         <?php if (!empty($person['firstname'])) : ?>
                         <span itemprop="givenName"><?php echo $person['firstname'];?></span><?php if (!empty($person['atitle'])) : ?>, <?php endif; ?>
