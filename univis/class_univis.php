@@ -267,7 +267,6 @@ class UNIVIS {
                     return -1;
                 } 
                 fclose($handle);                
-                _rrze_debug($url);
 		$persArray = $this->xml2array($url);
                 if(empty($persArray)) {
                     echo "Leider konnte die Person nicht gefunden werden.";
@@ -292,7 +291,6 @@ class UNIVIS {
 		if ($this->optionen["Personenanzeige_Lehrveranstaltungen"]) {
 			$person["lehrveranstaltungen"] = $this->_ladeLehrveranstaltungenAlle($person["id"]);
 		}
-                _rrze_debug($person);
 		return $person;
                 }
 	}
@@ -300,15 +298,13 @@ class UNIVIS {
 	private function _ladePublikationen($authorid = NULL) {
 		// Hole Daten von Univis
 		$url = esc_url_raw( $this->univis_url."?search=publications&show=xml" );
-                if($this->optionen["UnivISOrgNr"]) {
-                    //Suche Publikationen zu einer UnivISOrgNr
-                    $url .= "&department=" . $this->optionen["UnivISOrgNr"];
-                }
-
 		if($authorid) {
 			// Suche nur Publikationen von einen bestimmten Autoren
 			$url .= "&authorid=" . $authorid;
-		}
+		} elseif($this->optionen["UnivISOrgNr"]) {
+                    //Suche Publikationen zu einer UnivISOrgNr
+                    $url .= "&department=" . $this->optionen["UnivISOrgNr"];
+                }
 
 		if(!fopen($url, "r")) {
                         echo "Leider konnte zu UnivIS keine Verbindung aufgebaut werden.";
@@ -357,8 +353,9 @@ class UNIVIS {
                 $url = esc_url_raw( $this->univis_url."?search=lectures&show=xml" );
                 //Auskommentiert, da das aktuelle Semester in UnivIS beliebieg zum Ende der vorlesungsfreien Zeit umgestellt wird
 		//$url = esc_url_raw( $this->univis_url."?search=lectures&show=xml&sem=".$this->aktuellesSemester() );
-
-		if( $this->optionen["dozentid"] ) {
+                if( $dozentid ) {
+                    $url .= "&lecturerid=" . $dozentid;
+                } elseif( $this->optionen["dozentid"] ) {
                     $url .= "&lecturerid=" . $this->optionen["dozentid"];
 		} elseif ( $this->optionen["dozentname"] ) {
                     $url .= "&lecturer=" . $this->optionen["dozentname"];
@@ -373,7 +370,6 @@ class UNIVIS {
                 if( $this->optionen["sem"] ) {
                     $url .= "&sem=" . $this->optionen["sem"];
                 } 
-                //_rrze_debug($url);
 		if(!fopen($url, "r")) {
                         echo "Leider konnte zu UnivIS keine Verbindung aufgebaut werden.";
 			// Univis Server ist nicht erreichbar

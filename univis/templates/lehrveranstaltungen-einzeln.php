@@ -4,7 +4,7 @@
     <h2><?php echo $veranstaltung['name']; ?></h2>
 
     <?php if (array_key_exists('dozs', $veranstaltung) && array_key_exists('doz', $veranstaltung['dozs'][0])) : ?>
-        <h3><?php __e('Dozent/in', RRZE_UnivIS::textdomain);?></h3> 
+        <h3><?php _e('Dozent/in', RRZE_UnivIS::textdomain);?></h3> 
         <?php
         foreach ($veranstaltung['dozs'][0]['doz'] as $doz) :
             if (!empty($doz['title'])) :
@@ -25,13 +25,13 @@
     endif;
     ?>
 
-    <h3><?php __e('Angaben', RRZE_UnivIS::textdomain);?></h3>   
+    <h3><?php _e('Angaben', RRZE_UnivIS::textdomain);?></h3>   
     
     <?php if (!empty($veranstaltung['angaben'])): ?>               
         <p><?php echo $veranstaltung['angaben']; ?></p>
     <?php endif; ?>
 
-    <h4><?php __e('Zeit und Ort', RRZE_UnivIS::textdomain);?>:</h4>        
+    <h4><?php _e('Zeit und Ort', RRZE_UnivIS::textdomain);?>:</h4>        
     <ul>
         <?php
         if (array_key_exists('terms', $veranstaltung) && array_key_exists('term', $veranstaltung['terms'][0])) {
@@ -72,7 +72,7 @@
     </ul>
 
         <?php if (array_key_exists('studs', $veranstaltung) && array_key_exists('stud', $veranstaltung['studs'][0])) : ?>
-        <h4><?php __e('Studienfächer / Studienrichtungen', RRZE_UnivIS::textdomain);?></h4>                 
+        <h4><?php _e('Studienfächer / Studienrichtungen', RRZE_UnivIS::textdomain);?></h4>                 
         <ul>  
             <?php
             foreach ($veranstaltung['studs'][0]['stud'] as $stud) :
@@ -97,14 +97,14 @@
 
 
     <?php if (!empty($veranstaltung['organizational'])) : ?>
-        <h4><?php __e('Voraussetzungen / Organisatorisches', RRZE_UnivIS::textdomain);?></h4>                
+        <h4><?php _e('Voraussetzungen / Organisatorisches', RRZE_UnivIS::textdomain);?></h4>                
         <p><?php echo $veranstaltung['organizational']; ?></p>
         <?php endif;
     ?>
 
 
     <?php if (!empty($veranstaltung['summary'])) : ?>
-        <h4><?php __e('Inhalt', RRZE_UnivIS::textdomain);?></h4>              
+        <h4><?php _e('Inhalt', RRZE_UnivIS::textdomain);?></h4>              
         <p><?php echo $veranstaltung['summary']; ?></p>
         <?php endif;
     ?>
@@ -113,17 +113,17 @@
 
 
     <?php if (!empty($veranstaltung['ects_infos'])) : ?>
-        <h4><?php __e('ECTS-Informationen', RRZE_UnivIS::textdomain);?></h4>              
+        <h4><?php _e('ECTS-Informationen', RRZE_UnivIS::textdomain);?></h4>              
         <?php if (!empty($veranstaltung['ects_name'])) : ?>
-            <h5><?php __e('Title', RRZE_UnivIS::textdomain);?>:</h5>
+            <h5><?php _e('Title', RRZE_UnivIS::textdomain);?>:</h5>
             <p><?php echo $veranstaltung['ects_name']; ?></p>          
         <?php endif; ?>                
         <?php if (!empty($veranstaltung['ects_content'])) : ?>
-            <h5><?php __e('Content', RRZE_UnivIS::textdomain);?>:</h5>
+            <h5><?php _e('Content', RRZE_UnivIS::textdomain);?>:</h5>
             <p><?php echo $veranstaltung['ects_summary']; ?></p>  
         <?php endif; ?>
         <?php if (!empty($veranstaltung['ects_literature'])) : ?>
-            <h5><?php __e('Literature', RRZE_UnivIS::textdomain);?>:</h5>
+            <h5><?php _e('Literature', RRZE_UnivIS::textdomain);?>:</h5>
             <p><?php echo $veranstaltung['ects_literature']; ?></p>  
         <?php endif; ?>
         <?php endif; ?>
@@ -131,13 +131,13 @@
 
 
         <?php if (!empty($veranstaltung['zusatzinfos'])) : ?>
-        <h4><?php __e('Zusätzliche Informationen', RRZE_UnivIS::textdomain);?></h4>  
+        <h4><?php _e('Zusätzliche Informationen', RRZE_UnivIS::textdomain);?></h4>  
         <p>
             <?php if (!empty($veranstaltung['keywords'])) : ?>
-                <?php __e('Schlagwörter', RRZE_UnivIS::textdomain);?>: <?php echo $veranstaltung['keywords']; ?><br>          
+                <?php _e('Schlagwörter', RRZE_UnivIS::textdomain);?>: <?php echo $veranstaltung['keywords']; ?><br>          
             <?php endif; ?>                
         <?php if (!empty($veranstaltung['turnout'])) : ?>
-                <?php __e('Erwartete Teilnehmerzahl', RRZE_UnivIS::textdomain);?>: <?php echo $veranstaltung['turnout']; ?><br>  
+                <?php _e('Erwartete Teilnehmerzahl', RRZE_UnivIS::textdomain);?>: <?php echo $veranstaltung['turnout']; ?><br>  
         <?php endif; ?>
         <?php if (!empty($veranstaltung['url_description'])) : ?>
                 www: <a href="<?php echo $veranstaltung['url_description']; ?>"><?php echo $veranstaltung['url_description']; ?></a> <br>
