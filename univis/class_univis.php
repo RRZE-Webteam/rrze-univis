@@ -61,9 +61,17 @@ class UNIVIS {
 					break;
 
 				case "mitarbeiter-orga":
+                                case "mitarbeiter-telefonbuch":
 					$this->daten = $this->_ladeMitarbeiterOrga();
 					break;
-
+                                    
+                                // EINGEFÜGT VON LAPMK    
+				//lapmk 02.03.2017: neues Template "mitarbeiter_telefonbuch"
+//				case "mitarbeiter-telefonbuch":
+//					$this->daten = $this->_ladeMitarbeiterTelefonbuch();
+//					break; 
+                                // ENDE
+                                    
 				case "mitarbeiter-einzeln":
 					$this->daten = $this->_ladeMitarbeiterEinzeln();
 					break;
@@ -80,9 +88,9 @@ class UNIVIS {
 					$this->daten = $this->_ladeLehrveranstaltungenEinzeln();
 					break;
 
-				case "lehrveranstaltungen-kalender":
-					$this->daten = $this->_ladeLehrveranstaltungenKalender();
-					break;
+//				case "lehrveranstaltungen-kalender":
+//					$this->daten = $this->_ladeLehrveranstaltungenKalender();
+//					break;
 
 				default:
 					echo "Fehler: Unbekannter Befehl\n";
@@ -228,29 +236,78 @@ class UNIVIS {
                 }
 	}
 
+        
+	// EINGEFÜGT VON LAPMK
+        //lapmk 02.03.2017: neue Funktion für neues Template "mitarbeiter_telefonbuch"; basiert auf _ladeMitarbeiterOrga()
+//  	private function _ladeMitarbeiterTelefonbuch() {
+//		// Hole Daten von Univis
+//		$url = esc_url_raw( $this->univis_url."?search=persons&department=".$this->optionen["UnivISOrgNr"]."&show=xml" );
+//
+//		if(!fopen($url, "r")) {
+//                        echo "Leider konnte zu UnivIS keine Verbindung aufgebaut werden.";
+//			// Univis Server ist nicht erreichbar
+//			return -1;
+//		}
+//                
+//                $handle = fopen($url, "r");
+//                $content = fread($handle, 100);
+//                if( substr( $content, 0, 5) != '<?xml' ) {
+//                    echo "Leider brachte Ihre Suche kein Ergebnis. Bitte überprüfen Sie die Suchparameter.";
+//                    // Univis Server ist nicht erreichbar
+//                    return -1;
+//                } 
+//                fclose($handle);                
+//
+//		// XML Daten Parsen
+//		$daten = $this->xml2array($url);
+//                if(empty($daten)) {
+//                    echo "Leider konnte die Organisationseinheit nicht gefunden werden.";
+//                    return -1;
+//                } else {
+//                    return $daten["Person"];
+//                }
+//	}     
+        // ENDE
+        
 
 	private function _ladeMitarbeiterEinzeln() {
+            if( $this->optionen["univisid"] || $this->optionen["id"]) {
+                if( $this->optionen["id"] ) {
+                    $id = $this->optionen["id"];
+                } else {
+                    $id = $this->optionen["univisid"];
+                }
+                $url = esc_url_raw( $this->univis_url."?search=persons&id=".$id."&show=xml" );
 
-		//Ueberpruefe ob Vor- und Nachname gegeben sind.
-		$noetige_felder = array("firstname", "lastname");
-		foreach ($noetige_felder as $feld) {
-			if(!array_key_exists($feld, $this->optionen) || $this->optionen[$feld] == "") {
-				// Fehler: Bitte geben Sie Vor- und Nachname der gesuchten Person an
-				echo "<div class=\"hinweis_wichtig\">Bitte geben Sie Vor- und Nachname der gesuchten Person an.</div>";
-				return -1;
-			}
-
-			if(strrpos($this->optionen[$feld], "&") !== false) {
-				echo "Ung&uuml;ltige Eingabe.";
-				return -1;
-			}
-		}
+            } else {
+                if( $this->optionen["name"] ) {
+                    $name = explode(',', $this->optionen["name"]);
+                    $firstname = $name[1];
+                    $lastname = $name[0];
+                } else {
+                    $firstname = $this->optionen["firstname"];
+                    $lastname = $this->optionen["lastname"];
+                }
+//		//Ueberpruefe ob Vor- und Nachname gegeben sind.
+//		$noetige_felder = array("firstname", "lastname");
+//		foreach ($noetige_felder as $feld) {
+//			if(!array_key_exists($feld, $this->optionen) || $this->optionen[$feld] == "") {
+//				// Fehler: Bitte geben Sie Vor- und Nachname der gesuchten Person an
+//				echo "<div class=\"hinweis_wichtig\">Bitte geben Sie Vor- und Nachname der gesuchten Person an.</div>";
+//				return -1;
+//			}
+//
+//			if(strrpos($this->optionen[$feld], "&") !== false) {
+//				echo "Ung&uuml;ltige Eingabe.";
+//				return -1;
+//			}
+//		}
 
 		// Hole Daten von Univis
-		$url = esc_url_raw( $this->univis_url."?search=persons&name=".$this->optionen["lastname"]."&firstname=".$this->optionen["firstname"]."&show=xml" );
+		$url = esc_url_raw( $this->univis_url."?search=persons&name=".$lastname."&firstname=".$firstname."&show=xml" );
 
 		$url = $this->umlaute_ersetzen($url);
-
+            }
 
 
 		if(!fopen($url, "r")) {

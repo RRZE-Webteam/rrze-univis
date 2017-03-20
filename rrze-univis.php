@@ -109,15 +109,18 @@ class RRZE_UnivIS {
 			'Sortiere_Jobs' => '1',
                         'Ignoriere_Jobs' => 'Sicherheitsbeauftragter|IT-Sicherheits-Beauftragter|Webmaster|Postmaster|IT-Betreuer|UnivIS-Beauftragte',
                         'Datenverzeichnis' => '',
-                        'id' => '',
+                        'id' => '',             // kann im Shortcode verwendet werden, sollte aber nicht
+                        'lv_id' => '',          // Lehrveranstaltungs-ID
                         'firstname' => '',
                         'lastname' => '',
-                        'dozentid' => '',
+                        'dozentid' => '',       // ist im Shortcode ein Synonym zu univisid
                         'dozentname' => '',
                         'type' => '',           // für Selektion nach Lehrveranstaltungstypen wie vorl
                         'lv_import' => '1',      // importierte Lehrveranstaltungen werden mit angezeigt, ausblenden über Shortcode
-                        'sem' => ''             // Semesterauswahl
-	);
+                        'sem' => '',             // Semesterauswahl
+                        'univisid' => '',        // ist die Personen-ID, egal ob dozentid oder MA-ID
+                        'name' => ''            // Synonym zur Angabe von firstname und lastname
+                );
         return $defaults;
     }
 
@@ -251,13 +254,19 @@ class RRZE_UnivIS {
         if( isset( $atts['dozentid'] ) && ctype_digit( $atts['dozentid'] )) {
             $atts['dozentid'] = wp_kses( $atts['dozentid'], array() );
         }
+        if( isset( $atts['univisid'] ) && ctype_digit( $atts['univisid'] )) {
+            $atts['univisid'] = wp_kses( $atts['univisid'], array() );
+        }
         if( isset( $atts['dozentname'] ) ) {
             $atts['dozentname'] = wp_kses( str_replace(' ', '', $atts['dozentname']), array() );
+        }
+        if( isset( $atts['name'] ) ) {
+            $atts['name'] = wp_kses( str_replace(' ', '', $atts['name']), array() );
         }
         if( isset( $atts['sem'] ) ) {
             $sem = wp_kses( str_replace(' ', '', $atts['sem']), array() );
             if( preg_match( '/[12]\d{3}[ws]/', $sem ) )     $atts['sem'] = $sem;
-        } 
+        }
         
         
         // *** Eingefügt von lapmk ***
@@ -292,10 +301,8 @@ class RRZE_UnivIS {
 
         switch( $task ) {
             case 'mitarbeiter-alle':
-            case 'mitarbeiter-orga':
-            // *** Eingefügt von lapmk ***        
-            // case 'mitarbeiter-telefonbuch':
-            // *** ENDE ***
+            case 'mitarbeiter-orga':    
+            case 'mitarbeiter-telefonbuch':
             case 'lehrveranstaltungen-alle':
                 // Selektion nach Lehrveranstaltungstypen über Shortcodeparameter (z.B. vorl)
                 if( $type ) {
@@ -313,7 +320,7 @@ class RRZE_UnivIS {
                 $ausgabe = $controller->ladeHTML();
                 break;
             case 'lehrveranstaltungen-einzeln':
-                if( !$id ) {
+                if( !$id || !$lv_id) {
                     $ausgabe = '<p>' . __('Bitte geben Sie eine gültige Lehrveranstaltungs-ID an.', self::textdomain). '</p>';
                     break;
                 } 
@@ -321,8 +328,10 @@ class RRZE_UnivIS {
                 $ausgabe = $controller->ladeHTML();
                 break;
             case 'mitarbeiter-einzeln':        
-                if( !$firstname && !$lastname ) {
-                    $ausgabe = '<p>' . __('Bitte geben Sie einen Vor- und Nachnamen an.', self::textdomain). '</p>';
+                //_rrze_debug($shortcode_atts);
+                //if( (!$firstname && !$lastname) || !$id || !$univisid || !$name ) {
+                if(  !$name ) {
+                    $ausgabe = '<p>' . __('Bitte geben Sie einen Vor- und Nachnamen oder eine UnivIS-ID an.', self::textdomain). '</p>';
                     break;
                 } 
                 $controller = new univisController($task, NULL, $shortcode_atts);
