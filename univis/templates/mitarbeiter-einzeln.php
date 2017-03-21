@@ -116,3 +116,11 @@
 
 <?php endif;?>
 </div>
+
+
+<?php // von lapmk eingefügt: {{#optionen}}
+//  {{#link_telefonbuch}}
+//    <p><a class="url" href="?">Zur&uuml;ck zur &Uuml;bersicht</a></p>
+//  {{/link_telefonbuch}}
+//{{/optionen}}
+?>

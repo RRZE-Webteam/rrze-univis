@@ -240,41 +240,88 @@ class RRZE_UnivIS {
         $options = self::get_options();
         $defaults = self::get_defaults();
         $univis_link = sprintf('<a href="%1$s">%2$s</a>', $univis_url, $options['univis_default_link']);
+        //_rrze_debug($atts);
         if( empty( $atts )) {
             $ausgabe = $univis_link;
         } else {
-        if( isset( $atts['number'] ) && ctype_digit( $atts['number'] ) ) {
-            $atts['UnivISOrgNr'] = wp_kses( $atts['number'], array() );
-        } else {
-            $atts['UnivISOrgNr'] = $options['UnivISOrgNr'];
-        }
-        if( isset( $atts['id'] ) && ctype_digit( $atts['id'] ) ) {
-            $atts['id'] = wp_kses( $atts['id'], array() );
-        }
-        if( isset( $atts['dozentid'] ) && ctype_digit( $atts['dozentid'] )) {
-            $atts['dozentid'] = wp_kses( $atts['dozentid'], array() );
-        }
-        if( isset( $atts['univisid'] ) && ctype_digit( $atts['univisid'] )) {
-            $atts['univisid'] = wp_kses( $atts['univisid'], array() );
-        }
-        if( isset( $atts['dozentname'] ) ) {
-            $atts['dozentname'] = wp_kses( str_replace(' ', '', $atts['dozentname']), array() );
-        }
-        if( isset( $atts['name'] ) ) {
-            $atts['name'] = wp_kses( str_replace(' ', '', $atts['name']), array() );
-        }
-        if( isset( $atts['sem'] ) ) {
-            $sem = wp_kses( str_replace(' ', '', $atts['sem']), array() );
-            if( preg_match( '/[12]\d{3}[ws]/', $sem ) )     $atts['sem'] = $sem;
-        }
+            if( isset( $atts['show'] )) { // über show können die Default-Werte (in Großbuchstaben) eingeblendet werden
+                $atts['show'] = wp_kses( str_replace(' ', '', $atts['show']), array() );
+                $optionen = explode(',', $atts['show']);
+                foreach($optionen as $key=>$value) {
+                    $atts[$value] = 1;
+                }
+            }
+            if( isset( $atts['hide'] )) { // über hide können die Default-Werte (in Großbuchstaben) ausgeblendet werden
+                $atts['hide'] = wp_kses( str_replace(' ', '', $atts['hide']), array() );
+                $optionen = explode(',', $atts['hide']);
+                foreach($optionen as $key=>$value) {
+                    $atts[$value] = 0;
+                }
+            }
+            if( isset( $atts['number'] ) && ctype_digit( $atts['number'] ) ) {
+                $atts['UnivISOrgNr'] = wp_kses( $atts['number'], array() );
+            } else {
+                $atts['UnivISOrgNr'] = $options['UnivISOrgNr'];
+            }
+            if( isset( $atts['id'] ) && ctype_digit( $atts['id'] ) ) {
+                $atts['id'] = wp_kses( $atts['id'], array() );
+            }
+            if( isset( $atts['dozentid'] ) && ctype_digit( $atts['dozentid'] )) {
+                $atts['dozentid'] = wp_kses( $atts['dozentid'], array() );
+            }
+            if( isset( $atts['univisid'] ) && ctype_digit( $atts['univisid'] )) {
+                $atts['univisid'] = wp_kses( $atts['univisid'], array() );
+            }
+            if( isset( $atts['dozentname'] ) ) {
+                $atts['dozentname'] = wp_kses( str_replace(' ', '', $atts['dozentname']), array() );
+            }
+            if( isset( $atts['name'] ) ) {
+                $atts['name'] = wp_kses( str_replace(' ', '', $atts['name']), array() );
+            }
+            if( isset( $atts['sem'] ) ) {
+                $sem = wp_kses( str_replace(' ', '', $atts['sem']), array() );
+                if( preg_match( '/[12]\d{3}[ws]/', $sem ) )     $atts['sem'] = $sem;
+            }
+            if( isset( $atts['id'] ) && isset ( $atts['task'] ) ) {
+                switch( $atts['task'] ) {
+                    case 'lehrveranstaltungen-einzeln':
+                        $atts['lv_id'] = $atts['id'];
+                        break;
+                    case 'mitarbeiter-einzeln':
+                        $atts['univisid'] = $atts['id'];
+                        break;
+                    case 'lehrveranstaltungen-alle':
+                        $atts['univisid'] = $atts['id'];
+                        break;
+                    default:
+                        break;
+                }
+            }
+            if( isset( $atts['task'] ) && $atts['task'] == 'lehrveranstaltungen-alle' ) {
+                if( isset($atts['dozentid']) ) {
+                    $atts['univisid'] = $atts['dozentid'];
+                }
+                if( isset($atts['dozentname']) ) {
+                    $atts['name'] = $atts['dozentname'];
+                }
+            }
+            if( isset( $atts['ignoriere_jobs'] ) ) { // Übergabe in Großbuchstaben
+                $atts['Ignoriere_Jobs'] = wp_kses( str_replace(' ', '', $atts['ignoriere_jobs']), array() );
+                $atts['Ignoriere_Jobs'] = wp_kses( str_replace(',', '|', $atts['Ignoriere_Jobs']), array() );
+            }
+            if( isset( $atts['orgunit'] )) {
+                $atts['OrgUnit'] = wp_kses( $atts['orgunit'] );
+            }
         
         
         // *** Eingefügt von lapmk ***
-        $atts=array_merge($atts,$_GET); //lapmk 02.03.2017: erlaubt die Verwendung von GET (verwendet in mitarbeiter-telefonbuch); unzulässige Keys werden durch shortcode_atts() aussortiert
+            if ( !empty($_GET) ) {
+                $atts = array_merge( $atts, $_GET ); 
+            }   // modifiziert, lapmk 02.03.2017: erlaubt die Verwendung von GET (verwendet in mitarbeiter-telefonbuch); unzulässige Keys werden durch shortcode_atts() aussortiert
         // *** ENDE ***
-        
+            
         $shortcode_atts = shortcode_atts( $defaults, $atts );
-        
+        //_rrze_debug($shortcode_atts);
         // *** Eingefügt von lapmk ***        
         /*
 	lapmk 02.03.2017
@@ -320,17 +367,15 @@ class RRZE_UnivIS {
                 $ausgabe = $controller->ladeHTML();
                 break;
             case 'lehrveranstaltungen-einzeln':
-                if( !$id || !$lv_id) {
+                if( !$lv_id ) {
                     $ausgabe = '<p>' . __('Bitte geben Sie eine gültige Lehrveranstaltungs-ID an.', self::textdomain). '</p>';
                     break;
                 } 
                 $controller = new univisController($task, NULL, $shortcode_atts);
                 $ausgabe = $controller->ladeHTML();
                 break;
-            case 'mitarbeiter-einzeln':        
-                //_rrze_debug($shortcode_atts);
-                //if( (!$firstname && !$lastname) || !$id || !$univisid || !$name ) {
-                if(  !$name ) {
+            case 'mitarbeiter-einzeln':      
+                if(  !($name || ($firstname && $lastname) || $univisid) ) {
                     $ausgabe = '<p>' . __('Bitte geben Sie einen Vor- und Nachnamen oder eine UnivIS-ID an.', self::textdomain). '</p>';
                     break;
                 } 

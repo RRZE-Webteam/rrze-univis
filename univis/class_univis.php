@@ -61,7 +61,7 @@ class UNIVIS {
 					break;
 
 				case "mitarbeiter-orga":
-                                case "mitarbeiter-telefonbuch":
+                                case "mitarbeiter-telefonbuch": // EINGEFÜGT VON LAPMK, modifiziert
 					$this->daten = $this->_ladeMitarbeiterOrga();
 					break;
                                     
@@ -271,14 +271,9 @@ class UNIVIS {
         
 
 	private function _ladeMitarbeiterEinzeln() {
-            if( $this->optionen["univisid"] || $this->optionen["id"]) {
-                if( $this->optionen["id"] ) {
-                    $id = $this->optionen["id"];
-                } else {
-                    $id = $this->optionen["univisid"];
-                }
+            if( $this->optionen["univisid"] ) {
+                $id = $this->optionen["univisid"];
                 $url = esc_url_raw( $this->univis_url."?search=persons&id=".$id."&show=xml" );
-
             } else {
                 if( $this->optionen["name"] ) {
                     $name = explode(',', $this->optionen["name"]);
@@ -352,6 +347,7 @@ class UNIVIS {
                 }
 	}
 
+        // $authorid muss evtl. noch mit $univisid ersetzt werden, dann aber auch in rrze_univis.php
 	private function _ladePublikationen($authorid = NULL) {
 		// Hole Daten von Univis
 		$url = esc_url_raw( $this->univis_url."?search=publications&show=xml" );
@@ -404,18 +400,18 @@ class UNIVIS {
 	}
 
 
-	private function _ladeLehrveranstaltungenAlle($dozentid = NULL) {
+	private function _ladeLehrveranstaltungenAlle($univisid = NULL) {
 		// Hole Daten von Univis
 		//&sem=2012w
                 $url = esc_url_raw( $this->univis_url."?search=lectures&show=xml" );
                 //Auskommentiert, da das aktuelle Semester in UnivIS beliebieg zum Ende der vorlesungsfreien Zeit umgestellt wird
 		//$url = esc_url_raw( $this->univis_url."?search=lectures&show=xml&sem=".$this->aktuellesSemester() );
-                if( $dozentid ) {
-                    $url .= "&lecturerid=" . $dozentid;
-                } elseif( $this->optionen["dozentid"] ) {
-                    $url .= "&lecturerid=" . $this->optionen["dozentid"];
-		} elseif ( $this->optionen["dozentname"] ) {
-                    $url .= "&lecturer=" . $this->optionen["dozentname"];
+                if( $univisid ) {
+                    $url .= "&lecturerid=" . $univisid;
+                } elseif( $this->optionen["univisid"] ) {
+                    $url .= "&lecturerid=" . $this->optionen["univisid"];
+		} elseif ( $this->optionen["name"] ) {
+                    $url .= "&lecturer=" . $this->optionen["name"];
                 } elseif ( $this->optionen["UnivISOrgNr"] ) {
                     $url .= "&department=" . $this->optionen["UnivISOrgNr"];
                 }
@@ -468,13 +464,13 @@ class UNIVIS {
 
 	}
 
-	private function _ladeLehrveranstaltungenKalender($dozentid = NULL) {
-		return $this->_ladeLehrveranstaltungenAlle($dozentid);
+	private function _ladeLehrveranstaltungenKalender($univisid = NULL) {
+		return $this->_ladeLehrveranstaltungenAlle($univisid);
 	}
 
 	private function _ladeLehrveranstaltungenEinzeln() {
 		// Hole Daten von Univis
-		if($this->optionen["id"] == "") {
+		if($this->optionen["lv_id"] == "") {
 				// Fehler: Bitte geben Sie eine Lehrveranstaltung an
 				echo "<div class=\"hinweis_wichtig\">Bitte geben Sie eine Lehrveranstaltung an.</div>";
 				return -1;
@@ -483,8 +479,8 @@ class UNIVIS {
 		//Auskommentiert, da das aktuelle Semester in UnivIS beliebieg zum Ende der vorlesungsfreien Zeit umgestellt wird
                 //$url = $this->univis_url."?search=lectures&show=xml&sem=".$this->aktuellesSemester() ;
 
-		if($this->optionen["id"]) {
-			$url .=  "&id=".$this->toNumber($this->optionen["id"]) ;
+		if($this->optionen["lv_id"]) {
+			$url .=  "&id=".$this->toNumber($this->optionen["lv_id"]) ;
 		}
                 if( $this->optionen["sem"] ) {
                     $url .= "&sem=" . $this->optionen["sem"];
