@@ -65,6 +65,9 @@ class RRZE_UnivIS {
         add_shortcode('univis', array($this, 'univis'));
 
 	add_action('admin_init', array($this, 'univis_shortcodes_rte_button'));
+        
+        add_action('init', array(__CLASS__, 'add_endpoint'));
+        add_action('template_redirect', array($this, 'endpoint_template_redirect'));
 
     }
     
@@ -85,7 +88,8 @@ class RRZE_UnivIS {
         $linktext = '<b><i>Univ</i>IS</b> - Informationssystem der FAU';
         $options = array(
             'univis_default_link' => $linktext,
-            'UnivISOrgNr' => ''            
+            'UnivISOrgNr' => '',
+            'endpoint_slug' => 'univisid'
         );
         return $options;
     }
@@ -129,8 +133,14 @@ class RRZE_UnivIS {
     public static function activate() {
         self::version_compare();
         update_option(self::version_option_name, self::version);
+        self::add_endpoint();
+        flush_rewrite_rules();
     }
 
+    public static function deactivate() {
+        flush_rewrite_rules();
+    }    
+    
     private static function version_compare() {
         $error = '';
 
@@ -152,7 +162,59 @@ class RRZE_UnivIS {
         if (get_option(self::version_option_name, null) != self::version)
             update_option(self::version_option_name, self::version);
     }
+    
+    public static function add_endpoint() {
+        $options = self::get_options();
+        add_rewrite_endpoint($options['endpoint_slug'], EP_PAGES);
+    }
 
+    public function endpoint_template_redirect() {
+        global $wp_query;
+
+        if (!isset($wp_query->query_vars[$options['endpoint_slug']])) {
+            return;
+        }
+
+        $slug = $wp_query->query_vars[$options['endpoint_slug']];
+        _rrze_debug($slug);
+        $univis_data = !empty($slug) ? new univisController('mitarbeiter-einzeln', NULL, array('univisid'=>$slug)) : NULL;
+        
+        if ($template = locate_template('single-event.php')) {
+              //  $this->load_template($template, $univisdata);
+            //} else {
+                
+                //$this->load_template(dirname(__FILE__) . '/templates/mitarbeiter-einzeln1.php', $univis_data);
+            }
+        univisController::_renderTemplate($univis_data);  
+//        if (empty($slug)) {
+//            if ($template = locate_template('rrze-calendar-events.php')) {
+//                $this->load_template($template);
+//            } else {
+//                wp_enqueue_style('rrze-calendar');
+//                $this->load_template(dirname(__FILE__) . '/includes/templates/events.php');
+//            }
+//        } elseif (is_null($event)) {
+//            if ($template = locate_template('404.php')) {
+//                load_template($template);
+//            } else {
+//                wp_die(__('Termin nicht gefunden.', 'rrze-calendar'));
+//            }
+//        } else {
+//            if ($template = locate_template('rrze-calendar-single-event.php')) {
+//                $this->load_template($template, $event);
+//            } else {
+//                wp_enqueue_style('rrze-calendar');
+//                $this->load_template(dirname(__FILE__) . '/includes/templates/single-event.php', $event);
+//            }
+//        }
+    }
+    
+    private function load_template($template, $event = NULL) {
+
+        require_once($template);
+        exit();
+    }
+    
     public static function add_options_page() {
         self::$univis_option_page = add_options_page(__('<b><i>Univ</i>IS</b>', self::textdomain), __('<b><i>Univ</i>IS</b>', self::textdomain), 'manage_options', 'options-univis', array(__CLASS__, 'options_univis'));
         add_action('load-' . self::$univis_option_page, array(__CLASS__, 'univis_help_menu'));
@@ -312,12 +374,12 @@ class RRZE_UnivIS {
             if( isset( $atts['orgunit'] )) {
                 $atts['OrgUnit'] = wp_kses( $atts['orgunit'] );
             }
+
         
-        
-        // *** Eingefügt von lapmk ***
-            if ( !empty($_GET) ) {
-                $atts = array_merge( $atts, $_GET ); 
-            }   // modifiziert, lapmk 02.03.2017: erlaubt die Verwendung von GET (verwendet in mitarbeiter-telefonbuch); unzulässige Keys werden durch shortcode_atts() aussortiert
+//        // *** Eingefügt von lapmk ***
+//            if ( !empty($_GET) ) {
+//                $atts = array_merge( $atts, $_GET ); 
+//            }   // modifiziert, lapmk 02.03.2017: erlaubt die Verwendung von GET (verwendet in mitarbeiter-telefonbuch); unzulässige Keys werden durch shortcode_atts() aussortiert
         // *** ENDE ***
             
         $shortcode_atts = shortcode_atts( $defaults, $atts );
@@ -328,11 +390,17 @@ class RRZE_UnivIS {
 	Neue Funktion in task "mitarbeiter-telefonbuch": wenn im GET lastname und firstname übergeben werden, dann wird
 	statt der alphabetischen Mitarbeiterliste eine einzelne Mitarbeiterseite "mitarbeiter-einzeln" angezeigt
 	*/
-        if ($shortcode_atts['task']=='mitarbeiter-telefonbuch' && $shortcode_atts['firstname'] && $shortcode_atts['lastname']) {  
-        	$shortcode_atts['task']='mitarbeiter-einzeln'; 
-        	$shortcode_atts['link_telefonbuch']='1'; 
-        } 
+//        if ($shortcode_atts['task']=='mitarbeiter-telefonbuch' && $shortcode_atts['firstname'] && $shortcode_atts['lastname']) {  
+//        	$shortcode_atts['task']='mitarbeiter-einzeln'; 
+//        	$shortcode_atts['link_telefonbuch']='1'; 
+//        } 
+//        if ($shortcode_atts['task'] == 'mitarbeiter-telefonbuch' && $shortcode_atts['univisid'] ) {  
+//        	$shortcode_atts['task'] = 'mitarbeiter-einzeln'; 
+//        	$shortcode_atts['link_telefonbuch'] = '1'; 
+//        } 
+//        
         // *** ENDE ***    
+                //_rrze_debug($shortcode_atts);
         
         
         extract($shortcode_atts);
