@@ -1,8 +1,8 @@
 <div id="univis-personenindex">
     <ul class="groupindex">
-        <?php if ($daten['optionen']['Zeige_Sprungmarken']) : ?>
+        <?php if ($daten['optionen']['zeige_sprungmarken']) : ?>
         <?php foreach ($daten['gruppen'] as $v) : ?>
-        <li><a href="#<?php echo $person['name'];?>"><?php echo $person['name'];?></a></li>
+        <li><a href="#<?php echo $v['name'];?>"><?php echo $v['name'];?></a></li>
         <?php endforeach; ?>
         <?php endif; ?>
     </ul>
