@@ -73,6 +73,7 @@ class UNIVIS {
                                 // ENDE
                                     
 				case "mitarbeiter-einzeln":
+                                case "mitarbeiter-content":
 					$this->daten = $this->_ladeMitarbeiterEinzeln();
 					break;
 
@@ -336,11 +337,11 @@ class UNIVIS {
 		if($person) $person = $person[0];
 
 		// Lade Publikationen und Lehrveranstaltungen falls noetig
-		if ($this->optionen["Personenanzeige_Publikationen"]) {
+		if (isset($this->optionen["Personenanzeige_Publikationen"])) {
 			$person["publikationen"] = $this->_ladePublikationen($person["id"]);
 		}
 
-		if ($this->optionen["Personenanzeige_Lehrveranstaltungen"]) {
+		if (isset($this->optionen["Personenanzeige_Lehrveranstaltungen"])) {
 			$person["lehrveranstaltungen"] = $this->_ladeLehrveranstaltungenAlle($person["id"]);
 		}
 		return $person;

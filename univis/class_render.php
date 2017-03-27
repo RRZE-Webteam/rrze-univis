@@ -46,6 +46,7 @@ class univisRender {
                                 // *** ENDE
                                     
 				case "mitarbeiter-einzeln":
+                                case "mitarbeiter-content":
 					return $this->_bearbeiteMitarbeiterEinzeln($daten);
 
 				case "publikationen":

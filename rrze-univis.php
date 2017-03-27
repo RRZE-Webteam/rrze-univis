@@ -170,47 +170,36 @@ class RRZE_UnivIS {
 
     public function endpoint_template_redirect() {
         global $wp_query;
-
+        global $univis_data;
+        $defaults = self::get_defaults();
+        $options = self::get_options();
         if (!isset($wp_query->query_vars[$options['endpoint_slug']])) {
             return;
         }
 
         $slug = $wp_query->query_vars[$options['endpoint_slug']];
-        _rrze_debug($slug);
-        $univis_data = !empty($slug) ? new univisController('mitarbeiter-einzeln', NULL, array('univisid'=>$slug)) : NULL;
+        //_rrze_debug_log($slug);
+        if( !empty($slug) ) {
+            $atts = array(
+                'univisid' => $slug,
+            );
+            $controller = new univisController('mitarbeiter-content', NULL, $atts);
+            $univis_data = $controller->ladeHTML();
+            //_rrze_debug($univis_data);
+        } else {
+            $univis_data = NULL;
+        }
         
-        if ($template = locate_template('single-event.php')) {
-              //  $this->load_template($template, $univisdata);
-            //} else {
+        if ($template = locate_template('single-mitarbeiter.php')) {
+                $this->load_template($template, $univis_data);
+            } else {
                 
-                //$this->load_template(dirname(__FILE__) . '/templates/mitarbeiter-einzeln1.php', $univis_data);
-            }
-        univisController::_renderTemplate($univis_data);  
-//        if (empty($slug)) {
-//            if ($template = locate_template('rrze-calendar-events.php')) {
-//                $this->load_template($template);
-//            } else {
-//                wp_enqueue_style('rrze-calendar');
-//                $this->load_template(dirname(__FILE__) . '/includes/templates/events.php');
-//            }
-//        } elseif (is_null($event)) {
-//            if ($template = locate_template('404.php')) {
-//                load_template($template);
-//            } else {
-//                wp_die(__('Termin nicht gefunden.', 'rrze-calendar'));
-//            }
-//        } else {
-//            if ($template = locate_template('rrze-calendar-single-event.php')) {
-//                $this->load_template($template, $event);
-//            } else {
-//                wp_enqueue_style('rrze-calendar');
-//                $this->load_template(dirname(__FILE__) . '/includes/templates/single-event.php', $event);
-//            }
-//        }
+                $this->load_template(dirname(__FILE__) . '/univis/templates/single-mitarbeiter.php', $univis_data);
+            }   
+
     }
     
     private function load_template($template, $event = NULL) {
-
         require_once($template);
         exit();
     }
@@ -297,7 +286,7 @@ class RRZE_UnivIS {
         $screen->set_help_sidebar($help_sidebar);
     }
 
-    public static function univis( $atts ) {
+    public static function univis( $atts ) {    
         $univis_url = self::$univis_url;
         $options = self::get_options();
         $defaults = self::get_defaults();
@@ -374,45 +363,11 @@ class RRZE_UnivIS {
             if( isset( $atts['orgunit'] )) {
                 $atts['OrgUnit'] = wp_kses( $atts['orgunit'] );
             }
-
-        
-//        // *** Eingefügt von lapmk ***
-//            if ( !empty($_GET) ) {
-//                $atts = array_merge( $atts, $_GET ); 
-//            }   // modifiziert, lapmk 02.03.2017: erlaubt die Verwendung von GET (verwendet in mitarbeiter-telefonbuch); unzulässige Keys werden durch shortcode_atts() aussortiert
-        // *** ENDE ***
             
         $shortcode_atts = shortcode_atts( $defaults, $atts );
-        //_rrze_debug($shortcode_atts);
-        // *** Eingefügt von lapmk ***        
-        /*
-	lapmk 02.03.2017
-	Neue Funktion in task "mitarbeiter-telefonbuch": wenn im GET lastname und firstname übergeben werden, dann wird
-	statt der alphabetischen Mitarbeiterliste eine einzelne Mitarbeiterseite "mitarbeiter-einzeln" angezeigt
-	*/
-//        if ($shortcode_atts['task']=='mitarbeiter-telefonbuch' && $shortcode_atts['firstname'] && $shortcode_atts['lastname']) {  
-//        	$shortcode_atts['task']='mitarbeiter-einzeln'; 
-//        	$shortcode_atts['link_telefonbuch']='1'; 
-//        } 
-//        if ($shortcode_atts['task'] == 'mitarbeiter-telefonbuch' && $shortcode_atts['univisid'] ) {  
-//        	$shortcode_atts['task'] = 'mitarbeiter-einzeln'; 
-//        	$shortcode_atts['link_telefonbuch'] = '1'; 
-//        } 
-//        
-        // *** ENDE ***    
-                //_rrze_debug($shortcode_atts);
-        
-        
+
         extract($shortcode_atts);
-        /*if( isset( $atts['task'] ) ) {
-            $task = $atts['task'];
-        } else {
-            $task = $defaults['task'];
-        }*/
-        // FETCH $_GET OR CRON ARGUMENTS TO AUTOMATE TASKS
-            /*if(isset($argv[1])) {
-                $args = (!empty($_GET)) ? $_GET:array('task'=>$argv[1]);
-            }*/
+
 
         switch( $task ) {
             case 'mitarbeiter-alle':
@@ -448,6 +403,7 @@ class RRZE_UnivIS {
                     break;
                 } 
                 $controller = new univisController($task, NULL, $shortcode_atts);
+                //_rrze_debug($controller);
                 $ausgabe = $controller->ladeHTML();
                 break;
             default:

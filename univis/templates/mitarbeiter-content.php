@@ -1,8 +1,7 @@
-<div id="univis-personenseite">
 <?php if ( $daten['person'] ) :
     $person = $daten['person'];?>
 	<div class="person" class="person liste-person" itemscope itemtype="http://schema.org/Person">
-
+            <div class="page">
             <?php  
             if (!empty($person['title'])) :
                 $name['title'] = '<span class="honorific-prefix" itemprop="honorificPrefix"><acronym title="' . $person['title_long'] . '">' . $person['title'] . '</acronym></span>';
@@ -80,14 +79,17 @@
                 <?php //'<li class="person-info-office"><span itemprop="hoursAvailable" itemtype="http://schema.org/ContactPoint"><span class="screen-reader-text"> '. _e('Sprechzeiten', RRZE_UnivIS::textdomain) . ': </span>Hier müssen die Öffnungszeiten rein</span></li>'; 
                 // Öffnungszeiten müssen noch mit rein, werden aus UnivIS noch nicht mit ausgelesen! ?>
             </ul>
+            </div>
         </div>
     
     <?php // Zusatzinformationen aus Dateiverzeichnis kommen hier rein: assets - beschreibung ?>
     
-    <div class="accordion">
+
 
     <!-- Lehrveranstaltungen -->
     <?php if( array_key_exists('lehrveranstaltungen', $person) && isset($person['lehrveranstaltungen']['veranstaltungen'])) : ?>
+        <?php // Wenn die Publikationen noch mit reinkommen, dann das div accordion wieder außerhalb des if setzen ?>
+        <div class="accordion">
             <h3 class="active">Lehrveranstaltungen</h3>
             <?php foreach ($person['lehrveranstaltungen']['veranstaltungen'] as $veranstaltungen) :
                 ?>
@@ -109,18 +111,14 @@
                 </div>
 
             <?php endforeach; ?>
+    	</div> 
     <?php endif; ?>              
 
 
-	</div> <!-- end: div.accordion -->
+
 
 <?php endif;?>
-</div>
 
-
-<?php // von lapmk eingefügt: {{#optionen}}
-//  {{#link_telefonbuch}}
-//    <p><a class="url" href="?">Zur&uuml;ck zur &Uuml;bersicht</a></p>
-//  {{/link_telefonbuch}}
-//{{/optionen}}
-?>
+<nav class="navigation">
+    <div class="nav-previous"><a href="../../"><?php _e('<span class="meta-nav">&laquo;</span> Zurück zur Übersicht', RRZE_UnivIS::textdomain); ?></a></div>
+</nav>

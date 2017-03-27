@@ -2,8 +2,8 @@
 
 require_once("class_univis.php");
 require_once("class_render.php");
-require_once("class_cache.php");
-require_once("class_assets.php");
+//require_once("class_cache.php");
+//require_once("class_assets.php");
 
 class univisController {
 
@@ -32,13 +32,13 @@ class univisController {
 	}
 
 	function ladeHTML() {
-		$cache = new univisCache($this->optionen);
-		$datenAusCache = $cache->holeDaten();
-
-		if($datenAusCache != -1) {
-			// Daten wurden aus Cache geladen
-			return $datenAusCache;
-		}
+//		$cache = new univisCache($this->optionen);
+//		$datenAusCache = $cache->holeDaten();
+//
+//		if($datenAusCache != -1) {
+//			// Daten wurden aus Cache geladen
+//			return $datenAusCache;
+//		}
 
 		// Lade Daten von Univis
 		$univis = new UNIVIS($this->optionen);
@@ -51,8 +51,8 @@ class univisController {
 			$daten = $render->bearbeiteDaten($daten);
 
 			// Lade Zusatzinformationen
-			$assets = new univisAssets($this->optionen);
-			$daten["assets"] = $assets->holeDaten();
+//			$assets = new univisAssets($this->optionen);
+//			$daten["assets"] = $assets->holeDaten();
 
 			// Daten rendern
 			$html = $this->_renderTemplate($daten);
@@ -60,7 +60,7 @@ class univisController {
 			if($html != -1) {	//Rendern erfolgreich?
 
 				// Gerenderte Daten in Cache speichern
-				$cache->setzeDaten($html);
+				//$cache->setzeDaten($html);
 				return $html;
 			}else{
 				return "Template Fehler: Konnte Template Datei nicht finden.";
