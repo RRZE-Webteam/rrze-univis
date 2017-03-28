@@ -522,43 +522,48 @@ class UNIVIS {
 	/////		Hilfsmethoden
 	///////////////////////////////////////////////////////////////
 
-	// XML Parser
-	private function xml2array($fname){
-	  $sxi = new SimpleXmlIterator($fname, null, true);
-	  return $this->sxiToArray($sxi);
-	}
+        // XML Parser
+        public function xml2array($url) {
+            $sxi = new SimpleXmlIterator($url, null, true);
+            return $this->sxi2array($sxi);
+        }
 
-	private function sxiToArray($sxi){
-	  $a = array();
+        private function sxi2array($sxi) {
+            $a = array();
 
-	  for( $sxi->rewind(); $sxi->valid(); $sxi->next() ) {
-	    if(!array_key_exists($sxi->key(), $a)){
-	      $a[$sxi->key()] = array();
-	    }
-	    if($sxi->hasChildren()){
-	      $a[$sxi->key()][] = $this->sxiToArray($sxi->current());
-            } elseif($sxi->key() === 'orgunit') {
-                $a[$sxi->key()][] = strval($sxi->current());
-            } elseif($sxi->key() === 'orgunit_en') {
-                $a[$sxi->key()][] = strval($sxi->current());
-	    } else{
-	      $a[$sxi->key()] = strval($sxi->current());
+            for ($sxi->rewind(); $sxi->valid(); $sxi->next()) {
 
-	      //Fuege die UnivisRef Informationen ein.
-	      if($sxi->UnivISRef) {
-	      	$attributes = (array) $sxi->UnivISRef->attributes();
-			$a[$sxi->key()][] = $attributes["@attributes"];
-	      }
-	    }
+                if (!array_key_exists($sxi->key(), $a)) {
+                    $a[$sxi->key()] = array();
+                }
 
-		if($sxi->attributes()) {
-			$attributes = (array) $sxi->attributes();
-			$a["@attributes"] = $attributes["@attributes"];
-		}
+                if ($sxi->hasChildren()) {
+                    if (empty($a[$sxi->key()])) {
+                        $a[$sxi->key()] = array();
+                    }
+                    $a[$sxi->key()][] = $this->sxi2array($sxi->current());
+                } elseif (in_array($sxi->key(), array('orgunit', 'orgunit_en', 'location'))) {
+                    $a[$sxi->key()][] = strval($sxi->current());
+                } else {
+                    $a[$sxi->key()] = strval($sxi->current());
 
-	  }
-	  return $a;
-	}
+                    // Fuege die UnivisRef Informationen ein
+                    if ($sxi->UnivISRef) {
+                        if (empty($a[$sxi->key()])) {
+                            $a[$sxi->key()] = array();
+                        }
+                        $attributes = (array) $sxi->UnivISRef->attributes();
+                        $a[$sxi->key()][] = $attributes["@attributes"];
+                    }
+                }
+
+                if ($sxi->attributes()) {
+                    $attributes = (array) $sxi->attributes();
+                    $a["@attributes"] = $attributes["@attributes"];
+                }
+            }
+            return $a;
+        }
 
 	private function umlaute_ersetzen($text){
 		$such_array  = array ('ä', 'ö', 'ü', 'ß');
@@ -573,7 +578,7 @@ class UNIVIS {
 		$search_key = "UnivISRef";
 
 		foreach ($arr as &$child) {
-			if(@array_key_exists($search_key, $child)) {    
+			if(is_array($child) && array_key_exists($search_key, $child)) {    
                             if( array_key_exists( $child[$search_key][0]["key"], $refs ) )
 				$child = $refs[$child[$search_key][0]["key"]];             
 			}
