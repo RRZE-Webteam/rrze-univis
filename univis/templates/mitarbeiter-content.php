@@ -119,6 +119,4 @@
 
 <?php endif;?>
 
-<nav class="navigation">
-    <div class="nav-previous"><a href="../../"><?php _e('<span class="meta-nav">&laquo;</span> Zurück zur Übersicht', RRZE_UnivIS::textdomain); ?></a></div>
-</nav>
+

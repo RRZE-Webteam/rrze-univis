@@ -19,7 +19,7 @@
             $fullname = implode(' ', $name);
             ?>
 
-            <h6 itemprop="name" itemscope itemtype="http://schema.org/Person"><a href="http://univis.uni-erlangen.de/prg?search=persons&id=<?php echo $doz['id']; ?>&show=info"><?php echo $fullname; ?></a></h6>
+            <h6 itemprop="name" itemscope itemtype="http://schema.org/Person"><a href="univisid/<?php echo $doz['id']; ?>"><?php echo $fullname; ?></a></h6>
             <?php
         endforeach;
     endif;

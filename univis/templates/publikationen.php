@@ -9,7 +9,7 @@
 					{{#author}}
 						{{#pkey}}
 							{{#full-profile}}
-								<a href="http://univis.uni-erlangen.de/prg?search=persons&id={{ id }}&show=info">{{lastname}}, {{firstname}}</a>;
+								<a href="univisid/{{ id }}">{{lastname}}, {{firstname}}</a>;
 							{{/full-profile}}
 
 							{{^full-profile}}
