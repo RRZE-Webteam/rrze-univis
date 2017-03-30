@@ -1,8 +1,7 @@
-<div id="univis-personenseite">
 <?php if ( $daten['person'] ) :
     $person = $daten['person'];?>
 	<div class="person" class="person liste-person" itemscope itemtype="http://schema.org/Person">
-
+            <div class="page">
             <?php  
             if (!empty($person['title'])) :
                 $name['title'] = '<span class="honorific-prefix" itemprop="honorificPrefix"><acronym title="' . $person['title_long'] . '">' . $person['title'] . '</acronym></span>';
@@ -81,13 +80,15 @@
                 // Öffnungszeiten müssen noch mit rein, werden aus UnivIS noch nicht mit ausgelesen! ?>
             </ul>
         </div>
+        </div>
     
     <?php // Zusatzinformationen aus Dateiverzeichnis kommen hier rein: assets - beschreibung ?>
     
-    <div class="accordion">
 
     <!-- Lehrveranstaltungen -->
     <?php if( array_key_exists('lehrveranstaltungen', $person) && isset($person['lehrveranstaltungen']['veranstaltungen'])) : ?>
+        <?php // Wenn die Publikationen noch mit reinkommen, dann das nächste div wieder außerhalb des if setzen ?>
+        <div>
             <h3 class="active">Lehrveranstaltungen</h3>
             <?php foreach ($person['lehrveranstaltungen']['veranstaltungen'] as $veranstaltungen) :
                 ?>
@@ -99,7 +100,7 @@
                                 <?php if (array_key_exists('data', $veranstaltungen)) :
                                     foreach ($veranstaltungen['data'] as $data) :
                                         ?> 
-                                        <li><a href="http://univis.uni-erlangen.de/prg?search=lectures&id=<?php echo $data['id']; ?>&show=long"><?php echo $data['name']; ?></a></li>
+                                        <li><a href="lv_id/<?php echo $data['id']; ?>"><?php echo $data['name']; ?></a></li>
                                     <?php endforeach;
                                 endif;
                                 ?>
@@ -109,18 +110,11 @@
                 </div>
 
             <?php endforeach; ?>
+    	</div> 
     <?php endif; ?>              
 
 
-	</div> <!-- end: div.accordion -->
 
 <?php endif;?>
-</div>
 
 
-<?php // von lapmk eingefügt: {{#optionen}}
-//  {{#link_telefonbuch}}
-//    <p><a class="url" href="?">Zur&uuml;ck zur &Uuml;bersicht</a></p>
-//  {{/link_telefonbuch}}
-//{{/optionen}}
-?>

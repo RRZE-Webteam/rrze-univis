@@ -18,8 +18,8 @@
             endif;
             $fullname = implode(' ', $name);
             ?>
-
-            <h6 itemprop="name" itemscope itemtype="http://schema.org/Person"><a href="univisid/<?php echo $doz['id']; ?>"><?php echo $fullname; ?></a></h6>
+            <?php $url = get_permalink() . 'univisid/' . $doz['id']; ?>
+            <h6 itemprop="name" itemscope itemtype="http://schema.org/Person"><a href="<?php echo $url; ?>"><?php echo $fullname; ?></a></h6>
             <?php
         endforeach;
     endif;
@@ -147,10 +147,3 @@
 endif;
 ?>
 
-<?php if ($daten['assets']) :
-    if (!empty($daten['assets']['download_link'])) :
-        ?>
-        <a href="<?php echo $daten['assets']['download_link']; ?>"> Download </a>                
-    <?php endif;
-endif;
-?>

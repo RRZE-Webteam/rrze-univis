@@ -13,7 +13,8 @@
         <?php foreach ($gruppe['personen'] as $person) : ?>
         <li class="vcard" itemprop="name" class="person liste-person" itemscope itemtype="http://schema.org/Person">
             <span class="fn n">
-                <a class="url" href="univisid/<?php echo $person['id'];?>">
+                <?php $url = get_permalink() . 'univisid/' . $person['id']; ?>
+                <a class="url" href="<?php echo $url;?>">
                     <?php if (!empty($person['title'])) : ?>
                     <span class="honorific-prefix" itemprop="honorificPrefix">
                         <acronym title="<?php echo $person['title_long'];?>"><?php echo $person['title'];?></acronym>

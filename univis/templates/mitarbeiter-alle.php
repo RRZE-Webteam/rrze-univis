@@ -11,7 +11,8 @@
                         <acronym title="<?php echo $person['title_long'];?>"><?php echo $person['title'];?></acronym>
                     </span>
                     <?php endif; ?>
-                    <a class="url" href="univisid/<?php echo $person['id'];?>" itemprop="name">
+                    <?php $url = get_permalink() . 'univisid/' . $person['id']; ?>
+                    <a class="url" href="<?php echo $url;?>" itemprop="name">
                         <span itemprop="familyName"><?php echo $person['lastname'];?></span><?php if (!empty($person['firstname'])) : ?>, <?php endif; ?>
                         <?php if (!empty($person['firstname'])) : ?>
                         <span itemprop="givenName"><?php echo $person['firstname'];?></span><?php if (!empty($person['atitle'])) : ?>, <?php endif; ?>

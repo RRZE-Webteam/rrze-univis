@@ -5,7 +5,7 @@
 	<ul>
         <?php if (!empty($veranstaltung['data'])) : 
             foreach ($veranstaltung['data'] as $data) : 
-            $url = 'http://univis.uni-erlangen.de/prg?search=lectures&id=' . $data['id'] . '&show=long';
+            $url = get_permalink() . 'lv_id/' . $data['id'];
             if (!empty($daten['optionen']['sem'])) 
                 $url .= '&sem=' . $daten['optionen']['sem']; ?>
             <li>
