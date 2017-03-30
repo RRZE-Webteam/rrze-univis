@@ -86,19 +86,17 @@ class univisRender {
 			$such_kategorie = "rang";
                         $jobs = $daten['Org'][0]['jobs'][0]['job'];
 		}
-                //_rrze_debug($daten['Person']);
+
 		$gruppen = array();
 		$gruppen_dict = array();
                 $gruppen_personen = array();
                 $gruppen_text = array();
-                //_rrze_debug($personen);
-                //_rrze_debug_log($personen[0]['orgname']);
+
 		foreach ($personen as $person) {
                         //Text-Felder müssen auch angezeigt werden, deshalb rausgenommen
 			//if(empty($person["firstname"]))
 			//	continue;
-                    
-                        //_rrze_debug_log($person['firstname'] . ' ' . $person['lastname'] . '; ' . $person['id']);                        
+                                           
 			if(empty($person[$such_kategorie])) {
 				continue;
 			}
@@ -499,21 +497,22 @@ class univisRender {
 	private function _bearbeiteLehrveranstaltungenAlle($veranstaltungen) {
             
 		if($veranstaltungen === -1) {
-                    echo "Es konnten keine Lehrveranstaltungen gefunden werden.";
+                    if(!empty($person["title"])) {
+                        echo "Es konnten keine Lehrveranstaltungen gefunden werden.";
+                    }
                     return -1;
                 } else {
-
-        		$this->_rename_key("type", $veranstaltungen, univisDicts::$lecturetypen);
-              
                     for ($i=0; $i < count($veranstaltungen); $i++) {
         			// Einzelne Veranstaltung bearbeiten
                 		$veranstaltung_edit = $this->_bearbeiteLehrveranstaltungenEinzeln($veranstaltungen[$i]);
-                        	$veranstaltungen[$i] = $veranstaltung_edit["veranstaltung"];                         
+                        	$veranstaltungen[$i] = $veranstaltung_edit["veranstaltung"];   
+                                if (array_key_exists('type', $veranstaltungen[$i])) {
+                                    $veranstaltungen[$i]['type'] = univisDicts::$lecturetypen[$veranstaltungen[$i]['type']];        
+                                }
                     }
 
                     //Nach Jahren gruppieren
                     $veranstaltungen = $this->_group_by("type", $veranstaltungen);
-                    //_rrze_debug(array( "veranstaltungen" => $veranstaltungen, "optionen" => $this->optionen));
                     return array( "veranstaltungen" => $veranstaltungen, "optionen" => $this->optionen);
                 }
                 
@@ -590,9 +589,8 @@ class univisRender {
 	}
 
 	private function _bearbeiteLehrveranstaltungenEinzeln($veranstaltung) {
-         
             $this->_rename_key("type", $veranstaltung, univisDicts::$lecturetypen);   
-            
+      
 		// Dozs
                 if( isset( $veranstaltung["dozs"] ) ) {
                     for ($i = 0; $i<count($veranstaltung["dozs"]); $i++) {
@@ -610,7 +608,7 @@ class univisRender {
 
 		//Begin: Angaben
 		$angaben = array();
-                
+
 		//Typ
 		if(isset($veranstaltung["type"])) {
 			$type = $this->_str_replace_dict(univisDicts::$lecturetypen_short, $veranstaltung["type"]);
@@ -786,7 +784,7 @@ class univisRender {
 				if($key == $search_key) {
 					$value = $this->_str_replace_dict($dict, $value);
 				}
-			}
+			} 
                     }
 		}
             }
