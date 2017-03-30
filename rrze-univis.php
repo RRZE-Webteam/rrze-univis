@@ -162,8 +162,8 @@ class RRZE_UnivIS {
     public static function update_version() {
         if (get_option(self::version_option_name, null) < self::version) {
             // enthalten ab Version 1.3.0, kann später wieder raus
-            self::add_endpoint();
-            flush_rewrite_rules();
+            array(__CLASS__, 'add_endpoint');
+            array(__CLASS__, 'flush_rewrite_rules');
             update_option(self::version_option_name, self::version);
         }
     }
