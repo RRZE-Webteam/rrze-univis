@@ -59,7 +59,8 @@ class RRZE_UnivIS {
         // Sprachdateien werden eingebunden.
         load_plugin_textdomain(self::textdomain, false, sprintf('%s/languages/', dirname(plugin_basename(__FILE__))));
 
-	   
+	self::update_version();   
+        
         add_action('admin_init', array($this, 'admin_init'));
         add_action('admin_menu', array($this, 'add_options_page'));
         add_shortcode('univis', array($this, 'univis'));
@@ -161,6 +162,7 @@ class RRZE_UnivIS {
     public static function update_version() {
         if (get_option(self::version_option_name, null) < self::version) {
             // enthalten ab Version 1.3.0, kann später wieder raus
+            self::add_endpoint();
             flush_rewrite_rules();
             update_option(self::version_option_name, self::version);
         }
