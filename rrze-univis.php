@@ -159,8 +159,11 @@ class RRZE_UnivIS {
     }
 
     public static function update_version() {
-        if (get_option(self::version_option_name, null) != self::version)
+        if (get_option(self::version_option_name, null) < self::version) {
+            // enthalten ab Version 1.3.0, kann später wieder raus
+            flush_rewrite_rules();
             update_option(self::version_option_name, self::version);
+        }
     }
     
     public static function add_endpoint() {
