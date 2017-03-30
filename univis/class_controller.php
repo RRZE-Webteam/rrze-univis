@@ -63,34 +63,40 @@ class univisController {
 				//$cache->setzeDaten($html);
 				return $html;
 			}else{
-				return "Template Fehler: Konnte Template Datei nicht finden.";
+                            // Fehleranzeige vorerst rausgenommen
+                            if(isset($this->optionen['errormsg'])) {
+				return "Template Fehler: Konnte Template Datei nicht finden.";  
+                                //return;
+                            }
 			}
 
 		}else{
 			// Lade Daten aus Cache (auch veraltete).
-			$datenAusCache = $cache->holeDaten(true);
-
-			if($datenAusCache != -1) {
-				return $datenAusCache;
-			}else{
+//			$datenAusCache = $cache->holeDaten(true);
+//
+//			if($datenAusCache != -1) {
+//				return $datenAusCache;
+//			}else{
+//			        // Fehleranzeige vorerst rausgenommen
 				// Konnte keine Daten laden. Alternativausgabe laden
-				if($this->optionen["task"] == "mitarbeiter-einzeln") {
-					// Lade Mitarbeiter Alle
-					echo "<div class=\"hinweis_wichtig\"><h4>Fehler: Konnte Person " . $this->optionen["firstname"] . " " . $this->optionen["lastname"] . " nicht finden.</h4><p>Bitte wählen Sie eine Person aus der Liste.</p></div><br class=\"clear\" />";
-					$this->optionen["task"] = "mitarbeiter-alle";
-					return $this->ladeHTML();
-				}
-				if ($this->optionen["task"] == "lehrveranstaltungen-einzeln") {
-					// Lade Lehrveranstaltungen Alle
-					echo "<div class=\"hinweis_wichtig\"><h4>Fehler: Konnte Lehrveranstaltung id=" . $this->optionen["id"] . " nicht finden.</h4>";
-                                        
-                                        if( !empty($this->optionen["UnivISOrgNr"])) {
-                                            echo "<p>Bitte wählen Sie eine Lehrveranstaltung aus der Liste.</p></div><br class=\"clear\" />";                                        
-                                            $this->optionen["task"] = "lehrveranstaltungen-alle";
-                                            return $this->ladeHTML();
-                                        }
-				}
-			}
+//				if($this->optionen["task"] == "mitarbeiter-einzeln") {
+//					// Lade Mitarbeiter Alle
+//					echo "<div class=\"hinweis_wichtig\"><h4>Fehler: Konnte Person " . $this->optionen["firstname"] . " " . $this->optionen["lastname"] . " nicht finden.</h4><p>Bitte wählen Sie eine Person aus der Liste.</p></div><br class=\"clear\" />";
+//					$this->optionen["task"] = "mitarbeiter-alle";
+//					return $this->ladeHTML();
+//				}
+//				if ($this->optionen["task"] == "lehrveranstaltungen-einzeln") {
+//					// Lade Lehrveranstaltungen Alle
+//					echo "<div class=\"hinweis_wichtig\"><h4>Fehler: Konnte Lehrveranstaltung id=" . $this->optionen["id"] . " nicht finden.</h4>";
+//                                        
+//                                        if( !empty($this->optionen["UnivISOrgNr"])) {
+//                                            echo "<p>Bitte wählen Sie eine Lehrveranstaltung aus der Liste.</p></div><br class=\"clear\" />";                                        
+//                                            $this->optionen["task"] = "lehrveranstaltungen-alle";
+//                                            return $this->ladeHTML();
+//                                        }
+//				}
+//			}
+                    return;
 		}
 	}
 
