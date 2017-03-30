@@ -1,5 +1,17 @@
 Versionsänderungen:
 ===================
+####Version 1.3.0:    
+- Bugfix defekte Lehrveranstaltungstyp-Ausgabe    
+- Einzeldarstellung von Mitarbeitern und Lehrveranstaltungen werden innerhalb der Webseite dargestellt und verweisen nicht mehr auf UnivIS    
+- Anzeige von UnivIS-Publikationen nicht mehr möglich    
+- Neue Shortcode-Parameter:   
+* univisid (für sämtliche Personen-UnivIS-IDs, ersetzt dozentid und auch bei task="mitarbeiter-einzeln" möglich)    
+* lv_id (ersetzt id bei task="lehrveranstaltungen-einzeln")    
+* sem (für Angabe von Lehrveranstaltungen in speziellen Semestern, in der Form sem="2017w")    
+* neues Format: Telefonbuchdarstellung (Shortcode-Parameter task="mitarbeiter-telefonbuch")     
+* show bzw. hide für weitere Optionen    
+* standardmäßig sind alle Fehlerausgaben jetzt ausgeblendet, Einblenden mit show="errormsg"   
+
 ####Version 1.2.7:     
 - Erweiterung lecturetypen HIS (Sprachhistorisches Seminar), US (Übungsseminar), PPU (Propädeutische Übung)    
 

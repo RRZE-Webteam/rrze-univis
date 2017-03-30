@@ -3,7 +3,7 @@
   Plugin Name: RRZE-UnivIS
   Plugin URI: https://github.com/RRZE-Webteam/rrze-univis
  * Description: Einbindung von Daten aus UnivIS für den Geschäftsverteilungsplan auf Basis des UnivIS-Plugins des Webbaukastens.
- * Version: 1.2.7
+ * Version: 1.3.0
  * Author: RRZE-Webteam
  * Author URI: http://blogs.fau.de/webworking/
  * License: GPLv2 or later
@@ -89,7 +89,6 @@ class RRZE_UnivIS {
         $options = array(
             'univis_default_link' => $linktext,
             'UnivISOrgNr' => '',
-            'endpoint_slug' => 'univisid'
         );
         return $options;
     }
@@ -123,7 +122,8 @@ class RRZE_UnivIS {
                         'lv_import' => '1',      // importierte Lehrveranstaltungen werden mit angezeigt, ausblenden über Shortcode
                         'sem' => '',             // Semesterauswahl
                         'univisid' => '',        // ist die Personen-ID, egal ob dozentid oder MA-ID
-                        'name' => ''            // Synonym zur Angabe von firstname und lastname
+                        'name' => '',            // Synonym zur Angabe von firstname und lastname
+                        'errormsg' => ''          // Anzeige von Fehlermeldungen bei Ausgabe
                 );
         return $defaults;
     }
@@ -164,37 +164,41 @@ class RRZE_UnivIS {
     }
     
     public static function add_endpoint() {
-        $options = self::get_options();
-        add_rewrite_endpoint($options['endpoint_slug'], EP_PAGES);
+        add_rewrite_endpoint('univisid', EP_PAGES);
+        add_rewrite_endpoint('lv_id', EP_PAGES);
     }
 
     public function endpoint_template_redirect() {
         global $wp_query;
         global $univis_data;
-        $defaults = self::get_defaults();
-        $options = self::get_options();
-        if (!isset($wp_query->query_vars[$options['endpoint_slug']])) {
+        if ( isset($wp_query->query_vars['univisid']) ) {
+            $slug = $wp_query->query_vars['univisid'];
+            $key = 'univisid';
+            $task = 'mitarbeiter-einzeln';
+        } elseif ( isset($wp_query->query_vars['lv_id']) ) {
+            $slug = $wp_query->query_vars['lv_id'];
+            $key = 'lv_id';
+            $task = 'lehrveranstaltungen-einzeln';
+        } else {
             return;
         }
 
-        $slug = $wp_query->query_vars[$options['endpoint_slug']];
-        //_rrze_debug_log($slug);
         if( !empty($slug) ) {
             $atts = array(
-                'univisid' => $slug,
+                $key => $slug,
             );
-            $controller = new univisController('mitarbeiter-content', NULL, $atts);
+
+            $controller = new univisController($task, NULL, $atts);
             $univis_data = $controller->ladeHTML();
-            //_rrze_debug($univis_data);
         } else {
             $univis_data = NULL;
         }
         
-        if ($template = locate_template('single-mitarbeiter.php')) {
+        if ($template = locate_template('single-univis.php')) {
                 $this->load_template($template, $univis_data);
             } else {
                 
-                $this->load_template(dirname(__FILE__) . '/univis/templates/single-mitarbeiter.php', $univis_data);
+                $this->load_template(dirname(__FILE__) . '/univis/templates/single-univis.php', $univis_data);
             }   
 
     }
@@ -291,7 +295,6 @@ class RRZE_UnivIS {
         $options = self::get_options();
         $defaults = self::get_defaults();
         $univis_link = sprintf('<a href="%1$s">%2$s</a>', $univis_url, $options['univis_default_link']);
-        //_rrze_debug($atts);
         if( empty( $atts )) {
             $ausgabe = $univis_link;
         } else {
@@ -403,7 +406,6 @@ class RRZE_UnivIS {
                     break;
                 } 
                 $controller = new univisController($task, NULL, $shortcode_atts);
-                //_rrze_debug($controller);
                 $ausgabe = $controller->ladeHTML();
                 break;
             default:
