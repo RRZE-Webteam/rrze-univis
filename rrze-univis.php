@@ -3,7 +3,7 @@
   Plugin Name: RRZE-UnivIS
   Plugin URI: https://github.com/RRZE-Webteam/rrze-univis
  * Description: Einbindung von Daten aus UnivIS für den Geschäftsverteilungsplan auf Basis des UnivIS-Plugins des Webbaukastens.
- * Version: 1.3.1
+ * Version: 1.3.2
  * Author: RRZE-Webteam
  * Author URI: http://blogs.fau.de/webworking/
  * License: GPLv2 or later
@@ -33,7 +33,7 @@ require_once('univis/class_controller.php');
 
 class RRZE_UnivIS {
 
-    const version = '1.3.1';
+    const version = '1.3.2';
     const option_name = '_rrze_univis';
     const version_option_name = '_rrze_univis_version';
     const textdomain = 'rrze-univis';
@@ -59,7 +59,7 @@ class RRZE_UnivIS {
         // Sprachdateien werden eingebunden.
         load_plugin_textdomain(self::textdomain, false, sprintf('%s/languages/', dirname(plugin_basename(__FILE__))));
 
-	self::update_version();   
+	self::update_version();
         
         add_action('admin_init', array($this, 'admin_init'));
         add_action('admin_menu', array($this, 'add_options_page'));
@@ -69,7 +69,6 @@ class RRZE_UnivIS {
         
         add_action('init', array(__CLASS__, 'add_endpoint'));
         add_action('template_redirect', array($this, 'endpoint_template_redirect'));
-
     }
     
     
@@ -133,9 +132,7 @@ class RRZE_UnivIS {
 
     public static function activate() {
         self::version_compare();
-        update_option(self::version_option_name, self::version);
-        self::add_endpoint();
-        flush_rewrite_rules();
+        self::flush_add_endpoint();
     }
 
     public static function deactivate() {
@@ -160,21 +157,28 @@ class RRZE_UnivIS {
     }
 
     public static function update_version() {
-        if (get_option(self::version_option_name, null) < self::version) {
-            // enthalten ab Version 1.3.0, kann später wieder raus
-            //self::add_endpoint();
-            add_rewrite_endpoint('univisid', EP_PAGES);
-            add_rewrite_endpoint('lv_id', EP_PAGES);
-            flush_rewrite_rules();
+        if (version_compare(self::version, get_option(self::version_option_name, null), '>')) {
+            add_action('init', array(__CLASS__, 'flush_add_endpoint'));
             update_option(self::version_option_name, self::version);
         }
     }
     
+    public static function flush_add_endpoint() {
+        self::add_rewrite_endpoint(true);
+    }
+    
     public static function add_endpoint() {
-        add_rewrite_endpoint('univisid', EP_PAGES);
-        add_rewrite_endpoint('lv_id', EP_PAGES);
+        self::add_rewrite_endpoint();
     }
 
+    public static function add_rewrite_endpoint($flush = false) {
+        add_rewrite_endpoint('univisid', EP_PAGES);
+        add_rewrite_endpoint('lv_id', EP_PAGES);
+        if ($flush) {
+            flush_rewrite_rules();
+        }
+    }
+    
     public function endpoint_template_redirect() {
         global $wp_query;
         global $univis_data;
