@@ -61,10 +61,19 @@ class UNIVIS {
 					break;
 
 				case "mitarbeiter-orga":
+                                case "mitarbeiter-telefonbuch": // EINGEFÜGT VON LAPMK, modifiziert
 					$this->daten = $this->_ladeMitarbeiterOrga();
 					break;
-
+                                    
+                                // EINGEFÜGT VON LAPMK    
+				//lapmk 02.03.2017: neues Template "mitarbeiter_telefonbuch"
+//				case "mitarbeiter-telefonbuch":
+//					$this->daten = $this->_ladeMitarbeiterTelefonbuch();
+//					break; 
+                                // ENDE
+                                    
 				case "mitarbeiter-einzeln":
+                                case "mitarbeiter-content":
 					$this->daten = $this->_ladeMitarbeiterEinzeln();
 					break;
 
@@ -80,9 +89,9 @@ class UNIVIS {
 					$this->daten = $this->_ladeLehrveranstaltungenEinzeln();
 					break;
 
-				case "lehrveranstaltungen-kalender":
-					$this->daten = $this->_ladeLehrveranstaltungenKalender();
-					break;
+//				case "lehrveranstaltungen-kalender":
+//					$this->daten = $this->_ladeLehrveranstaltungenKalender();
+//					break;
 
 				default:
 					echo "Fehler: Unbekannter Befehl\n";
@@ -98,7 +107,9 @@ class UNIVIS {
 		$url = esc_url_raw( $this->univis_url."?search=departments&number=".$this->optionen["UnivISOrgNr"]."&show=xml" );
  
 		if(!fopen($url, "r")) {
+                    if($this->optionen['errormsg'] == 1) {
                         echo "Leider konnte zu UnivIS keine Verbindung aufgebaut werden.";
+                    }
 			// Univis Server ist nicht erreichbar
 			return -1;
 		}
@@ -106,8 +117,10 @@ class UNIVIS {
                 $handle = fopen($url, "r");
                 $content = fread($handle, 100);
                 if( substr( $content, 0, 5) != '<?xml' ) {
-                    echo "Leider brachte Ihre Suche kein Ergebnis. Bitte überprüfen Sie die Suchparameter.";
-                    // Univis Server ist nicht erreichbar
+                    if($this->optionen['errormsg'] == 1) {
+                        echo "Leider brachte Ihre Suche kein Ergebnis. Bitte überprüfen Sie die Suchparameter.";
+                    }
+                        // Univis Server ist nicht erreichbar
                     return -1;
                 } 
                 fclose($handle);                
@@ -116,11 +129,15 @@ class UNIVIS {
 		$daten = $this->xml2array($url);
 
                 if(empty($daten)) {
-                    echo "Leider konnte die Organisationseinheit nicht gefunden werden.";
+                    if($this->optionen['errormsg'] == 1) {
+                        echo "Leider konnte die Organisationseinheit nicht gefunden werden.";       
+                    }
                     return -1;
                 } elseif(!isset($daten["Person"])) {
-                    echo "In dieser Organisationseinheit konnten keine Mitarbeiter gefunden werden.";
-                    return -1;                                    
+                    if($this->optionen['errormsg'] == 1) {
+                        echo "In dieser Organisationseinheit konnten keine Mitarbeiter gefunden werden.";
+                    }
+                        return -1;                                    
                 } else {
 		if($this->optionen["Sortiere_Jobs"]) {
 
@@ -204,8 +221,10 @@ class UNIVIS {
 		$url = esc_url_raw( $this->univis_url."?search=persons&department=".$this->optionen["UnivISOrgNr"]."&show=xml" );
 
 		if(!fopen($url, "r")) {
-                        echo "Leider konnte zu UnivIS keine Verbindung aufgebaut werden.";
-			// Univis Server ist nicht erreichbar
+                    if($this->optionen['errormsg'] == 1) {
+                            echo "Leider konnte zu UnivIS keine Verbindung aufgebaut werden.";
+                    }
+                        // Univis Server ist nicht erreichbar
 			return -1;
 		}
                 
@@ -221,40 +240,88 @@ class UNIVIS {
 		// XML Daten Parsen
 		$daten = $this->xml2array($url);
                 if(empty($daten)) {
-                    echo "Leider konnte die Organisationseinheit nicht gefunden werden.";
+                    if($this->optionen['errormsg'] == 1) {
+                        echo "Leider konnte die Organisationseinheit nicht gefunden werden.";
+                    }
                     return -1;
                 } else {
                     return $daten["Person"];
                 }
 	}
 
+        
+	// EINGEFÜGT VON LAPMK
+        //lapmk 02.03.2017: neue Funktion für neues Template "mitarbeiter_telefonbuch"; basiert auf _ladeMitarbeiterOrga()
+//  	private function _ladeMitarbeiterTelefonbuch() {
+//		// Hole Daten von Univis
+//		$url = esc_url_raw( $this->univis_url."?search=persons&department=".$this->optionen["UnivISOrgNr"]."&show=xml" );
+//
+//		if(!fopen($url, "r")) {
+//                        echo "Leider konnte zu UnivIS keine Verbindung aufgebaut werden.";
+//			// Univis Server ist nicht erreichbar
+//			return -1;
+//		}
+//                
+//                $handle = fopen($url, "r");
+//                $content = fread($handle, 100);
+//                if( substr( $content, 0, 5) != '<?xml' ) {
+//                    echo "Leider brachte Ihre Suche kein Ergebnis. Bitte überprüfen Sie die Suchparameter.";
+//                    // Univis Server ist nicht erreichbar
+//                    return -1;
+//                } 
+//                fclose($handle);                
+//
+//		// XML Daten Parsen
+//		$daten = $this->xml2array($url);
+//                if(empty($daten)) {
+//                    echo "Leider konnte die Organisationseinheit nicht gefunden werden.";
+//                    return -1;
+//                } else {
+//                    return $daten["Person"];
+//                }
+//	}     
+        // ENDE
+        
 
 	private function _ladeMitarbeiterEinzeln() {
-
-		//Ueberpruefe ob Vor- und Nachname gegeben sind.
-		$noetige_felder = array("firstname", "lastname");
-		foreach ($noetige_felder as $feld) {
-			if(!array_key_exists($feld, $this->optionen) || $this->optionen[$feld] == "") {
-				// Fehler: Bitte geben Sie Vor- und Nachname der gesuchten Person an
-				echo "<div class=\"hinweis_wichtig\">Bitte geben Sie Vor- und Nachname der gesuchten Person an.</div>";
-				return -1;
-			}
-
-			if(strrpos($this->optionen[$feld], "&") !== false) {
-				echo "Ung&uuml;ltige Eingabe.";
-				return -1;
-			}
-		}
+            if( $this->optionen["univisid"] ) {
+                $id = $this->optionen["univisid"];
+                $url = esc_url_raw( $this->univis_url."?search=persons&id=".$id."&show=xml" );
+            } else {
+                if( $this->optionen["name"] ) {
+                    $name = explode(',', $this->optionen["name"]);
+                    $firstname = $name[1];
+                    $lastname = $name[0];
+                } else {
+                    $firstname = $this->optionen["firstname"];
+                    $lastname = $this->optionen["lastname"];
+                }
+//		//Ueberpruefe ob Vor- und Nachname gegeben sind.
+//		$noetige_felder = array("firstname", "lastname");
+//		foreach ($noetige_felder as $feld) {
+//			if(!array_key_exists($feld, $this->optionen) || $this->optionen[$feld] == "") {
+//				// Fehler: Bitte geben Sie Vor- und Nachname der gesuchten Person an
+//				echo "<div class=\"hinweis_wichtig\">Bitte geben Sie Vor- und Nachname der gesuchten Person an.</div>";
+//				return -1;
+//			}
+//
+//			if(strrpos($this->optionen[$feld], "&") !== false) {
+//				echo "Ung&uuml;ltige Eingabe.";
+//				return -1;
+//			}
+//		}
 
 		// Hole Daten von Univis
-		$url = esc_url_raw( $this->univis_url."?search=persons&name=".$this->optionen["lastname"]."&firstname=".$this->optionen["firstname"]."&show=xml" );
+		$url = esc_url_raw( $this->univis_url."?search=persons&name=".$lastname."&firstname=".$firstname."&show=xml" );
 
 		$url = $this->umlaute_ersetzen($url);
-
+            }
 
 
 		if(!fopen($url, "r")) {
+                    if($this->optionen['errormsg'] == 1) {
                         echo "Leider konnte zu UnivIS keine Verbindung aufgebaut werden.";
+                    }
 			// Univis Server ist nicht erreichbar
 			return -1;
 		}
@@ -262,21 +329,26 @@ class UNIVIS {
                 $handle = fopen($url, "r");
                 $content = fread($handle, 100);
                 if( substr( $content, 0, 5) != '<?xml' ) {
-                    echo "Leider brachte Ihre Suche kein Ergebnis. Bitte überprüfen Sie die Suchparameter.";
+                    if($this->optionen['errormsg'] == 1) {
+                        echo "Leider brachte Ihre Suche kein Ergebnis. Bitte überprüfen Sie die Suchparameter.";
+                    }
                     // Univis Server ist nicht erreichbar
                     return -1;
                 } 
                 fclose($handle);                
-                
 		$persArray = $this->xml2array($url);
                 if(empty($persArray)) {
-                    echo "Leider konnte die Person nicht gefunden werden.";
+                    if($this->optionen['errormsg'] == 1) {
+                        echo "Leider konnte die Person nicht gefunden werden.";
+                    }
                     return -1;
                 } else {
 		$person = $persArray["Person"];
 
 		if(count($persArray) == 0 ) {
+                    if($this->optionen['errormsg'] == 1) {
                         echo "Leider konnte die Person nicht gefunden werden.";
+                    }
 			// Keine Person gefunden
 			return -1;
 		}
@@ -285,33 +357,33 @@ class UNIVIS {
 		if($person) $person = $person[0];
 
 		// Lade Publikationen und Lehrveranstaltungen falls noetig
-		if ($this->optionen["Personenanzeige_Publikationen"]) {
+		if (isset($this->optionen["Personenanzeige_Publikationen"])) {
 			$person["publikationen"] = $this->_ladePublikationen($person["id"]);
 		}
 
-		if ($this->optionen["Personenanzeige_Lehrveranstaltungen"]) {
+		if (isset($this->optionen["Personenanzeige_Lehrveranstaltungen"])) {
 			$person["lehrveranstaltungen"] = $this->_ladeLehrveranstaltungenAlle($person["id"]);
 		}
-
 		return $person;
                 }
 	}
 
+        // $authorid muss evtl. noch mit $univisid ersetzt werden, dann aber auch in rrze_univis.php
 	private function _ladePublikationen($authorid = NULL) {
 		// Hole Daten von Univis
 		$url = esc_url_raw( $this->univis_url."?search=publications&show=xml" );
-                if($this->optionen["UnivISOrgNr"]) {
+		if($authorid) {
+			// Suche nur Publikationen von einen bestimmten Autoren
+			$url .= "&authorid=" . $authorid;
+		} elseif($this->optionen["UnivISOrgNr"]) {
                     //Suche Publikationen zu einer UnivISOrgNr
                     $url .= "&department=" . $this->optionen["UnivISOrgNr"];
                 }
 
-		if($authorid) {
-			// Suche nur Publikationen von einen bestimmten Autoren
-			$url .= "&authorid=" . $authorid;
-		}
-
 		if(!fopen($url, "r")) {
+                    if($this->optionen['errormsg'] == 1) {
                         echo "Leider konnte zu UnivIS keine Verbindung aufgebaut werden.";
+                    }
 			// Univis Server ist nicht erreichbar
 			return -1;
 		}
@@ -319,7 +391,9 @@ class UNIVIS {
                 $handle = fopen($url, "r");
                 $content = fread($handle, 100);
                 if( substr( $content, 0, 5) != '<?xml' ) {
-                    echo "Leider brachte Ihre Suche kein Ergebnis. Bitte überprüfen Sie die Suchparameter.";
+                    if($this->optionen['errormsg'] == 1) {
+                        echo "Leider brachte Ihre Suche kein Ergebnis. Bitte überprüfen Sie die Suchparameter.";
+                    }
                     // Univis Server ist nicht erreichbar
                     return -1;
                 } 
@@ -327,7 +401,9 @@ class UNIVIS {
                 
 		$array = $this->xml2array($url);
                 if(empty($array)) {
-                    echo "Leider konnten keine Publikationen gefunden werden.";
+                    if($this->optionen['errormsg'] == 1) {
+                        echo "Leider konnten keine Publikationen gefunden werden.";
+                    }
                     return -1;
                 } else {
 		$publications = $array["Pub"];
@@ -351,34 +427,33 @@ class UNIVIS {
 	}
 
 
-	private function _ladeLehrveranstaltungenAlle($dozentid = NULL) {
+	private function _ladeLehrveranstaltungenAlle($univisid = NULL) {
 		// Hole Daten von Univis
-
 		//&sem=2012w
                 $url = esc_url_raw( $this->univis_url."?search=lectures&show=xml" );
                 //Auskommentiert, da das aktuelle Semester in UnivIS beliebieg zum Ende der vorlesungsfreien Zeit umgestellt wird
 		//$url = esc_url_raw( $this->univis_url."?search=lectures&show=xml&sem=".$this->aktuellesSemester() );
-                if( $this->optionen["UnivISOrgNr"] ) {
+                if( $univisid ) {
+                    $url .= "&lecturerid=" . $univisid;
+                } elseif( $this->optionen["univisid"] ) {
+                    $url .= "&lecturerid=" . $this->optionen["univisid"];
+		} elseif ( $this->optionen["name"] ) {
+                    $url .= "&lecturer=" . $this->optionen["name"];
+                } elseif ( $this->optionen["UnivISOrgNr"] ) {
                     $url .= "&department=" . $this->optionen["UnivISOrgNr"];
-                }
-
-                if( $this->optionen["dozentid"] ) {
-                    $dozentid = $this->optionen["dozentid"];
-                }
-		if( $dozentid ) {
-                    $url .= "&lecturerid=" . $dozentid;
-		}
-                
-                if( $this->optionen["dozentname"] ) {
-                    $url .= "&lecturer=" . $this->optionen["dozentname"];
                 }
                 
                 if( $this->optionen["type"] ) {
                     $url .= "&type=" . $this->optionen["type"];
                 }
-
+                
+                if( $this->optionen["sem"] ) {
+                    $url .= "&sem=" . $this->optionen["sem"];
+                } 
 		if(!fopen($url, "r")) {
+                    if($this->optionen['errormsg'] == 1) {
                         echo "Leider konnte zu UnivIS keine Verbindung aufgebaut werden.";
+                    }
 			// Univis Server ist nicht erreichbar
 			return -1;
 		} 
@@ -386,7 +461,9 @@ class UNIVIS {
                 $handle = fopen($url, "r");
                 $content = fread($handle, 100);
                 if( substr( $content, 0, 5) != '<?xml' ) {
-                    echo "Leider brachte Ihre Suche kein Ergebnis. Bitte überprüfen Sie die Suchparameter.";
+                    if($this->optionen['errormsg'] == 1) {
+                        echo "Leider brachte Ihre Suche kein Ergebnis. Bitte überprüfen Sie die Suchparameter.";
+                    }
                     // Univis Server ist nicht erreichbar
                     return -1;
                 } 
@@ -395,7 +472,9 @@ class UNIVIS {
 		$array = $this->xml2array($url);
                 
                 if(empty($array)) {
-                    echo "Leider konnten keine Lehrveranstaltungen gefunden werden.";
+                    if($this->optionen['errormsg'] == 1) {
+                        echo "Leider konnten keine Lehrveranstaltungen gefunden werden.";
+                    }
                     return -1;
                 } else {
                     $veranstaltungen = $array["Lecture"];
@@ -418,27 +497,34 @@ class UNIVIS {
 
 	}
 
-	private function _ladeLehrveranstaltungenKalender($dozentid = NULL) {
-		return $this->_ladeLehrveranstaltungenAlle($dozentid);
+	private function _ladeLehrveranstaltungenKalender($univisid = NULL) {
+		return $this->_ladeLehrveranstaltungenAlle($univisid);
 	}
 
 	private function _ladeLehrveranstaltungenEinzeln() {
 		// Hole Daten von Univis
-		if($this->optionen["id"] == "") {
+		if($this->optionen["lv_id"] == "") {
+                            if($this->optionen['errormsg'] == 1) {
 				// Fehler: Bitte geben Sie eine Lehrveranstaltung an
 				echo "<div class=\"hinweis_wichtig\">Bitte geben Sie eine Lehrveranstaltung an.</div>";
-				return -1;
+                            }
+                            return -1;
 			}
                 $url = esc_url_raw( $this->univis_url."?search=lectures&show=xml" );
 		//Auskommentiert, da das aktuelle Semester in UnivIS beliebieg zum Ende der vorlesungsfreien Zeit umgestellt wird
                 //$url = $this->univis_url."?search=lectures&show=xml&sem=".$this->aktuellesSemester() ;
 
-		if($this->optionen["id"]) {
-			$url .=  "&id=".$this->toNumber($this->optionen["id"]) ;
+		if(isset($this->optionen["lv_id"])) {
+			$url .=  "&id=".$this->toNumber($this->optionen["lv_id"]) ;
 		}
+                if( isset($this->optionen["sem"]) ) {
+                    $url .= "&sem=" . $this->optionen["sem"];
+                } 
 
 		if(!fopen($url, "r")) {
+                    if($this->optionen['errormsg'] == 1) {
                         echo "Leider konnte zu UnivIS keine Verbindung aufgebaut werden.";
+                    }
 			// Univis Server ist nicht erreichbar
 			return -1;
 		} 
@@ -446,7 +532,9 @@ class UNIVIS {
                 $handle = fopen($url, "r");
                 $content = fread($handle, 100);
                 if( substr( $content, 0, 5) != '<?xml' ) {
-                    echo "Leider brachte Ihre Suche kein Ergebnis. Bitte überprüfen Sie die Suchparameter.";
+                    if($this->optionen['errormsg'] == 1) {
+                        echo "Leider brachte Ihre Suche kein Ergebnis. Bitte überprüfen Sie die Suchparameter.";
+                    }
                     // Univis Server ist nicht erreichbar
                     return -1;
                 } 
@@ -454,7 +542,9 @@ class UNIVIS {
 
                 $array = $this->xml2array($url);
                 if(empty($array)) {
-                    echo "Leider brachte Ihre Suche kein Ergebnis.";
+                    if($this->optionen['errormsg'] == 1) {                    
+                        echo "Leider brachte Ihre Suche kein Ergebnis.";
+                    }
                     return -1;
                 } else {
                     $veranstaltung = $array["Lecture"][0];                   
@@ -472,40 +562,48 @@ class UNIVIS {
 	/////		Hilfsmethoden
 	///////////////////////////////////////////////////////////////
 
-	// XML Parser
-	private function xml2array($fname){
-	  $sxi = new SimpleXmlIterator($fname, null, true);
-	  return $this->sxiToArray($sxi);
-	}
+        // XML Parser
+        public function xml2array($url) {
+            $sxi = new SimpleXmlIterator($url, null, true);
+            return $this->sxi2array($sxi);
+        }
 
-	private function sxiToArray($sxi){
-	  $a = array();
+        private function sxi2array($sxi) {
+            $a = array();
 
-	  for( $sxi->rewind(); $sxi->valid(); $sxi->next() ) {
-	    if(!array_key_exists($sxi->key(), $a)){
-	      $a[$sxi->key()] = array();
-	    }
-	    if($sxi->hasChildren()){
-	      $a[$sxi->key()][] = $this->sxiToArray($sxi->current());
-	    }
-	    else{
-	      $a[$sxi->key()] = strval($sxi->current());
+            for ($sxi->rewind(); $sxi->valid(); $sxi->next()) {
 
-	      //Fuege die UnivisRef Informationen ein.
-	      if($sxi->UnivISRef) {
-	      	$attributes = (array) $sxi->UnivISRef->attributes();
-			$a[$sxi->key()][] = $attributes["@attributes"];
-	      }
-	    }
+                if (!array_key_exists($sxi->key(), $a)) {
+                    $a[$sxi->key()] = array();
+                }
 
-		if($sxi->attributes()) {
-			$attributes = (array) $sxi->attributes();
-			$a["@attributes"] = $attributes["@attributes"];
-		}
+                if ($sxi->hasChildren()) {
+                    if (empty($a[$sxi->key()])) {
+                        $a[$sxi->key()] = array();
+                    }
+                    $a[$sxi->key()][] = $this->sxi2array($sxi->current());
+                } elseif (in_array($sxi->key(), array('orgunit', 'orgunit_en', 'location'))) {
+                    $a[$sxi->key()][] = strval($sxi->current());
+                } else {
+                    $a[$sxi->key()] = strval($sxi->current());
 
-	  }
-	  return $a;
-	}
+                    // Fuege die UnivisRef Informationen ein
+                    if ($sxi->UnivISRef) {
+                        if (empty($a[$sxi->key()])) {
+                            $a[$sxi->key()] = array();
+                        }
+                        $attributes = (array) $sxi->UnivISRef->attributes();
+                        $a[$sxi->key()][] = $attributes["@attributes"];
+                    }
+                }
+
+                if ($sxi->attributes()) {
+                    $attributes = (array) $sxi->attributes();
+                    $a["@attributes"] = $attributes["@attributes"];
+                }
+            }
+            return $a;
+        }
 
 	private function umlaute_ersetzen($text){
 		$such_array  = array ('ä', 'ö', 'ü', 'ß');
@@ -520,7 +618,7 @@ class UNIVIS {
 		$search_key = "UnivISRef";
 
 		foreach ($arr as &$child) {
-			if(@array_key_exists($search_key, $child)) {    
+			if(is_array($child) && array_key_exists($search_key, $child)) {    
                             if( array_key_exists( $child[$search_key][0]["key"], $refs ) )
 				$child = $refs[$child[$search_key][0]["key"]];             
 			}

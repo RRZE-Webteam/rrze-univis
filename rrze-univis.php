@@ -3,7 +3,7 @@
   Plugin Name: RRZE-UnivIS
   Plugin URI: https://github.com/RRZE-Webteam/rrze-univis
  * Description: Einbindung von Daten aus UnivIS für den Geschäftsverteilungsplan auf Basis des UnivIS-Plugins des Webbaukastens.
- * Version: 1.2.7
+ * Version: 1.3.2
  * Author: RRZE-Webteam
  * Author URI: http://blogs.fau.de/webworking/
  * License: GPLv2 or later
@@ -33,7 +33,7 @@ require_once('univis/class_controller.php');
 
 class RRZE_UnivIS {
 
-    const version = '1.2.6';
+    const version = '1.3.2';
     const option_name = '_rrze_univis';
     const version_option_name = '_rrze_univis_version';
     const textdomain = 'rrze-univis';
@@ -59,13 +59,16 @@ class RRZE_UnivIS {
         // Sprachdateien werden eingebunden.
         load_plugin_textdomain(self::textdomain, false, sprintf('%s/languages/', dirname(plugin_basename(__FILE__))));
 
-
+	self::update_version();
+        
         add_action('admin_init', array($this, 'admin_init'));
         add_action('admin_menu', array($this, 'add_options_page'));
         add_shortcode('univis', array($this, 'univis'));
 
 	add_action('admin_init', array($this, 'univis_shortcodes_rte_button'));
-
+        
+        add_action('init', array(__CLASS__, 'add_endpoint'));
+        add_action('template_redirect', array($this, 'endpoint_template_redirect'));
     }
     
     
@@ -85,7 +88,7 @@ class RRZE_UnivIS {
         $linktext = '<b><i>Univ</i>IS</b> - Informationssystem der FAU';
         $options = array(
             'univis_default_link' => $linktext,
-            'UnivISOrgNr' => ''            
+            'UnivISOrgNr' => '',
         );
         return $options;
     }
@@ -109,14 +112,19 @@ class RRZE_UnivIS {
 			'Sortiere_Jobs' => '1',
                         'Ignoriere_Jobs' => 'Sicherheitsbeauftragter|IT-Sicherheits-Beauftragter|Webmaster|Postmaster|IT-Betreuer|UnivIS-Beauftragte',
                         'Datenverzeichnis' => '',
-                        'id' => '',
+                        'id' => '',             // kann im Shortcode verwendet werden, sollte aber nicht
+                        'lv_id' => '',          // Lehrveranstaltungs-ID
                         'firstname' => '',
                         'lastname' => '',
-                        'dozentid' => '',
+                        'dozentid' => '',       // ist im Shortcode ein Synonym zu univisid
                         'dozentname' => '',
                         'type' => '',           // für Selektion nach Lehrveranstaltungstypen wie vorl
-                        'lv_import' => '1'      // importierte Lehrveranstaltungen werden mit angezeigt, ausblenden über Shortcode
-	);
+                        'lv_import' => '1',      // importierte Lehrveranstaltungen werden mit angezeigt, ausblenden über Shortcode
+                        'sem' => '',             // Semesterauswahl
+                        'univisid' => '',        // ist die Personen-ID, egal ob dozentid oder MA-ID
+                        'name' => '',            // Synonym zur Angabe von firstname und lastname
+                        'errormsg' => ''          // Anzeige von Fehlermeldungen bei Ausgabe
+                );
         return $defaults;
     }
 
@@ -124,9 +132,13 @@ class RRZE_UnivIS {
 
     public static function activate() {
         self::version_compare();
-        update_option(self::version_option_name, self::version);
+        self::flush_add_endpoint();
     }
 
+    public static function deactivate() {
+        flush_rewrite_rules();
+    }    
+    
     private static function version_compare() {
         $error = '';
 
@@ -145,10 +157,68 @@ class RRZE_UnivIS {
     }
 
     public static function update_version() {
-        if (get_option(self::version_option_name, null) != self::version)
+        if (version_compare(self::version, get_option(self::version_option_name, null), '>')) {
+            add_action('init', array(__CLASS__, 'flush_add_endpoint'));
             update_option(self::version_option_name, self::version);
+        }
+    }
+    
+    public static function flush_add_endpoint() {
+        self::add_rewrite_endpoint(true);
+    }
+    
+    public static function add_endpoint() {
+        self::add_rewrite_endpoint();
     }
 
+    public static function add_rewrite_endpoint($flush = false) {
+        add_rewrite_endpoint('univisid', EP_PAGES);
+        add_rewrite_endpoint('lv_id', EP_PAGES);
+        if ($flush) {
+            flush_rewrite_rules();
+        }
+    }
+    
+    public function endpoint_template_redirect() {
+        global $wp_query;
+        global $univis_data;
+        if ( isset($wp_query->query_vars['univisid']) ) {
+            $slug = $wp_query->query_vars['univisid'];
+            $key = 'univisid';
+            $task = 'mitarbeiter-einzeln';
+        } elseif ( isset($wp_query->query_vars['lv_id']) ) {
+            $slug = $wp_query->query_vars['lv_id'];
+            $key = 'lv_id';
+            $task = 'lehrveranstaltungen-einzeln';
+        } else {
+            return;
+        }
+
+        if( !empty($slug) ) {
+            $atts = array(
+                $key => $slug,
+            );
+
+            $controller = new univisController($task, NULL, $atts);
+            $univis_data = $controller->ladeHTML();
+        } else {
+            $univis_data = NULL;
+        }
+        
+        if ($template = locate_template('single-univis.php')) {
+                $this->load_template($template, $univis_data);
+            } else {
+                
+                $this->load_template(dirname(__FILE__) . '/univis/templates/single-univis.php', $univis_data);
+            }   
+
+    }
+    
+    private function load_template($template, $event = NULL) {
+        require_once($template);
+        exit();
+    }
+    
     public static function add_options_page() {
         self::$univis_option_page = add_options_page(__('<b><i>Univ</i>IS</b>', self::textdomain), __('<b><i>Univ</i>IS</b>', self::textdomain), 'manage_options', 'options-univis', array(__CLASS__, 'options_univis'));
         add_action('load-' . self::$univis_option_page, array(__CLASS__, 'univis_help_menu'));
@@ -231,7 +301,7 @@ class RRZE_UnivIS {
         $screen->set_help_sidebar($help_sidebar);
     }
 
-    public static function univis( $atts ) {
+    public static function univis( $atts ) {    
         $univis_url = self::$univis_url;
         $options = self::get_options();
         $defaults = self::get_defaults();
@@ -239,35 +309,84 @@ class RRZE_UnivIS {
         if( empty( $atts )) {
             $ausgabe = $univis_link;
         } else {
-        if( isset( $atts['number'] ) && ctype_digit( $atts['number'] ) ) {
-            $atts['UnivISOrgNr'] = wp_kses( $atts['number'], array() );
-        } else {
-            $atts['UnivISOrgNr'] = $options['UnivISOrgNr'];
-        }
-        if( isset( $atts['id'] ) && ctype_digit( $atts['id'] ) ) {
-            $atts['id'] = wp_kses( $atts['id'], array() );
-        }
-        if( isset( $atts['dozentid'] ) && ctype_digit( $atts['dozentid'] )) {
-            $atts['dozentid'] = wp_kses( $atts['dozentid'], array() );
-        }
-        if( isset( $atts['dozentname'] ) ) {
-            $atts['dozentname'] = wp_kses( str_replace(' ', '', $atts['dozentname']), array() );
-        }
+            if( isset( $atts['show'] )) { // über show können die Default-Werte (in Großbuchstaben) eingeblendet werden
+                $atts['show'] = wp_kses( str_replace(' ', '', $atts['show']), array() );
+                $optionen = explode(',', $atts['show']);
+                foreach($optionen as $key=>$value) {
+                    $atts[$value] = 1;
+                }
+            }
+            if( isset( $atts['hide'] )) { // über hide können die Default-Werte (in Großbuchstaben) ausgeblendet werden
+                $atts['hide'] = wp_kses( str_replace(' ', '', $atts['hide']), array() );
+                $optionen = explode(',', $atts['hide']);
+                foreach($optionen as $key=>$value) {
+                    $atts[$value] = 0;
+                }
+            }
+            if( isset( $atts['number'] ) && ctype_digit( $atts['number'] ) ) {
+                $atts['UnivISOrgNr'] = wp_kses( $atts['number'], array() );
+            } else {
+                $atts['UnivISOrgNr'] = $options['UnivISOrgNr'];
+            }
+            if( isset( $atts['id'] ) && ctype_digit( $atts['id'] ) ) {
+                $atts['id'] = wp_kses( $atts['id'], array() );
+            }
+            if( isset( $atts['dozentid'] ) && ctype_digit( $atts['dozentid'] )) {
+                $atts['dozentid'] = wp_kses( $atts['dozentid'], array() );
+            }
+            if( isset( $atts['univisid'] ) && ctype_digit( $atts['univisid'] )) {
+                $atts['univisid'] = wp_kses( $atts['univisid'], array() );
+            }
+            if( isset( $atts['dozentname'] ) ) {
+                $atts['dozentname'] = wp_kses( str_replace(' ', '', $atts['dozentname']), array() );
+            }
+            if( isset( $atts['name'] ) ) {
+                $atts['name'] = wp_kses( str_replace(' ', '', $atts['name']), array() );
+            }
+            if( isset( $atts['sem'] ) ) {
+                $sem = wp_kses( str_replace(' ', '', $atts['sem']), array() );
+                if( preg_match( '/[12]\d{3}[ws]/', $sem ) )     $atts['sem'] = $sem;
+            }
+            if( isset( $atts['id'] ) && isset ( $atts['task'] ) ) {
+                switch( $atts['task'] ) {
+                    case 'lehrveranstaltungen-einzeln':
+                        $atts['lv_id'] = $atts['id'];
+                        break;
+                    case 'mitarbeiter-einzeln':
+                        $atts['univisid'] = $atts['id'];
+                        break;
+                    case 'lehrveranstaltungen-alle':
+                        $atts['univisid'] = $atts['id'];
+                        break;
+                    default:
+                        break;
+                }
+            }
+            if( isset( $atts['task'] ) && $atts['task'] == 'lehrveranstaltungen-alle' ) {
+                if( isset($atts['dozentid']) ) {
+                    $atts['univisid'] = $atts['dozentid'];
+                }
+                if( isset($atts['dozentname']) ) {
+                    $atts['name'] = $atts['dozentname'];
+                }
+            }
+            if( isset( $atts['ignoriere_jobs'] ) ) { // Übergabe in Großbuchstaben
+                $atts['Ignoriere_Jobs'] = wp_kses( str_replace(' ', '', $atts['ignoriere_jobs']), array() );
+                $atts['Ignoriere_Jobs'] = wp_kses( str_replace(',', '|', $atts['Ignoriere_Jobs']), array() );
+            }
+            if( isset( $atts['orgunit'] )) {
+                $atts['OrgUnit'] = wp_kses( $atts['orgunit'] );
+            }
+            
         $shortcode_atts = shortcode_atts( $defaults, $atts );
+
         extract($shortcode_atts);
-        /*if( isset( $atts['task'] ) ) {
-            $task = $atts['task'];
-        } else {
-            $task = $defaults['task'];
-        }*/
-        // FETCH $_GET OR CRON ARGUMENTS TO AUTOMATE TASKS
-            /*if(isset($argv[1])) {
-                $args = (!empty($_GET)) ? $_GET:array('task'=>$argv[1]);
-            }*/
+
 
         switch( $task ) {
             case 'mitarbeiter-alle':
-            case 'mitarbeiter-orga':
+            case 'mitarbeiter-orga':    
+            case 'mitarbeiter-telefonbuch':
             case 'lehrveranstaltungen-alle':
                 // Selektion nach Lehrveranstaltungstypen über Shortcodeparameter (z.B. vorl)
                 if( $type ) {
@@ -285,16 +404,16 @@ class RRZE_UnivIS {
                 $ausgabe = $controller->ladeHTML();
                 break;
             case 'lehrveranstaltungen-einzeln':
-                if( !$id ) {
+                if( !$lv_id ) {
                     $ausgabe = '<p>' . __('Bitte geben Sie eine gültige Lehrveranstaltungs-ID an.', self::textdomain). '</p>';
                     break;
                 } 
                 $controller = new univisController($task, NULL, $shortcode_atts);
                 $ausgabe = $controller->ladeHTML();
                 break;
-            case 'mitarbeiter-einzeln':        
-                if( !$firstname && !$lastname ) {
-                    $ausgabe = '<p>' . __('Bitte geben Sie einen Vor- und Nachnamen an.', self::textdomain). '</p>';
+            case 'mitarbeiter-einzeln':      
+                if(  !($name || ($firstname && $lastname) || $univisid) ) {
+                    $ausgabe = '<p>' . __('Bitte geben Sie einen Vor- und Nachnamen oder eine UnivIS-ID an.', self::textdomain). '</p>';
                     break;
                 } 
                 $controller = new univisController($task, NULL, $shortcode_atts);

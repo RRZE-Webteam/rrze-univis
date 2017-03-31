@@ -1,104 +1,15 @@
-{{#person}}
-<div id="univis-personenseite">
-
-
-	<div class="vcard">
-    	<h2 class="fn">
-    		{{#title}}<span class="honorific-prefix"><acronym title="{{title-long}}">{{title}}</acronym></span>{{/title}} <span class="given-name">{{firstname}}</span> <span class="family-name">{{lastname}}</span> {{#atitle}}<span class="honorific-suffix"><acronym title="{{atitle}}">{{ atitle }}</acronym></span>{{/atitle}}
-        </h2>
-
-		<address>
-		    <p>
-			    <span class="org">
-			        <span class="organization-name">Zentrale Einrichtungen</span><br />
-			        {{#orgunits}}
-			        <span class="organization-unit">Abteilung {{orgunit}}</span><br />
-			        {{/orgunits}}
-			    </span>
-		    </p>
-
-		    {{#locations}}
-				{{#location}}
-				<h3>Anschrift</h3>
-			    <ul class="kontakt">
-			    	 <li class="adr">
-				    	{{#street}}
-				        <span class="street-address">{{street}}</span><br>
-				        {{/street}}
-				        {{#ort}}
-				        <span class="locality">{{ort}}</span>
-				        {{/ort}}
-				    </li>
-			    	{{#email}}
-	                <li>E-Mail: <a class="email" href="mailto:{{email}}">{{email}}</a></li>
-	                {{/email}}
-	                {{#tel}}
-	                <li>Telefon: <span class="tel">{{tel}}</span></li>
-	                {{/tel}}
-	                {{#fax}}
-	                <li>Fax: <span class="fax">{{fax}}</span></li>
-	                {{/fax}}
-	                {{#office}}
-	                <li>Raum: <span class="office">{{office}}</span></li>
-	                {{/office}}
-			    </ul>
-			    {{/location}}
-			{{/locations}}
-	    </address>
-	</div>
-
-	<div class="accordion" style="padding-top: 30px;">
-		<!-- Zusatzinformationen aus Dateiverzeichnis -->
-		{{#assets}}
-			{{#beschreibung}}
-				<h3 class="active">Information zur Person</h3>
-
-			<!-- Unformatierten Text einfügen -->
-				<pre>{{beschreibung}}</pre>
-
-			<!-- Formatiertes HTML einfügen -->
-			<!-- <div>{{{beschreibung}}}</div> -->
-
-			{{/beschreibung}}
-		{{/assets}}
-
-		<!-- Lehrveranstaltungen -->
-		{{#lehrveranstaltungen}}
-			<h3 class="active">Lehrveranstaltungen</h3>
-			<div>
-				<ul>
-					{{#lehrveranstaltungen}}
-						{{#veranstaltungen}}
-						<li>
-							<h3>{{title}}</h3>
-							<ul>
-								{{#data}}
-									<li><a href="http://univis.uni-erlangen.de/prg?search=lectures&id={{id}}&show=long">{{name}}</a></li>
-								{{/data}}
-							</ul>
-						</li>
-						{{/veranstaltungen}}
-					{{/lehrveranstaltungen}}
-				</ul>
-			</div>
-		{{/lehrveranstaltungen}}
-
-		{{#publikationen}}
-			<h3 class="active">Publikationen</h3>
-			<div>
-			{{#publikationen}}
-				{{#years}}
+{{#years}}
 
 	<h4>{{title}}</h4>
 	<ul>
 		{{#data}}
 			<li style="margin-bottom: 10px;">
-			<span>
+				<span>
 				{{#authors}}
 					{{#author}}
 						{{#pkey}}
 							{{#full-profile}}
-								<a href="http://univis.uni-erlangen.de/prg?search=persons&id={{ id }}&show=info">{{lastname}}, {{firstname}}</a>;
+								<a href="univisid/{{ id }}">{{lastname}}, {{firstname}}</a>;
 							{{/full-profile}}
 
 							{{^full-profile}}
@@ -199,16 +110,3 @@
 		{{/data}}
 	</ul>
 {{/years}}
-			{{/publikationen}}
-		</div>
-		{{/publikationen}}
-	</div> <!-- end: div.accordion -->
-
-	<script type="text/javascript">
-		$('.accordion').find('h3').click(function(){
-			$(this).next().slideToggle();
-			$(this).toggleClass("active off");
-		});
-</script>
-</div>
-{{/person}}

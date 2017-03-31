@@ -38,8 +38,15 @@ class univisRender {
 
 				case "mitarbeiter-orga":
 					return $this->_bearbeiteMitarbeiterOrga($daten);
-
+                                    
+                                // *** eingefügt von LAPMK 
+                                //lapmk 02.03.2017: neues Template "mitarbeiter_telefonbuch"
+				case "mitarbeiter-telefonbuch":
+					return $this->_bearbeiteMitarbeiterTelefonbuch($daten);
+                                // *** ENDE
+                                    
 				case "mitarbeiter-einzeln":
+                                case "mitarbeiter-content":
 					return $this->_bearbeiteMitarbeiterEinzeln($daten);
 
 				case "publikationen":
@@ -79,21 +86,26 @@ class univisRender {
 			$such_kategorie = "rang";
                         $jobs = $daten['Org'][0]['jobs'][0]['job'];
 		}
+
 		$gruppen = array();
 		$gruppen_dict = array();
                 $gruppen_personen = array();
                 $gruppen_text = array();
+
 		foreach ($personen as $person) {
                         //Text-Felder müssen auch angezeigt werden, deshalb rausgenommen
 			//if(empty($person["firstname"]))
 			//	continue;
-                        
-                                                
+                                           
 			if(empty($person[$such_kategorie])) {
 				continue;
 			}
                         if(isset($person["title"])) {
                             $person["title-long"] = $this->_str_replace_dict(univisDicts::$acronyms, $person["title"]);
+                        }
+                        
+                        if(isset($person["atitle"])) {
+                            $person["atitle-long"] = $this->_str_replace_dict(univisDicts::$acronyms, $person["atitle"]);
                         }
 			
                         if(isset($person["firstname"])&&isset($person["lastname"])) {
@@ -270,6 +282,16 @@ class univisRender {
                         if(isset($person["title"])) {
                             $person["title-long"] = $this->_str_replace_dict(univisDicts::$acronyms, $person["title"]);
                         }
+                        if(isset($person["atitle"])) {
+                            $person["atitle-long"] = $this->_str_replace_dict(univisDicts::$acronyms, $person["atitle"]);
+                        }
+                                                
+                        // **** EINGEFÜGT VON LAPMK
+                        //lapmk 03.03.2017: Sortierung mit ersetzten deutschen Umlauten
+                        $name = $person["lastname"]." ".$person["firstname"];
+			$person["namesort"] = strtolower($this->umlaute_ersetzen($name));
+                        // *** ENDE
+  
                         $name = $person["firstname"]."-".$person["lastname"];
 			$person["nameurl"] = strtolower($this->umlaute_ersetzen($name));
 			$person["nameurl"] = str_replace(" ", "-", $person["nameurl"]);
@@ -329,12 +351,79 @@ class univisRender {
 		return array("gruppen" => $gruppen, "optionen" => $this->optionen);
 	}
 
+        //lapmk 02.03.2017: neue Funktion zum neuen Template "mitarbeiter_telefonbuch"; Funktion basiert auf _bearbeiteMitarbeiterOrga($personen)
+	private function _bearbeiteMitarbeiterTelefonbuch($personen) {  
+		/////////	Daten Formatieren
+		////////////////
+		//	Array: ["ORGNAME"] => Array: PERSON-ARRAY
+		////////////////
+
+
+		$such_kategorie = "orgname";
+		$gruppen = array();
+		$gruppen_dict = array();
+
+		foreach ($personen as $person) {
+			//lapmk 06.03.2017: nur Personen mit visible=ja in UnivIS darstellen
+			if(empty($person["visible"]) || $person["visible"]!='ja')
+				continue;
+			
+			if(empty($person["firstname"]))
+				continue;
+
+			if(empty($person[$such_kategorie])) {
+				continue;
+			}
+                        if(isset($person["title"])) {
+                            $person["title-long"] = $this->_str_replace_dict(univisDicts::$acronyms, $person["title"]);
+                        }
+			
+			//lapmk 03.03.2017: Sortierung mit ersetzten deutschen Umlauten
+                        $name = $person["lastname"]." ".$person["firstname"];
+			$person["namesort"] = strtolower($this->umlaute_ersetzen($name));
+			
+                        $name = $person["firstname"]."-".$person["lastname"];
+			$person["nameurl"] = strtolower($this->umlaute_ersetzen($name));
+			$person["nameurl"] = str_replace(" ", "-", $person["nameurl"]);
+			
+			$gruppen_name = strtoupper(substr($person["lastname"],0,1));
+
+     			if(empty($gruppen_dict[$gruppen_name])) {
+				$gruppen_dict[$gruppen_name] = array();
+			}
+
+			array_push($gruppen_dict[$gruppen_name], $person);
+		}
+
+    		ksort($gruppen_dict);
+    
+		foreach ($gruppen_dict as $gruppen_name => $gruppen_personen) {
+      			$gruppen_personen = $this->record_sort($gruppen_personen, "namesort");  //lapmk 03.03.2017: verbesserte Sortierung mit deutschen Umlauten
+			$gruppen_obj = array(
+				"name" => $gruppen_name,
+				"personen" => $gruppen_personen
+			);
+
+			array_push($gruppen, $gruppen_obj);
+		}
+
+		// Zeige keine Sprungmarken falls nur eine OrgUnit vorhanden ist.
+		if(count($gruppen) <= 1) {
+			$this->optionen["zeige_sprungmarken"] = 0;  //lapmk 02.03.2017: shortcodes immer Kleinbuchstaben
+		}
+
+		return array("gruppen" => $gruppen, "optionen" => $this->optionen);
+	}        
+
 
 
 	private function _bearbeiteMitarbeiterEinzeln($person) {
 		if(!empty($person)) {
                     if(!empty($person["title"])) {
 			$person["title-long"] = $this->_str_replace_dict(univisDicts::$acronyms, $person["title"]);
+                    }
+                    if(isset($person["atitle"])) {
+                            $person["atitle-long"] = $this->_str_replace_dict(univisDicts::$acronyms, $person["atitle"]);
                     }
 			$name = $person["firstname"]."_".$person["lastname"];
 			$person["nameurl"] = strtolower($this->umlaute_ersetzen($name));
@@ -408,16 +497,18 @@ class univisRender {
 	private function _bearbeiteLehrveranstaltungenAlle($veranstaltungen) {
             
 		if($veranstaltungen === -1) {
-                    echo "Es konnten keine Lehrveranstaltungen gefunden werden.";
+                    if(!empty($person["title"])) {
+                        echo "Es konnten keine Lehrveranstaltungen gefunden werden.";
+                    }
                     return -1;
                 } else {
-
-        		$this->_rename_key("type", $veranstaltungen, univisDicts::$lecturetypen);
-              
                     for ($i=0; $i < count($veranstaltungen); $i++) {
         			// Einzelne Veranstaltung bearbeiten
                 		$veranstaltung_edit = $this->_bearbeiteLehrveranstaltungenEinzeln($veranstaltungen[$i]);
-                        	$veranstaltungen[$i] = $veranstaltung_edit["veranstaltung"];                         
+                        	$veranstaltungen[$i] = $veranstaltung_edit["veranstaltung"];   
+                                if (array_key_exists('type', $veranstaltungen[$i])) {
+                                    $veranstaltungen[$i]['type'] = univisDicts::$lecturetypen[$veranstaltungen[$i]['type']];        
+                                }
                     }
 
                     //Nach Jahren gruppieren
@@ -498,9 +589,8 @@ class univisRender {
 	}
 
 	private function _bearbeiteLehrveranstaltungenEinzeln($veranstaltung) {
-         
             $this->_rename_key("type", $veranstaltung, univisDicts::$lecturetypen);   
-            
+      
 		// Dozs
                 if( isset( $veranstaltung["dozs"] ) ) {
                     for ($i = 0; $i<count($veranstaltung["dozs"]); $i++) {
@@ -518,7 +608,7 @@ class univisRender {
 
 		//Begin: Angaben
 		$angaben = array();
-                
+
 		//Typ
 		if(isset($veranstaltung["type"])) {
 			$type = $this->_str_replace_dict(univisDicts::$lecturetypen_short, $veranstaltung["type"]);
@@ -608,6 +698,7 @@ class univisRender {
 
 					if(count($repeat)>1) {
 						$days_short = array(
+                                                        0 => "So",
 							1 => "Mo",
 							2 => "Di",
 							3 => "Mi",
@@ -618,6 +709,7 @@ class univisRender {
 						);
 
 						$days_long = array(
+                                                        0 => "Sonntag",
 							1 => "Montag",
 							2 => "Dienstag",
 							3 => "Mittwoch",
@@ -626,7 +718,16 @@ class univisRender {
 							6 => "Samstag",
 							7 => "Sonntag"
 						);
-						array_push($date, $days_short[$repeat[1]]);
+                                                if( strpos($repeat[1], ',') ) {
+                                                    $repeat_days = explode(',', $repeat[1]);
+                                                    foreach($repeat_days as $key => $value) {
+                                                        $repeat_days[$key] = $days_short[$value];
+                                                    }
+                                                    $formated = implode(', ', $repeat_days);
+                                                } else {
+                                                    $formated = $days_short[$repeat[1]];
+                                                }
+						array_push($date, $formated);
 
 					}
 				}
@@ -683,7 +784,7 @@ class univisRender {
 				if($key == $search_key) {
 					$value = $this->_str_replace_dict($dict, $value);
 				}
-			}
+			} 
                     }
 		}
             }
@@ -740,7 +841,8 @@ class univisRender {
 	        $hash[$record[$field]] = $record;
 	    }
 
-	    ($reverse)? krsort($hash) : ksort($hash);
+	    //($reverse)? krsort($hash) : ksort($hash);
+            ($reverse)? krsort($hash,SORT_NATURAL|SORT_FLAG_CASE) : ksort($hash,SORT_NATURAL|SORT_FLAG_CASE);	//lapmk 03.03.2017: Sortierung case-insensitive
 
 	    $records = array();
 
@@ -768,6 +870,7 @@ class univisRender {
 		return array_pop($args);
 	}
 
+        
 
 }
 

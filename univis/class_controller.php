@@ -2,9 +2,8 @@
 
 require_once("class_univis.php");
 require_once("class_render.php");
-require_once("class_cache.php");
-require_once("class_assets.php");
-require 'Mustache/Autoloader.php';
+//require_once("class_cache.php");
+//require_once("class_assets.php");
 
 class univisController {
 
@@ -33,13 +32,13 @@ class univisController {
 	}
 
 	function ladeHTML() {
-		$cache = new univisCache($this->optionen);
-		$datenAusCache = $cache->holeDaten();
-
-		if($datenAusCache != -1) {
-			// Daten wurden aus Cache geladen
-			return $datenAusCache;
-		}
+//		$cache = new univisCache($this->optionen);
+//		$datenAusCache = $cache->holeDaten();
+//
+//		if($datenAusCache != -1) {
+//			// Daten wurden aus Cache geladen
+//			return $datenAusCache;
+//		}
 
 		// Lade Daten von Univis
 		$univis = new UNIVIS($this->optionen);
@@ -52,8 +51,8 @@ class univisController {
 			$daten = $render->bearbeiteDaten($daten);
 
 			// Lade Zusatzinformationen
-			$assets = new univisAssets($this->optionen);
-			$daten["assets"] = $assets->holeDaten();
+//			$assets = new univisAssets($this->optionen);
+//			$daten["assets"] = $assets->holeDaten();
 
 			// Daten rendern
 			$html = $this->_renderTemplate($daten);
@@ -61,51 +60,90 @@ class univisController {
 			if($html != -1) {	//Rendern erfolgreich?
 
 				// Gerenderte Daten in Cache speichern
-				$cache->setzeDaten($html);
+				//$cache->setzeDaten($html);
 				return $html;
 			}else{
-				return "Template Fehler: Konnte Template Datei nicht finden.";
+                            // Fehleranzeige vorerst rausgenommen
+                            if(isset($this->optionen['errormsg'])) {
+				return "Template Fehler: Konnte Template Datei nicht finden.";  
+                                //return;
+                            }
 			}
 
 		}else{
 			// Lade Daten aus Cache (auch veraltete).
-			$datenAusCache = $cache->holeDaten(true);
-
-			if($datenAusCache != -1) {
-				return $datenAusCache;
-			}else{
+//			$datenAusCache = $cache->holeDaten(true);
+//
+//			if($datenAusCache != -1) {
+//				return $datenAusCache;
+//			}else{
+//			        // Fehleranzeige vorerst rausgenommen
 				// Konnte keine Daten laden. Alternativausgabe laden
-				if($this->optionen["task"] == "mitarbeiter-einzeln") {
-					// Lade Mitarbeiter Alle
-					echo "<div class=\"hinweis_wichtig\"><h4>Fehler: Konnte Person " . $this->optionen["firstname"] . " " . $this->optionen["lastname"] . " nicht finden.</h4><p>Bitte wählen Sie eine Person aus der Liste.</p></div><br class=\"clear\" />";
-					$this->optionen["task"] = "mitarbeiter-alle";
-					return $this->ladeHTML();
-				}
-				if ($this->optionen["task"] == "lehrveranstaltungen-einzeln") {
-					// Lade Lehrveranstaltungen Alle
-					echo "<div class=\"hinweis_wichtig\"><h4>Fehler: Konnte Lehrveranstaltung id=" . $this->optionen["id"] . " nicht finden.</h4>";
-                                        
-                                        if( !empty($this->optionen["UnivISOrgNr"])) {
-                                            echo "<p>Bitte wählen Sie eine Lehrveranstaltung aus der Liste.</p></div><br class=\"clear\" />";                                        
-                                            $this->optionen["task"] = "lehrveranstaltungen-alle";
-                                            return $this->ladeHTML();
-                                        }
-				}
-			}
+//				if($this->optionen["task"] == "mitarbeiter-einzeln") {
+//					// Lade Mitarbeiter Alle
+//					echo "<div class=\"hinweis_wichtig\"><h4>Fehler: Konnte Person " . $this->optionen["firstname"] . " " . $this->optionen["lastname"] . " nicht finden.</h4><p>Bitte wählen Sie eine Person aus der Liste.</p></div><br class=\"clear\" />";
+//					$this->optionen["task"] = "mitarbeiter-alle";
+//					return $this->ladeHTML();
+//				}
+//				if ($this->optionen["task"] == "lehrveranstaltungen-einzeln") {
+//					// Lade Lehrveranstaltungen Alle
+//					echo "<div class=\"hinweis_wichtig\"><h4>Fehler: Konnte Lehrveranstaltung id=" . $this->optionen["id"] . " nicht finden.</h4>";
+//                                        
+//                                        if( !empty($this->optionen["UnivISOrgNr"])) {
+//                                            echo "<p>Bitte wählen Sie eine Lehrveranstaltung aus der Liste.</p></div><br class=\"clear\" />";                                        
+//                                            $this->optionen["task"] = "lehrveranstaltungen-alle";
+//                                            return $this->ladeHTML();
+//                                        }
+//				}
+//			}
+                    return;
 		}
 	}
 
 	private function _renderTemplate($daten) {
-		Mustache_Autoloader::register();
+            
+                $daten = self::_sanitize_key($daten);
 
-		$m = new Mustache_Engine;
-		$template = $this->_get_template();
-
-		if($template == -1) return -1;
-
-		return  $m->render($template, $daten);
+                $filename = plugin_dir_path(__FILE__) . "templates/" . $this->optionen['task'].".php";
+                
+                if (is_file($filename)) {
+                    ob_start();
+                    include $filename;
+                    return str_replace("\n", " ", ob_get_clean());
+                }
+                
+                return -1;           
 	}
+        
+        private static function get_key($array, $key, $option) {
+            if( !is_array( $array)) {
+                return false;
+            }
+            foreach ($array as $k => $v) {
+                if($k == $key && is_array($v) && isset($v[$option])){
+                    return $v;
+                }
+                $data = self::get_key($v, $key, $option);
+                if($data != false){
+                    return $data;        
+                }
+            }
 
+            return false;
+        }
+        
+        private static function _sanitize_key($array) {
+            $data = array();
+            foreach ($array as $key => $value) {
+                if (is_array($value)) {
+                    $value = self::_sanitize_key($value);
+                }
+                
+                $key = preg_replace('/[^a-z0-9_]/', '_', strtolower($key));
+                $data[$key] = $value;
+            }
+            return $data;
+        }
 
 	private function _ladeConf($fpath, $args=NULL){
 		$options= array();
@@ -157,17 +195,5 @@ class univisController {
 
 	}
 
-	function _get_template() {
-		$filename = $this->optionen['task'].".shtml";
-                //geändert!
-                //$filename = "templates/".$filename;
-                $filename = plugins_url( "templates/".$filename, __FILE__);
-		$handle = fopen($filename, "r");
-                //geändert!
-                //$contents = fread($handle, filesize($filename));
-                $contents = stream_get_contents($handle);
-		fclose($handle);
-		return $contents;
-	}
 }
 
