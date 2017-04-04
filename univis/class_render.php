@@ -495,7 +495,7 @@ class univisRender {
 	}
 
 	private function _bearbeiteLehrveranstaltungenAlle($veranstaltungen) {
-            
+            //_rrze_debug_log($veranstaltungen);
 		if($veranstaltungen === -1) {
                     if(!empty($person["title"])) {
                         echo "Es konnten keine Lehrveranstaltungen gefunden werden.";
@@ -503,16 +503,29 @@ class univisRender {
                     return -1;
                 } else {
                     for ($i=0; $i < count($veranstaltungen); $i++) {
+                        if(array_key_exists('courses', $veranstaltungen[$i])) {
+                               $course = $veranstaltungen[$i]['courses'][0]['course'];
+                               foreach($course as $key=>$value) {
+                                   _rrze_debug($value);
+                               }
+                        //_rrze_debug_log($course);
+                               _rrze_debug("ich bin ein Kurs.");
+                               _rrze_debug($course['id']);
+                        }
+                            
         			// Einzelne Veranstaltung bearbeiten
                 		$veranstaltung_edit = $this->_bearbeiteLehrveranstaltungenEinzeln($veranstaltungen[$i]);
-                        	$veranstaltungen[$i] = $veranstaltung_edit["veranstaltung"];   
+                        	$veranstaltungen[$i] = $veranstaltung_edit["veranstaltung"];  
+                                                    
                                 if (array_key_exists('type', $veranstaltungen[$i])) {
                                     $veranstaltungen[$i]['type'] = univisDicts::$lecturetypen[$veranstaltungen[$i]['type']];        
                                 }
                     }
-
+                    //_rrze_debug($veranstaltungen['courses']);
                     //Nach Jahren gruppieren
                     $veranstaltungen = $this->_group_by("type", $veranstaltungen);
+                    //$course = $this->_group_by('course', $veranstaltungen);
+
                     return array( "veranstaltungen" => $veranstaltungen, "optionen" => $this->optionen);
                 }
                 
@@ -589,6 +602,19 @@ class univisRender {
 	}
 
 	private function _bearbeiteLehrveranstaltungenEinzeln($veranstaltung) {
+            if( isset ( $veranstaltung["courses"]  )) {
+                $coursedata = array();
+                foreach ( $veranstaltung["courses"][0]["course"] as $course ) {
+                    $veranstaltung_course = $this->_bearbeiteLehrveranstaltungenEinzeln($course);
+                    array_push($coursedata, $veranstaltung_course);
+
+                    //_rrze_debug($course["id"]);
+                    //_rrze_debug($veranstaltung['id']);
+                }
+                $veranstaltung["coursedata"] = $coursedata;
+                            _rrze_debug($veranstaltung["coursedata"]);
+            }
+
             $this->_rename_key("type", $veranstaltung, univisDicts::$lecturetypen);   
       
 		// Dozs
@@ -609,6 +635,13 @@ class univisRender {
 		//Begin: Angaben
 		$angaben = array();
 
+                // Kurse
+                if(isset($veranstaltung["coursename"])) {
+                    //_rrze_debug($veranstaltung["coursename"]);
+//			$type = $this->_str_replace_dict(univisDicts::$lecturetypen_short, $veranstaltung["type"]);
+//			array_push($angaben, $type);
+		}
+                
 		//Typ
 		if(isset($veranstaltung["type"])) {
 			$type = $this->_str_replace_dict(univisDicts::$lecturetypen_short, $veranstaltung["type"]);
