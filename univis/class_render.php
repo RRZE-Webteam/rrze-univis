@@ -504,15 +504,29 @@ class univisRender {
                 } else {
                     for ($i=0; $i < count($veranstaltungen); $i++) {
                         if(array_key_exists('courses', $veranstaltungen[$i])) {
+                            $coursedata = array();
                                $course = $veranstaltungen[$i]['courses'][0]['course'];
-                               foreach($course as $key=>$value) {
-                                   _rrze_debug($value);
+                               $coursedata['id'] = $veranstaltungen[$i]['id'];;
+                               $coursedata['name'] = $veranstaltungen[$i]['name'];
+                               $course_ids = array();
+                               foreach($course as $key) {
+
+
+                                   array_push($course_ids, $key['id']);
+                                   //_rrze_debug($course);
+                                   
+                                   //$course_edit = $this->_bearbeiteLehrveranstaltungenEinzeln($course[$key]);
+                                   //_rrze_debug($course_edit);
+                                   //$course[$key]['course_id'] = $course_id;
+                                   //_rrze_debug($value);
                                }
+                               $coursedata['course_ids'] = $course_ids;
                         //_rrze_debug_log($course);
-                               _rrze_debug("ich bin ein Kurs.");
-                               _rrze_debug($course['id']);
+                               //_rrze_debug("ich bin ein Kurs.");
+                               //_rrze_debug($course['id']);
+                               _rrze_debug($coursedata);
                         }
-                            
+                    //_rrze_debug($veranstaltungen[$i]);                            
         			// Einzelne Veranstaltung bearbeiten
                 		$veranstaltung_edit = $this->_bearbeiteLehrveranstaltungenEinzeln($veranstaltungen[$i]);
                         	$veranstaltungen[$i] = $veranstaltung_edit["veranstaltung"];  
@@ -521,6 +535,7 @@ class univisRender {
                                     $veranstaltungen[$i]['type'] = univisDicts::$lecturetypen[$veranstaltungen[$i]['type']];        
                                 }
                     }
+                    //_rrze_debug($veranstaltungen);
                     //_rrze_debug($veranstaltungen['courses']);
                     //Nach Jahren gruppieren
                     $veranstaltungen = $this->_group_by("type", $veranstaltungen);
@@ -602,19 +617,26 @@ class univisRender {
 	}
 
 	private function _bearbeiteLehrveranstaltungenEinzeln($veranstaltung) {
+            //_rrze_debug($veranstaltung['course_id']);
+            //_rrze_debug($veranstaltung['coursename']);
+            if(array_key_exists('course_id', $veranstaltung) ) {
+                _rrze_debug("ich bin ein Kurs");
+                //_rrze_debug($veranstaltung['course_id']);
+            }
             if( isset ( $veranstaltung["courses"]  )) {
                 $coursedata = array();
                 foreach ( $veranstaltung["courses"][0]["course"] as $course ) {
-                    $veranstaltung_course = $this->_bearbeiteLehrveranstaltungenEinzeln($course);
-                    array_push($coursedata, $veranstaltung_course);
-
+                    //$veranstaltung_course = $this->_bearbeiteLehrveranstaltungenEinzeln($course);
+                    //array_push($coursedata, $veranstaltung_course);
+                    //$course["is_course"] = 'ja';
+                    //_rrze_debug($course);
                     //_rrze_debug($course["id"]);
                     //_rrze_debug($veranstaltung['id']);
                 }
-                $veranstaltung["coursedata"] = $coursedata;
-                            _rrze_debug($veranstaltung["coursedata"]);
+                //$veranstaltung["coursedata"] = $coursedata;
+                            //_rrze_debug($veranstaltung);
             }
-
+            //_rrze_debug($veranstaltung);
             $this->_rename_key("type", $veranstaltung, univisDicts::$lecturetypen);   
       
 		// Dozs

@@ -1,10 +1,15 @@
 <?php if ($daten['veranstaltungen']) :
-    foreach ($daten['veranstaltungen'] as $veranstaltung) : ?>
+    foreach ($daten['veranstaltungen'] as $veranstaltung) : 
+
+?>
 	<h2><?php 
         echo $veranstaltung['title'];?></h2>
 	<ul>
         <?php if (!empty($veranstaltung['data'])) : 
             foreach ($veranstaltung['data'] as $data) : 
+            if ( isset ($data['course_id']) ) :
+                return;
+            else: 
             $url = get_permalink() . 'lv_id/' . $data['id'];
             if (!empty($daten['optionen']['sem'])) 
                 $url .= '&sem=' . $daten['optionen']['sem']; ?>
@@ -50,12 +55,14 @@
                     </ul>
 
             </li>
-            <?php endforeach;
+            <?php endif;
+            endforeach;
         endif; ?>
 
                 
 	</ul>
-    <?php endforeach;
+    <?php 
+    endforeach;
                 
 endif; ?>
 
