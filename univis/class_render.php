@@ -529,15 +529,19 @@ class univisRender {
                     //_rrze_debug($veranstaltungen[$i]);                            
         			// Einzelne Veranstaltung bearbeiten
                 		$veranstaltung_edit = $this->_bearbeiteLehrveranstaltungenEinzeln($veranstaltungen[$i]);
+                                //_rrze_debug_log($veranstaltung_edit);
+                                                    
                         	$veranstaltungen[$i] = $veranstaltung_edit["veranstaltung"];  
                                 //_rrze_debug($veranstaltungen[$i]['terms']);                    
                                 if (array_key_exists('type', $veranstaltungen[$i])) {
                                     $veranstaltungen[$i]['type'] = univisDicts::$lecturetypen[$veranstaltungen[$i]['type']];        
                                 }
+                                //if(isset ($veranstaltungen[$i]['course_terms'])) _rrze_debug($veranstaltungen[$i]['course_terms']);
                     }
-                    //_rrze_debug($veranstaltungen);
 
-                    //_rrze_debug($veranstaltungen['courses']);
+
+
+
                     //Nach Jahren gruppieren
                     $veranstaltungen = $this->_group_by("type", $veranstaltungen);
                     //$course = $this->_group_by('course', $veranstaltungen);
@@ -618,137 +622,127 @@ class univisRender {
 	}
 
 	private function _bearbeiteLehrveranstaltungenEinzeln($veranstaltung) {
+
+        if (array_key_exists('course_id', $veranstaltung)) {
+            //_rrze_debug("ich bin ein Kurs");
             //_rrze_debug($veranstaltung['course_id']);
-            //_rrze_debug($veranstaltung['coursename']);
-            if(array_key_exists('course_id', $veranstaltung) ) {
-                //_rrze_debug("ich bin ein Kurs");
-                //_rrze_debug($veranstaltung['course_id']);
-            }
-            if( isset ( $veranstaltung["courses"]  )) {
-                $course_terms = array();
-                foreach ( $veranstaltung["courses"][0]["course"] as $course ) {
-                    
-                    //Begin Zeit und Ort
-                if(isset($course["terms"])) {
+            return;
+        }
+        elseif (isset($veranstaltung["courses"])) {
+            $course_terms = array();
 
-                    for ($_terms=0; $_terms < count($course["terms"]); $_terms++) {
-			for ($_term=0; $_term < count($course["terms"][$_terms]["term"]); $_term++) {
-				$course_lecture = &$course["terms"][$_terms]["term"][$_term];
 
-				$date = array();
-                                if( isset( $course_lecture["repeat"] ) )
-                                   // _rrze_debug($lecture["repeat"]);
-                                    $repeat = explode(" ", $course_lecture["repeat"]);
-				if( isset( $repeat ) ) {
-					$dict = array(
-						"w1" => "",
-						"w2" => "Alle zwei Wochen",
-						"w3" => "Alle drei Wochen",
-						"w4" => "Alle vier Wochen",
-						"s1" => "Einzeltermin am",
-                                                "bd" => "Blockveranstaltung"
-					);
-                                        
-					if(array_key_exists($repeat[0], $dict))
-						array_push($date, $dict[$repeat[0]]);
+            foreach ($veranstaltung["courses"][0]["course"] as $course) {
+                $data["id"] = $course["id"];
+                //Begin Zeit und Ort
+                if (isset($course["terms"]) && isset($course["terms"][0]["term"])) {
+                    foreach ($course["terms"][0]["term"] as $_term) {
+                        $course_lecture = &$_term;
 
-					if($repeat[0] == "s1") {
-						$formated = date("d.m.Y", strtotime($course_lecture["startdate"]));
-						array_push($date, $formated);
-					}
-                                        
-                                        if($repeat[0] == "bd") {
-						$formated_start = date("d.m.Y", strtotime($course_lecture["startdate"]));
-                                                $formated_end = date("d.m.Y", strtotime($course_lecture["enddate"]));
-                                                $formated = $formated_start . "-" . $formated_end;
-						array_push($date, $formated);
-					}
+                        $date = array();
+                        if (isset($course_lecture["repeat"]))
+                            $repeat = explode(" ", $course_lecture["repeat"]);
+                        if (isset($repeat)) {
+                            $dict = array(
+                                "w1" => "",
+                                "w2" => "Alle zwei Wochen",
+                                "w3" => "Alle drei Wochen",
+                                "w4" => "Alle vier Wochen",
+                                "s1" => "Einzeltermin am",
+                                "bd" => "Blockveranstaltung"
+                            );
 
-					if(count($repeat)>1) {
-						$days_short = array(
-                                                        0 => "So",
-							1 => "Mo",
-							2 => "Di",
-							3 => "Mi",
-							4 => "Do",
-							5 => "Fr",
-							6 => "Sa",
-							7 => "So"
-						);
+                            if (array_key_exists($repeat[0], $dict))
+                                array_push($date, $dict[$repeat[0]]);
 
-						$days_long = array(
-                                                        0 => "Sonntag",
-							1 => "Montag",
-							2 => "Dienstag",
-							3 => "Mittwoch",
-							4 => "Donnerstag",
-							5 => "Freitag",
-							6 => "Samstag",
-							7 => "Sonntag"
-						);
-                                                if( strpos($repeat[1], ',') ) {
-                                                    $repeat_days = explode(',', $repeat[1]);
-                                                    foreach($repeat_days as $key => $value) {
-                                                        $repeat_days[$key] = $days_short[$value];
-                                                    }
-                                                    $formated = implode(', ', $repeat_days);
-                                                } else {
-                                                    $formated = $days_short[$repeat[1]];
-                                                }
-                                                
-						array_push($date, $formated);
-                                                //_rrze_debug($date);
+                            if ($repeat[0] == "s1") {
+                                $formated = date("d.m.Y", strtotime($course_lecture["startdate"]));
+                                array_push($date, $formated);
+                            }
 
-					}
-				}
-                                    
-                                    $course_terms[$i]["date"] = implode(" ", $date);
-                                    //_rrze_debug($lecture["date"]);
-                                    
-                                    if(isset($course_lecture["starttime"])) 
-                                        $course_terms[$i]["starttime"] = $course_lecture["starttime"];
-                                    
-                                   if(isset($course_lecture["endtime"])) 
-                                        $course_terms[$i]["endtime"] = $course_lecture["endtime"];
-                                
-                                if(isset($course_lecture["room"])) 
-                                    $course_terms[$i]["room_short"] = $course_lecture["room"][0]["short"];
-                               // _rrze_debug($lecture["exclude"]);
-				if(isset($course_lecture["exclude"])) {
-					$dates = explode(",", $course_lecture["exclude"]);
+                            if ($repeat[0] == "bd") {
+                                $formated_start = date("d.m.Y", strtotime($course_lecture["startdate"]));
+                                $formated_end = date("d.m.Y", strtotime($course_lecture["enddate"]));
+                                $formated = $formated_start . "-" . $formated_end;
+                                array_push($date, $formated);
+                            }
 
-					for ($i=0; $i < count($dates); $i++) {
-						if($dates[$i]=="vac")
-							unset($dates[$i]);
-						else
-							$dates[$i] = date("d.m.Y", strtotime($dates[$i]));
-					}
+                            if (count($repeat) > 1) {
+                                $data["sort"] = $repeat[1];
+                                $days_short = array(
+                                    0 => "So",
+                                    1 => "Mo",
+                                    2 => "Di",
+                                    3 => "Mi",
+                                    4 => "Do",
+                                    5 => "Fr",
+                                    6 => "Sa",
+                                    7 => "So"
+                                );
 
-					$course_terms[$i]["exclude"] = implode(", ", $dates);
-				}
+                                $days_long = array(
+                                    0 => "Sonntag",
+                                    1 => "Montag",
+                                    2 => "Dienstag",
+                                    3 => "Mittwoch",
+                                    4 => "Donnerstag",
+                                    5 => "Freitag",
+                                    6 => "Samstag",
+                                    7 => "Sonntag"
+                                );
+                                if (strpos($repeat[1], ',')) {
+                                    $repeat_days = explode(',', $repeat[1]);
+                                    foreach ($repeat_days as $key => $value) {
+                                        $repeat_days[$key] = $days_short[$value];
+                                    }
+                                    $formated = implode(', ', $repeat_days);
+                                } else {
+                                    $formated = $days_short[$repeat[1]];
+                                }
+
+                                array_push($date, $formated);
+                            }
+                        }
+                        $data["date"] = implode(" ", $date);
+
+
+                        if (isset($course_lecture["starttime"]))
+                            $data["starttime"] = $course_lecture["starttime"];
+
+                        if (isset($course_lecture["endtime"]))
+                            $data["endtime"] = $course_lecture["endtime"];
+
+                        if (isset($course_lecture["room"]))
+                            $data["room_short"] = $course_lecture["room"][0]["short"];
+
+                        if (isset($course_lecture["exclude"])) {
+                            $dates = explode(",", $course_lecture["exclude"]);
+
+                            for ($i = 0; $i < count($dates); $i++) {
+                                if ($dates[$i] == "vac")
+                                    unset($dates[$i]);
+                                else
+                                    $dates[$i] = date("d.m.Y", strtotime($dates[$i]));
+                            }
+
+                            $data["exclude"] = implode(", ", $dates);
+                        }
+                        if (isset($course_lecture["id"])) {
+                            $data["id"] = $course_lecture["id"];
                         }
 
-                        			_rrze_debug($course_terms);
                     }
-                    
+                    array_push($course_terms, $data);
+
                 }//end Zeit und Ort
-                    
-                    
-                    //_rrze_debug($course);
-                    
-                    
-                    //$veranstaltung_course = $this->_bearbeiteLehrveranstaltungenEinzeln($course);
-                    //array_push($coursedata, $veranstaltung_course);
-                    //$course["is_course"] = 'ja';
-                    //_rrze_debug($course);
-                    //_rrze_debug($course["id"]);
-                    //_rrze_debug($veranstaltung['id']);
-                }
-                //$veranstaltung["coursedata"] = $coursedata;
-                            //_rrze_debug($veranstaltung);
             }
-            //_rrze_debug($veranstaltung);
-            $this->_rename_key("type", $veranstaltung, univisDicts::$lecturetypen);   
+            $course_terms = $this->array_orderby($course_terms, 'sort', SORT_NUMERIC, 'starttime', SORT_NUMERIC);
+            $veranstaltung["course_terms"] = $course_terms;
+        }
+
+
+
+        $this->_rename_key("type", $veranstaltung, univisDicts::$lecturetypen);   
       
 		// Dozs
                 if( isset( $veranstaltung["dozs"] ) ) {
@@ -902,7 +896,7 @@ class univisRender {
                                 
                                 if(isset($lecture["room"])) 
                                     $lecture["room_short"] = $lecture["room"][0]["short"];
-                                //_rrze_debug($lecture["exclude"]);
+
 				if(isset($lecture["exclude"])) {
 					$dates = explode(",", $lecture["exclude"]);
 
@@ -916,8 +910,6 @@ class univisRender {
 					$lecture["exclude"] = implode(", ", $dates);
 				}
 			}
-                        ////
-                        _rrze_debug($lecture["exclude"]);
                     }
                 }//end Zeit und Ort
 
@@ -933,6 +925,8 @@ class univisRender {
 
 		if(isset($veranstaltung["ects_infos"])) $veranstaltung["ects_infos"] = ($veranstaltung["ects_name"] || $veranstaltung["ects_summary"] || $veranstaltung["ects_literature"]);
 		if(isset($veranstaltung["zusatzinfos"])) $veranstaltung["zusatzinfos"] = ($veranstaltung["keywords"] || $veranstaltung["turnout"] || $veranstaltung["url_description"]);
+                
+                //if(isset($veranstaltung["course_terms"])) _rrze_debug($veranstaltung["course_terms"]);
                 
 		return array( "veranstaltung" => $veranstaltung, "optionen" => $this->optionen);
 	}
