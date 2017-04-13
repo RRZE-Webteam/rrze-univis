@@ -524,7 +524,7 @@ class univisRender {
                         //_rrze_debug_log($course);
                                //_rrze_debug("ich bin ein Kurs.");
                                //_rrze_debug($course['id']);
-                               _rrze_debug($coursedata);
+                               //_rrze_debug($coursedata);
                         }
                     //_rrze_debug($veranstaltungen[$i]);                            
         			// Einzelne Veranstaltung bearbeiten
@@ -539,9 +539,11 @@ class univisRender {
                                 //if(isset ($veranstaltungen[$i]['course_terms'])) _rrze_debug($veranstaltungen[$i]['course_terms']);
                     }
 
+                    _rrze_debug($coursedata);
 
-
-
+                    foreach ($veranstaltungen as $key) {
+                        
+                    }
                     //Nach Jahren gruppieren
                     $veranstaltungen = $this->_group_by("type", $veranstaltungen);
                     //$course = $this->_group_by('course', $veranstaltungen);
@@ -635,75 +637,80 @@ class univisRender {
             foreach ($veranstaltung["courses"][0]["course"] as $course) {
                 $data["id"] = $course["id"];
                 //Begin Zeit und Ort
-                if (isset($course["terms"]) && isset($course["terms"][0]["term"])) {
-                    foreach ($course["terms"][0]["term"] as $_term) {
-                        $course_lecture = &$_term;
+                if (isset($course["terms"])) {
+                    foreach ($course["terms"] as $_terms) {
+                        if(isset($course["terms"][0]["term"])) {
+                            foreach ($_terms["term"] as $_term) {
+                                $course_lecture = &$_term;
 
-                        $date = array();
-                        if (isset($course_lecture["repeat"]))
-                            $repeat = explode(" ", $course_lecture["repeat"]);
-                        if (isset($repeat)) {
-                            $dict = array(
-                                "w1" => "",
-                                "w2" => "Alle zwei Wochen",
-                                "w3" => "Alle drei Wochen",
-                                "w4" => "Alle vier Wochen",
-                                "s1" => "Einzeltermin am",
-                                "bd" => "Blockveranstaltung"
-                            );
+                                $date = array();
+                                if (isset($course_lecture["repeat"]))
+                                    $repeat = explode(" ", $course_lecture["repeat"]);
+                                if (isset($repeat)) {
+                                    $dict = array(
+                                        "w1" => "",
+                                        "w2" => "Alle zwei Wochen",
+                                        "w3" => "Alle drei Wochen",
+                                        "w4" => "Alle vier Wochen",
+                                        "s1" => "Einzeltermin am",
+                                        "bd" => "Blockveranstaltung"
+                                    );
 
-                            if (array_key_exists($repeat[0], $dict))
-                                array_push($date, $dict[$repeat[0]]);
+                                    if (array_key_exists($repeat[0], $dict))
+                                        array_push($date, $dict[$repeat[0]]);
 
-                            if ($repeat[0] == "s1") {
-                                $formated = date("d.m.Y", strtotime($course_lecture["startdate"]));
-                                array_push($date, $formated);
-                            }
-
-                            if ($repeat[0] == "bd") {
-                                $formated_start = date("d.m.Y", strtotime($course_lecture["startdate"]));
-                                $formated_end = date("d.m.Y", strtotime($course_lecture["enddate"]));
-                                $formated = $formated_start . "-" . $formated_end;
-                                array_push($date, $formated);
-                            }
-
-                            if (count($repeat) > 1) {
-                                $data["sort"] = $repeat[1];
-                                $days_short = array(
-                                    0 => "So",
-                                    1 => "Mo",
-                                    2 => "Di",
-                                    3 => "Mi",
-                                    4 => "Do",
-                                    5 => "Fr",
-                                    6 => "Sa",
-                                    7 => "So"
-                                );
-
-                                $days_long = array(
-                                    0 => "Sonntag",
-                                    1 => "Montag",
-                                    2 => "Dienstag",
-                                    3 => "Mittwoch",
-                                    4 => "Donnerstag",
-                                    5 => "Freitag",
-                                    6 => "Samstag",
-                                    7 => "Sonntag"
-                                );
-                                if (strpos($repeat[1], ',')) {
-                                    $repeat_days = explode(',', $repeat[1]);
-                                    foreach ($repeat_days as $key => $value) {
-                                        $repeat_days[$key] = $days_short[$value];
+                                    if ($repeat[0] == "s1") {
+                                        $formated = date("d.m.Y", strtotime($course_lecture["startdate"]));
+                                        array_push($date, $formated);
                                     }
-                                    $formated = implode(', ', $repeat_days);
-                                } else {
-                                    $formated = $days_short[$repeat[1]];
-                                }
 
-                                array_push($date, $formated);
-                            }
-                        }
-                        $data["date"] = implode(" ", $date);
+                                    if ($repeat[0] == "bd") {
+                                        $formated_start = date("d.m.Y", strtotime($course_lecture["startdate"]));
+                                        $formated_end = date("d.m.Y", strtotime($course_lecture["enddate"]));
+                                        $formated = $formated_start . "-" . $formated_end;
+                                        array_push($date, $formated);
+                                    }
+
+                                    if (count($repeat) > 1) {
+                                        $data["sort"] = $repeat[1];
+                                        $days_short = array(
+                                            0 => "So",
+                                            1 => "Mo",
+                                            2 => "Di",
+                                            3 => "Mi",
+                                            4 => "Do",
+                                            5 => "Fr",
+                                            6 => "Sa",
+                                            7 => "So"
+                                        );
+
+                                        $days_long = array(
+                                            0 => "Sonntag",
+                                            1 => "Montag",
+                                            2 => "Dienstag",
+                                            3 => "Mittwoch",
+                                            4 => "Donnerstag",
+                                            5 => "Freitag",
+                                            6 => "Samstag",
+                                            7 => "Sonntag"
+                                        );
+                                        if (strpos($repeat[1], ',')) {
+                                            $repeat_days = explode(',', $repeat[1]);
+                                            foreach ($repeat_days as $key => $value) {
+                                                $repeat_days[$key] = $days_short[$value];
+                                            }
+                                            $formated = implode(', ', $repeat_days);
+                                        } else {
+                                            $formated = $days_short[$repeat[1]];
+                                        }
+
+                                        array_push($date, $formated);
+                                    }
+                                }
+                            
+                            $data["date"] = implode(" ", $date);
+                        
+                        
 
 
                         if (isset($course_lecture["starttime"]))
@@ -730,8 +737,17 @@ class univisRender {
                         if (isset($course_lecture["id"])) {
                             $data["id"] = $course_lecture["id"];
                         }
-
+                        // Kurse
+                        if(isset($course_lecture["coursename"])) {
+                            //_rrze_debug($veranstaltung["coursename"]);
+        //			$type = $this->_str_replace_dict(univisDicts::$lecturetypen_short, $veranstaltung["type"]);
+        //			array_push($angaben, $type);
+                             $data["coursename"] = $course_lecture["coursename"];
+                        }
+                            }
+                        }
                     }
+                    _rrze_debug($data);
                     array_push($course_terms, $data);
 
                 }//end Zeit und Ort
@@ -762,12 +778,7 @@ class univisRender {
 		//Begin: Angaben
 		$angaben = array();
 
-                // Kurse
-                if(isset($veranstaltung["coursename"])) {
-                    //_rrze_debug($veranstaltung["coursename"]);
-//			$type = $this->_str_replace_dict(univisDicts::$lecturetypen_short, $veranstaltung["type"]);
-//			array_push($angaben, $type);
-		}
+
                 
 		//Typ
 		if(isset($veranstaltung["type"])) {
