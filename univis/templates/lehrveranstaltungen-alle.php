@@ -1,18 +1,60 @@
 <?php if ($daten['veranstaltungen']) :
-    foreach ($daten['veranstaltungen'] as $veranstaltung) : ?>
+    foreach ($daten['veranstaltungen'] as $veranstaltung) : 
+
+?>
 	<h2><?php 
-        echo $veranstaltung['title'];?></h2>
+        echo $veranstaltung['title']; ?></h2>
 	<ul>
         <?php if (!empty($veranstaltung['data'])) : 
             foreach ($veranstaltung['data'] as $data) : 
+            if ( !isset ($data['parent_course_id']) ): 
             $url = get_permalink() . 'lv_id/' . $data['id'];
             if (!empty($daten['optionen']['sem'])) 
                 $url .= '&sem=' . $daten['optionen']['sem']; ?>
             <li>
-                <h3><a href="<?php echo $url;?>"><?php echo $data['name'];?></a></h3>
-                    <ul>
-                    <?php 
-                    if (array_key_exists('terms', $data) && array_key_exists('term', $data['terms'][0])) {
+                <h3><a href="<?php echo $url; ?>"><?php echo $data['name']; ?></a></h3>
+                <?php if (array_key_exists('comment', $data)) : ?>
+                    <p><?php echo $data['comment']; ?></p>
+                <?php endif; ?>
+                <ul>
+                    <?php
+                    if (array_key_exists('course_terms', $data)) :
+                        foreach ($data['course_terms'] as $course_terms):
+                            if (!empty($course_terms['date'])) :
+                                $t['date'] = $course_terms['date'];
+                            endif;
+                            if (!empty($course_terms['starttime'])) :
+                                $time['starttime'] = $course_terms['starttime'];
+                            endif;
+                            if (!empty($course_terms['endtime'])) :
+                                $time['endtime'] = $course_terms['endtime'];
+                            endif;
+                            if (!empty($time)) :
+                                $t['time'] = $time['starttime'] . '-' . $time['endtime'] . ' ' . __('Uhr', RRZE_UnivIS::textdomain);
+                            else:
+                                $t['time'] = __('Zeit n.V.', RRZE_UnivIS::textdomain);
+                            endif;
+                            if (!empty($course_terms['room_short'])) :
+                                if (!empty($t['time'])) :
+                                    $t['time'] .= ',';
+                                elseif (!empty($t['date'])) :
+                                    $t['date'] .= ',';
+                                endif;
+                                $t['room_short'] = $course_terms['room_short'];
+                            endif;
+                            if (!empty($course_terms['exclude'])) :
+                                $t['exclude'] = '(' . __('außer', RRZE_UnivIS::textdomain) . ' ' . $course_terms['exclude'] . ')';
+                            endif;
+                            // Kursname
+//                            if (!empty($course_terms['coursename'])) :
+//                                $t['coursename'] = '(' . __('Kurs', RRZE_UnivIS::textdomain) . ' ' . $course_terms['coursename'] . ')';
+//                            endif;
+                            $term_formatted = implode(' ', $t);
+                            ?>    
+                            <li><?php echo $term_formatted; ?></li>
+                        <?php
+                        endforeach;
+                    elseif (array_key_exists('terms', $data) && array_key_exists('term', $data['terms'][0])) :
                     //if (!empty(univisController::get_key($data, 'terms', 0)) && !empty(univisController::get_key($data['terms'], 'term', 0))) {
                     foreach ($data['terms'][0]['term'] as $term) :
                         if (!empty($term['date'])) :
@@ -44,18 +86,22 @@
                         ?>    
                         <li><?php echo $term_formatted; ?></li>
                     <?php  endforeach; 
-                    } else { ?>
+                    
+                    
+                    else : ?>
                             <li><?php _e('Zeit/Ort n.V.', RRZE_UnivIS::textdomain);?></li>
-                    <?php } ?>
+                    <?php endif; ?>
                     </ul>
 
             </li>
-            <?php endforeach;
+            <?php endif;
+            endforeach;
         endif; ?>
 
                 
 	</ul>
-    <?php endforeach;
+    <?php 
+    endforeach;
                 
 endif; ?>
 
