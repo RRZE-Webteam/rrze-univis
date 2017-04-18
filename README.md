@@ -4,6 +4,8 @@ rrze-univis
 WordPress Plugin
 ----------------
 
+Neuerungen sind in der changelog.txt dokumentiert        
+
 Neu in Version 1.2.6:    
 
 - Ausblenden importierter Lehrveranstaltungen möglich: [univis task="lehrveranstaltungen-alle" id="49680223" lv_import="0"] blendet alle importierten Lehrveranstaltungen aus, um doppelte Ausgaben zu vermeiden.     

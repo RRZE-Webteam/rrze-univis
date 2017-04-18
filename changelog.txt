@@ -1,6 +1,9 @@
 Versionsänderungen:
 ===================
-####Version 1.3.0:    
+####Version 1.3.3:    
+- Gruppierung von Kursterminen bei der Lehrveranstaltungsübersicht   
+
+####Version 1.3.2:    
 - Bugfix defekte Lehrveranstaltungstyp-Ausgabe    
 - Einzeldarstellung von Mitarbeitern und Lehrveranstaltungen werden innerhalb der Webseite dargestellt und verweisen nicht mehr auf UnivIS    
 - Anzeige von UnivIS-Publikationen nicht mehr möglich    

@@ -5,6 +5,7 @@
 
     <?php if (array_key_exists('dozs', $veranstaltung) && array_key_exists('doz', $veranstaltung['dozs'][0])) : ?>
         <h3><?php _e('Dozent/in', RRZE_UnivIS::textdomain);?></h3> 
+        <ul>
         <?php
         foreach ($veranstaltung['dozs'][0]['doz'] as $doz) :
             if (!empty($doz['title'])) :
@@ -19,11 +20,11 @@
             $fullname = implode(' ', $name);
             ?>
             <?php $url = get_permalink() . 'univisid/' . $doz['id']; ?>
-            <h6 itemprop="name" itemscope itemtype="http://schema.org/Person"><a href="<?php echo $url; ?>"><?php echo $fullname; ?></a></h6>
+            <li itemprop="name" itemscope itemtype="http://schema.org/Person"><a href="<?php echo $url; ?>"><?php echo $fullname; ?></a></li>
             <?php
-        endforeach;
-    endif;
-    ?>
+        endforeach; ?>
+        </ul>    
+    <?php endif; ?>
 
     <h3><?php _e('Angaben', RRZE_UnivIS::textdomain);?></h3>   
     
@@ -32,10 +33,47 @@
     <?php endif; ?>
 
     <h4><?php _e('Zeit und Ort', RRZE_UnivIS::textdomain);?>:</h4>        
+            <?php if(array_key_exists('comment', $veranstaltung)) : ?>
+            <p><?php echo $veranstaltung['comment']; ?></p>
+            <?php endif; ?>
     <ul>
-        <?php
-        if (array_key_exists('terms', $veranstaltung) && array_key_exists('term', $veranstaltung['terms'][0])) {
-            //if (!empty(univisController::get_key($veranstaltung, 'terms', 0)) && !empty(univisController::get_key($veranstaltung['terms'], 'term', 0))) {
+        <?php if(array_key_exists('course_terms', $veranstaltung)) :
+            foreach ($veranstaltung['course_terms'] as $course_terms):
+                if (!empty($course_terms['date'])) :
+                    $t['date'] = $course_terms['date'];
+                endif;
+                if (!empty($course_terms['starttime'])) :
+                    $time['starttime'] = $course_terms['starttime'];
+                endif;
+                if (!empty($course_terms['endtime'])) :
+                    $time['endtime'] = $course_terms['endtime'];
+                endif;
+                if (!empty($time)) :
+                    $t['time'] = $time['starttime'] . '-' . $time['endtime'] . ' ' . __('Uhr', RRZE_UnivIS::textdomain);
+                else:
+                    $t['time'] = __('Zeit n.V.', RRZE_UnivIS::textdomain);
+                endif;
+                if (!empty($course_terms['room_short'])) :
+                    if (!empty($t['time'])) :
+                        $t['time'] .= ',';
+                    elseif (!empty($t['date'])) :
+                        $t['date'] .= ',';
+                    endif;
+                    $t['room_short'] = $course_terms['room_short'];
+                endif;
+                if (!empty($course_terms['exclude'])) :
+                    $t['exclude'] = '(' . __('außer', RRZE_UnivIS::textdomain) . ' ' . $course_terms['exclude'] . ')';
+                endif;
+                // Kursname
+                if (!empty($course_terms['coursename'])) :
+                    $t['coursename'] = '(' . __('Kurs', RRZE_UnivIS::textdomain) . ' ' . $course_terms['coursename'] . ')';
+                endif;
+                $term_formatted = implode(' ', $t);
+                ?>    
+                <li><?php echo $term_formatted; ?></li>
+            <?php endforeach;
+        elseif (array_key_exists('terms', $veranstaltung) && array_key_exists('term', $veranstaltung['terms'][0])) :                  
+        //if (!empty(univisController::get_key($veranstaltung, 'terms', 0)) && !empty(univisController::get_key($veranstaltung['terms'], 'term', 0))) {
             foreach ($veranstaltung['terms'][0]['term'] as $term) :
                 if(!empty($term['date'])) :
                     $t['date'] = $term['date'];
@@ -65,34 +103,34 @@
                 $term_formatted = implode(' ', $t);?>
                 <li><?php echo $term_formatted; ?></li>
             <?php endforeach;
-        } else {
-            ?>
+        else : ?>
             <li><?php _e('Zeit/Ort n.V.', RRZE_UnivIS::textdomain); ?></li>
-    <?php } ?>
+        <?php endif; ?>
     </ul>
 
-        <?php if (array_key_exists('studs', $veranstaltung) && array_key_exists('stud', $veranstaltung['studs'][0])) : ?>
-        <h4><?php _e('Studienfächer / Studienrichtungen', RRZE_UnivIS::textdomain);?></h4>                 
-        <ul>  
-            <?php
-            foreach ($veranstaltung['studs'][0]['stud'] as $stud) :
-                if (!empty($stud['pflicht'])) :
-                    $s['pflicht'] = $stud['pflicht'];
-                endif;
-                if (!empty($stud['richt'])) :
-                    $s['richt'] = $stud['richt'];
-                endif;
-                if (!empty($stud['sem'])) :
-                    $s['sem'] = $stud['sem'];
-                endif;
-                if (!empty($stud['credits'])) :
-                    $s['credits'] = '(ECTS-Credits: ' . $stud['credits'] . ')';
-                endif;
-                $studinfo = implode(' ', $s);
-                ?>
-                <li><?php echo $studinfo; ?></li>
-        <?php endforeach; ?>
-        </ul>
+    
+    <?php if (array_key_exists('studs', $veranstaltung) && array_key_exists('stud', $veranstaltung['studs'][0])) : ?>
+    <h4><?php _e('Studienfächer / Studienrichtungen', RRZE_UnivIS::textdomain);?></h4>                 
+    <ul>  
+        <?php
+        foreach ($veranstaltung['studs'][0]['stud'] as $stud) :
+            if (!empty($stud['pflicht'])) :
+                $s['pflicht'] = $stud['pflicht'];
+            endif;
+            if (!empty($stud['richt'])) :
+                $s['richt'] = $stud['richt'];
+            endif;
+            if (!empty($stud['sem'])) :
+                $s['sem'] = $stud['sem'];
+            endif;
+            if (!empty($stud['credits'])) :
+                $s['credits'] = '(ECTS-Credits: ' . $stud['credits'] . ')';
+            endif;
+            $studinfo = implode(' ', $s);
+            ?>
+            <li><?php echo $studinfo; ?></li>
+    <?php endforeach; ?>
+    </ul>
     <?php endif; ?> 
 
 
