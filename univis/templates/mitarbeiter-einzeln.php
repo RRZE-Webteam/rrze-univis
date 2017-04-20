@@ -26,7 +26,12 @@
                         <li class="person-info-position"><span class="screen-reader-text"><?php _e('Tätigkeit', RRZE_UnivIS::textdomain);?>: </span><strong><span itemprop="jobTitle"><?php echo $person['work']; ?></span></strong></li>
                     <?php endif;?>
 
-                <?php if ( array_key_exists('orgunits', $person) && array_key_exists('orgunit', $person['orgunits'][0])) :
+                <?php 
+                _rrze_debug($this->optionen['lang']);
+                if($this->optionen['lang'] == '_en') {
+                    $orgunits = 'orgunit_ens';
+                }
+                if ( array_key_exists('orgunits', $person) && array_key_exists('orgunit', $person['orgunits'][0])) :
                     $person_orgunits = $person['orgunits'][0]['orgunit'];
                     $i = count($person_orgunits);
                     if(count($person_orgunits)>1) :

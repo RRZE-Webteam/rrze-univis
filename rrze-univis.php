@@ -3,7 +3,7 @@
   Plugin Name: RRZE-UnivIS
   Plugin URI: https://github.com/RRZE-Webteam/rrze-univis
  * Description: Einbindung von Daten aus UnivIS für den Geschäftsverteilungsplan auf Basis des UnivIS-Plugins des Webbaukastens.
- * Version: 1.3.3
+ * Version: 1.3.4
  * Author: RRZE-Webteam
  * Author URI: http://blogs.fau.de/webworking/
  * License: GPLv2 or later
@@ -33,7 +33,7 @@ require_once('univis/class_controller.php');
 
 class RRZE_UnivIS {
 
-    const version = '1.3.3';
+    const version = '1.3.4';
     const option_name = '_rrze_univis';
     const version_option_name = '_rrze_univis_version';
     const textdomain = 'rrze-univis';
@@ -43,6 +43,7 @@ class RRZE_UnivIS {
     protected static $instance = null;
     private static $univis_option_page = null;
     private static $univis_url = "http://univis.uni-erlangen.de";
+    private static $language;
 
    
     public static function instance() {
@@ -94,6 +95,19 @@ class RRZE_UnivIS {
     }
     
     private static function get_defaults() {
+//                 if( $value == 'orgname' ) {
+//                    $language = get_locale();
+//                    if( strpos( $language, 'en_' ) === 0 && array_key_exists( 'orgname_en', $person ) ) {
+//                        $value = 'orgname_en';
+//                    } else {
+//                        $value = 'orgname';                   
+//                    }
+        $language = get_locale();
+        if( strpos( $language, 'en_' ) === 0 ) {
+            self::$language = '_en';
+        } else {
+            self::$language = '';
+        }
         $defaults = array(
 			'UnivISOrgNr' => '0',
 			'task' => 'mitarbeiter-alle',
@@ -123,7 +137,9 @@ class RRZE_UnivIS {
                         'sem' => '',             // Semesterauswahl
                         'univisid' => '',        // ist die Personen-ID, egal ob dozentid oder MA-ID
                         'name' => '',            // Synonym zur Angabe von firstname und lastname
-                        'errormsg' => ''          // Anzeige von Fehlermeldungen bei Ausgabe
+                        'errormsg' => '',          // Anzeige von Fehlermeldungen bei Ausgabe
+                        'lv_type' => '1',        // Anzeige LV-Typ-Überschriften 
+                        'lang' => self::$language           // wichtig für die Ausgabe englischer Bezeichnungen von orgunit, orgunits, text, description
                 );
         return $defaults;
     }
@@ -305,6 +321,7 @@ class RRZE_UnivIS {
         $univis_url = self::$univis_url;
         $options = self::get_options();
         $defaults = self::get_defaults();
+        _rrze_debug($defaults);
         $univis_link = sprintf('<a href="%1$s">%2$s</a>', $univis_url, $options['univis_default_link']);
         if( empty( $atts )) {
             $ausgabe = $univis_link;
@@ -375,7 +392,10 @@ class RRZE_UnivIS {
                 $atts['Ignoriere_Jobs'] = wp_kses( str_replace(',', '|', $atts['Ignoriere_Jobs']), array() );
             }
             if( isset( $atts['orgunit'] )) {
-                $atts['OrgUnit'] = wp_kses( $atts['orgunit'] );
+                $atts['OrgUnit'] = wp_kses( $atts['orgunit'], array() );
+            }
+            if( isset( $atts['lv-typ'] ) ) {
+                 $atts['lv_type'] = wp_kses( $atts['lv-typ'], array() );
             }
             
         $shortcode_atts = shortcode_atts( $defaults, $atts );

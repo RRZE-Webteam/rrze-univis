@@ -1,5 +1,9 @@
 Versionsänderungen:
 ===================
+####Version 1.3.4:    
+- Ausblenden der Lehrveranstaltungstypen bei task="lehrveranstaltungen-alle" mit hide="lv_type"    
+- Englische Ausgabe abhängig von der Sprache der WP-Seite (wo möglich)    
+
 ####Version 1.3.3:    
 - Gruppierung von Kursterminen bei der Lehrveranstaltungsübersicht   
 

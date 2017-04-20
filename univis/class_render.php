@@ -708,7 +708,9 @@ class univisRender {
                     }
                 }//end Zeit und Ort
             }
-            $course_terms = $this->array_orderby($course_terms, 'sort', SORT_NUMERIC, 'starttime', SORT_NUMERIC);
+            if(isset($course_terms['sort'])) {
+                $course_terms = $this->array_orderby($course_terms, 'sort', SORT_NUMERIC, 'starttime', SORT_NUMERIC);
+            }
             $veranstaltung["course_terms"] = $course_terms;
         }
 

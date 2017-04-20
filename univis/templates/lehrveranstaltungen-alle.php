@@ -1,9 +1,10 @@
 <?php if ($daten['veranstaltungen']) :
     foreach ($daten['veranstaltungen'] as $veranstaltung) : 
-
-?>
-	<h2><?php 
-        echo $veranstaltung['title']; ?></h2>
+        if($this->optionen['lv_type'] == 1) : ?>
+	<h2>
+            <?php echo $veranstaltung['title']; ?>
+        </h2>
+        <?php endif; ?>
 	<ul>
         <?php if (!empty($veranstaltung['data'])) : 
             foreach ($veranstaltung['data'] as $data) : 
