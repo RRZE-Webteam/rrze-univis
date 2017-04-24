@@ -622,11 +622,11 @@ class univisRender {
                                 if (isset($repeat)) {
                                     $dict = array(
                                         "w1" => "",
-                                        "w2" => "Alle zwei Wochen",
-                                        "w3" => "Alle drei Wochen",
-                                        "w4" => "Alle vier Wochen",
-                                        "s1" => "Einzeltermin am",
-                                        "bd" => "Blockveranstaltung"
+                                        "w2" => __('Alle zwei Wochen', RRZE_UnivIS::textdomain),
+                                        "w3" => __('Alle drei Wochen', RRZE_UnivIS::textdomain),
+                                        "w4" => __('Alle vier Wochen', RRZE_UnivIS::textdomain),
+                                        "s1" => __('Einzeltermin am', RRZE_UnivIS::textdomain),
+                                        "bd" => __('Blockveranstaltung', RRZE_UnivIS::textdomain)
                                     );
 
                                     if (array_key_exists($repeat[0], $dict))
@@ -647,25 +647,25 @@ class univisRender {
                                     if (count($repeat) > 1) {
                                         $data["sort"] = $repeat[1];
                                         $days_short = array(
-                                            0 => "So",
-                                            1 => "Mo",
-                                            2 => "Di",
-                                            3 => "Mi",
-                                            4 => "Do",
-                                            5 => "Fr",
-                                            6 => "Sa",
-                                            7 => "So"
+                                            0 => __('So', RRZE_UnivIS::textdomain),
+                                            1 => __('Mo', RRZE_UnivIS::textdomain),
+                                            2 => __('Di', RRZE_UnivIS::textdomain),
+                                            3 => __('Mi', RRZE_UnivIS::textdomain),
+                                            4 => __('Do', RRZE_UnivIS::textdomain),
+                                            5 => __('Fr', RRZE_UnivIS::textdomain),
+                                            6 => __('Sa', RRZE_UnivIS::textdomain),
+                                            7 => __('So', RRZE_UnivIS::textdomain)
                                         );
 
                                         $days_long = array(
-                                            0 => "Sonntag",
-                                            1 => "Montag",
-                                            2 => "Dienstag",
-                                            3 => "Mittwoch",
-                                            4 => "Donnerstag",
-                                            5 => "Freitag",
-                                            6 => "Samstag",
-                                            7 => "Sonntag"
+                                            0 => __('Sonntag', RRZE_UnivIS::textdomain),
+                                            1 => __('Montag', RRZE_UnivIS::textdomain),
+                                            2 => __('Dienstag', RRZE_UnivIS::textdomain),
+                                            3 => __('Mittwoch', RRZE_UnivIS::textdomain),
+                                            4 => __('Donnerstag', RRZE_UnivIS::textdomain),
+                                            5 => __('Freitag', RRZE_UnivIS::textdomain),
+                                            6 => __('Samstag', RRZE_UnivIS::textdomain),
+                                            7 => __('Sonntag', RRZE_UnivIS::textdomain)
                                         );
                                         if (strpos($repeat[1], ',')) {
                                             $repeat_days = explode(',', $repeat[1]);
@@ -800,11 +800,11 @@ class univisRender {
                     if (isset($repeat)) {
                         $dict = array(
                             "w1" => "",
-                            "w2" => "Alle zwei Wochen",
-                            "w3" => "Alle drei Wochen",
-                            "w4" => "Alle vier Wochen",
-                            "s1" => "Einzeltermin am",
-                            "bd" => "Blockveranstaltung"
+                            "w2" => __('Alle zwei Wochen', RRZE_UnivIS::textdomain),
+                            "w3" => __('Alle drei Wochen', RRZE_UnivIS::textdomain),
+                            "w4" => __('Alle vier Wochen', RRZE_UnivIS::textdomain),
+                            "s1" => __('Einzeltermin am', RRZE_UnivIS::textdomain),
+                            "bd" => __('Blockveranstaltung', RRZE_UnivIS::textdomain)
                         );
 
                         if (array_key_exists($repeat[0], $dict))
@@ -824,25 +824,25 @@ class univisRender {
 
                         if (count($repeat) > 1) {
                             $days_short = array(
-                                0 => "So",
-                                1 => "Mo",
-                                2 => "Di",
-                                3 => "Mi",
-                                4 => "Do",
-                                5 => "Fr",
-                                6 => "Sa",
-                                7 => "So"
+                                0 => __('So', RRZE_UnivIS::textdomain),
+                                1 => __('Mo', RRZE_UnivIS::textdomain),
+                                2 => __('Di', RRZE_UnivIS::textdomain),
+                                3 => __('Mi', RRZE_UnivIS::textdomain),
+                                4 => __('Do', RRZE_UnivIS::textdomain),
+                                5 => __('Fr', RRZE_UnivIS::textdomain),
+                                6 => __('Sa', RRZE_UnivIS::textdomain),
+                                7 => __('So', RRZE_UnivIS::textdomain)
                             );
 
                             $days_long = array(
-                                0 => "Sonntag",
-                                1 => "Montag",
-                                2 => "Dienstag",
-                                3 => "Mittwoch",
-                                4 => "Donnerstag",
-                                5 => "Freitag",
-                                6 => "Samstag",
-                                7 => "Sonntag"
+                                0 => __('Sonntag', RRZE_UnivIS::textdomain),
+                                1 => __('Montag', RRZE_UnivIS::textdomain),
+                                2 => __('Dienstag', RRZE_UnivIS::textdomain),
+                                3 => __('Mittwoch', RRZE_UnivIS::textdomain),
+                                4 => __('Donnerstag', RRZE_UnivIS::textdomain),
+                                5 => __('Freitag', RRZE_UnivIS::textdomain),
+                                6 => __('Samstag', RRZE_UnivIS::textdomain),
+                                7 => __('Sonntag', RRZE_UnivIS::textdomain)
                             );
                             if (strpos($repeat[1], ',')) {
                                 $repeat_days = explode(',', $repeat[1]);

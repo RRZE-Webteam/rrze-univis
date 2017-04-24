@@ -28,24 +28,27 @@
 
                 <?php 
                 _rrze_debug($this->optionen['lang']);
-                if($this->optionen['lang'] == '_en') {
-                    $orgunits = 'orgunit_ens';
-                }
-                if ( array_key_exists('orgunits', $person) && array_key_exists('orgunit', $person['orgunits'][0])) :
-                    $person_orgunits = $person['orgunits'][0]['orgunit'];
+                    $orgunit = 'orgunit' . $this->optionen['lang'];
+                    $orgunits = $orgunit . 's';
+                    $orgname = 'orgname' . $this->optionen['lang'];
+                    _rrze_debug($orgunit);
+                    _rrze_debug($person[$orgunits]);
+                if ( array_key_exists($orgunits, $person) && array_key_exists($orgunit, $person[$orgunits][0])) :
+                    $person_orgunits = $person[$orgunits][0][$orgunit];
                     $i = count($person_orgunits);
                     if(count($person_orgunits)>1) :
                         $i = count($person_orgunits)-2;
                     endif;
                     $orgunit = $person_orgunits[$i];
+                    _rrze_debug($orgunit);
                         
                         ?>
                      <li class="person-info-institution"><span class="screen-reader-text"><?php _e('Organisation', RRZE_UnivIS::textdomain);?>: </span><span itemprop="worksFor"><?php echo $orgunit;?></span></li>                
                     <?php endif;?>
                         
                         
-                <?php if (!empty($person['orgname'])) : ?>
-                    <li class="person-info-abteilung"><span class="screen-reader-text"><?php _e('Abteilung', RRZE_UnivIS::textdomain);?>: </span><?php echo $person['orgname']; ?></li>
+                <?php if (!empty($person[$orgname])) : ?>
+                    <li class="person-info-abteilung"><span class="screen-reader-text"><?php _e('Abteilung', RRZE_UnivIS::textdomain);?>: </span><?php echo $person[$orgname]; ?></li>
                     <?php endif;?>  
                         
                     

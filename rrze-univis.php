@@ -397,6 +397,12 @@ class RRZE_UnivIS {
             if( isset( $atts['lv-typ'] ) ) {
                  $atts['lv_type'] = wp_kses( $atts['lv-typ'], array() );
             }
+            if( isset( $atts['lang'] ) && $atts['lang'] == 'en' ) {
+                $atts['lang'] = '_en';
+            } else {
+                $atts['lang'] = self::$language;
+            }
+             
             
         $shortcode_atts = shortcode_atts( $defaults, $atts );
 
