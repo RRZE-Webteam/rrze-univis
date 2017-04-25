@@ -28,6 +28,12 @@
 
                 <?php 
                 _rrze_debug($this->optionen['lang']);
+                if(isset($this->optionen['lang'])) {
+                    $language = $this->optionen['lang'];
+                } else {
+                    $language = RRZE_UnivIS::$language;
+                }
+                _rrze_debug(RRZE_UnivIS::$language);
                     $orgunit = 'orgunit' . $this->optionen['lang'];
                     $orgunits = $orgunit . 's';
                     $orgname = 'orgname' . $this->optionen['lang'];

@@ -810,12 +810,12 @@ class univisRender {
                         if (array_key_exists($repeat[0], $dict))
                             array_push($date, $dict[$repeat[0]]);
 
-                        if ($repeat[0] == "s1") {
+                        if ($repeat[0] == "s1" && isset($lecture["startdate"])) {
                             $formated = date("d.m.Y", strtotime($lecture["startdate"]));
                             array_push($date, $formated);
                         }
 
-                        if ($repeat[0] == "bd") {
+                        if ($repeat[0] == "bd" && (isset($lecture["startdate"]) || isset($lecture["enddate"]))) {
                             $formated_start = date("d.m.Y", strtotime($lecture["startdate"]));
                             $formated_end = date("d.m.Y", strtotime($lecture["enddate"]));
                             $formated = $formated_start . "-" . $formated_end;

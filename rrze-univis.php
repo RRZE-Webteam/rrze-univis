@@ -43,7 +43,7 @@ class RRZE_UnivIS {
     protected static $instance = null;
     private static $univis_option_page = null;
     private static $univis_url = "http://univis.uni-erlangen.de";
-    private static $language;
+    public static $language;
 
    
     public static function instance() {
