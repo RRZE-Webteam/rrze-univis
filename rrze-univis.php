@@ -93,7 +93,7 @@ class RRZE_UnivIS {
 			'OrgUnit' => '',
 			'Sortiere_Alphabet' => '0',
 			'Sortiere_Jobs' => '1',
-            'Ignoriere_Jobs' => '',
+            'Ignoriere_Jobs' => 'Sekretariat',
 'Ehemalige_Groupname' => '',//Personen in dieser Gruppe die noch andere Aufgaben haben werden nicht als ehemalig geführt
 'Leader_Jobs' => 'Leitung|Teamleitung|Vorzimmer',
 'Function_Jobs' => 'Gastwissenschaftler/-innen|Lehrbeauftragte|Sicherheitsbeauftragter (nach SGB VII)|IT-Sicherheits-Beauftragter|Webmaster|Postmaster|IT-Betreuer|UnivIS-Beauftragte|Ehemalige Mitarbeiter/-innen|Sekretariat|Projektkoordination|Externe Doktoranden/-innen',
