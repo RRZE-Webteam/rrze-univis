@@ -43,7 +43,16 @@ class RRZE_UnivIS {
     protected static $instance = null;
     private static $univis_option_page = null;
     private static $univis_url = "http://univis.uni-erlangen.de";
-    public static $language;
+    // hier müssen Felder ergänzt werden, wenn sie in der XML-Ausgabe auch in anderen Sprachen vorhanden sind
+    public static $language = array(
+        'suffix' => '', 
+        'orgunit' => 'orgunit', 
+        'orgunits' => 'orgunits', 
+        'orgname' => 'orgname', 
+        'description' => 'description', 
+        'text' => 'text',
+        'title' => 'title'
+    );
 
    
     public static function instance() {
@@ -102,11 +111,10 @@ class RRZE_UnivIS {
 //                    } else {
 //                        $value = 'orgname';                   
 //                    }
-        $language = get_locale();
-        if( strpos( $language, 'en_' ) === 0 ) {
-            self::$language = '_en';
-        } else {
-            self::$language = '';
+        $lang = get_locale();
+        _rrze_debug($lang);
+        if( strpos( $lang, 'en_' ) === 0 ) {
+            $language = self::set_language('_en');
         }
         $defaults = array(
 			'UnivISOrgNr' => '0',
@@ -139,12 +147,24 @@ class RRZE_UnivIS {
                         'name' => '',            // Synonym zur Angabe von firstname und lastname
                         'errormsg' => '',          // Anzeige von Fehlermeldungen bei Ausgabe
                         'lv_type' => '1',        // Anzeige LV-Typ-Überschriften 
-                        'lang' => self::$language           // wichtig für die Ausgabe englischer Bezeichnungen von orgunit, orgunits, text, description
+                        'lang' => $language           // wichtig für die Ausgabe englischer Bezeichnungen von orgunit, orgunits, text, description
                 );
         return $defaults;
     }
-
-
+    
+    // zum Anpassen der Variablen auf englisch bzw. evtl. andere Ausgaben später mal
+    private static function set_language($lang) {
+        $language = self::$language;
+        foreach( $language as $key => &$value ) {
+            if( $key == 'orgunits' ) {
+                $value = 'orgunit' . $lang . 's';
+            } else {
+                $value = $value . $lang;
+            }
+        }
+        return $language;
+        
+    }
 
     public static function activate() {
         self::version_compare();
@@ -321,7 +341,7 @@ class RRZE_UnivIS {
         $univis_url = self::$univis_url;
         $options = self::get_options();
         $defaults = self::get_defaults();
-        _rrze_debug($defaults);
+
         $univis_link = sprintf('<a href="%1$s">%2$s</a>', $univis_url, $options['univis_default_link']);
         if( empty( $atts )) {
             $ausgabe = $univis_link;
@@ -397,15 +417,20 @@ class RRZE_UnivIS {
             if( isset( $atts['lv-typ'] ) ) {
                  $atts['lv_type'] = wp_kses( $atts['lv-typ'], array() );
             }
-            if( isset( $atts['lang'] ) && $atts['lang'] == 'en' ) {
-                $atts['lang'] = '_en';
-            } else {
-                $atts['lang'] = self::$language;
+            if( isset( $atts['lang'] ) ) {
+                if ( $atts['lang'] == 'en' ) {
+                    $atts['lang'] = self::set_language('_en');
+                } elseif ( $atts['lang'] == 'de' ) {
+                    $atts['lang'] = self::set_language('');
+                } else {
+                    $atts['lang'] = $defaults['lang'];
+                }
             }
              
-            
+       
         $shortcode_atts = shortcode_atts( $defaults, $atts );
-
+        _rrze_debug($shortcode_atts);
+   
         extract($shortcode_atts);
 
 

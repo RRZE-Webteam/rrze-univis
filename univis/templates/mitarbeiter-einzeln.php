@@ -27,27 +27,22 @@
                     <?php endif;?>
 
                 <?php 
-                _rrze_debug($this->optionen['lang']);
+                _rrze_debug($daten['person']);
                 if(isset($this->optionen['lang'])) {
                     $language = $this->optionen['lang'];
                 } else {
                     $language = RRZE_UnivIS::$language;
                 }
-                _rrze_debug(RRZE_UnivIS::$language);
                     $orgunit = 'orgunit' . $this->optionen['lang'];
                     $orgunits = $orgunit . 's';
                     $orgname = 'orgname' . $this->optionen['lang'];
-                    _rrze_debug($orgunit);
-                    _rrze_debug($person[$orgunits]);
                 if ( array_key_exists($orgunits, $person) && array_key_exists($orgunit, $person[$orgunits][0])) :
                     $person_orgunits = $person[$orgunits][0][$orgunit];
                     $i = count($person_orgunits);
                     if(count($person_orgunits)>1) :
                         $i = count($person_orgunits)-2;
                     endif;
-                    $orgunit = $person_orgunits[$i];
-                    _rrze_debug($orgunit);
-                        
+                    $orgunit = $person_orgunits[$i];                       
                         ?>
                      <li class="person-info-institution"><span class="screen-reader-text"><?php _e('Organisation', RRZE_UnivIS::textdomain);?>: </span><span itemprop="worksFor"><?php echo $orgunit;?></span></li>                
                     <?php endif;?>
