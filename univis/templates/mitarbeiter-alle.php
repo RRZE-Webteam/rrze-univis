@@ -1,6 +1,6 @@
 <div id="univis-personenindex">
     <?php foreach ($daten['gruppen'] as $gruppe) : ?>
-    <h2><?php echo $gruppe['name'];?></h2>
+    <h4><?php echo $gruppe['name'];?></h4>
     <ul>
         <?php foreach ($gruppe['personen'] as $person) : ?>
             <li>                
