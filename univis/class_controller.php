@@ -103,6 +103,13 @@ class univisController {
 	private function _renderTemplate($daten) {
             
                 $daten = self::_sanitize_key($daten);
+                
+                // Sprachunterstützung
+                if(isset($daten['optionen']['lang'])) {
+                    extract($daten['optionen']['lang']);
+                } else {
+                    extract(RRZE_UnivIS::$language);
+                }                   
 
                 $filename = plugin_dir_path(__FILE__) . "templates/" . $this->optionen['task'].".php";
                 

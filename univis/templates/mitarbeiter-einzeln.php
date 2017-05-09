@@ -27,20 +27,15 @@
                     <?php endif;?>
 
                 <?php 
-                _rrze_debug($daten['person']);
-                if(isset($this->optionen['lang'])) {
-                    $language = $this->optionen['lang'];
-                } else {
-                    $language = RRZE_UnivIS::$language;
-                }
-                    $orgunit = 'orgunit' . $this->optionen['lang'];
-                    $orgunits = $orgunit . 's';
-                    $orgname = 'orgname' . $this->optionen['lang'];
-                if ( array_key_exists($orgunits, $person) && array_key_exists($orgunit, $person[$orgunits][0])) :
+                if (  $suffix != '' && array_key_exists($orgunits, $person) && array_key_exists($orgunit, $person[$orgunits][0])) :
                     $person_orgunits = $person[$orgunits][0][$orgunit];
+                elseif ( array_key_exists('orgunits', $person) && array_key_exists('orgunit', $person['orgunits'][0])) :
+                    $person_orgunits = $person['orgunits'][0]['orgunit'];
+                endif;    
+                if ( !empty( $person_orgunits ) ) :             
                     $i = count($person_orgunits);
                     if(count($person_orgunits)>1) :
-                        $i = count($person_orgunits)-2;
+                        $i = count($person_orgunits)-2;         
                     endif;
                     $orgunit = $person_orgunits[$i];                       
                         ?>
@@ -48,8 +43,13 @@
                     <?php endif;?>
                         
                         
-                <?php if (!empty($person[$orgname])) : ?>
-                    <li class="person-info-abteilung"><span class="screen-reader-text"><?php _e('Abteilung', RRZE_UnivIS::textdomain);?>: </span><?php echo $person[$orgname]; ?></li>
+                <?php if ( $suffix != '' && !empty( $person[$orgname] ) ) : 
+                    $orgname_out = $person[$orgname]; 
+                elseif ( !empty($person['orgname']) ) :
+                    $orgname_out = $person['orgname']; 
+                endif;
+                if ( !empty( $orgname_out ) ) : ?>
+                    <li class="person-info-abteilung"><span class="screen-reader-text"><?php _e('Abteilung', RRZE_UnivIS::textdomain);?>: </span><?php echo $orgname_out; ?></li>
                     <?php endif;?>  
                         
                     

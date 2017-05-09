@@ -436,7 +436,7 @@ class univisRender {
                 else
                     unset($person["lehrveranstaltungen"]);
             }
-
+            
             return array("person" => $person, "optionen" => $this->optionen);
         }
     }

@@ -104,17 +104,11 @@ class RRZE_UnivIS {
     }
     
     private static function get_defaults() {
-//                 if( $value == 'orgname' ) {
-//                    $language = get_locale();
-//                    if( strpos( $language, 'en_' ) === 0 && array_key_exists( 'orgname_en', $person ) ) {
-//                        $value = 'orgname_en';
-//                    } else {
-//                        $value = 'orgname';                   
-//                    }
         $lang = get_locale();
-        _rrze_debug($lang);
         if( strpos( $lang, 'en_' ) === 0 ) {
             $language = self::set_language('_en');
+        } else {
+            $language = self::set_language('');
         }
         $defaults = array(
 			'UnivISOrgNr' => '0',
@@ -152,7 +146,7 @@ class RRZE_UnivIS {
         return $defaults;
     }
     
-    // zum Anpassen der Variablen auf englisch bzw. evtl. andere Ausgaben später mal
+    // zum Anpassen der Variablen auf englisch bzw. evtl. andere Ausgaben später mal, Standard: $lang=''
     private static function set_language($lang) {
         $language = self::$language;
         foreach( $language as $key => &$value ) {
@@ -422,6 +416,8 @@ class RRZE_UnivIS {
                     $atts['lang'] = self::set_language('_en');
                 } elseif ( $atts['lang'] == 'de' ) {
                     $atts['lang'] = self::set_language('');
+                } elseif ( $atts['lang'] == 'test' ) {
+                    $atts['lang'] = self::set_language('_test');
                 } else {
                     $atts['lang'] = $defaults['lang'];
                 }
@@ -429,7 +425,6 @@ class RRZE_UnivIS {
              
        
         $shortcode_atts = shortcode_atts( $defaults, $atts );
-        _rrze_debug($shortcode_atts);
    
         extract($shortcode_atts);
 

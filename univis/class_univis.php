@@ -157,37 +157,52 @@ class UNIVIS {
                         
 			$personen_jobs = array();
                         $daten_text = array();
+                        
+                        // Sprachunterstützung
+                        $description = $this->optionen['lang']['description'];
+                        $suffix = $this->optionen['lang']['suffix'];
+                        $text = $this->optionen['lang']['text'];
+  
 			for ($i=0; $i < count($jobs); $i++) {
-
-				if(in_array($jobs[$i]["description"], $xjobs)) {
-					continue;
-				}
+                            if ( $suffix != '' && isset( $jobs[$i][$description] ) ) {
+                                $description_out = $jobs[$i][$description];
+                            } else {
+                                $description_out = $jobs[$i]['description'];
+                            }
+                            if ( $suffix != '' && isset( $jobs[$i][$text] ) ) {
+                                $text_out = $jobs[$i][$text];
+                            } elseif ( isset( $jobs[$i]['text'] ) ) {
+                                $text_out = $jobs[$i]['text'];
+                            }
+				if( in_array($description_out, $xjobs)) {
+					continue; 				
+                                }
                                 if (
-					(!in_array($jobs[$i]["description"], $jobs_vergeben))
+					(!in_array($description_out, $jobs_vergeben))
 					AND
                                         ((isset($jobs[$i]["pers"])
                                         AND
 					(count($jobs[$i]["pers"][0]["per"]) > 0))
                                         OR
-                                        (isset($jobs[$i]['text'])))
+                                        (isset($text_out)))
 				)
 				{
-					$jobs_vergeben[] = $jobs[$i]["description"];
+					$jobs_vergeben[] = $description_out;
 				}
               
                                 if(isset($jobs[$i]["pers"])) {
                                     for ($j=0; $j < count($jobs[$i]["pers"][0]["per"]); $j++) {
 					if(isset($personen_jobs[$jobs[$i]["pers"][0]["per"][$j]["UnivISRef"][0]["key"]])) {
-						$personen_jobs[$jobs[$i]["pers"][0]["per"][$j]["UnivISRef"][0]["key"]] .= "|".$jobs[$i]["description"];
+						$personen_jobs[$jobs[$i]["pers"][0]["per"][$j]["UnivISRef"][0]["key"]] .= "|".$description_out;
 					}else{
-						$personen_jobs[$jobs[$i]["pers"][0]["per"][$j]["UnivISRef"][0]["key"]] = $jobs[$i]["description"];
+						$personen_jobs[$jobs[$i]["pers"][0]["per"][$j]["UnivISRef"][0]["key"]] = $description_out;
 					}
                                     }
 				}
-                                if(isset($jobs[$i]["text"])) {
+                                if(isset($text_out)) {
                                     $k = count($daten_text);
-                                    $daten_text[$k]["text"] = $jobs[$i]["text"];
-                                    $daten_text[$k]["rang"] = $jobs[$i]["description"];
+                                    $daten_text[$k]["text"] = $text_out;
+                                    $daten_text[$k]["rang"] = $description_out;
                                   
                                 }
 			}
