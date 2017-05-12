@@ -8,6 +8,7 @@
 	<ul>
         <?php if (!empty($veranstaltung['data'])) : 
             foreach ($veranstaltung['data'] as $data) : 
+                _rrze_debug($data['leclanguage']);
             if ( !isset ($data['parent_course_id']) ): 
             $url = get_permalink() . 'lv_id/' . $data['id'];
             if (!empty($daten['optionen']['sem'])) 
