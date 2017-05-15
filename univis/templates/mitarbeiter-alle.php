@@ -23,9 +23,10 @@
                     <?php endif; ?>
                     </span>
                     <?php $location = $person['locations'][0]['location'][0];  ?>
-                                <?php if (!empty($location['tel'])) : ?>
+                                <?php if (!empty($location['tel'])) : 
+                                    $phone_number = self::correct_phone_number($location['tel']); ?>
                                 <span class="person-info-phone">
-                                    <span itemprop="telephone">, Tel. <?php echo $location['tel']; ?></span>
+                                    <span itemprop="telephone">, Tel. <?php echo $phone_number; ?></span>
                                 </span>
                                 <?php endif; 
                 endif;

@@ -55,8 +55,9 @@
                     
                  <?php if ( array_key_exists('locations', $person) && array_key_exists('location', $person['locations'][0])) : 
                     $location = $person['locations'][0]['location'][0]; ?>
-                    <?php if(!empty($location['tel'])) : ?>
-                        <li class="person-info-phone"><span class="screen-reader-text"><?php _e('Telefonnummer', RRZE_UnivIS::textdomain);?>: </span><span itemprop="telephone"><?php echo $location['tel'];?></span></li>   
+                    <?php if(!empty($location['tel'])) : 
+                        $phone_number = self::correct_phone_number($location['tel']); ?>
+                        <li class="person-info-phone"><span class="screen-reader-text"><?php _e('Telefonnummer', RRZE_UnivIS::textdomain);?>: </span><span itemprop="telephone"><?php echo $phone_number;?></span></li>   
                     <?php endif;?>
                     <?php if(!empty($location['fax'])) : ?>
                         <li class="person-info-fax"><span class="screen-reader-text"><?php _e('Faxnummer', RRZE_UnivIS::textdomain);?>: </span><span itemprop="faxNumber"><?php echo $location['fax'];?></span></li>  
