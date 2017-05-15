@@ -36,11 +36,8 @@ class univisRender {
                 case "mitarbeiter-orga":
                     return $this->_bearbeiteMitarbeiterOrga($daten);
 
-                // *** eingefügt von LAPMK 
-                //lapmk 02.03.2017: neues Template "mitarbeiter_telefonbuch"
                 case "mitarbeiter-telefonbuch":
                     return $this->_bearbeiteMitarbeiterTelefonbuch($daten);
-                // *** ENDE
 
                 case "mitarbeiter-einzeln":
                 case "mitarbeiter-content":
@@ -276,11 +273,8 @@ class univisRender {
                 $person["atitle-long"] = $this->_str_replace_dict(univisDicts::$acronyms, $person["atitle"]);
             }
 
-            // **** EINGEFÜGT VON LAPMK
-            //lapmk 03.03.2017: Sortierung mit ersetzten deutschen Umlauten
             $name = $person["lastname"] . " " . $person["firstname"];
             $person["namesort"] = strtolower($this->umlaute_ersetzen($name));
-            // *** ENDE
 
             $name = $person["firstname"] . "-" . $person["lastname"];
             $person["nameurl"] = strtolower($this->umlaute_ersetzen($name));
@@ -340,7 +334,6 @@ class univisRender {
         return array("gruppen" => $gruppen, "optionen" => $this->optionen);
     }
 
-    //lapmk 02.03.2017: neue Funktion zum neuen Template "mitarbeiter_telefonbuch"; Funktion basiert auf _bearbeiteMitarbeiterOrga($personen)
     private function _bearbeiteMitarbeiterTelefonbuch($personen) {
         /////////	Daten Formatieren
         ////////////////
@@ -353,7 +346,6 @@ class univisRender {
         $gruppen_dict = array();
 
         foreach ($personen as $person) {
-            //lapmk 06.03.2017: nur Personen mit visible=ja in UnivIS darstellen
             if (empty($person["visible"]) || $person["visible"] != 'ja')
                 continue;
 
@@ -367,7 +359,6 @@ class univisRender {
                 $person["title-long"] = $this->_str_replace_dict(univisDicts::$acronyms, $person["title"]);
             }
 
-            //lapmk 03.03.2017: Sortierung mit ersetzten deutschen Umlauten
             $name = $person["lastname"] . " " . $person["firstname"];
             $person["namesort"] = strtolower($this->umlaute_ersetzen($name));
 
@@ -387,7 +378,7 @@ class univisRender {
         ksort($gruppen_dict);
 
         foreach ($gruppen_dict as $gruppen_name => $gruppen_personen) {
-            $gruppen_personen = $this->record_sort($gruppen_personen, "namesort");  //lapmk 03.03.2017: verbesserte Sortierung mit deutschen Umlauten
+            $gruppen_personen = $this->record_sort($gruppen_personen, "namesort");  
             $gruppen_obj = array(
                 "name" => $gruppen_name,
                 "personen" => $gruppen_personen
@@ -398,7 +389,7 @@ class univisRender {
 
         // Zeige keine Sprungmarken falls nur eine OrgUnit vorhanden ist.
         if (count($gruppen) <= 1) {
-            $this->optionen["zeige_sprungmarken"] = 0;  //lapmk 02.03.2017: shortcodes immer Kleinbuchstaben
+            $this->optionen["zeige_sprungmarken"] = 0;  
         }
 
         return array("gruppen" => $gruppen, "optionen" => $this->optionen);
@@ -969,7 +960,7 @@ class univisRender {
         }
 
         //($reverse)? krsort($hash) : ksort($hash);
-        ($reverse) ? krsort($hash, SORT_NATURAL | SORT_FLAG_CASE) : ksort($hash, SORT_NATURAL | SORT_FLAG_CASE); //lapmk 03.03.2017: Sortierung case-insensitive
+        ($reverse) ? krsort($hash, SORT_NATURAL | SORT_FLAG_CASE) : ksort($hash, SORT_NATURAL | SORT_FLAG_CASE); 
 
         $records = array();
 
@@ -995,7 +986,7 @@ class univisRender {
         call_user_func_array('array_multisort', $args);
         return array_pop($args);
     }
-
+   
 }
 
 ?>
