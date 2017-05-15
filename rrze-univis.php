@@ -3,7 +3,7 @@
   Plugin Name: RRZE-UnivIS
   Plugin URI: https://github.com/RRZE-Webteam/rrze-univis
  * Description: Einbindung von Daten aus UnivIS für den Geschäftsverteilungsplan auf Basis des UnivIS-Plugins des Webbaukastens.
- * Version: 1.3.4
+ * Version: 1.4.0
  * Author: RRZE-Webteam
  * Author URI: http://blogs.fau.de/webworking/
  * License: GPLv2 or later
@@ -33,7 +33,7 @@ require_once('univis/class_controller.php');
 
 class RRZE_UnivIS {
 
-    const version = '1.3.4';
+    const version = '1.4.0';
     const option_name = '_rrze_univis';
     const version_option_name = '_rrze_univis_version';
     const textdomain = 'rrze-univis';
@@ -141,7 +141,8 @@ class RRZE_UnivIS {
                         'name' => '',            // Synonym zur Angabe von firstname und lastname
                         'errormsg' => '',          // Anzeige von Fehlermeldungen bei Ausgabe
                         'lv_type' => '1',        // Anzeige LV-Typ-Überschriften 
-                        'lang' => $language           // wichtig für die Ausgabe englischer Bezeichnungen von orgunit, orgunits, text, description
+                        'lang' => $language,           // wichtig für die Ausgabe englischer Bezeichnungen von orgunit, orgunits, text, description
+                        'leclanguage' => ''         // Veranstaltungssprache
                 );
         return $defaults;
     }
@@ -202,8 +203,8 @@ class RRZE_UnivIS {
     }
 
     public static function add_rewrite_endpoint($flush = false) {
-        add_rewrite_endpoint('univisid', EP_PAGES);
-        add_rewrite_endpoint('lv_id', EP_PAGES);
+        add_rewrite_endpoint('univisid', EP_PERMALINK | EP_PAGES);
+        add_rewrite_endpoint('lv_id', EP_PERMALINK | EP_PAGES);
         if ($flush) {
             flush_rewrite_rules();
         }
@@ -378,6 +379,12 @@ class RRZE_UnivIS {
                 $sem = wp_kses( str_replace(' ', '', $atts['sem']), array() );
                 if( preg_match( '/[12]\d{3}[ws]/', $sem ) )     $atts['sem'] = $sem;
             }
+            if( isset( $atts['sprache'] ) ) {
+                $sprache = wp_kses( str_replace( ' ', '', $atts['sprache'] ), array() );
+                if( strpbrk( $sprache, 'DE' ) != FALSE && str_word_count( $sprache ) == 1 ) {
+                    $atts['leclanguage'] = $sprache;
+                }
+            }
             if( isset( $atts['id'] ) && isset ( $atts['task'] ) ) {
                 switch( $atts['task'] ) {
                     case 'lehrveranstaltungen-einzeln':
@@ -416,8 +423,9 @@ class RRZE_UnivIS {
                     $atts['lang'] = self::set_language('_en');
                 } elseif ( $atts['lang'] == 'de' ) {
                     $atts['lang'] = self::set_language('');
-                } elseif ( $atts['lang'] == 'test' ) {
-                    $atts['lang'] = self::set_language('_test');
+                // NUR FÜR _rrze_debug
+//                } elseif ( $atts['lang'] == 'test' ) {
+//                    $atts['lang'] = self::set_language('_test');
                 } else {
                     $atts['lang'] = $defaults['lang'];
                 }
@@ -427,7 +435,6 @@ class RRZE_UnivIS {
         $shortcode_atts = shortcode_atts( $defaults, $atts );
    
         extract($shortcode_atts);
-
 
         switch( $task ) {
             case 'mitarbeiter-alle':
