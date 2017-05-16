@@ -26,28 +26,38 @@
                         <li class="person-info-position"><span class="screen-reader-text"><?php _e('Tätigkeit', RRZE_UnivIS::textdomain);?>: </span><strong><span itemprop="jobTitle"><?php echo $person['work']; ?></span></strong></li>
                     <?php endif;?>
 
-                <?php if ( array_key_exists('orgunits', $person) && array_key_exists('orgunit', $person['orgunits'][0])) :
+                <?php 
+                if (  $suffix != '' && array_key_exists($orgunits, $person) && array_key_exists($orgunit, $person[$orgunits][0])) :
+                    $person_orgunits = $person[$orgunits][0][$orgunit];
+                elseif ( array_key_exists('orgunits', $person) && array_key_exists('orgunit', $person['orgunits'][0])) :
                     $person_orgunits = $person['orgunits'][0]['orgunit'];
+                endif;    
+                if ( !empty( $person_orgunits ) ) :             
                     $i = count($person_orgunits);
                     if(count($person_orgunits)>1) :
-                        $i = count($person_orgunits)-2;
+                        $i = count($person_orgunits)-2;         
                     endif;
-                    $orgunit = $person_orgunits[$i];
-                        
+                    $orgunit = $person_orgunits[$i];                       
                         ?>
                      <li class="person-info-institution"><span class="screen-reader-text"><?php _e('Organisation', RRZE_UnivIS::textdomain);?>: </span><span itemprop="worksFor"><?php echo $orgunit;?></span></li>                
                     <?php endif;?>
                         
                         
-                <?php if (!empty($person['orgname'])) : ?>
-                    <li class="person-info-abteilung"><span class="screen-reader-text"><?php _e('Abteilung', RRZE_UnivIS::textdomain);?>: </span><?php echo $person['orgname']; ?></li>
+                <?php if ( $suffix != '' && !empty( $person[$orgname] ) ) : 
+                    $orgname_out = $person[$orgname]; 
+                elseif ( !empty($person['orgname']) ) :
+                    $orgname_out = $person['orgname']; 
+                endif;
+                if ( !empty( $orgname_out ) ) : ?>
+                    <li class="person-info-abteilung"><span class="screen-reader-text"><?php _e('Abteilung', RRZE_UnivIS::textdomain);?>: </span><?php echo $orgname_out; ?></li>
                     <?php endif;?>  
                         
                     
                  <?php if ( array_key_exists('locations', $person) && array_key_exists('location', $person['locations'][0])) : 
                     $location = $person['locations'][0]['location'][0]; ?>
-                    <?php if(!empty($location['tel'])) : ?>
-                        <li class="person-info-phone"><span class="screen-reader-text"><?php _e('Telefonnummer', RRZE_UnivIS::textdomain);?>: </span><span itemprop="telephone"><?php echo $location['tel'];?></span></li>   
+                    <?php if(!empty($location['tel'])) : 
+                        $phone_number = self::correct_phone_number($location['tel']); ?>
+                        <li class="person-info-phone"><span class="screen-reader-text"><?php _e('Telefonnummer', RRZE_UnivIS::textdomain);?>: </span><span itemprop="telephone"><?php echo $phone_number;?></span></li>   
                     <?php endif;?>
                     <?php if(!empty($location['fax'])) : ?>
                         <li class="person-info-fax"><span class="screen-reader-text"><?php _e('Faxnummer', RRZE_UnivIS::textdomain);?>: </span><span itemprop="faxNumber"><?php echo $location['fax'];?></span></li>  

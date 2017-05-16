@@ -3,7 +3,7 @@
   Plugin Name: RRZE-UnivIS
   Plugin URI: https://github.com/RRZE-Webteam/rrze-univis
  * Description: Einbindung von Daten aus UnivIS für den Geschäftsverteilungsplan auf Basis des UnivIS-Plugins des Webbaukastens.
- * Version: 1.3.3
+ * Version: 1.4.0
  * Author: RRZE-Webteam
  * Author URI: http://blogs.fau.de/webworking/
  * License: GPLv2 or later
@@ -33,7 +33,7 @@ require_once('univis/class_controller.php');
 
 class RRZE_UnivIS {
 
-    const version = '1.3.3';
+    const version = '1.4.0';
     const option_name = '_rrze_univis';
     const version_option_name = '_rrze_univis_version';
     const textdomain = 'rrze-univis';
@@ -43,6 +43,16 @@ class RRZE_UnivIS {
     protected static $instance = null;
     private static $univis_option_page = null;
     private static $univis_url = "http://univis.uni-erlangen.de";
+    // hier müssen Felder ergänzt werden, wenn sie in der XML-Ausgabe auch in anderen Sprachen vorhanden sind
+    public static $language = array(
+        'suffix' => '', 
+        'orgunit' => 'orgunit', 
+        'orgunits' => 'orgunits', 
+        'orgname' => 'orgname', 
+        'description' => 'description', 
+        'text' => 'text',
+        'title' => 'title'
+    );
 
    
     public static function instance() {
@@ -94,6 +104,12 @@ class RRZE_UnivIS {
     }
     
     private static function get_defaults() {
+        $lang = get_locale();
+        if( strpos( $lang, 'en_' ) === 0 ) {
+            $language = self::set_language('_en');
+        } else {
+            $language = self::set_language('');
+        }
         $defaults = array(
 			'UnivISOrgNr' => '0',
 			'task' => 'mitarbeiter-alle',
@@ -110,7 +126,10 @@ class RRZE_UnivIS {
 			'OrgUnit' => '',
 			'Sortiere_Alphabet' => '0',
 			'Sortiere_Jobs' => '1',
-                        'Ignoriere_Jobs' => 'Sicherheitsbeauftragter|IT-Sicherheits-Beauftragter|Webmaster|Postmaster|IT-Betreuer|UnivIS-Beauftragte',
+                        'Ignoriere_Jobs' => array(
+                            '_de' => 'Sicherheitsbeauftragter|IT-Sicherheits-Beauftragter|Webmaster|Postmaster|IT-Betreuer|UnivIS-Beauftragte', 
+                            '_en' => 'Security commissary|IT-security commissary|Webmaster|Postmaster|IT-support|Local UnivIS administration', 
+                            ),
                         'Datenverzeichnis' => '',
                         'id' => '',             // kann im Shortcode verwendet werden, sollte aber nicht
                         'lv_id' => '',          // Lehrveranstaltungs-ID
@@ -123,12 +142,27 @@ class RRZE_UnivIS {
                         'sem' => '',             // Semesterauswahl
                         'univisid' => '',        // ist die Personen-ID, egal ob dozentid oder MA-ID
                         'name' => '',            // Synonym zur Angabe von firstname und lastname
-                        'errormsg' => ''          // Anzeige von Fehlermeldungen bei Ausgabe
+                        'errormsg' => '',          // Anzeige von Fehlermeldungen bei Ausgabe
+                        'lv_type' => '1',        // Anzeige LV-Typ-Überschriften 
+                        'lang' => $language,           // wichtig für die Ausgabe englischer Bezeichnungen von orgunit, orgunits, text, description
+                        'leclanguage' => ''         // Veranstaltungssprache
                 );
         return $defaults;
     }
-
-
+    
+    // zum Anpassen der Variablen auf englisch bzw. evtl. andere Ausgaben später mal, Standard: $lang=''
+    private static function set_language($lang) {
+        $language = self::$language;
+        foreach( $language as $key => &$value ) {
+            if( $key == 'orgunits' ) {
+                $value = 'orgunit' . $lang . 's';
+            } else {
+                $value = $value . $lang;
+            }
+        }
+        return $language;
+        
+    }
 
     public static function activate() {
         self::version_compare();
@@ -172,8 +206,8 @@ class RRZE_UnivIS {
     }
 
     public static function add_rewrite_endpoint($flush = false) {
-        add_rewrite_endpoint('univisid', EP_PAGES);
-        add_rewrite_endpoint('lv_id', EP_PAGES);
+        add_rewrite_endpoint('univisid', EP_PERMALINK | EP_PAGES);
+        add_rewrite_endpoint('lv_id', EP_PERMALINK | EP_PAGES);
         if ($flush) {
             flush_rewrite_rules();
         }
@@ -305,6 +339,7 @@ class RRZE_UnivIS {
         $univis_url = self::$univis_url;
         $options = self::get_options();
         $defaults = self::get_defaults();
+
         $univis_link = sprintf('<a href="%1$s">%2$s</a>', $univis_url, $options['univis_default_link']);
         if( empty( $atts )) {
             $ausgabe = $univis_link;
@@ -347,6 +382,12 @@ class RRZE_UnivIS {
                 $sem = wp_kses( str_replace(' ', '', $atts['sem']), array() );
                 if( preg_match( '/[12]\d{3}[ws]/', $sem ) )     $atts['sem'] = $sem;
             }
+            if( isset( $atts['sprache'] ) ) {
+                $sprache = wp_kses( str_replace( ' ', '', $atts['sprache'] ), array() );
+                if( strpbrk( $sprache, 'DE' ) != FALSE && str_word_count( $sprache ) == 1 ) {
+                    $atts['leclanguage'] = $sprache;
+                }
+            }
             if( isset( $atts['id'] ) && isset ( $atts['task'] ) ) {
                 switch( $atts['task'] ) {
                     case 'lehrveranstaltungen-einzeln':
@@ -375,13 +416,28 @@ class RRZE_UnivIS {
                 $atts['Ignoriere_Jobs'] = wp_kses( str_replace(',', '|', $atts['Ignoriere_Jobs']), array() );
             }
             if( isset( $atts['orgunit'] )) {
-                $atts['OrgUnit'] = wp_kses( $atts['orgunit'] );
+                $atts['OrgUnit'] = wp_kses( $atts['orgunit'], array() );
             }
-            
+            if( isset( $atts['lv-typ'] ) ) {
+                 $atts['lv_type'] = wp_kses( $atts['lv-typ'], array() );
+            }
+            if( isset( $atts['lang'] ) ) {
+                if ( $atts['lang'] == 'en' ) {
+                    $atts['lang'] = self::set_language('_en');
+                } elseif ( $atts['lang'] == 'de' ) {
+                    $atts['lang'] = self::set_language('');
+                // NUR FÜR _rrze_debug
+//                } elseif ( $atts['lang'] == 'test' ) {
+//                    $atts['lang'] = self::set_language('_test');
+                } else {
+                    $atts['lang'] = $defaults['lang'];
+                }
+            }
+             
+       
         $shortcode_atts = shortcode_atts( $defaults, $atts );
-
+   
         extract($shortcode_atts);
-
 
         switch( $task ) {
             case 'mitarbeiter-alle':

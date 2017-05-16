@@ -103,6 +103,13 @@ class univisController {
 	private function _renderTemplate($daten) {
             
                 $daten = self::_sanitize_key($daten);
+                
+                // Sprachunterstützung
+                if(isset($daten['optionen']['lang'])) {
+                    extract($daten['optionen']['lang']);
+                } else {
+                    extract(RRZE_UnivIS::$language);
+                }                   
 
                 $filename = plugin_dir_path(__FILE__) . "templates/" . $this->optionen['task'].".php";
                 
@@ -194,6 +201,63 @@ class univisController {
 			$this->optionen = array_merge($this->optionen, $args);
 
 	}
+        
+    private static function correct_phone_number( $phone_number ) {
+        if( ( strpos( $phone_number, '+49 9131 85-' ) !== 0 ) && ( strpos( $phone_number, '+49 911 5302-' ) !== 0 ) ) {
+            if( !preg_match( '/\+49 [1-9][0-9]{1,4} [1-9][0-9]+/', $phone_number ) ) {
+                $phone_data = preg_replace( '/\D/', '', $phone_number );
+                $vorwahl_erl = '+49 9131 85-';
+                $vorwahl_nbg = '+49 911 5302-';
+                switch( strlen( $phone_data ) ) {
+                    case '3':
+                        $phone_number = $vorwahl_nbg . $phone_data;
+                        break;
+                    case '5':
+                        if( strpos( $phone_data, '06' ) === 0 ) {
+                            $phone_number = $vorwahl_nbg . substr( $phone_data, -3 );
+                            break;
+                        }                                 
+                        $phone_number = $vorwahl_erl . $phone_data;
+                        break;
+                    case '7':
+                        if( strpos( $phone_data, '85' ) === 0 || strpos( $phone_data, '06' ) === 0 )  {
+                            $phone_number = $vorwahl_erl . substr( $phone_data, -5 );
+                            break;
+                        }
+                        if( strpos( $phone_data, '5302' ) === 0 ) {
+                            $phone_number = $vorwahl_nbg . substr( $phone_data, -3 );
+                            break;
+                        } 
+                    default:
+                        if( strpos( $phone_data, '9115302' ) !== FALSE ) {
+                            $durchwahl = explode( '9115302', $phone_data );
+                            if( strlen( $durchwahl[1] ) ===  3 || strlen( $durchwahl[1] ) ===  5 ) {
+                                $phone_number = $vorwahl_nbg . $durchwahl[1];
+                            } 
+                            break;
+                        }  
+                        if( strpos( $phone_data, '913185' ) !== FALSE )  {
+                            $durchwahl = explode( '913185', $phone_data );
+                            if( strlen( $durchwahl[1] ) ===  5 ) {
+                                $phone_number = $vorwahl_erl . $durchwahl[1];
+                            }
+                            break;
+                        }
+                        if( strpos( $phone_data, '09131' ) === 0 || strpos( $phone_data, '499131' ) === 0 ) {
+                            $durchwahl = explode( '9131', $phone_data );
+                            $phone_number = "+49 9131 " . $durchwahl[1];
+                            break;
+                        }
+                        if( strpos( $phone_data, '0911' ) === 0 || strpos( $phone_data, '49911' ) === 0 ) {
+                            $durchwahl = explode( '911', $phone_data );
+                            $phone_number = "+49 911 " . $durchwahl[1];
+                            break;
+                        }
+                }        
+            }
+        }
+        return $phone_number;
+    }
 
 }
 

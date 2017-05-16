@@ -49,7 +49,7 @@
                     $time['endtime'] = $course_terms['endtime'];
                 endif;
                 if (!empty($time)) :
-                    $t['time'] = $time['starttime'] . '-' . $time['endtime'] . ' ' . __('Uhr', RRZE_UnivIS::textdomain);
+                    $t['time'] = $time['starttime'] . '-' . $time['endtime'];
                 else:
                     $t['time'] = __('Zeit n.V.', RRZE_UnivIS::textdomain);
                 endif;
@@ -59,7 +59,7 @@
                     elseif (!empty($t['date'])) :
                         $t['date'] .= ',';
                     endif;
-                    $t['room_short'] = $course_terms['room_short'];
+                    $t['room_short'] = __('Raum', RRZE_UnivIS::textdomain) . ' ' . $course_terms['room_short'];
                 endif;
                 if (!empty($course_terms['exclude'])) :
                     $t['exclude'] = '(' . __('außer', RRZE_UnivIS::textdomain) . ' ' . $course_terms['exclude'] . ')';
@@ -85,7 +85,7 @@
                     $time['endtime'] = $term['endtime'];
                 endif; 
                 if(!empty($time)) :
-                    $t['time'] = $time['starttime'] . '-' . $time['endtime'] . ' ' . __('Uhr', RRZE_UnivIS::textdomain);
+                    $t['time'] = $time['starttime'] . '-' . $time['endtime'];
                 else:
                     $t['time'] = __('Zeit n.V.', RRZE_UnivIS::textdomain);
                 endif;              
@@ -95,7 +95,7 @@
                     elseif(!empty($t['date'])) :
                         $t['date'] .= ',';
                     endif;
-                    $t['room_short'] = $term['room_short'];
+                    $t['room_short'] = __('Raum', RRZE_UnivIS::textdomain) . ' ' . $term['room_short'];
                 endif;          
                 if(!empty($term['exclude'])) :
                     $t['exclude'] = '(' . __('außer', RRZE_UnivIS::textdomain) . ' ' . $term['exclude'] . ')';

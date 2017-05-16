@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: RRZE-Mathjax\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2016-04-13 15:23+0100\n"
+"POT-Creation-Date: 2017-04-24 16:24+0100\n"
 "PO-Revision-Date: \n"
 "Last-Translator: \n"
 "Language-Team: RRZE-Webteam\n"
@@ -17,7 +17,7 @@ msgstr ""
 "X-Generator: Poedit 1.6.5\n"
 "X-Poedit-SearchPath-0: ..\n"
 
-#: ../rrze-univis.php:133
+#: ../rrze-univis.php:162
 #, php-format
 msgid ""
 "Ihre PHP-Version %s ist veraltet. Bitte aktualisieren Sie mindestens auf die "
@@ -26,7 +26,7 @@ msgstr ""
 "Your server is running PHP version %s. Please upgrade at least to PHP "
 "version %s."
 
-#: ../rrze-univis.php:137
+#: ../rrze-univis.php:166
 #, php-format
 msgid ""
 "Ihre Wordpress-Version %s ist veraltet. Bitte aktualisieren Sie mindestens "
@@ -35,23 +35,23 @@ msgstr ""
 "Your Wordpress version is %s. Please upgrade at least to Wordpress version "
 "%s."
 
-#: ../rrze-univis.php:152
+#: ../rrze-univis.php:239
 msgid "<b><i>Univ</i>IS</b>"
 msgstr "<b><i>Univ</i>IS</b>"
 
-#: ../rrze-univis.php:160
+#: ../rrze-univis.php:247
 msgid "Einstellungen &rsaquo; <b><i>Univ</i>IS</b>"
 msgstr "Settings &rsaquo; <b><i>Univ</i>IS</b>"
 
-#: ../rrze-univis.php:176
+#: ../rrze-univis.php:263
 msgid "Linktext zu <b><i>Univ</i>IS</b>"
 msgstr "Text for link to <b><i>Univ</i>IS</b>"
 
-#: ../rrze-univis.php:177
+#: ../rrze-univis.php:264
 msgid "<b><i>Univ</i>IS</b>-OrgNr."
 msgstr "<b><i>Univ</i>IS</b>-OrgNr."
 
-#: ../rrze-univis.php:205
+#: ../rrze-univis.php:294
 msgid ""
 "<b><i>Univ</i>IS</b>-Daten können im XML-Format über einen Shortcode in die "
 "Seiten eingebunden werden."
@@ -59,11 +59,11 @@ msgstr ""
 "<b><i>Univ</i>IS</b> data can be included in xml format via a shortcode into "
 "pages."
 
-#: ../rrze-univis.php:206
+#: ../rrze-univis.php:295
 msgid "Shortcode:"
 msgstr "Shortcode:"
 
-#: ../rrze-univis.php:207
+#: ../rrze-univis.php:296
 msgid ""
 "<b>[univis]</b>: bindet den Link zu <b><i>Univ</i>IS</b> ein. Der Linktext "
 "kann unten gesetzt werden."
@@ -71,7 +71,7 @@ msgstr ""
 "<b>[univis]</b>: shows a link to <b><i>Univ</i>IS</b>. The text that is "
 "shown can be set below."
 
-#: ../rrze-univis.php:208
+#: ../rrze-univis.php:297
 msgid ""
 "<b>[univis number=321601]</b>: liefert alle Informationen zur Org.-Nr. "
 "321601 aus der Institutionendatenbank."
@@ -79,11 +79,11 @@ msgstr ""
 "<b>[univis number=321601]</b>: shows all informations for Org.-Nr. 321601 "
 "from the institution data base."
 
-#: ../rrze-univis.php:214
+#: ../rrze-univis.php:303
 msgid "Übersicht"
 msgstr "Overview"
 
-#: ../rrze-univis.php:218
+#: ../rrze-univis.php:307
 msgid ""
 "<p><strong>Für mehr Information:</strong></p><p><a href=\"http://blogs.fau."
 "de/webworking\">RRZE-Webworking</a></p><p><a href=\"https://github.com/RRZE-"
@@ -93,17 +93,242 @@ msgstr ""
 "de/webworking\">RRZE-Webworking</a></p><p><a href=\"https://github.com/RRZE-"
 "Webteam\">RRZE-Webteam in Github</a></p>"
 
-#: ../rrze-univis.php:277
+#: ../rrze-univis.php:426
 msgid "Bitte geben Sie eine gültige UnivIS-Organisationsnummer an."
 msgstr "Please enter a valid UnivIS-OrgNr."
 
-#: ../rrze-univis.php:285
+#: ../rrze-univis.php:434
 msgid "Bitte geben Sie eine gültige Lehrveranstaltungs-ID an."
 msgstr "Please enter a valid lecture-ID."
 
-#: ../rrze-univis.php:290
-msgid "Bitte geben Sie einen Vor- und Nachnamen an."
-msgstr "Please enter a first and last name."
+#: ../rrze-univis.php:442
+msgid "Bitte geben Sie einen Vor- und Nachnamen oder eine UnivIS-ID an."
+msgstr "Please enter a first and last name or a UnivIS-ID."
+
+#: ../rrze-univis.php:478
+msgid "Suche nach UnivIS-ID"
+msgstr "Find UnivIS-ID"
+
+#: ../rrze-univis.php:484
+msgid "Person suchen"
+msgstr "Search person"
+
+#: ../rrze-univis.php:493
+msgid ""
+"Es konnten keine Daten zur Person gefunden werden. Bitte verändern Sie Ihre "
+"Suchwerte und stellen Sie sicher, dass das Plugin Univis-Data aktiviert ist."
+msgstr ""
+"No data from UnivIS can be found. Please change your search parameters and "
+"check if the plugin univis-data is activated."
+
+#: ../rrze-univis.php:496
+msgid "keine Daten in UnivIS eingepflegt"
+msgstr "There is no data in UnivIS"
+
+#: ../rrze-univis.php:511
+msgid "Vorname"
+msgstr "Given name"
+
+#: ../rrze-univis.php:516
+msgid "Nachname"
+msgstr "Family name"
+
+#: ../univis/class_render.php:625 ../univis/class_render.php:803
+msgid "Alle zwei Wochen"
+msgstr "Every second week"
+
+#: ../univis/class_render.php:626 ../univis/class_render.php:804
+msgid "Alle drei Wochen"
+msgstr "Every third week"
+
+#: ../univis/class_render.php:627 ../univis/class_render.php:805
+msgid "Alle vier Wochen"
+msgstr "Every fourth week"
+
+#: ../univis/class_render.php:628 ../univis/class_render.php:806
+msgid "Einzeltermin am"
+msgstr "Single appointment on"
+
+#: ../univis/class_render.php:629 ../univis/class_render.php:807
+msgid "Blockveranstaltung"
+msgstr ""
+
+#: ../univis/class_render.php:650 ../univis/class_render.php:657
+#: ../univis/class_render.php:827 ../univis/class_render.php:834
+msgid "So"
+msgstr "Sun"
+
+#: ../univis/class_render.php:651 ../univis/class_render.php:828
+msgid "Mo"
+msgstr "Mon"
+
+#: ../univis/class_render.php:652 ../univis/class_render.php:829
+msgid "Di"
+msgstr "Tue"
+
+#: ../univis/class_render.php:653 ../univis/class_render.php:830
+msgid "Mi"
+msgstr "Wed"
+
+#: ../univis/class_render.php:654 ../univis/class_render.php:831
+msgid "Do"
+msgstr "Thu"
+
+#: ../univis/class_render.php:655 ../univis/class_render.php:832
+msgid "Fr"
+msgstr "Fri"
+
+#: ../univis/class_render.php:656 ../univis/class_render.php:833
+msgid "Sa"
+msgstr "Sat"
+
+#: ../univis/class_render.php:661 ../univis/class_render.php:668
+#: ../univis/class_render.php:838 ../univis/class_render.php:845
+msgid "Sonntag"
+msgstr "Sunday"
+
+#: ../univis/class_render.php:662 ../univis/class_render.php:839
+msgid "Montag"
+msgstr "Monday"
+
+#: ../univis/class_render.php:663 ../univis/class_render.php:840
+msgid "Dienstag"
+msgstr "Tuesday"
+
+#: ../univis/class_render.php:664 ../univis/class_render.php:841
+msgid "Mittwoch"
+msgstr "Wednesday"
+
+#: ../univis/class_render.php:665 ../univis/class_render.php:842
+msgid "Donnerstag"
+msgstr "Thursday"
+
+#: ../univis/class_render.php:666 ../univis/class_render.php:843
+msgid "Freitag"
+msgstr "Friday"
+
+#: ../univis/class_render.php:667 ../univis/class_render.php:844
+msgid "Samstag"
+msgstr "Saturday"
+
+#: ../univis/templates/lehrveranstaltungen-alle.php:36
+#: ../univis/templates/lehrveranstaltungen-alle.php:73
+#: ../univis/templates/lehrveranstaltungen-einzeln.php:54
+#: ../univis/templates/lehrveranstaltungen-einzeln.php:90
+msgid "Zeit n.V."
+msgstr "Time on appointment"
+
+#: ../univis/templates/lehrveranstaltungen-alle.php:44
+#: ../univis/templates/lehrveranstaltungen-alle.php:81
+#: ../univis/templates/lehrveranstaltungen-einzeln.php:62
+#: ../univis/templates/lehrveranstaltungen-einzeln.php:98
+#: ../univis/templates/mitarbeiter-einzeln.php:80
+msgid "Raum"
+msgstr "Room"
+
+#: ../univis/templates/lehrveranstaltungen-alle.php:47
+#: ../univis/templates/lehrveranstaltungen-alle.php:84
+#: ../univis/templates/lehrveranstaltungen-einzeln.php:65
+#: ../univis/templates/lehrveranstaltungen-einzeln.php:101
+msgid "außer"
+msgstr "exclude"
+
+#: ../univis/templates/lehrveranstaltungen-alle.php:93
+#: ../univis/templates/lehrveranstaltungen-einzeln.php:107
+msgid "Zeit/Ort n.V."
+msgstr "Time and place on appointment"
+
+#: ../univis/templates/lehrveranstaltungen-einzeln.php:7
+msgid "Dozent/in"
+msgstr "Lecturers"
+
+#: ../univis/templates/lehrveranstaltungen-einzeln.php:29
+msgid "Angaben"
+msgstr "Details"
+
+#: ../univis/templates/lehrveranstaltungen-einzeln.php:35
+msgid "Zeit und Ort"
+msgstr "Time and place"
+
+#: ../univis/templates/lehrveranstaltungen-einzeln.php:69
+msgid "Kurs"
+msgstr "Course"
+
+#: ../univis/templates/lehrveranstaltungen-einzeln.php:113
+msgid "Studienfächer / Studienrichtungen"
+msgstr "Fields of study"
+
+#: ../univis/templates/lehrveranstaltungen-einzeln.php:138
+msgid "Voraussetzungen / Organisatorisches"
+msgstr "Prerequisites / Organisational information"
+
+#: ../univis/templates/lehrveranstaltungen-einzeln.php:145
+msgid "Inhalt"
+msgstr "Content"
+
+#: ../univis/templates/lehrveranstaltungen-einzeln.php:154
+msgid "ECTS-Informationen"
+msgstr "ECTS information"
+
+#: ../univis/templates/lehrveranstaltungen-einzeln.php:156
+msgid "Title"
+msgstr "Title"
+
+#: ../univis/templates/lehrveranstaltungen-einzeln.php:160
+msgid "Content"
+msgstr "Content"
+
+#: ../univis/templates/lehrveranstaltungen-einzeln.php:164
+msgid "Literature"
+msgstr "Literature"
+
+#: ../univis/templates/lehrveranstaltungen-einzeln.php:172
+msgid "Zusätzliche Informationen"
+msgstr "Additional information"
+
+#: ../univis/templates/lehrveranstaltungen-einzeln.php:175
+msgid "Schlagwörter"
+msgstr "Keywords"
+
+#: ../univis/templates/lehrveranstaltungen-einzeln.php:178
+msgid "Erwartete Teilnehmerzahl"
+msgstr "Expected participants"
+
+#: ../univis/templates/mitarbeiter-einzeln.php:26
+msgid "Tätigkeit"
+msgstr "Job title"
+
+#: ../univis/templates/mitarbeiter-einzeln.php:46
+msgid "Organisation"
+msgstr "Organization"
+
+#: ../univis/templates/mitarbeiter-einzeln.php:51
+msgid "Abteilung"
+msgstr "Working group"
+
+#: ../univis/templates/mitarbeiter-einzeln.php:58
+msgid "Telefonnummer"
+msgstr "Phone number"
+
+#: ../univis/templates/mitarbeiter-einzeln.php:61
+msgid "Faxnummer"
+msgstr "Fax number"
+
+#: ../univis/templates/mitarbeiter-einzeln.php:64
+msgid "E-Mail"
+msgstr "Email"
+
+#: ../univis/templates/mitarbeiter-einzeln.php:67
+msgid "Webseite"
+msgstr "Website"
+
+#: ../univis/templates/mitarbeiter-einzeln.php:70
+msgid "Adresse"
+msgstr "Address"
+
+#: ../univis/templates/single-univis.php:16
+msgid "<span class=\"meta-nav\">&laquo;</span> Zurück zur Übersicht"
+msgstr "<span class=\"meta-nav\">&laquo;</span> Back to overview"
 
 #~ msgid "UnivIS"
 #~ msgstr "<b><i>Univ</i>IS</b>"

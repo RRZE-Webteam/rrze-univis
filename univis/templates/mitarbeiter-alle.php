@@ -1,6 +1,6 @@
 <div id="univis-personenindex">
     <?php foreach ($daten['gruppen'] as $gruppe) : ?>
-    <h2><?php echo $gruppe['name'];?></h2>
+    <h4><?php echo $gruppe['name']; ?></h4>
     <ul>
         <?php foreach ($gruppe['personen'] as $person) : ?>
             <li>                
@@ -23,14 +23,20 @@
                     <?php endif; ?>
                     </span>
                     <?php $location = $person['locations'][0]['location'][0];  ?>
-                                <?php if (!empty($location['tel'])) : ?>
+                                <?php if (!empty($location['tel'])) : 
+                                    $phone_number = self::correct_phone_number($location['tel']); ?>
                                 <span class="person-info-phone">
-                                    <span itemprop="telephone">, Tel. <?php echo $location['tel']; ?></span>
+                                    <span itemprop="telephone">, Tel. <?php echo $phone_number; ?></span>
                                 </span>
                                 <?php endif; 
                 endif;
-                if (!empty($person['text'])): ?>
-                <span><?php echo $person['text']; ?></span>
+                if ( $suffix!='' && !empty( $person[$text] ) ): 
+                    $text_out = $person[$text];
+                elseif ( !empty( $person['text'] ) ) :
+                    $text_out = $person['text'];
+                endif;
+                if ( !empty( $text_out ) ) : ?>
+                <span><?php echo $text_out; ?></span>
                 <?php endif; ?>
             </li>            
         <?php endforeach; ?>
