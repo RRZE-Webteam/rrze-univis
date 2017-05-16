@@ -143,18 +143,26 @@ class UNIVIS {
 			{
 				$jobnamen[] = $job['description'];
 			}
-
-			if($this->optionen["Ignoriere_Jobs"]) {
-				$xjobs = explode("|", $this->optionen["Ignoriere_Jobs"]);
-			}
-                        
-			$personen_jobs = array();
-                        $daten_text = array();
                         
                         // Sprachunterstützung
                         $description = $this->optionen['lang']['description'];
                         $suffix = $this->optionen['lang']['suffix'];
                         $text = $this->optionen['lang']['text'];
+
+			if($this->optionen["Ignoriere_Jobs"]) {
+                            if ( is_array($this->optionen["Ignoriere_Jobs"] ) ) {
+                                if ( $suffix == '_en' ) {
+                                    $xjobs = explode("|", $this->optionen['Ignoriere_Jobs'][$suffix]);
+                                } else {
+                                    $xjobs = explode("|", $this->optionen['Ignoriere_Jobs']['_de']);
+                                }
+                            } else {
+                                $xjobs = explode("|", $this->optionen['Ignoriere_Jobs']);
+                            }
+			}
+
+			$personen_jobs = array();
+                        $daten_text = array();
   
 			for ($i=0; $i < count($jobs); $i++) {
                             if ( $suffix != '' && isset( $jobs[$i][$description] ) ) {

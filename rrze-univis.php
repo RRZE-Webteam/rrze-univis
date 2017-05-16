@@ -126,7 +126,10 @@ class RRZE_UnivIS {
 			'OrgUnit' => '',
 			'Sortiere_Alphabet' => '0',
 			'Sortiere_Jobs' => '1',
-                        'Ignoriere_Jobs' => 'Sicherheitsbeauftragter|IT-Sicherheits-Beauftragter|Webmaster|Postmaster|IT-Betreuer|UnivIS-Beauftragte',
+                        'Ignoriere_Jobs' => array(
+                            '_de' => 'Sicherheitsbeauftragter|IT-Sicherheits-Beauftragter|Webmaster|Postmaster|IT-Betreuer|UnivIS-Beauftragte', 
+                            '_en' => 'Security commissary|IT-security commissary|Webmaster|Postmaster|IT-support|Local UnivIS administration', 
+                            ),
                         'Datenverzeichnis' => '',
                         'id' => '',             // kann im Shortcode verwendet werden, sollte aber nicht
                         'lv_id' => '',          // Lehrveranstaltungs-ID

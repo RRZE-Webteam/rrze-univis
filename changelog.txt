@@ -3,9 +3,10 @@ Versionsänderungen:
 ####Version 1.4.0:    
 - Ausblenden der Lehrveranstaltungstypen bei task="lehrveranstaltungen-alle" mit hide="lv-typ"    
 - Ausgabe von Lehrveranstaltungen in Englisch oder Deutsch mit Shortcode-Parameter sprache="E" oder sprache="D"    
-- Englische Ausgabe abhängig von der Sprache der WP-Seite (wo möglich)    
+- Englische Ausgabe abhängig von der Sprache in den WordPress-Einstellungen eingebaut (wo möglich)    
 - Einheitliche Formatierung der Telefonnummern (wo möglich)    
 - Bugfix endpoint    
+- Einfache Ausgabe für UnivIS-Publikationen ergänzt    
 
 ####Version 1.3.3:    
 - Gruppierung von Kursterminen bei der Lehrveranstaltungsübersicht   
