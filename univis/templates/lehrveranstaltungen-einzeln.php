@@ -8,6 +8,7 @@
         <ul>
         <?php
         foreach ($veranstaltung['dozs'][0]['doz'] as $doz) :
+            $name = array();
             if (!empty($doz['title'])) :
                 $name['title'] = '<span itemprop="honorificPrefix">' . $doz['title'] . '</span>';
             endif;
@@ -39,6 +40,8 @@
     <ul>
         <?php if(array_key_exists('course_terms', $veranstaltung)) :
             foreach ($veranstaltung['course_terms'] as $course_terms):
+                $t = array();
+                $time = array();
                 if (!empty($course_terms['date'])) :
                     $t['date'] = $course_terms['date'];
                 endif;
@@ -75,6 +78,8 @@
         elseif (array_key_exists('terms', $veranstaltung) && array_key_exists('term', $veranstaltung['terms'][0])) :                  
         //if (!empty(univisController::get_key($veranstaltung, 'terms', 0)) && !empty(univisController::get_key($veranstaltung['terms'], 'term', 0))) {
             foreach ($veranstaltung['terms'][0]['term'] as $term) :
+                $t = array();
+                $time = array();
                 if(!empty($term['date'])) :
                     $t['date'] = $term['date'];
                 endif;        
@@ -114,6 +119,7 @@
     <ul>  
         <?php
         foreach ($veranstaltung['studs'][0]['stud'] as $stud) :
+            $s = array();
             if (!empty($stud['pflicht'])) :
                 $s['pflicht'] = $stud['pflicht'];
             endif;

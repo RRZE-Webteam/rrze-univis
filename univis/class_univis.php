@@ -165,6 +165,7 @@ class UNIVIS {
                         $daten_text = array();
   
 			for ($i=0; $i < count($jobs); $i++) {
+                            $text_out = '';
                             if ( $suffix != '' && isset( $jobs[$i][$description] ) ) {
                                 $description_out = $jobs[$i][$description];
                             } else {
@@ -200,7 +201,7 @@ class UNIVIS {
 					}
                                     }
 				}
-                                if(isset($text_out)) {
+                                if(!empty($text_out)) {
                                     $k = count($daten_text);
                                     $daten_text[$k]["text"] = $text_out;
                                     $daten_text[$k]["rang"] = $description_out;

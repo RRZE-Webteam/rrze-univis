@@ -1,5 +1,6 @@
 <div id="univis-personenindex">
-    <?php foreach ($daten['gruppen'] as $gruppe) : ?>
+    <?php foreach ($daten['gruppen'] as $gruppe) : 
+        if ( !empty( $gruppe['personen'] ) ) : ?>
     <h4><?php echo $gruppe['name']; ?></h4>
     <ul>
         <?php foreach ($gruppe['personen'] as $person) : ?>
@@ -30,6 +31,7 @@
                                 </span>
                                 <?php endif; 
                 endif;
+                $text_out = '';
                 if ( $suffix!='' && !empty( $person[$text] ) ): 
                     $text_out = $person[$text];
                 elseif ( !empty( $person['text'] ) ) :
@@ -41,5 +43,6 @@
             </li>            
         <?php endforeach; ?>
     </ul>
-    <?php endforeach; ?>
+    <?php endif;
+    endforeach; ?>
 </div>

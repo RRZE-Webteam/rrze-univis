@@ -188,18 +188,21 @@ class univisRender {
         }
 
         foreach ($jobnamen as $gruppen_name) {
-            $gruppen_personen = $gruppen_dict[$gruppen_name];
+            if(isset($gruppen_dict[$gruppen_name])) {
+                $gruppen_personen = $gruppen_dict[$gruppen_name];
 
-            if ( in_array( 'lastname', $gruppen_personen[0] ) ) {
-                $gruppen_personen = $this->array_orderby($gruppen_personen, "lastname", SORT_ASC, "firstname", SORT_ASC);
+
+                if ( in_array( 'lastname', $gruppen_personen[0] ) ) {
+                    $gruppen_personen = $this->array_orderby($gruppen_personen, "lastname", SORT_ASC, "firstname", SORT_ASC);
+                }
+                $gruppen_obj = array(
+                    "name" => $gruppen_name,
+                    //"personen" => $this->record_sort($gruppen_personen, "lastname")
+                    "personen" => $gruppen_personen
+                );
+
+                array_push($gruppen, $gruppen_obj);
             }
-            $gruppen_obj = array(
-                "name" => $gruppen_name,
-                //"personen" => $this->record_sort($gruppen_personen, "lastname")
-                "personen" => $gruppen_personen
-            );
-
-            array_push($gruppen, $gruppen_obj);
         }
 
         //Sortierung der Ergebnisse nach dem Funktionsfeld
