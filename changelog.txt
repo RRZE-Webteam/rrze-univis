@@ -1,5 +1,9 @@
 Versionsänderungen:
 ===================
+####Version 1.4.1:    
+- Bugfix lehrveranstaltungen-einzeln     
+- Bugfix text bei mitarbeiter-alle    
+
 ####Version 1.4.0:    
 - Ausblenden der Lehrveranstaltungstypen bei task="lehrveranstaltungen-alle" mit hide="lv-typ"    
 - Ausgabe von Lehrveranstaltungen in Englisch oder Deutsch mit Shortcode-Parameter sprache="E" oder sprache="D"    
