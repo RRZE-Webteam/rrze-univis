@@ -1,5 +1,8 @@
 Versionsänderungen:
 ===================
+####Version 1.4.2:    
+- Option hide="Personenanzeige_Lehrveranstaltungen" bei task="mitarbeiter-einzeln" ergänzt         
+
 ####Version 1.4.1:    
 - Bugfix lehrveranstaltungen-einzeln     
 - Bugfix text bei mitarbeiter-alle    

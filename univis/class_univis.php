@@ -340,11 +340,11 @@ class UNIVIS {
 		if($person) $person = $person[0];
 
 		// Lade Publikationen und Lehrveranstaltungen falls noetig
-		if (isset($this->optionen["Personenanzeige_Publikationen"])) {
+		if (!empty($this->optionen["Personenanzeige_Publikationen"])) {
 			$person["publikationen"] = $this->_ladePublikationen($person["id"]);
 		}
 
-		if (isset($this->optionen["Personenanzeige_Lehrveranstaltungen"])) {
+		if (!empty($this->optionen["Personenanzeige_Lehrveranstaltungen"])) {
 			$person["lehrveranstaltungen"] = $this->_ladeLehrveranstaltungenAlle($person["id"]);
 		}
 		return $person;
