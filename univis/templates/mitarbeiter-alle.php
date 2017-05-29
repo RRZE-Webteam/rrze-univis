@@ -3,34 +3,56 @@
         if ( !empty( $gruppe['personen'] ) ) : ?>
     <h4><?php echo $gruppe['name']; ?></h4>
     <ul>
-        <?php foreach ($gruppe['personen'] as $person) : ?>
+        <?php foreach ($gruppe['personen'] as $person) : 
+            $name = array(); 
+            $p = array();
+            $pers = array();
+            $lastname = ''; 
+            $firstname = ''; 
+            $fullname = '';
+            $out = '';
+            ?>
             <li>                
                 <?php if (!empty($person['lastname'])) : ?>
-                    <span itemprop="name" class="person liste-person" itemscope itemtype="http://schema.org/Person">
-                    <?php if (!empty($person['title'])) : ?>
-                    <span itemprop="honorificPrefix">
-                        <acronym title="<?php echo $person['title_long'];?>"><?php echo $person['title'];?></acronym>
-                    </span>
-                    <?php endif; ?>
-                    <?php $url = get_permalink() . 'univisid/' . $person['id']; ?>
-                    <a class="url" href="<?php echo $url;?>" itemprop="name">
-                        <span itemprop="familyName"><?php echo $person['lastname'];?></span><?php if (!empty($person['firstname'])) : ?>, <?php endif; ?>
-                        <?php if (!empty($person['firstname'])) : ?>
-                        <span itemprop="givenName"><?php echo $person['firstname'];?></span><?php if (!empty($person['atitle'])) : ?>, <?php endif; ?>
-                        <?php endif; ?>
-                    </a>
-                    <?php if (!empty($person['atitle'])) : ?>
-                    <span itemprop="honorificSuffix"><acronym title="<?php echo $person['atitle_long'];?>"><?php echo $person['atitle'];?></acronym></span>
-                    <?php endif; ?>
-                    </span>
-                    <?php $location = $person['locations'][0]['location'][0];  ?>
-                                <?php if (!empty($location['tel'])) : 
-                                    $phone_number = self::correct_phone_number($location['tel']); ?>
-                                <span class="person-info-phone">
-                                    <span itemprop="telephone">, Tel. <?php echo $phone_number; ?></span>
-                                </span>
-                                <?php endif; 
-                endif;
+                    <?php 
+                    if (!empty($person['title'])) : 
+                        $name['title'] = '<span itemprop="honorificPrefix"><acronym title="' . $person['title_long'] . '">' . $person['title'] . '</acronym></span>';
+                    endif; 
+                    if (!empty($person['lastname'])) :
+                        $p['lastname'] = '<span itemprop="familyName">' . $person['lastname'] . '</span>';
+                        if (!empty($person['firstname'])) : 
+                            $p['lastname'] .= ', ';
+                        endif;
+                    endif;
+                    if (!empty($person['firstname'])) :
+                        $p['firstname'] = '<span itemprop="givenName">' . $person['firstname'] . '</span>';
+                    endif;
+                    if(!empty($p)) :
+                        $n = implode(' ', $p);
+                        if (!empty($person['id'])) :
+                            $url = get_permalink() . 'univisid/' . $person['id'];
+                            $fullname .= '<a class="url" href="' . $url . '" itemprop="name">';
+                        endif; 
+                        $fullname .= $n;
+                        if (!empty($person['id'])) :
+                            $fullname .= '</a>';
+                        endif;  
+                        $name['fullname'] = $fullname;
+                    endif;
+                    $pers['fullname'] = implode(' ', $name);
+                    if (!empty($person['atitle'])) :
+                        $pers['atitle'] = '<span itemprop="honorificSuffix"><acronym title="' . $person['atitle_long'] . '">' . $person['atitle'] . '</acronym></span>';                      
+                    endif;
+                    $location = $person['locations'][0]['location'][0]; 
+                    if (!empty($location['tel'])) : 
+                        $phone_number = self::correct_phone_number($location['tel']); 
+                        $pers['phone_number'] = '<span class="person-info-phone" itemprop="telephone">Tel. ' . $phone_number . '</span>';
+                    endif; 
+                    $out = implode(', ', $pers);
+                    ?>
+                    <span itemprop="name" class="person liste-person" itemscope itemtype="http://schema.org/Person"><?php echo $out;?></span>
+                    
+                <?php endif; 
                 $text_out = '';
                 if ( $suffix!='' && !empty( $person[$text] ) ): 
                     $text_out = $person[$text];

@@ -4,6 +4,7 @@ Versionsänderungen:
 - Option hide="Personenanzeige_Lehrveranstaltungen" bei task="mitarbeiter-einzeln" ergänzt         
 - Parameter "sortiere_alphabet"=1 ergänzt für Mitarbeiter-Ausgabe    
 - Bugfix für Mitarbeiter mit gleichem Namen    
+- Bugfix Ausgabe mitarbeiter-alle     
 
 ####Version 1.4.1:    
 - Bugfix lehrveranstaltungen-einzeln     
