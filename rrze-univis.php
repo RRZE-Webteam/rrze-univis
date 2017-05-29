@@ -3,7 +3,7 @@
   Plugin Name: RRZE-UnivIS
   Plugin URI: https://github.com/RRZE-Webteam/rrze-univis
  * Description: Einbindung von Daten aus UnivIS für den Geschäftsverteilungsplan auf Basis des UnivIS-Plugins des Webbaukastens.
- * Version: 1.4.1
+ * Version: 1.4.2
  * Author: RRZE-Webteam
  * Author URI: http://blogs.fau.de/webworking/
  * License: GPLv2 or later
@@ -33,7 +33,7 @@ require_once('univis/class_controller.php');
 
 class RRZE_UnivIS {
 
-    const version = '1.4.1';
+    const version = '1.4.2';
     const option_name = '_rrze_univis';
     const version_option_name = '_rrze_univis_version';
     const textdomain = 'rrze-univis';
@@ -421,6 +421,10 @@ class RRZE_UnivIS {
             if( isset( $atts['ignoriere_jobs'] ) ) { // Übergabe in Großbuchstaben
                 $atts['Ignoriere_Jobs'] = wp_kses( str_replace(' ', '', $atts['ignoriere_jobs']), array() );
                 $atts['Ignoriere_Jobs'] = wp_kses( str_replace(',', '|', $atts['Ignoriere_Jobs']), array() );
+            }
+            if( isset( $atts['sortiere_alphabet'] ) ) { // Übergabe in Großbuchstaben
+                $atts['Sortiere_Alphabet'] = wp_kses( str_replace(' ', '', $atts['sortiere_alphabet']), array() );
+                $atts['Sortiere_Alphabet'] = wp_kses( str_replace(',', '|', $atts['sortiere_alphabet']), array() );
             }
             if( isset( $atts['orgunit'] )) {
                 $atts['OrgUnit'] = wp_kses( $atts['orgunit'], array() );
