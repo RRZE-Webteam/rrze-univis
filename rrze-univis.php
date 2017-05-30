@@ -3,7 +3,7 @@
   Plugin Name: RRZE-UnivIS
   Plugin URI: https://github.com/RRZE-Webteam/rrze-univis
  * Description: Einbindung von Daten aus UnivIS für den Geschäftsverteilungsplan auf Basis des UnivIS-Plugins des Webbaukastens.
- * Version: 1.4.1
+ * Version: 1.4.2
  * Author: RRZE-Webteam
  * Author URI: http://blogs.fau.de/webworking/
  * License: GPLv2 or later
@@ -33,7 +33,7 @@ require_once('univis/class_controller.php');
 
 class RRZE_UnivIS {
 
-    const version = '1.4.1';
+    const version = '1.4.2';
     const option_name = '_rrze_univis';
     const version_option_name = '_rrze_univis_version';
     const textdomain = 'rrze-univis';
@@ -130,6 +130,7 @@ class RRZE_UnivIS {
                             '_de' => 'Sicherheitsbeauftragter|IT-Sicherheits-Beauftragter|Webmaster|Postmaster|IT-Betreuer|UnivIS-Beauftragte', 
                             '_en' => 'Security commissary|IT-security commissary|Webmaster|Postmaster|IT-support|Local UnivIS administration', 
                             ),
+                        'Zeige_Jobs' => array(),
                         'Datenverzeichnis' => '',
                         'id' => '',             // kann im Shortcode verwendet werden, sollte aber nicht
                         'lv_id' => '',          // Lehrveranstaltungs-ID
@@ -422,6 +423,11 @@ class RRZE_UnivIS {
                 $atts['Ignoriere_Jobs'] = wp_kses( str_replace(' ', '', $atts['ignoriere_jobs']), array() );
                 $atts['Ignoriere_Jobs'] = wp_kses( str_replace(',', '|', $atts['Ignoriere_Jobs']), array() );
             }
+            if( isset( $atts['zeige_jobs'] ) ) { // Übergabe in Großbuchstaben
+                $zeige_jobs = wp_kses( str_replace(' ', '', $atts['zeige_jobs']), array() );
+                $atts['Zeige_Jobs'] = explode(',', $zeige_jobs);
+            }
+
             if( isset( $atts['orgunit'] )) {
                 $atts['OrgUnit'] = wp_kses( $atts['orgunit'], array() );
             }
