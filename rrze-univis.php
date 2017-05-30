@@ -420,11 +420,11 @@ class RRZE_UnivIS {
                 }
             }
             if( isset( $atts['ignoriere_jobs'] ) ) { // Übergabe in Großbuchstaben
-                $atts['Ignoriere_Jobs'] = wp_kses( str_replace(' ', '', $atts['ignoriere_jobs']), array() );
+                $atts['Ignoriere_Jobs'] = wp_kses( str_replace(', ', ',', $atts['ignoriere_jobs']), array() );
                 $atts['Ignoriere_Jobs'] = wp_kses( str_replace(',', '|', $atts['Ignoriere_Jobs']), array() );
             }
             if( isset( $atts['zeige_jobs'] ) ) { // Übergabe in Großbuchstaben
-                $zeige_jobs = wp_kses( str_replace(' ', '', $atts['zeige_jobs']), array() );
+                $zeige_jobs = wp_kses( str_replace(', ', ',', $atts['zeige_jobs']), array() );
                 $atts['Zeige_Jobs'] = explode(',', $zeige_jobs);
             }
 
