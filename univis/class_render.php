@@ -247,7 +247,7 @@ class univisRender {
                 $gruppen[$i]["name"] = '';
             }
         }
-
+        
         return array("gruppen" => $gruppen, "optionen" => $this->optionen);
     }
 
@@ -333,7 +333,7 @@ class univisRender {
         if (count($gruppen) <= 1) {
             $this->optionen["Zeige_Sprungmarken"] = 0;
         }
-
+        
         return array("gruppen" => $gruppen, "optionen" => $this->optionen);
     }
 
@@ -392,7 +392,7 @@ class univisRender {
 
         // Zeige keine Sprungmarken falls nur eine OrgUnit vorhanden ist.
         if (count($gruppen) <= 1) {
-            $this->optionen["zeige_sprungmarken"] = 0;  
+            $this->optionen["Zeige_Sprungmarken"] = 0;  
         }
 
         return array("gruppen" => $gruppen, "optionen" => $this->optionen);

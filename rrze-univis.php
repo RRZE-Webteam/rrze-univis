@@ -130,6 +130,7 @@ class RRZE_UnivIS {
                             '_de' => 'Sicherheitsbeauftragter|IT-Sicherheits-Beauftragter|Webmaster|Postmaster|IT-Betreuer|UnivIS-Beauftragte', 
                             '_en' => 'Security commissary|IT-security commissary|Webmaster|Postmaster|IT-support|Local UnivIS administration', 
                             ),
+                        'Zeige_Jobs' => array(),
                         'Datenverzeichnis' => '',
                         'id' => '',             // kann im Shortcode verwendet werden, sollte aber nicht
                         'lv_id' => '',          // Lehrveranstaltungs-ID
@@ -422,10 +423,11 @@ class RRZE_UnivIS {
                 $atts['Ignoriere_Jobs'] = wp_kses( str_replace(' ', '', $atts['ignoriere_jobs']), array() );
                 $atts['Ignoriere_Jobs'] = wp_kses( str_replace(',', '|', $atts['Ignoriere_Jobs']), array() );
             }
-            if( isset( $atts['sortiere_alphabet'] ) ) { // Übergabe in Großbuchstaben
-                $atts['Sortiere_Alphabet'] = wp_kses( str_replace(' ', '', $atts['sortiere_alphabet']), array() );
-                $atts['Sortiere_Alphabet'] = wp_kses( str_replace(',', '|', $atts['sortiere_alphabet']), array() );
+            if( isset( $atts['zeige_jobs'] ) ) { // Übergabe in Großbuchstaben
+                $zeige_jobs = wp_kses( str_replace(' ', '', $atts['zeige_jobs']), array() );
+                $atts['Zeige_Jobs'] = explode(',', $zeige_jobs);
             }
+
             if( isset( $atts['orgunit'] )) {
                 $atts['OrgUnit'] = wp_kses( $atts['orgunit'], array() );
             }

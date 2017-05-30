@@ -1,6 +1,6 @@
 <div id="univis-personenindex">
     <?php foreach ($daten['gruppen'] as $gruppe) : 
-        if ( !empty( $gruppe['personen'] ) ) : ?>
+        if ( (empty( $daten['optionen']['zeige_jobs']) || in_array($gruppe['name'], $daten['optionen']['zeige_jobs']) ) && !empty( $gruppe['personen'] ) ) : ?>
     <h4><?php echo $gruppe['name']; ?></h4>
     <ul>
         <?php foreach ($gruppe['personen'] as $person) : 
