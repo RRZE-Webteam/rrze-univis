@@ -2,11 +2,12 @@
 /**
   Plugin Name: RRZE-UnivIS
   Plugin URI: https://github.com/RRZE-Webteam/rrze-univis
- * Description: Einbindung von Daten aus UnivIS für den Geschäftsverteilungsplan auf Basis des UnivIS-Plugins des Webbaukastens.
- * Version: 1.4.2
- * Author: RRZE-Webteam
- * Author URI: http://blogs.fau.de/webworking/
- * License: GPLv2 or later
+  GitHub Theme URI: https://github.com/RRZE-Webteam/rrze-univis
+  Description: Einbindung von Daten aus UnivIS für den Geschäftsverteilungsplan auf Basis des UnivIS-Plugins des Webbaukastens.
+  Version: 1.4.3
+  Author: RRZE-Webteam
+  Author URI: http://blogs.fau.de/webworking/
+  License: GPLv2 or later
  */
 /*
  * This program is free software; you can redistribute it and/or
