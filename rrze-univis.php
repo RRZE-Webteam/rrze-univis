@@ -2,7 +2,7 @@
 /**
   Plugin Name: RRZE-UnivIS
   Plugin URI: https://github.com/RRZE-Webteam/rrze-univis
-  GitHub Theme URI: https://github.com/RRZE-Webteam/rrze-univis
+  GitHub Plugin URI: https://github.com/RRZE-Webteam/rrze-univis
   Description: Einbindung von Daten aus UnivIS für den Geschäftsverteilungsplan auf Basis des UnivIS-Plugins des Webbaukastens.
   Version: 1.4.3
   Author: RRZE-Webteam
@@ -54,8 +54,8 @@ class RRZE_UnivIS {
         'text' => 'text',
         'title' => 'title'
     );
-
-   
+    
+    
     public static function instance() {
 
         if (null == self::$instance) {
