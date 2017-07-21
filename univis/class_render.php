@@ -194,6 +194,10 @@ array_multisort($jobs_of_person_priority, SORT_DESC, $jobs_of_person);
 
 foreach($jobs_of_person as $key => $rang)
 {
+if(stripos("Gruppenleitung",$rang)!==FALSE)
+	{//String enthalten in Leader_jobs-->Overwrite order setzen
+		$person['overwriteorder']=$person['overwriteorder']+1;
+		}
 //Test ob Leitungsposition
 	if(stripos($this->optionen["Leader_Jobs"],$rang)!==FALSE)
 	{//String enthalten in Leader_jobs-->Overwrite order setzen
@@ -364,10 +368,13 @@ $person['rang']= implode("|", $jobs_of_person);
                                   $gruppen_obj["groupcss_start"]="<div class=\"group\" id=\"".$groupid."\">";
                                 }
                                 $gruppen_obj["groupid"]="groupleader".$groupid;
-                                $gruppen_obj["groupleader"]="true";
+                                $gruppen_obj["groupleader"]="false";
                                 foreach($gruppen_obj["personen"] as $key=>$person)
                                 {
-                                 $gruppen_obj["personen"][$key]["leaderfunction"]="[:de]Gruppenleitung[:en]Group leader[:]";
+                                 if(strpos($gruppen_obj["personen"][$key][rang],"Gruppenleitung")!==false)//Set groupleader string, if person is also in the groupleader group
+                                 {
+                                 		$gruppen_obj["personen"][$key]["leaderfunction"]="[:de]Gruppenleitung[:en]Group leader[:]";
+                                 }
                                 }
                               
                             }else if(strpos($gruppen_name,"Team Technology (TE)")===0)
@@ -693,18 +700,20 @@ $gruppen[$key]['name']=str_replace("Gruppe","[:de]Gruppe[:en]Group[:]",$group['n
 	//echo "<br>".$person_id."<br>";
 	
 //Lecture.tech.IE.LETE.arb
-
+	if(isset($veranstaltungen)){
 	foreach($veranstaltungen as $k =>$veranstaltung){//Loeschliste anlegen und Fremdveranstaltungen loeschen
     //	echo $veranstaltung['name'].":<br>";
     //echo "<pre>";print_r($veranstaltung);echo "</pre>";
 	  //Alle Dozenten Dieser Veranstaltung auslesen:
+	if(isset($veranstaltung['dozs'][0]['doz'])){
 	  foreach($veranstaltung['dozs'][0]['doz'] as $i =>$dozent){
-      if(is_numeric($dozent['id']))
-      {
-        $Dozenten_IDs[$veranstaltung['@attributes']['key']][]=$dozent['id'];
-      }
-		  $veranstaltungen[$k]['dozs'][0]['doz'][$i]=$this->person_format_convert($dozent);
+      		if(is_numeric($dozent['id']))
+      		{
+        		$Dozenten_IDs[$veranstaltung['@attributes']['key']][]=$dozent['id'];
+      		}
+		$veranstaltungen[$k]['dozs'][0]['doz'][$i]=$this->person_format_convert($dozent);
 	  }
+	}
 
 
     //echo "<pre>";print_r($veranstaltung['dozs'][0]['doz']);echo "</pre>";
@@ -728,6 +737,7 @@ $gruppen[$key]['name']=str_replace("Gruppe","[:de]Gruppe[:en]Group[:]",$group['n
 					  $SaveMyCourses[]=$veranstaltung['@attributes']['key'];
 				  }
 		}
+	}
 	}
 
 			foreach($veranstaltungen as $i =>$veranstaltung){//doppelte loeschen 2 durchgänge nötig, hauptkurs kommt nicht immer zuerst!
