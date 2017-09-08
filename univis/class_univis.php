@@ -100,7 +100,7 @@ class UNIVIS {
 		$url = esc_url_raw( $this->univis_url."?search=departments&number=".$this->optionen["UnivISOrgNr"]."&show=xml" );
  
 		if(!fopen($url, "r")) {
-                    if($this->optionen['errormsg'] == 1) {
+                    if(isset($this->optionen['errormsg']) && $this->optionen['errormsg'] == 1) {
                         echo "Leider konnte zu UnivIS keine Verbindung aufgebaut werden.";
                     }
 			// Univis Server ist nicht erreichbar
@@ -110,7 +110,7 @@ class UNIVIS {
                 $handle = fopen($url, "r");
                 $content = fread($handle, 100);
                 if( substr( $content, 0, 5) != '<?xml' ) {
-                    if($this->optionen['errormsg'] == 1) {
+                    if(isset($this->optionen['errormsg']) && $this->optionen['errormsg'] == 1) {
                         echo "Leider brachte Ihre Suche kein Ergebnis. Bitte überprüfen Sie die Suchparameter.";
                     }
                         // Univis Server ist nicht erreichbar
@@ -122,12 +122,12 @@ class UNIVIS {
 		$daten = $this->xml2array($url);
 
                 if(empty($daten)) {
-                    if($this->optionen['errormsg'] == 1) {
+                    if(isset($this->optionen['errormsg']) && $this->optionen['errormsg'] == 1) {
                         echo "Leider konnte die Organisationseinheit nicht gefunden werden.";       
                     }
                     return -1;
                 } elseif(!isset($daten["Person"])) {
-                    if($this->optionen['errormsg'] == 1) {
+                    if(isset($this->optionen['errormsg']) && $this->optionen['errormsg'] == 1) {
                         echo "In dieser Organisationseinheit konnten keine Mitarbeiter gefunden werden.";
                     }
                         return -1;                                    
@@ -238,7 +238,7 @@ class UNIVIS {
 		$url = esc_url_raw( $this->univis_url."?search=persons&department=".$this->optionen["UnivISOrgNr"]."&show=xml" );
 
 		if(!fopen($url, "r")) {
-                    if($this->optionen['errormsg'] == 1) {
+                    if(isset($this->optionen['errormsg']) && $this->optionen['errormsg'] == 1) {
                             echo "Leider konnte zu UnivIS keine Verbindung aufgebaut werden.";
                     }
                         // Univis Server ist nicht erreichbar
@@ -257,7 +257,7 @@ class UNIVIS {
 		// XML Daten Parsen
 		$daten = $this->xml2array($url);
                 if(empty($daten)) {
-                    if($this->optionen['errormsg'] == 1) {
+                    if(isset($this->optionen['errormsg']) && $this->optionen['errormsg'] == 1) {
                         echo "Leider konnte die Organisationseinheit nicht gefunden werden.";
                     }
                     return -1;
@@ -302,7 +302,7 @@ class UNIVIS {
 
 
 		if(!fopen($url, "r")) {
-                    if($this->optionen['errormsg'] == 1) {
+                    if(isset($this->optionen['errormsg']) && $this->optionen['errormsg'] == 1) {
                         echo "Leider konnte zu UnivIS keine Verbindung aufgebaut werden.";
                     }
 			// Univis Server ist nicht erreichbar
@@ -312,7 +312,7 @@ class UNIVIS {
                 $handle = fopen($url, "r");
                 $content = fread($handle, 100);
                 if( substr( $content, 0, 5) != '<?xml' ) {
-                    if($this->optionen['errormsg'] == 1) {
+                    if(isset($this->optionen['errormsg']) && $this->optionen['errormsg'] == 1) {
                         echo "Leider brachte Ihre Suche kein Ergebnis. Bitte überprüfen Sie die Suchparameter.";
                     }
                     // Univis Server ist nicht erreichbar
@@ -321,7 +321,7 @@ class UNIVIS {
                 fclose($handle);                
 		$persArray = $this->xml2array($url);
                 if(empty($persArray)) {
-                    if($this->optionen['errormsg'] == 1) {
+                    if(isset($this->optionen['errormsg']) && $this->optionen['errormsg'] == 1) {
                         echo "Leider konnte die Person nicht gefunden werden.";
                     }
                     return -1;
@@ -329,7 +329,7 @@ class UNIVIS {
 		$person = $persArray["Person"];
 
 		if(count($persArray) == 0 ) {
-                    if($this->optionen['errormsg'] == 1) {
+                    if(isset($this->optionen['errormsg']) && $this->optionen['errormsg'] == 1) {
                         echo "Leider konnte die Person nicht gefunden werden.";
                     }
 			// Keine Person gefunden
@@ -364,7 +364,7 @@ class UNIVIS {
                 }
 
 		if(!fopen($url, "r")) {
-                    if($this->optionen['errormsg'] == 1) {
+                    if(isset($this->optionen['errormsg']) && $this->optionen['errormsg'] == 1) {
                         echo "Leider konnte zu UnivIS keine Verbindung aufgebaut werden.";
                     }
 			// Univis Server ist nicht erreichbar
@@ -374,7 +374,7 @@ class UNIVIS {
                 $handle = fopen($url, "r");
                 $content = fread($handle, 100);
                 if( substr( $content, 0, 5) != '<?xml' ) {
-                    if($this->optionen['errormsg'] == 1) {
+                    if(isset($this->optionen['errormsg']) && $this->optionen['errormsg'] == 1) {
                         echo "Leider brachte Ihre Suche kein Ergebnis. Bitte überprüfen Sie die Suchparameter.";
                     }
                     // Univis Server ist nicht erreichbar
@@ -384,7 +384,7 @@ class UNIVIS {
                 
 		$array = $this->xml2array($url);
                 if(empty($array)) {
-                    if($this->optionen['errormsg'] == 1) {
+                    if(isset($this->optionen['errormsg']) && $this->optionen['errormsg'] == 1) {
                         echo "Leider konnten keine Publikationen gefunden werden.";
                     }
                     return -1;
@@ -425,7 +425,7 @@ class UNIVIS {
                 } elseif ( $this->optionen["UnivISOrgNr"] ) {
                     $url .= "&department=" . $this->optionen["UnivISOrgNr"];
                 }
-                
+
                 if( $this->optionen["type"] ) {
                     $url .= "&type=" . $this->optionen["type"];
                 }
@@ -434,7 +434,7 @@ class UNIVIS {
                     $url .= "&sem=" . $this->optionen["sem"];
                 } 
 		if(!fopen($url, "r")) {
-                    if($this->optionen['errormsg'] == 1) {
+                    if(isset($this->optionen['errormsg']) && $this->optionen['errormsg'] == 1) {
                         echo "Leider konnte zu UnivIS keine Verbindung aufgebaut werden.";
                     }
 			// Univis Server ist nicht erreichbar
@@ -444,7 +444,7 @@ class UNIVIS {
                 $handle = fopen($url, "r");
                 $content = fread($handle, 100);
                 if( substr( $content, 0, 5) != '<?xml' ) {
-                    if($this->optionen['errormsg'] == 1) {
+                    if(isset($this->optionen['errormsg']) && $this->optionen['errormsg'] == 1) {
                         echo "Leider brachte Ihre Suche kein Ergebnis. Bitte überprüfen Sie die Suchparameter.";
                     }
                     // Univis Server ist nicht erreichbar
@@ -455,7 +455,7 @@ class UNIVIS {
 		$array = $this->xml2array($url);
                 
                 if(empty($array)) {
-                    if($this->optionen['errormsg'] == 1) {
+                    if(isset($this->optionen['errormsg']) && $this->optionen['errormsg'] == 1) {
                         echo "Leider konnten keine Lehrveranstaltungen gefunden werden.";
                     }
                     return -1;
@@ -487,7 +487,7 @@ class UNIVIS {
 	private function _ladeLehrveranstaltungenEinzeln() {
 		// Hole Daten von Univis
 		if($this->optionen["lv_id"] == "") {
-                            if($this->optionen['errormsg'] == 1) {
+                            if(isset($this->optionen['errormsg']) && $this->optionen['errormsg'] == 1) {
 				// Fehler: Bitte geben Sie eine Lehrveranstaltung an
 				echo "<div class=\"hinweis_wichtig\">Bitte geben Sie eine Lehrveranstaltung an.</div>";
                             }
@@ -505,7 +505,7 @@ class UNIVIS {
                 } 
 
 		if(!fopen($url, "r")) {
-                    if($this->optionen['errormsg'] == 1) {
+                    if(isset($this->optionen['errormsg']) && $this->optionen['errormsg'] == 1) {
                         echo "Leider konnte zu UnivIS keine Verbindung aufgebaut werden.";
                     }
 			// Univis Server ist nicht erreichbar
@@ -515,7 +515,7 @@ class UNIVIS {
                 $handle = fopen($url, "r");
                 $content = fread($handle, 100);
                 if( substr( $content, 0, 5) != '<?xml' ) {
-                    if($this->optionen['errormsg'] == 1) {
+                    if(isset($this->optionen['errormsg']) && $this->optionen['errormsg'] == 1) {
                         echo "Leider brachte Ihre Suche kein Ergebnis. Bitte überprüfen Sie die Suchparameter.";
                     }
                     // Univis Server ist nicht erreichbar
@@ -525,7 +525,7 @@ class UNIVIS {
 
                 $array = $this->xml2array($url);
                 if(empty($array)) {
-                    if($this->optionen['errormsg'] == 1) {                    
+                    if(isset($this->optionen['errormsg']) && $this->optionen['errormsg'] == 1) {                    
                         echo "Leider brachte Ihre Suche kein Ergebnis.";
                     }
                     return -1;
