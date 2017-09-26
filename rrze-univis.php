@@ -34,7 +34,7 @@ require_once('univis/class_controller.php');
 
 class RRZE_UnivIS {
 
-    const version = '1.4.2';
+    const version = '1.4.3';
     const option_name = '_rrze_univis';
     const version_option_name = '_rrze_univis_version';
     const textdomain = 'rrze-univis';
@@ -238,10 +238,13 @@ class RRZE_UnivIS {
         }
 
         if( !empty($slug) ) {
-            $atts = array(
-                $key => $slug,
-            );
-
+            $slug = $key . '=' . $slug;
+            $slugs = explode('&', $slug);
+            $atts = array();
+            foreach($slugs as $k=>$v) {
+                $arr = explode('=', $v);
+                $atts[$arr[0]] = $arr[1];
+            }
             $controller = new univisController($task, NULL, $atts);
             $univis_data = $controller->ladeHTML();
         } else {
