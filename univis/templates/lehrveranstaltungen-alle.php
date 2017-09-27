@@ -1,6 +1,5 @@
 <?php if ($daten['veranstaltungen']) :
     foreach ($daten['veranstaltungen'] as $veranstaltung) : 
-        _rrze_debug_log($veranstaltung);
         if($this->optionen['lv_type'] == 1) : ?>
 	<h2>
             <?php echo $veranstaltung['title']; ?>
