@@ -19,9 +19,12 @@
                 $name['lastname'] = '<span itemprop="familyName">' . $doz['lastname'] . '</span>';
             endif;
             $fullname = implode(' ', $name);
-            ?>
-            <?php $url = get_permalink() . 'univisid/' . $doz['id']; ?>
-            <li itemprop="name" itemscope itemtype="http://schema.org/Person"><a href="<?php echo $url; ?>"><?php echo $fullname; ?></a></li>
+            if(!empty($doz['id'])): 
+                $url = '<a href="' . get_permalink() . 'univisid/' . $doz['id'] . '">' . $fullname . '</a>'; 
+            else:
+                $url = $fullname;
+            endif;?>
+            <li itemprop="name" itemscope itemtype="http://schema.org/Person"><?php echo $url; ?></li>
             <?php
         endforeach; ?>
         </ul>    
