@@ -157,7 +157,11 @@
     ?>
 
 
-
+    <?php if (!empty($veranstaltung['literature'])) : ?>
+        <h4><?php _e('Empfohlene Literatur', RRZE_UnivIS::textdomain);?></h4>              
+        <p><?php echo $veranstaltung['literature']; ?></p>
+        <?php endif;
+    ?>
 
     <?php if (!empty($veranstaltung['ects_infos'])) : ?>
         <h4><?php _e('ECTS-Informationen', RRZE_UnivIS::textdomain);?></h4>              
