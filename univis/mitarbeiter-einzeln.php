@@ -13,7 +13,7 @@
 
 	$name  = substr($_SERVER["PATH_INFO"], 1, -6);
 	$name = fix_for_page($name);
-	$name = split("-", $name,2);
+	$name = explode("-", $name);
 
 	$args["firstname"] = fix_for_page($name[0]);
 	$args["lastname"] = fix_for_page($name[count($name)-1]);
