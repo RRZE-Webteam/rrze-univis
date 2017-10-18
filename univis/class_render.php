@@ -1112,7 +1112,7 @@ if(count($veranstaltungen)==0){return false;}
 
 			$gruppenName = $child[$key_name];
 
-			if(!isset($gruppen_dict[$gruppenName])||($gruppen_dict[$gruppenName]==NULL))
+			if(!isset($gruppen_dict[$gruppenName])||(empty($gruppen_dict[$gruppenName])))
 			{	$gruppen_dict[$gruppenName] = array();}
 			
 			

@@ -264,11 +264,11 @@ class UNIVIS {
 		if($person) $person = $person[0];
 
 		// Lade Publikationen und Lehrveranstaltungen falls noetig
-		if ($this->optionen["Personenanzeige_Publikationen"]) {
+		if (!empty($this->optionen["Personenanzeige_Publikationen"])) {
 			$person["publikationen"] = $this->_ladePublikationen($person["id"]);
 		}
 
-		if ($this->optionen["Personenanzeige_Lehrveranstaltungen"]) {
+		if (!empty($this->optionen["Personenanzeige_Lehrveranstaltungen"])) {
 //Erst aktuelles Semester, dann folgendes:
   $this->optionen['semester']=$this->aktuellesSemester();
 			$person["lehrveranstaltungen"] = $this->_ladeLehrveranstaltungenAlle($person["id"]);
@@ -479,15 +479,20 @@ $person['@attributes']['key']=$this->optionen['personkey'];
 	      $a[$sxi->key()] = array();
 	    }
 	    if($sxi->hasChildren()){
-	      $a[$sxi->key()][] = $this->sxiToArray($sxi->current());
-	    }
-	    else{
+				if (empty($a[$sxi->key()])) {
+                    $a[$sxi->key()] = array();
+                }
+                $a[$sxi->key()][] = $this->sxiToArray($sxi->current());
+	    } else {
 	      $a[$sxi->key()] = strval($sxi->current());
 
 	      //Fuege die UnivisRef Informationen ein.
 	      if($sxi->UnivISRef) {
-	      	$attributes = (array) $sxi->UnivISRef->attributes();
-			$a[$sxi->key()][] = $attributes["@attributes"];
+				if (empty($a[$sxi->key()])) {
+				$a[$sxi->key()] = array();
+				}
+            $attributes = (array) $sxi->UnivISRef->attributes();
+						$a[$sxi->key()][] = $attributes["@attributes"];
 	      }
 	    }
 
