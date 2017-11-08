@@ -4,7 +4,7 @@
   Plugin URI: https://github.com/RRZE-Webteam/rrze-univis
   GitHub Plugin URI: https://github.com/RRZE-Webteam/rrze-univis
   Description: Einbindung von Daten aus UnivIS für den Geschäftsverteilungsplan auf Basis des UnivIS-Plugins des Webbaukastens.
-  Version: 1.4.3
+  Version: 1.4.4
   Author: RRZE-Webteam
   Author URI: http://blogs.fau.de/webworking/
   License: GPLv2 or later
@@ -34,7 +34,7 @@ require_once('univis/class_controller.php');
 
 class RRZE_UnivIS {
 
-    const version = '1.4.3';
+    const version = '1.4.4';
     const option_name = '_rrze_univis';
     const version_option_name = '_rrze_univis_version';
     const textdomain = 'rrze-univis';

@@ -1,5 +1,8 @@
 Versionsänderungen:
 ===================
+####Version 1.4.4:    
+- Bugfix Lehrveranstaltungen nicht übernehmen        
+
 ####Version 1.4.3:    
 - Bugfix ausführliche Anzeige von Lehrveranstaltungen aus früherem Semester    
 - Bugfix Einzelanzeige LV bei fehlender Dozenten-ID    

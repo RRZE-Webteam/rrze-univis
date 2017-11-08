@@ -600,6 +600,7 @@ class univisRender {
         if (isset($veranstaltung["courses"])) {
             $course_terms = array();
             foreach ($veranstaltung["courses"][0]["course"] as $course) {
+                $data = array();
                 $data["id"] = $course["id"];
                 // Kursname
                 if (isset($course["coursename"])) {
@@ -611,6 +612,7 @@ class univisRender {
                         if (isset($_terms["term"])) {
                             foreach ($_terms["term"] as &$course_lecture) {
                                 $date = array();
+                                $repeat = array();
                                 if (isset($course_lecture["repeat"]))
                                     $repeat = explode(" ", $course_lecture["repeat"]);
                                 if (isset($repeat)) {
