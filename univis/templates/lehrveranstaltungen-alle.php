@@ -8,6 +8,7 @@
 	<ul>
         <?php if (!empty($veranstaltung['data'])) : 
             foreach ($veranstaltung['data'] as $data) : 
+            //_rrze_debug($data);
             if( empty( $this->optionen['leclanguage'] ) || ( isset( $data['leclanguage'] ) && strpbrk( $data['leclanguage'], $this->optionen['leclanguage'] ) != FALSE  ) )  :
                 if ( !isset ($data['parent_course_id']) ): 
                 $url = get_permalink() . 'lv_id/' . $data['id'];
@@ -16,13 +17,16 @@
                 endif; ?>
                 <li>
                     <h3><a href="<?php echo $url; ?>"><?php echo $data['name']; ?></a></h3>
-                    <?php if (array_key_exists('comment', $data)) : ?>
+                    <?php if( $this->optionen['kompakt'] == 0 ):
+                    if (array_key_exists('comment', $data)) : ?>
                         <p><?php echo $data['comment']; ?></p>
                     <?php endif; ?>
                     <ul>
                         <?php
                         if (array_key_exists('course_terms', $data)) :
                             foreach ($data['course_terms'] as $course_terms):
+                                $t = array();
+                                $time = array();
                                 if (!empty($course_terms['date'])) :
                                     $t['date'] = $course_terms['date'];
                                 endif;
@@ -60,6 +64,8 @@
                         elseif (array_key_exists('terms', $data) && array_key_exists('term', $data['terms'][0])) :
                         //if (!empty(univisController::get_key($data, 'terms', 0)) && !empty(univisController::get_key($data['terms'], 'term', 0))) {
                         foreach ($data['terms'][0]['term'] as $term) :
+                            $t = array();
+                            $time = array();
                             if (!empty($term['date'])) :
                                 $t['date'] = $term['date'];
                             endif;
@@ -98,6 +104,7 @@
 
                 </li>
                 <?php endif;
+                endif;
                 endif;
             endforeach;
         endif; ?>

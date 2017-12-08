@@ -4,7 +4,7 @@
   Plugin URI: https://github.com/RRZE-Webteam/rrze-univis
   GitHub Plugin URI: https://github.com/RRZE-Webteam/rrze-univis
   Description: Einbindung von Daten aus UnivIS für den Geschäftsverteilungsplan auf Basis des UnivIS-Plugins des Webbaukastens.
-  Version: 1.4.4
+  Version: 1.5.0
   Author: RRZE-Webteam
   Author URI: http://blogs.fau.de/webworking/
   License: GPLv2 or later
@@ -34,7 +34,7 @@ require_once('univis/class_controller.php');
 
 class RRZE_UnivIS {
 
-    const version = '1.4.4';
+    const version = '1.5.0';
     const option_name = '_rrze_univis';
     const version_option_name = '_rrze_univis_version';
     const textdomain = 'rrze-univis';
@@ -147,7 +147,8 @@ class RRZE_UnivIS {
                         'errormsg' => '',          // Anzeige von Fehlermeldungen bei Ausgabe
                         'lv_type' => '1',        // Anzeige LV-Typ-Überschriften 
                         'lang' => $language,           // wichtig für die Ausgabe englischer Bezeichnungen von orgunit, orgunits, text, description
-                        'leclanguage' => ''         // Veranstaltungssprache
+                        'leclanguage' => '',         // Veranstaltungssprache
+                        'kompakt' => 0          // Ausschließliche Anzeige LV-Überschriften
                 );
         return $defaults;
     }
@@ -273,7 +274,6 @@ class RRZE_UnivIS {
     public static function options_univis() {
         ?>
         <div class="wrap">
-        <?php screen_icon(); ?>
             <h2><?php echo __('Einstellungen &rsaquo; <b><i>Univ</i>IS</b>', self::textdomain); ?></h2>
 
             <form method="post" action="options.php">
@@ -521,7 +521,6 @@ class RRZE_UnivIS {
         }
         ?>
         <div class="wrap">
-            <?php screen_icon(); ?>
             <h2><?php echo esc_html(__('Suche nach UnivIS-ID', FAU_PERSON_TEXTDOMAIN)); ?></h2>
 
             <form method="post">

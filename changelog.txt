@@ -1,7 +1,9 @@
 Versionsänderungen:
 ===================
-####Version 1.4.4:    
-- Bugfix Lehrveranstaltungen nicht übernehmen        
+####Version 1.5.0:    
+- Bugfix Einzeltermine von Lehrveranstaltungen    
+- Bugfix screen_icon()       
+- Parameter show="kompakt" für ausschließliche Ausgabe von Lehrveranstaltungsüberschriften     
 
 ####Version 1.4.3:    
 - Bugfix ausführliche Anzeige von Lehrveranstaltungen aus früherem Semester    
