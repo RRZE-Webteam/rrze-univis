@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: RRZE UnivIS\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-02-02 18:02+0100\n"
+"POT-Creation-Date: 2018-02-06 17:27+0100\n"
 "PO-Revision-Date: \n"
 "Last-Translator: \n"
 "Language-Team: RRZE-Webteam <webmaster@rrze.fau.de>\n"
@@ -136,16 +136,26 @@ msgstr ""
 msgid "RRZE Webteam on Github"
 msgstr ""
 
-#: ../RRZE/UnivIS/Main.php:188
+#: ../RRZE/UnivIS/Main.php:209
 msgid "Please enter a valid UnivIS OrgNr."
 msgstr ""
 
-#: ../RRZE/UnivIS/Main.php:196
+#: ../RRZE/UnivIS/Main.php:217
 msgid "Please enter a valid lecture ID."
 msgstr ""
 
-#: ../RRZE/UnivIS/Main.php:204
+#: ../RRZE/UnivIS/Main.php:225
 msgid "Please enter a first and last name or a UnivIS ID."
+msgstr ""
+
+#: ../RRZE/UnivIS/Templates/Themes/Blue-Edgy/content-univis.php:9
+#: ../RRZE/UnivIS/Templates/Themes/FAU/single-univis.php:14
+#: ../RRZE/UnivIS/Templates/single-univis.php:9
+msgid "Back to overview"
+msgstr ""
+
+#: ../RRZE/UnivIS/Templates/Themes/Blue-Edgy/content-univis.php:14
+msgid "(Edit)"
 msgstr ""
 
 #: ../RRZE/UnivIS/Templates/lehrveranstaltungen-alle.php:42
@@ -262,10 +272,6 @@ msgstr ""
 
 #: ../RRZE/UnivIS/Templates/mitarbeiter-einzeln.php:72
 msgid "Address"
-msgstr ""
-
-#: ../RRZE/UnivIS/Templates/single-univis.php:16
-msgid "Back to overview"
 msgstr ""
 
 #: ../rrze-univis.php:75
