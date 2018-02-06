@@ -32,6 +32,27 @@ class Main {
         'title' => 'title'
     ];
     
+    public $allowed_stylesheets = [
+        'FAU' => [
+            'FAU-Einrichtungen',
+            'FAU-Einrichtungen-BETA',
+            'FAU-Medfak',
+            'FAU-RWFak',
+            'FAU-Philfak',
+            'FAU-Techfak',
+            'FAU-Natfak'
+        ],
+        'RRZE' => [
+            'rrze-2015'
+        ],
+        'Blue-Edgy' => [
+            'blue-edgy'
+        ],
+        'FAU-Events' => [
+            'FAU-Events'
+        ]        
+    ];
+    
     public function __construct($plugin_basename = NULL) {
         $this->plugin_basename = $plugin_basename;
 
@@ -309,22 +330,36 @@ class Main {
 
             $controller = new Controller($task, NULL, $atts);
 
-            $univis_data = $controller->ladeHTML();
+            $data = $controller->ladeHTML();
         } else {
-            $univis_data = NULL;
+            $data = NULL;
         }
 
-        if ($template = locate_template('single-univis.php')) {
-            $this->load_template($template, $univis_data);
-        } else {
-            $this->load_template('Templates/single-univis.php', $univis_data);
-        }
+        $template = $this->locate_template();
+        
+        $this->load_template($template, $data);
+        exit;
     }
 
-    protected function load_template($template, $daten = array()) {
+    protected function locate_template() {
+        $current_theme = wp_get_theme();
+        $default_template = 'Templates/single-univis.php';
+        $template = '';
+        
+        foreach ($this->allowed_stylesheets as $theme => $style) {
+            if (in_array(strtolower($current_theme->stylesheet), array_map('strtolower', $style))) {
+                $template = "Templates/Themes/$theme/single-univis.php";
+                break;
+            }
+        }
+
+        return file_exists(dirname(__FILE__) . '/' . $template) ? $template : $default_template;
+    }
+    
+    protected function load_template($template, $data = array()) {
         //$data['messages'] = $this->messages;
 
-        return include $template;
+        include $template;
     }
 
 }
