@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: RRZE UnivIS\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-02-06 17:27+0100\n"
+"POT-Creation-Date: 2018-02-09 15:47+0100\n"
 "PO-Revision-Date: \n"
 "Last-Translator: \n"
 "Language-Team: RRZE-Webteam <webmaster@rrze.fau.de>\n"
@@ -136,15 +136,19 @@ msgstr "Für mehr Information"
 msgid "RRZE Webteam on Github"
 msgstr "RRZE-Webteam in Github"
 
-#: ../RRZE/UnivIS/Main.php:209
+#: ../RRZE/UnivIS/MCE/langs.php:17
+msgid "Add UnivIS"
+msgstr "UnivIS einfügen"
+
+#: ../RRZE/UnivIS/Main.php:210
 msgid "Please enter a valid UnivIS OrgNr."
 msgstr "Bitte geben Sie eine gültige UnivIS-Organisationsnummer an."
 
-#: ../RRZE/UnivIS/Main.php:217
+#: ../RRZE/UnivIS/Main.php:218
 msgid "Please enter a valid lecture ID."
 msgstr "Bitte geben Sie eine gültige Lehrveranstaltungs-ID an."
 
-#: ../RRZE/UnivIS/Main.php:225
+#: ../RRZE/UnivIS/Main.php:226
 msgid "Please enter a first and last name or a UnivIS ID."
 msgstr "Bitte geben Sie einen Vor- und Nachnamen oder eine UnivIS-ID an."
 
