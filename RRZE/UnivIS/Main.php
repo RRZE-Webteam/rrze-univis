@@ -9,7 +9,7 @@ defined('ABSPATH') || exit;
 
 class Main {
 
-    public $plugin_basename;
+    public $plugin_file;
     public $options;
     public $settings;
     public $controller;
@@ -53,8 +53,8 @@ class Main {
         ]        
     ];
     
-    public function __construct($plugin_basename = NULL) {
-        $this->plugin_basename = $plugin_basename;
+    public function __construct($plugin_file = NULL) {
+        $this->plugin_file = $plugin_file;
 
         $this->options = new Options();
 
@@ -64,6 +64,7 @@ class Main {
         add_action('admin_init', array($this->settings, 'admin_settings'));
 
         add_shortcode('univis', array($this, 'add_shortcode'));
+        add_action('admin_init', array($this, 'mce_external_plugins')); 
 
         add_action('init', 'RRZE\UnivIS\add_endpoint');
         add_action('template_redirect', array($this, 'endpoint_template_redirect'));
@@ -302,7 +303,25 @@ class Main {
         }
         return $language;
     }
+    
+    function mce_external_plugins() {
+        if (current_user_can('edit_posts') && current_user_can('edit_pages')) {
+            add_filter('mce_external_languages', array($this, 'mce_languages'));
+            add_filter('mce_external_plugins', array($this, 'mce_plugins'));
+        }
+    }
 
+    function mce_languages($locales) {
+        $locales ['univis_shortcode'] = plugin_dir_path($this->plugin_file) . 'RRZE/UnivIS/MCE/langs.php';
+        return $locales;
+    }
+
+    function mce_plugins($plugin_array) {
+        $min = defined('WP_DEBUG') && WP_DEBUG ? '' : '.min';
+        $plugin_array['univis_shortcode'] = plugin_dir_url($this->plugin_file) . "RRZE/UnivIS/MCE/univis-shortcode$min.js";
+        return $plugin_array;
+    }
+    
     public function endpoint_template_redirect() {
         global $wp_query;
 
