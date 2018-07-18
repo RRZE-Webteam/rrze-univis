@@ -29,7 +29,7 @@ class UnivIS {
      * @var string
      * @access private
      */
-    private $univis_url = "http://univis.uni-erlangen.de/prg";
+    private $univis_url = "https://univis.uni-erlangen.de/prg";
 
     /**
      * Constructor.
