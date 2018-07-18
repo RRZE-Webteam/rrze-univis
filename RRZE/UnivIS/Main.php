@@ -372,7 +372,7 @@ class Main {
             }
         }
 
-        return file_exists($template) ? $template : $default_template;
+        return !empty($template) && file_exists($template) ? $template : $default_template;
     }
     
     protected function load_template($template, $data = array()) {
