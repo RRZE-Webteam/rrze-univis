@@ -20,7 +20,7 @@ class Main {
      * @var string
      * @access private
      */
-    private $univis_url = 'http://univis.uni-erlangen.de';
+    private $univis_url = 'https://univis.uni-erlangen.de';
 
     public $language = [
         'suffix' => '', 
@@ -362,22 +362,20 @@ class Main {
 
     protected function locate_template() {
         $current_theme = wp_get_theme();
-        $default_template = 'Templates/single-univis.php';
+        $default_template = plugin_dir_path($this->plugin_file) . 'RRZE/UnivIS/Templates/single-univis.php';
         $template = '';
         
         foreach ($this->allowed_stylesheets as $theme => $style) {
             if (in_array(strtolower($current_theme->stylesheet), array_map('strtolower', $style))) {
-                $template = "Templates/Themes/$theme/single-univis.php";
+                $template = plugin_dir_path($this->plugin_file) . "RRZE/UnivIS/Templates/Themes/$theme/single-univis.php";
                 break;
             }
         }
 
-        return file_exists(dirname(__FILE__) . '/' . $template) ? $template : $default_template;
+        return !empty($template) && file_exists($template) ? $template : $default_template;
     }
     
     protected function load_template($template, $data = array()) {
-        //$data['messages'] = $this->messages;
-
         include $template;
     }
 
