@@ -8,21 +8,6 @@ use RRZE\UnivIS\Core\Render;
 defined('ABSPATH') || exit;
 
 class Controller {
-
-    public $defaults = [
-        'UnivISOrgNr' => '0',
-        'task' => 'mitarbeiter-alle',
-        'Personenanzeige_Bildsuche' => '1',
-        'Personenanzeige_ZusatzdatenInDatei' => '1',
-        'Personenanzeige_Publikationen' => '0',
-        'Personenanzeige_Lehrveranstaltung' => '1',
-        'START_SOMMERSEMESTER' => '1.4',
-        'START_WINTERSEMESTER' => '1.10',
-        'Zeige_Sprungmarken' => '1',
-        'OrgUnit' => '',
-        'Sortiere_Alphabet' => '0',
-        'Sortiere_Jobs' => '1'
-    ];
     
     public $language = [
         'suffix' => '', 
@@ -65,12 +50,6 @@ class Controller {
         if (is_array($atts)) {
             $this->optionen = $atts;
             return;
-        }
-
-        // Merge defaults with options
-        $this->optionen = array_merge($this->defaults, $options);
-        if ($type) {
-            $this->optionen = array_merge($this->optionen, $args);
         }
     }
     
