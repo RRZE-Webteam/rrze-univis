@@ -70,7 +70,7 @@ class Render {
         $personen = $daten['Person'];
         $jobnamen = $daten['jobs'];
         $such_kategorie = "orgname";
-        if ($this->optionen["Sortiere_Jobs"]) {
+        if ($this->optionen["sortiere_jobs"]) {
             // Bei Lehrstuehlen ist es aber sinnvoller nach Jobs bzw. Rang zu gliedern.
             $such_kategorie = "rang";
             $jobs = $daten['Org'][0]['jobs'][0]['job'];
@@ -206,16 +206,16 @@ class Render {
         //Sortierung der Ergebnisse nach dem Funktionsfeld
         //$gruppen = $this->record_sort($gruppen, "name");
 
-        if ($this->optionen["OrgUnit"] != "") {
+        if ($this->optionen["orgunit"] != "") {
             $gruppe = array(
-                "name" => $this->optionen["OrgUnit"],
-                "personen" => $gruppen_dict[$this->optionen["OrgUnit"]]
+                "name" => $this->optionen["orgunit"],
+                "personen" => $gruppen_dict[$this->optionen["orgunit"]]
             );
             $gruppen = array($gruppe);
         }
 
         // Sollen die Personen alphabetisch sortiert werden?
-        if ($this->optionen["Sortiere_Alphabet"] != 0) {
+        if ($this->optionen["sortiere_alphabet"] != 0) {
             $personen = array();
 
 
@@ -236,7 +236,7 @@ class Render {
 
         // Zeige keine Sprungmarken falls nur eine OrgUnit vorhanden ist.
         if (count($gruppen) <= 1) {
-            $this->optionen["Zeige_Sprungmarken"] = 0;
+            $this->optionen["zeige_sprungmarken"] = 0;
         }
 
         //Workaround für die Ausgabe [leer]
@@ -303,16 +303,16 @@ class Render {
         }
 
         // Soll nur eine bestimmte Org-Einheit angezeigt werden?
-        if ($this->optionen["OrgUnit"] != "") {
+        if ($this->optionen["orgunit"] != "") {
             $gruppe = array(
-                "name" => $this->optionen["OrgUnit"],
-                "personen" => $gruppen_dict[$this->optionen["OrgUnit"]]
+                "name" => $this->optionen["orgunit"],
+                "personen" => $gruppen_dict[$this->optionen["orgunit"]]
             );
             $gruppen = array($gruppe);
         }
 
         // Sollen die Personen alphabetisch sortiert werden?
-        if ($this->optionen["Sortiere_Alphabet"] != 0) {
+        if ($this->optionen["sortiere_alphabet"] != 0) {
             $personen = array();
 
             foreach ($gruppen as $gruppe) {
@@ -329,7 +329,7 @@ class Render {
 
         // Zeige keine Sprungmarken falls nur eine OrgUnit vorhanden ist.
         if (count($gruppen) <= 1) {
-            $this->optionen["Zeige_Sprungmarken"] = 0;
+            $this->optionen["zeige_sprungmarken"] = 0;
         }
         
         return array("gruppen" => $gruppen, "optionen" => $this->optionen);
@@ -390,7 +390,7 @@ class Render {
 
         // Zeige keine Sprungmarken falls nur eine OrgUnit vorhanden ist.
         if (count($gruppen) <= 1) {
-            $this->optionen["Zeige_Sprungmarken"] = 0;  
+            $this->optionen["zeige_sprungmarken"] = 0;  
         }
 
         return array("gruppen" => $gruppen, "optionen" => $this->optionen);

@@ -39,7 +39,7 @@ class UnivIS {
      * @param Pfad zu Conf Datei
      * @access 	public
      */
-    function __construct($optionen) {
+    public function __construct($optionen) {
 
         $this->optionen = $optionen;
     }
@@ -95,7 +95,8 @@ class UnivIS {
     private function _ladeMitarbeiterAlle() {
         // Hole Daten von Univis
         $url = esc_url_raw($this->univis_url . "?search=departments&number=" . $this->optionen["UnivISOrgNr"] . "&show=xml");
-
+        do_action('rrze.log.debug', ['plugin' => 'rrze-univis', 'function' => '_ladeMitarbeiterAlle', 'url' => $url]);
+        
         if (!fopen($url, "r")) {
             if (isset($this->optionen['errormsg']) && $this->optionen['errormsg'] == 1) {
                 echo "Leider konnte zu UnivIS keine Verbindung aufgebaut werden.";
@@ -129,7 +130,7 @@ class UnivIS {
             }
             return -1;
         } else {
-            if ($this->optionen["Sortiere_Jobs"]) {
+            if ($this->optionen["sortiere_jobs"]) {
 
                 $jobs = $daten["Org"][0]["jobs"][0]["job"];
                 $jobnamen = array();
@@ -145,15 +146,15 @@ class UnivIS {
                 $suffix = $this->optionen['lang']['suffix'];
                 $text = $this->optionen['lang']['text'];
 
-                if ($this->optionen["Ignoriere_Jobs"]) {
-                    if (is_array($this->optionen["Ignoriere_Jobs"])) {
+                if ($this->optionen["ignoriere_jobs"]) {
+                    if (is_array($this->optionen["ignoriere_jobs"])) {
                         if ($suffix == '_en') {
-                            $xjobs = explode("|", $this->optionen['Ignoriere_Jobs'][$suffix]);
+                            $xjobs = explode("|", $this->optionen['ignoriere_jobs'][$suffix]);
                         } else {
-                            $xjobs = explode("|", $this->optionen['Ignoriere_Jobs']['_de']);
+                            $xjobs = explode("|", $this->optionen['ignoriere_jobs']['_de']);
                         }
                     } else {
-                        $xjobs = explode("|", $this->optionen['Ignoriere_Jobs']);
+                        $xjobs = explode("|", $this->optionen['ignoriere_jobs']);
                     }
                 }
 
@@ -224,7 +225,8 @@ class UnivIS {
     private function _ladeMitarbeiterOrga() {
         // Hole Daten von Univis
         $url = esc_url_raw($this->univis_url . "?search=persons&department=" . $this->optionen["UnivISOrgNr"] . "&show=xml");
-
+        do_action('rrze.log.debug', ['plugin' => 'rrze-univis', 'function' => '_ladeMitarbeiterOrga', 'url' => $url]);
+        
         if (!fopen($url, "r")) {
             if (isset($this->optionen['errormsg']) && $this->optionen['errormsg'] == 1) {
                 echo "Leider konnte zu UnivIS keine Verbindung aufgebaut werden.";
@@ -287,6 +289,7 @@ class UnivIS {
             $url = $this->umlaute_ersetzen($url);
         }
 
+        do_action('rrze.log.debug', ['plugin' => 'rrze-univis', 'function' => '_ladeMitarbeiterEinzeln', 'url' => $url]);
 
         if (!fopen($url, "r")) {
             if (isset($this->optionen['errormsg']) && $this->optionen['errormsg'] == 1) {
@@ -328,11 +331,11 @@ class UnivIS {
                 $person = $person[0];
 
             // Lade Publikationen und Lehrveranstaltungen falls noetig
-            if (!empty($this->optionen["Personenanzeige_Publikationen"])) {
+            if ($this->optionen["personenanzeige_publikationen"]) {
                 $person["publikationen"] = $this->_ladePublikationen($person["id"]);
             }
 
-            if (!empty($this->optionen["Personenanzeige_Lehrveranstaltungen"])) {
+            if ($this->optionen["personenanzeige_lehrveranstaltungen"]) {
                 $person["lehrveranstaltungen"] = $this->_ladeLehrveranstaltungenAlle($person["id"]);
             }
             return $person;
@@ -343,6 +346,9 @@ class UnivIS {
     private function _ladePublikationen($authorid = NULL) {
         // Hole Daten von Univis
         $url = esc_url_raw($this->univis_url . "?search=publications&show=xml");
+        
+        do_action('rrze.log.debug', ['plugin' => 'rrze-univis', 'function' => '_ladePublikationen', 'url' => $url]);
+        
         if ($authorid) {
             // Suche nur Publikationen von einen bestimmten Autoren
             $url .= "&authorid=" . $authorid;
@@ -402,6 +408,7 @@ class UnivIS {
         $url = esc_url_raw($this->univis_url . "?search=lectures&show=xml");
         //Auskommentiert, da das aktuelle Semester in UnivIS beliebieg zum Ende der vorlesungsfreien Zeit umgestellt wird
         //$url = esc_url_raw( $this->univis_url."?search=lectures&show=xml&sem=".$this->aktuellesSemester() );
+        
         if ($univisid) {
             $url .= "&lecturerid=" . $univisid;
         } elseif ($this->optionen["univisid"]) {
@@ -438,6 +445,8 @@ class UnivIS {
         }
         fclose($handle);
 
+        do_action('rrze.log.debug', ['plugin' => 'rrze-univis', 'function' => '_ladeLehrveranstaltungenAlle', 'url' => $url]);
+        
         $array = $this->xml2array($url);
 
         if (empty($array)) {
@@ -477,7 +486,8 @@ class UnivIS {
         $url = esc_url_raw($this->univis_url . "?search=lectures&show=xml");
         //Auskommentiert, da das aktuelle Semester in UnivIS beliebieg zum Ende der vorlesungsfreien Zeit umgestellt wird
         //$url = $this->univis_url."?search=lectures&show=xml&sem=".$this->aktuellesSemester() ;
-
+        do_action('rrze.log.debug', ['plugin' => 'rrze-univis', 'function' => '_ladeLehrveranstaltungenEinzeln', 'url' => $url]);
+        
         if (isset($this->optionen["lv_id"])) {
             $url .= "&id=" . $this->toNumber($this->optionen["lv_id"]);
         }
@@ -620,8 +630,8 @@ class UnivIS {
     // Beispiel: Aktuelles Datum: 12.02.2013 -> 2012w
     private function aktuellesSemester() {
         $heute = explode(".", date("d.m"));
-        $fruehling = explode(".", $this->optionen["START_SOMMERSEMESTER"]);
-        $herbst = explode(".", $this->optionen["START_WINTERSEMESTER"]);
+        $fruehling = explode(".", $this->optionen["start_sommersemester"]);
+        $herbst = explode(".", $this->optionen["start_wintersemester"]);
 
         if ($heute[1] > $fruehling[1] || ($heute[1] == $fruehling[1] && $heute[0] >= $fruehling[0])) {
             if ($heute[1] < $herbst[1] || ($heute[1] == $herbst[1] && $heute[0] <= $herbst[0])) {

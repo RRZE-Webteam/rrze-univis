@@ -159,17 +159,17 @@ class Main {
             }
 
             if (isset($atts['ignoriere_jobs'])) { // Übergabe in Großbuchstaben
-                $atts['Ignoriere_Jobs'] = wp_kses(str_replace(', ', ',', $atts['ignoriere_jobs']), array());
-                $atts['Ignoriere_Jobs'] = wp_kses(str_replace(',', '|', $atts['Ignoriere_Jobs']), array());
+                $atts['ignoriere_jobs'] = wp_kses(str_replace(', ', ',', $atts['ignoriere_jobs']), array());
+                $atts['ignoriere_jobs'] = wp_kses(str_replace(',', '|', $atts['ignoriere_jobs']), array());
             }
 
             if (isset($atts['zeige_jobs'])) { // Übergabe in Großbuchstaben
                 $zeige_jobs = wp_kses(str_replace(', ', ',', $atts['zeige_jobs']), array());
-                $atts['Zeige_Jobs'] = explode(',', $zeige_jobs);
+                $atts['zeige_jobs'] = explode(',', $zeige_jobs);
             }
 
             if (isset($atts['orgunit'])) {
-                $atts['OrgUnit'] = wp_kses($atts['orgunit'], array());
+                $atts['orgunit'] = wp_kses($atts['orgunit'], array());
             }
 
             if (isset($atts['lv-typ'])) {
@@ -189,11 +189,10 @@ class Main {
                 }
             }
 
-
             $shortcode_atts = shortcode_atts($defaults, $atts);
 
             extract($shortcode_atts);
-
+            
             switch ($task) {
                 case 'mitarbeiter-alle':
                 case 'mitarbeiter-orga':
@@ -241,7 +240,7 @@ class Main {
      * @return array
      */
 
-    public function default_atts() {
+    protected function default_atts() {
         $lang = get_locale();
         if (strpos($lang, 'en_') === 0) {
             $language = $this->set_language('_en');
@@ -252,25 +251,25 @@ class Main {
         $atts = [
             'UnivISOrgNr' => '0',
             'task' => 'mitarbeiter-alle',
-            'Personenanzeige_Verzeichnis' => '',
-            'Personenanzeige_Bildsuche' => '1',
-            'Personenanzeige_ZusatzdatenInDatei' => '1',
-            'Personenanzeige_Publikationen' => '1',
-            'Personenanzeige_Lehrveranstaltungen' => '1',
-            'Lehrveranstaltung_Verzeichnis' => '',
-            'SeitenCache' => '0',
-            'START_SOMMERSEMESTER' => '1.4',
-            'START_WINTERSEMESTER' => '1.10',
-            'Zeige_Sprungmarken' => '0',
-            'OrgUnit' => '',
-            'Sortiere_Alphabet' => '0',
-            'Sortiere_Jobs' => '1',
-            'Ignoriere_Jobs' => [
+            'personenanzeige_verzeichnis' => '',
+            'personenanzeige_bildsuche' => '1',
+            'personenanzeige_zusatzdatenInDatei' => '1',
+            'personenanzeige_publikationen' => '1',
+            'personenanzeige_lehrveranstaltungen' => '1',
+            'lehrveranstaltung_verzeichnis' => '',
+            'seiten_cache' => '0',
+            'start_sommersemester' => '1.4',
+            'start_wintersemester' => '1.10',
+            'zeige_sprungmarken' => '0',
+            'orgunit' => '',
+            'sortiere_alphabet' => '0',
+            'sortiere_jobs' => '1',
+            'ignoriere_jobs' => [
                 '_de' => 'Sicherheitsbeauftragter|IT-Sicherheits-Beauftragter|Webmaster|Postmaster|IT-Betreuer|UnivIS-Beauftragte',
                 '_en' => 'Security commissary|IT-security commissary|Webmaster|Postmaster|IT-support|Local UnivIS administration',
             ],
-            'Zeige_Jobs' => [],
-            'Datenverzeichnis' => '',
+            'zeige_jobs' => [],
+            'datenverzeichnis' => '',
             'id' => '', // kann im Shortcode verwendet werden, sollte aber nicht
             'lv_id' => '', // Lehrveranstaltungs-ID
             'firstname' => '',
