@@ -4,22 +4,23 @@ namespace RRZE\UnivIS\Core;
 
 defined('ABSPATH') || exit;
 
-class Options {
-    
+class Options
+{
     protected $option_name = '_rrze_univis';
     
-    public function __construct() {
-        
+    public function __construct()
+    {
     }
     
     /*
      * Standard Einstellungen werden definiert
      * @return array
      */
-    public function default_options() {
+    public function default_options()
+    {
         $options = [
             'univis_default_link' => __('<b><i>Univ</i>IS</b> - Information System of the FAU', 'rrze-univis'),
-            'UnivISOrgNr' => '',            
+            'UnivISOrgNr' => '',
         ];
 
         return $options;
@@ -29,7 +30,8 @@ class Options {
      * Gibt die Einstellungen zurück.
      * @return object
      */
-    public function get_options() {
+    public function get_options()
+    {
         $defaults = self::default_options();
 
         $options = (array) get_option($this->option_name);
@@ -39,8 +41,8 @@ class Options {
         return (object) $options;
     }
     
-    public function get_option_name() {
+    public function get_option_name()
+    {
         return $this->option_name;
     }
-    
 }

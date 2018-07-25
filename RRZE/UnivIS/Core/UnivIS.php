@@ -1,11 +1,12 @@
-<?PHP
+<?php
 
 namespace RRZE\UnivIS\Core;
 
 use RRZE\UnivIS\Core\Dicts;
 use SimpleXmlIterator;
 
-class UnivIS {
+class UnivIS
+{
 
     /**
      * Optionen
@@ -13,7 +14,7 @@ class UnivIS {
      * @var array
      * @access private
      */
-    private $optionen = NULL;
+    private $optionen = null;
 
     /**
      * Enthaelt die geparsten XML Daten in Form von Arrays
@@ -21,7 +22,7 @@ class UnivIS {
      * @var array
      * @access private
      */
-    private $daten = NULL;
+    private $daten = null;
 
     /**
      * UnivIS Url
@@ -39,8 +40,8 @@ class UnivIS {
      * @param Pfad zu Conf Datei
      * @access 	public
      */
-    public function __construct($optionen) {
-
+    public function __construct($optionen)
+    {
         $this->optionen = $optionen;
     }
 
@@ -53,8 +54,8 @@ class UnivIS {
       }
      */
 
-    public function ladeDaten() {
-
+    public function ladeDaten()
+    {
         if (!empty($this->optionen)) {
             switch ($this->optionen["task"]) {
                 case "mitarbeiter-alle":
@@ -92,7 +93,8 @@ class UnivIS {
         return $this->daten;
     }
 
-    private function _ladeMitarbeiterAlle() {
+    private function _ladeMitarbeiterAlle()
+    {
         // Hole Daten von Univis
         $url = esc_url_raw($this->univis_url . "?search=departments&number=" . $this->optionen["UnivISOrgNr"] . "&show=xml");
         do_action('rrze.log.debug', ['plugin' => 'rrze-univis', 'function' => '_ladeMitarbeiterAlle', 'url' => $url]);
@@ -131,7 +133,6 @@ class UnivIS {
             return -1;
         } else {
             if ($this->optionen["sortiere_jobs"]) {
-
                 $jobs = $daten["Org"][0]["jobs"][0]["job"];
                 $jobnamen = array();
                 $jobs_vergeben = array();
@@ -178,9 +179,9 @@ class UnivIS {
                     }
                     if (
                             (!in_array($description_out, $jobs_vergeben))
-                            AND ( (isset($jobs[$i]["pers"])
-                            AND ( count($jobs[$i]["pers"][0]["per"]) > 0))
-                            OR ( isset($text_out)))
+                            and ((isset($jobs[$i]["pers"])
+                            and (count($jobs[$i]["pers"][0]["per"]) > 0))
+                            or (isset($text_out)))
                     ) {
                         $jobs_vergeben[] = $description_out;
                     }
@@ -222,7 +223,8 @@ class UnivIS {
     // wenn nur eine org unit da is dann sprungmarke weglassen
     // nach alphabet sortieren
 
-    private function _ladeMitarbeiterOrga() {
+    private function _ladeMitarbeiterOrga()
+    {
         // Hole Daten von Univis
         $url = esc_url_raw($this->univis_url . "?search=persons&department=" . $this->optionen["UnivISOrgNr"] . "&show=xml");
         do_action('rrze.log.debug', ['plugin' => 'rrze-univis', 'function' => '_ladeMitarbeiterOrga', 'url' => $url]);
@@ -256,7 +258,8 @@ class UnivIS {
         }
     }
 
-    private function _ladeMitarbeiterEinzeln() {
+    private function _ladeMitarbeiterEinzeln()
+    {
         if ($this->optionen["univisid"]) {
             $id = $this->optionen["univisid"];
             $url = esc_url_raw($this->univis_url . "?search=persons&id=" . $id . "&show=xml");
@@ -269,20 +272,20 @@ class UnivIS {
                 $firstname = $this->optionen["firstname"];
                 $lastname = $this->optionen["lastname"];
             }
-//		//Ueberpruefe ob Vor- und Nachname gegeben sind.
-//		$noetige_felder = array("firstname", "lastname");
-//		foreach ($noetige_felder as $feld) {
-//			if(!array_key_exists($feld, $this->optionen) || $this->optionen[$feld] == "") {
-//				// Fehler: Bitte geben Sie Vor- und Nachname der gesuchten Person an
-//				echo "<div class=\"hinweis_wichtig\">Bitte geben Sie Vor- und Nachname der gesuchten Person an.</div>";
-//				return -1;
-//			}
+            //		//Ueberpruefe ob Vor- und Nachname gegeben sind.
+            //		$noetige_felder = array("firstname", "lastname");
+            //		foreach ($noetige_felder as $feld) {
+            //			if(!array_key_exists($feld, $this->optionen) || $this->optionen[$feld] == "") {
+            //				// Fehler: Bitte geben Sie Vor- und Nachname der gesuchten Person an
+            //				echo "<div class=\"hinweis_wichtig\">Bitte geben Sie Vor- und Nachname der gesuchten Person an.</div>";
+            //				return -1;
+            //			}
 //
-//			if(strrpos($this->optionen[$feld], "&") !== false) {
-//				echo "Ung&uuml;ltige Eingabe.";
-//				return -1;
-//			}
-//		}
+            //			if(strrpos($this->optionen[$feld], "&") !== false) {
+            //				echo "Ung&uuml;ltige Eingabe.";
+            //				return -1;
+            //			}
+            //		}
             // Hole Daten von Univis
             $url = esc_url_raw($this->univis_url . "?search=persons&name=" . $lastname . "&firstname=" . $firstname . "&show=xml");
 
@@ -327,8 +330,9 @@ class UnivIS {
             }
 
             // Falls mehrere Personen gefunden wurden, wähle die erste
-            if ($person)
+            if ($person) {
                 $person = $person[0];
+            }
 
             // Lade Publikationen und Lehrveranstaltungen falls noetig
             if ($this->optionen["personenanzeige_publikationen"]) {
@@ -343,7 +347,8 @@ class UnivIS {
     }
 
     // $authorid muss evtl. noch mit $univisid ersetzt werden, dann aber auch in rrze_univis.php
-    private function _ladePublikationen($authorid = NULL) {
+    private function _ladePublikationen($authorid = null)
+    {
         // Hole Daten von Univis
         $url = esc_url_raw($this->univis_url . "?search=publications&show=xml");
         
@@ -402,7 +407,8 @@ class UnivIS {
         }
     }
 
-    private function _ladeLehrveranstaltungenAlle($univisid = NULL) {
+    private function _ladeLehrveranstaltungenAlle($univisid = null)
+    {
         // Hole Daten von Univis
         //&sem=2012w
         $url = esc_url_raw($this->univis_url . "?search=lectures&show=xml");
@@ -474,7 +480,8 @@ class UnivIS {
         }
     }
 
-    private function _ladeLehrveranstaltungenEinzeln() {
+    private function _ladeLehrveranstaltungenEinzeln()
+    {
         // Hole Daten von Univis
         if ($this->optionen["lv_id"] == "") {
             if (isset($this->optionen['errormsg']) && $this->optionen['errormsg'] == 1) {
@@ -535,16 +542,17 @@ class UnivIS {
     /////		Hilfsmethoden
     ///////////////////////////////////////////////////////////////
     // XML Parser
-    public function xml2array($url) {
+    public function xml2array($url)
+    {
         $sxi = new SimpleXmlIterator($url, null, true);
         return $this->sxi2array($sxi);
     }
 
-    private function sxi2array($sxi) {
+    private function sxi2array($sxi)
+    {
         $a = array();
 
         for ($sxi->rewind(); $sxi->valid(); $sxi->next()) {
-
             if (!array_key_exists($sxi->key(), $a)) {
                 $a[$sxi->key()] = array();
             }
@@ -577,7 +585,8 @@ class UnivIS {
         return $a;
     }
 
-    private function umlaute_ersetzen($text) {
+    private function umlaute_ersetzen($text)
+    {
         $such_array = array('ä', 'ö', 'ü', 'ß');
         $ersetzen_array = array('ae', 'oe', 'ue', 'ss');
         $neuer_text = str_replace($such_array, $ersetzen_array, $text);
@@ -585,14 +594,16 @@ class UnivIS {
     }
 
     // Ersetzt die Referenzen von Univis durch den jeweilig dazugehoerigen Datensatz.
-    private function univis_refs_ersetzen($refs, &$arr) {
+    private function univis_refs_ersetzen($refs, &$arr)
+    {
         $search_results = array();
         $search_key = "UnivISRef";
 
         foreach ($arr as &$child) {
             if (is_array($child) && array_key_exists($search_key, $child)) {
-                if (array_key_exists($child[$search_key][0]["key"], $refs))
+                if (array_key_exists($child[$search_key][0]["key"], $refs)) {
                     $child = $refs[$child[$search_key][0]["key"]];
+                }
             }
             if (is_array($child)) {
                 $this->univis_refs_ersetzen($refs, $child);
@@ -601,7 +612,8 @@ class UnivIS {
         return $search_results;
     }
 
-    private function _get_univis_ref($arr) {
+    private function _get_univis_ref($arr)
+    {
         $univis_refs = array();
 
         $dict = array("Room", "Person", "Title", "Lecture");
@@ -628,7 +640,8 @@ class UnivIS {
     // 01.04 - 01.10 Sommersemester
     // 01.10 - 01.04 Wintersemester
     // Beispiel: Aktuelles Datum: 12.02.2013 -> 2012w
-    private function aktuellesSemester() {
+    private function aktuellesSemester()
+    {
         $heute = explode(".", date("d.m"));
         $fruehling = explode(".", $this->optionen["start_sommersemester"]);
         $herbst = explode(".", $this->optionen["start_wintersemester"]);
@@ -643,13 +656,14 @@ class UnivIS {
         $jahr = $this->toNumber(date("Y"));
 
         //Wenn das neue Kalenderjahrangefangen hat, aber das Semester noch vom Vorjahr gilt. -> Einmal runterzaehlen
-        if ($heute[1] < $fruehling[1])
+        if ($heute[1] < $fruehling[1]) {
             $jahr--;
+        }
         return $jahr . "w";
     }
 
-    private function toNumber($data) {
+    private function toNumber($data)
+    {
         return (int) $data;
     }
-
 }

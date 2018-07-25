@@ -7,8 +7,8 @@ use RRZE\UnivIS\Core\Settings;
 
 defined('ABSPATH') || exit;
 
-class Main {
-
+class Main
+{
     public $plugin_file;
     public $options;
     public $settings;
@@ -23,11 +23,11 @@ class Main {
     private $univis_url = 'https://univis.uni-erlangen.de';
 
     public $language = [
-        'suffix' => '', 
-        'orgunit' => 'orgunit', 
-        'orgunits' => 'orgunits', 
-        'orgname' => 'orgname', 
-        'description' => 'description', 
+        'suffix' => '',
+        'orgunit' => 'orgunit',
+        'orgunits' => 'orgunits',
+        'orgname' => 'orgname',
+        'description' => 'description',
         'text' => 'text',
         'title' => 'title'
     ];
@@ -50,10 +50,11 @@ class Main {
         ],
         'FAU-Events' => [
             'FAU-Events'
-        ]        
+        ]
     ];
     
-    public function __construct($plugin_file = NULL) {
+    public function __construct($plugin_file = null)
+    {
         $this->plugin_file = $plugin_file;
 
         $this->options = new Options();
@@ -64,13 +65,14 @@ class Main {
         add_action('admin_init', array($this->settings, 'admin_settings'));
 
         add_shortcode('univis', array($this, 'add_shortcode'));
-        add_action('admin_init', array($this, 'mce_external_plugins')); 
+        add_action('admin_init', array($this, 'mce_external_plugins'));
 
         add_action('init', 'RRZE\UnivIS\add_endpoint');
         add_action('template_redirect', array($this, 'endpoint_template_redirect'));
     }
 
-    public function add_shortcode($atts) {
+    public function add_shortcode($atts)
+    {
         $options = $this->options->get_options();
         $defaults = $this->default_atts();
 
@@ -122,13 +124,14 @@ class Main {
 
             if (isset($atts['sem'])) {
                 $sem = wp_kses(str_replace(' ', '', $atts['sem']), array());
-                if (preg_match('/[12]\d{3}[ws]/', $sem))
+                if (preg_match('/[12]\d{3}[ws]/', $sem)) {
                     $atts['sem'] = $sem;
+                }
             }
 
             if (isset($atts['sprache'])) {
                 $sprache = wp_kses(str_replace(' ', '', $atts['sprache']), array());
-                if (strpbrk($sprache, 'DE') != FALSE && str_word_count($sprache) == 1) {
+                if (strpbrk($sprache, 'DE') != false && str_word_count($sprache) == 1) {
                     $atts['leclanguage'] = $sprache;
                 }
             }
@@ -181,7 +184,7 @@ class Main {
                     $atts['lang'] = $this->set_language('_en');
                 } elseif ($atts['lang'] == 'de') {
                     $atts['lang'] = $this->set_language('');
-                    // NUR FÜR _rrze_debug
+                // NUR FÜR _rrze_debug
 //                } elseif ( $atts['lang'] == 'test' ) {
 //                    $atts['lang'] = $this->set_language('_test');
                 } else {
@@ -204,12 +207,13 @@ class Main {
                         $ausgabe = $controller->ladeHTML();
                         break;
                     }
+                    // no break
                 case 'publikationen':
                     if (!$UnivISOrgNr) {
                         $ausgabe = '<p>' . __('Please enter a valid UnivIS OrgNr.', 'rrze-univis') . '</p>';
                         break;
                     }
-                    $controller = new Controller($task, NULL, $shortcode_atts);
+                    $controller = new Controller($task, null, $shortcode_atts);
                     $ausgabe = $controller->ladeHTML();
                     break;
                 case 'lehrveranstaltungen-einzeln':
@@ -217,7 +221,7 @@ class Main {
                         $ausgabe = '<p>' . __('Please enter a valid lecture ID.', 'rrze-univis') . '</p>';
                         break;
                     }
-                    $controller = new Controller($task, NULL, $shortcode_atts);
+                    $controller = new Controller($task, null, $shortcode_atts);
                     $ausgabe = $controller->ladeHTML();
                     break;
                 case 'mitarbeiter-einzeln':
@@ -225,7 +229,7 @@ class Main {
                         $ausgabe = '<p>' . __('Please enter a first and last name or a UnivIS ID.', 'rrze-univis') . '</p>';
                         break;
                     }
-                    $controller = new Controller($task, NULL, $shortcode_atts);
+                    $controller = new Controller($task, null, $shortcode_atts);
                     $ausgabe = $controller->ladeHTML();
                     break;
                 default:
@@ -240,7 +244,8 @@ class Main {
      * @return array
      */
 
-    protected function default_atts() {
+    protected function default_atts()
+    {
         $lang = get_locale();
         if (strpos($lang, 'en_') === 0) {
             $language = $this->set_language('_en');
@@ -282,7 +287,7 @@ class Main {
             'univisid' => '', // ist die Personen-ID, egal ob dozentid oder MA-ID
             'name' => '', // Synonym zur Angabe von firstname und lastname
             'errormsg' => '', // Anzeige von Fehlermeldungen bei Ausgabe
-            'lv_type' => '1', // Anzeige LV-Typ-Überschriften 
+            'lv_type' => '1', // Anzeige LV-Typ-Überschriften
             'lang' => $language, // wichtig für die Ausgabe englischer Bezeichnungen von orgunit, orgunits, text, description
             'leclanguage' => '', // Veranstaltungssprache
             'kompakt' => 0              // Ausschließliche Anzeige LV-Überschriften
@@ -291,7 +296,8 @@ class Main {
         return $atts;
     }
 
-    private function set_language($lang) {
+    private function set_language($lang)
+    {
         $language = $this->language;
         foreach ($language as $key => &$value) {
             if ($key == 'orgunits') {
@@ -303,25 +309,29 @@ class Main {
         return $language;
     }
     
-    function mce_external_plugins() {
+    public function mce_external_plugins()
+    {
         if (current_user_can('edit_posts') && current_user_can('edit_pages')) {
             add_filter('mce_external_languages', array($this, 'mce_languages'));
             add_filter('mce_external_plugins', array($this, 'mce_plugins'));
         }
     }
 
-    function mce_languages($locales) {
+    public function mce_languages($locales)
+    {
         $locales ['univis_shortcode'] = plugin_dir_path($this->plugin_file) . 'RRZE/UnivIS/MCE/langs.php';
         return $locales;
     }
 
-    function mce_plugins($plugin_array) {
+    public function mce_plugins($plugin_array)
+    {
         $min = defined('WP_DEBUG') && WP_DEBUG ? '' : '.min';
         $plugin_array['univis_shortcode'] = plugin_dir_url($this->plugin_file) . "RRZE/UnivIS/MCE/univis-shortcode$min.js";
         return $plugin_array;
     }
     
-    public function endpoint_template_redirect() {
+    public function endpoint_template_redirect()
+    {
         global $wp_query;
 
         if (isset($wp_query->query_vars['univisid'])) {
@@ -346,11 +356,11 @@ class Main {
                 $atts[$arr[0]] = $arr[1];
             }
 
-            $controller = new Controller($task, NULL, $atts);
+            $controller = new Controller($task, null, $atts);
 
             $data = $controller->ladeHTML();
         } else {
-            $data = NULL;
+            $data = null;
         }
 
         $template = $this->locate_template();
@@ -359,7 +369,8 @@ class Main {
         exit;
     }
 
-    protected function locate_template() {
+    protected function locate_template()
+    {
         $current_theme = wp_get_theme();
         $default_template = plugin_dir_path($this->plugin_file) . 'RRZE/UnivIS/Templates/single-univis.php';
         $template = '';
@@ -374,8 +385,8 @@ class Main {
         return !empty($template) && file_exists($template) ? $template : $default_template;
     }
     
-    protected function load_template($template, $data = array()) {
+    protected function load_template($template, $data = array())
+    {
         include $template;
     }
-
 }

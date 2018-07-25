@@ -4,7 +4,8 @@ namespace RRZE\UnivIS\Core;
 
 use RRZE\UnivIS\Core\Dicts;
 
-class Render {
+class Render
+{
 
 
     /**
@@ -13,7 +14,7 @@ class Render {
      * @var array
      * @access private
      */
-    private $optionen = NULL;
+    private $optionen = null;
 
     /**
      * Constructor.
@@ -22,13 +23,13 @@ class Render {
      * @param OPtionen
      * @access 	public
      */
-    function __construct($optionen) {
-
+    public function __construct($optionen)
+    {
         $this->optionen = $optionen;
     }
 
-    function bearbeiteDaten($daten) {
-
+    public function bearbeiteDaten($daten)
+    {
         if (!empty($this->optionen)) {
             switch ($this->optionen["task"]) {
                 case "mitarbeiter-alle":
@@ -61,7 +62,8 @@ class Render {
         return -1;
     }
 
-    private function _bearbeiteMitarbeiterAlle($daten) {
+    private function _bearbeiteMitarbeiterAlle($daten)
+    {
         /////////	Daten Formatieren
         ////////////////
         //	Array: ["ORGNAME"] => Array: PERSON-ARRAY
@@ -138,7 +140,7 @@ class Render {
                 //nachfolgender Code gibt Probleme mit Linktext
                 //$suchstring_10 = '/((http|https):\/\/\S+)/'; // http://www.blabla.de/ oder https://www.blaljblsfd.de/lsdjfl.html
                 //$html_10 = "<a href='$1'>$1</a>";
-                //$suchstring_11 = '/(mailto:[^0-9][a-zA-Z0-9_]+([.][a-zA-Z0-9_]+)*[@][a-zA-Z0-9_]+([.][a-zA-Z0-9_]+)*[.][a-zA-Z]{2,4})/';    // mailto:name@firma.de                          
+                //$suchstring_11 = '/(mailto:[^0-9][a-zA-Z0-9_]+([.][a-zA-Z0-9_]+)*[@][a-zA-Z0-9_]+([.][a-zA-Z0-9_]+)*[.][a-zA-Z]{2,4})/';    // mailto:name@firma.de
                 //$html_11 = "<a href='$1'>$1</a>";
                 // Umsetzung in HTML-Link
                 for ($i = 0; $i < 4; $i++) {
@@ -186,11 +188,11 @@ class Render {
         }
 
         foreach ($jobnamen as $gruppen_name) {
-            if(isset($gruppen_dict[$gruppen_name])) {
+            if (isset($gruppen_dict[$gruppen_name])) {
                 $gruppen_personen = $gruppen_dict[$gruppen_name];
 
 
-                if ( in_array( 'lastname', $gruppen_personen[0] ) ) {
+                if (in_array('lastname', $gruppen_personen[0])) {
                     $gruppen_personen = $this->array_orderby($gruppen_personen, "lastname", SORT_ASC, "firstname", SORT_ASC);
                 }
                 $gruppen_obj = array(
@@ -249,7 +251,8 @@ class Render {
         return array("gruppen" => $gruppen, "optionen" => $this->optionen);
     }
 
-    private function _bearbeiteMitarbeiterOrga($personen) {
+    private function _bearbeiteMitarbeiterOrga($personen)
+    {
         /////////	Daten Formatieren
         ////////////////
         //	Array: ["ORGNAME"] => Array: PERSON-ARRAY
@@ -261,8 +264,9 @@ class Render {
         $gruppen_dict = array();
 
         foreach ($personen as $person) {
-            if (empty($person["firstname"]))
+            if (empty($person["firstname"])) {
                 continue;
+            }
 
             if (empty($person[$such_kategorie])) {
                 continue;
@@ -335,7 +339,8 @@ class Render {
         return array("gruppen" => $gruppen, "optionen" => $this->optionen);
     }
 
-    private function _bearbeiteMitarbeiterTelefonbuch($personen) {
+    private function _bearbeiteMitarbeiterTelefonbuch($personen)
+    {
         /////////	Daten Formatieren
         ////////////////
         //	Array: ["ORGNAME"] => Array: PERSON-ARRAY
@@ -347,11 +352,13 @@ class Render {
         $gruppen_dict = array();
 
         foreach ($personen as $person) {
-            if (empty($person["visible"]) || $person["visible"] != 'ja')
+            if (empty($person["visible"]) || $person["visible"] != 'ja') {
                 continue;
+            }
 
-            if (empty($person["firstname"]))
+            if (empty($person["firstname"])) {
                 continue;
+            }
 
             if (empty($person[$such_kategorie])) {
                 continue;
@@ -379,7 +386,7 @@ class Render {
         ksort($gruppen_dict);
 
         foreach ($gruppen_dict as $gruppen_name => $gruppen_personen) {
-            $gruppen_personen = $this->record_sort($gruppen_personen, "namesort");  
+            $gruppen_personen = $this->record_sort($gruppen_personen, "namesort");
             $gruppen_obj = array(
                 "name" => $gruppen_name,
                 "personen" => $gruppen_personen
@@ -390,13 +397,14 @@ class Render {
 
         // Zeige keine Sprungmarken falls nur eine OrgUnit vorhanden ist.
         if (count($gruppen) <= 1) {
-            $this->optionen["zeige_sprungmarken"] = 0;  
+            $this->optionen["zeige_sprungmarken"] = 0;
         }
 
         return array("gruppen" => $gruppen, "optionen" => $this->optionen);
     }
 
-    private function _bearbeiteMitarbeiterEinzeln($person) {
+    private function _bearbeiteMitarbeiterEinzeln($person)
+    {
         if (!empty($person)) {
             if (!empty($person["title"])) {
                 $person["title-long"] = $this->_str_replace_dict(Dicts::$acronyms, $person["title"]);
@@ -412,10 +420,11 @@ class Render {
             if (isset($person["publikationen"])) {
                 $publikationen = $this->_bearbeitePublikationen($person["publikationen"]);
 
-                if ($publikationen)
+                if ($publikationen) {
                     $person["publikationen"] = $publikationen;
-                else
+                } else {
                     unset($person["publikationen"]);
+                }
             }
 
 
@@ -423,19 +432,22 @@ class Render {
             if (isset($person["lehrveranstaltungen"])) {
                 $lehrveranstaltungen = $this->_bearbeiteLehrveranstaltungenAlle($person["lehrveranstaltungen"]);
 
-                if ($lehrveranstaltungen)
+                if ($lehrveranstaltungen) {
                     $person["lehrveranstaltungen"] = $lehrveranstaltungen;
-                else
+                } else {
                     unset($person["lehrveranstaltungen"]);
+                }
             }
             
             return array("person" => $person, "optionen" => $this->optionen);
         }
     }
 
-    private function _bearbeitePublikationen($publications) {
-        if (!$publications)
-            return NULL;
+    private function _bearbeitePublikationen($publications)
+    {
+        if (!$publications) {
+            return null;
+        }
         $this->_rename_key("hstype", $publications, Dicts::$hstypes);
 
         // Nach Jahren gruppieren
@@ -456,7 +468,6 @@ class Render {
                     $author = $publication["authors"][$m]["author"];
 
                     for ($a = 0; $a < count($author); $a++) {
-
                         if (array_key_exists("id", $author[$a]["pkey"][0])) {
                             $year["data"][$k]["authors"][$m]["author"][$a]["pkey"]["full-profile"] = $year["data"][$k]["authors"][$m]["author"][$a]["pkey"];
                             $year["data"][$k]["authors"][$m]["author"][$a]["pkey"]["full-profile"][0]["firstname_small"] = strtolower($this->umlaute_ersetzen($year["data"][$k]["authors"][$m]["author"][$a]["pkey"]["full-profile"][0]["firstname"]));
@@ -476,7 +487,8 @@ class Render {
         return array("years" => $publications, "optionen" => $this->optionen);
     }
 
-    private function _bearbeiteLehrveranstaltungenAlle($veranstaltungen) {
+    private function _bearbeiteLehrveranstaltungenAlle($veranstaltungen)
+    {
         if ($veranstaltungen === -1) {
             if (!empty($person["title"])) {
                 echo "Es konnten keine Lehrveranstaltungen gefunden werden.";
@@ -499,7 +511,7 @@ class Render {
                 }
                 // Einzelne Veranstaltung bearbeiten
                 $veranstaltung_edit = $this->_bearbeiteLehrveranstaltungenEinzeln($veranstaltungen[$i]);
-                $veranstaltungen[$i] = $veranstaltung_edit["veranstaltung"];                  
+                $veranstaltungen[$i] = $veranstaltung_edit["veranstaltung"];
                 if (array_key_exists('type', $veranstaltungen[$i])) {
                     $veranstaltungen[$i]['type'] = Dicts::$lecturetypen[$veranstaltungen[$i]['type']];
                 }
@@ -509,7 +521,7 @@ class Render {
                 $id = $veranstaltung['id'];
                 foreach ($coursesdata as $coursedata) {
                     $course_ids = $coursedata['course_ids'];
-                    if ( in_array($id, $course_ids)) {
+                    if (in_array($id, $course_ids)) {
                         $veranstaltung['parent_course_id'] = $coursedata['id'];
                         break;
                     }
@@ -522,8 +534,8 @@ class Render {
         }
     }
 
-    private function _bearbeiteLehrveranstaltungenEinzeln($veranstaltung) {
-
+    private function _bearbeiteLehrveranstaltungenEinzeln($veranstaltung)
+    {
         if (isset($veranstaltung["courses"])) {
             $course_terms = array();
             foreach ($veranstaltung["courses"][0]["course"] as $course) {
@@ -540,8 +552,9 @@ class Render {
                             foreach ($_terms["term"] as &$course_lecture) {
                                 $date = array();
                                 $repeat = array();
-                                if (isset($course_lecture["repeat"]))
+                                if (isset($course_lecture["repeat"])) {
                                     $repeat = explode(" ", $course_lecture["repeat"]);
+                                }
                                 if (isset($repeat)) {
                                     $dict = array(
                                         "w1" => "",
@@ -552,8 +565,9 @@ class Render {
                                         "bd" => __('Block appointment', 'rrze-univis')
                                     );
 
-                                    if (array_key_exists($repeat[0], $dict))
+                                    if (array_key_exists($repeat[0], $dict)) {
                                         array_push($date, $dict[$repeat[0]]);
+                                    }
 
                                     if ($repeat[0] == "s1") {
                                         $formated = date("d.m.Y", strtotime($course_lecture["startdate"]));
@@ -606,22 +620,26 @@ class Render {
 
                                 $data["date"] = implode(" ", $date);
 
-                                if (isset($course_lecture["starttime"]))
+                                if (isset($course_lecture["starttime"])) {
                                     $data["starttime"] = $course_lecture["starttime"];
+                                }
 
-                                if (isset($course_lecture["endtime"]))
+                                if (isset($course_lecture["endtime"])) {
                                     $data["endtime"] = $course_lecture["endtime"];
+                                }
 
-                                if (isset($course_lecture["room"]))
+                                if (isset($course_lecture["room"])) {
                                     $data["room_short"] = $course_lecture["room"][0]["short"];
+                                }
 
                                 if (isset($course_lecture["exclude"])) {
                                     $dates = explode(",", $course_lecture["exclude"]);
                                     for ($i = 0; $i < count($dates); $i++) {
-                                        if ($dates[$i] == "vac")
+                                        if ($dates[$i] == "vac") {
                                             unset($dates[$i]);
-                                        else
+                                        } else {
                                             $dates[$i] = date("d.m.Y", strtotime($dates[$i]));
+                                        }
                                     }
                                     $data["exclude"] = implode(", ", $dates);
                                 }
@@ -631,7 +649,7 @@ class Render {
                     }
                 }//end Zeit und Ort
             }
-            if(isset($course_terms['sort'])) {
+            if (isset($course_terms['sort'])) {
                 $course_terms = $this->array_orderby($course_terms, 'sort', SORT_NUMERIC, 'starttime', SORT_NUMERIC);
             }
             $veranstaltung["course_terms"] = $course_terms;
@@ -708,8 +726,9 @@ class Render {
             array_push($angaben, $veranstaltung["comment"]);
         }
 
-        if (isset($veranstaltung["angaben"]))
+        if (isset($veranstaltung["angaben"])) {
             $veranstaltung["angaben"] = implode(", ", $angaben);
+        }
 
         //Begin Zeit und Ort
         if (isset($veranstaltung["terms"])) {
@@ -718,8 +737,9 @@ class Render {
                     $lecture = &$veranstaltung["terms"][$_terms]["term"][$_term];
 
                     $date = array();
-                    if (isset($lecture["repeat"]))
+                    if (isset($lecture["repeat"])) {
                         $repeat = explode(" ", $lecture["repeat"]);
+                    }
                     if (isset($repeat)) {
                         $dict = array(
                             "w1" => "",
@@ -730,8 +750,9 @@ class Render {
                             "bd" => __('Block appointment', 'rrze-univis')
                         );
 
-                        if (array_key_exists($repeat[0], $dict))
+                        if (array_key_exists($repeat[0], $dict)) {
                             array_push($date, $dict[$repeat[0]]);
+                        }
 
                         if ($repeat[0] == "s1" && isset($lecture["startdate"])) {
                             $formated = date("d.m.Y", strtotime($lecture["startdate"]));
@@ -766,7 +787,7 @@ class Render {
                                 5 => __('Friday', 'rrze-univis'),
                                 6 => __('Saturday', 'rrze-univis'),
                                 7 => __('Sunday', 'rrze-univis')
-                            );                            
+                            );
 
                             if (strpos($repeat[1], ',')) {
                                 $repeat_days = explode(',', $repeat[1]);
@@ -783,17 +804,19 @@ class Render {
 
                     $lecture["date"] = implode(" ", $date);
 
-                    if (isset($lecture["room"]))
+                    if (isset($lecture["room"])) {
                         $lecture["room_short"] = $lecture["room"][0]["short"];
+                    }
 
                     if (isset($lecture["exclude"])) {
                         $dates = explode(",", $lecture["exclude"]);
 
                         for ($i = 0; $i < count($dates); $i++) {
-                            if ($dates[$i] == "vac")
+                            if ($dates[$i] == "vac") {
                                 unset($dates[$i]);
-                            else
+                            } else {
                                 $dates[$i] = date("d.m.Y", strtotime($dates[$i]));
+                            }
                         }
 
                         $lecture["exclude"] = implode(", ", $dates);
@@ -802,33 +825,40 @@ class Render {
             }
         }//end Zeit und Ort
         //Summary
-        if (isset($veranstaltung["summary"]))
+        if (isset($veranstaltung["summary"])) {
             $veranstaltung["summary"] = str_replace("\n", "<br/>", $veranstaltung["summary"]);
+        }
 
         //Organizational
-        if (isset($veranstaltung["organizational"]))
+        if (isset($veranstaltung["organizational"])) {
             $veranstaltung["organizational"] = str_replace("\n", "<br/>", $veranstaltung["organizational"]);
+        }
 
         //ECTS Summary
-        if (isset($veranstaltung["ects_summary"]))
+        if (isset($veranstaltung["ects_summary"])) {
             $veranstaltung["ects_summary"] = str_replace("\n", "<br/>", $veranstaltung["ects_summary"]);
+        }
 
-        if (isset($veranstaltung["ects_infos"]))
+        if (isset($veranstaltung["ects_infos"])) {
             $veranstaltung["ects_infos"] = ($veranstaltung["ects_name"] || $veranstaltung["ects_summary"] || $veranstaltung["ects_literature"]);
-        if (isset($veranstaltung["zusatzinfos"]))
+        }
+        if (isset($veranstaltung["zusatzinfos"])) {
             $veranstaltung["zusatzinfos"] = ($veranstaltung["keywords"] || $veranstaltung["turnout"] || $veranstaltung["url_description"]);
+        }
 
         return array("veranstaltung" => $veranstaltung, "optionen" => $this->optionen);
     }
 
-    private function _str_replace_dict($dict, $str) {
+    private function _str_replace_dict($dict, $str)
+    {
         foreach ($dict as $key => $value) {
             $str = str_replace($key, $value, $str);
         }
         return $str;
     }
 
-    private function _rename_key($search_key, &$arr, $dict) {
+    private function _rename_key($search_key, &$arr, $dict)
+    {
         if (is_array($arr)) {
             foreach ($arr as &$veranstaltung) {
                 if (is_array($veranstaltung)) {
@@ -842,18 +872,18 @@ class Render {
         }
     }
 
-    private function _group_by($key_name, $arr) {
-
+    private function _group_by($key_name, $arr)
+    {
         $gruppen = array();
 
         $gruppen_dict = array();
         if (is_array($arr)) {
             foreach ($arr as $child) {
-
                 $gruppenName = $child[$key_name];
 
-                if (!isset($gruppen_dict[$gruppenName]))
+                if (!isset($gruppen_dict[$gruppenName])) {
                     $gruppen_dict[$gruppenName] = array();
+                }
                 array_push($gruppen_dict[$gruppenName], $child);
             }
         }
@@ -870,7 +900,8 @@ class Render {
         return $gruppen;
     }
 
-    private function umlaute_ersetzen($text) {
+    private function umlaute_ersetzen($text)
+    {
         $such_array = array('ä', 'à', 'á', 'â', 'æ', 'ã', 'å', 'ā',
             'ö', 'ô', 'ò', 'ó', 'œ', 'ø', 'ō', 'õ',
             'ü', 'û', 'ù', 'ú', 'ū',
@@ -885,20 +916,21 @@ class Render {
         return $neuer_text;
     }
 
-    private function record_sort($records, $field, $reverse = false) {
+    private function record_sort($records, $field, $reverse = false)
+    {
         $hash = array();
         
         foreach ($records as $record) {
-            if(!isset($hash[$record[$field]])) {
-                $hash[$record[$field]] = $record; 
+            if (!isset($hash[$record[$field]])) {
+                $hash[$record[$field]] = $record;
             } else {
                 $i = $record[$field] . '1';
-                $hash[$i] = $record; 
+                $hash[$i] = $record;
             }
         }
 
         //($reverse)? krsort($hash) : ksort($hash);
-        ($reverse) ? krsort($hash, SORT_NATURAL | SORT_FLAG_CASE) : ksort($hash, SORT_NATURAL | SORT_FLAG_CASE); 
+        ($reverse) ? krsort($hash, SORT_NATURAL | SORT_FLAG_CASE) : ksort($hash, SORT_NATURAL | SORT_FLAG_CASE);
 
         $records = array();
 
@@ -909,14 +941,16 @@ class Render {
         return $records;
     }
 
-    private function array_orderby() {
+    private function array_orderby()
+    {
         $args = func_get_args();
         $data = array_shift($args);
         foreach ($args as $n => $field) {
             if (is_string($field)) {
                 $tmp = array();
-                foreach ($data as $key => $row)
+                foreach ($data as $key => $row) {
                     $tmp[$key] = $row[$field];
+                }
                 $args[$n] = $tmp;
             }
         }
@@ -924,5 +958,4 @@ class Render {
         call_user_func_array('array_multisort', $args);
         return array_pop($args);
     }
-   
 }

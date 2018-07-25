@@ -7,14 +7,14 @@ use RRZE\UnivIS\Core\Render;
 
 defined('ABSPATH') || exit;
 
-class Controller {
-    
+class Controller
+{
     public $language = [
-        'suffix' => '', 
-        'orgunit' => 'orgunit', 
-        'orgunits' => 'orgunits', 
-        'orgname' => 'orgname', 
-        'description' => 'description', 
+        'suffix' => '',
+        'orgunit' => 'orgunit',
+        'orgunits' => 'orgunits',
+        'orgname' => 'orgname',
+        'description' => 'description',
         'text' => 'text',
         'title' => 'title'
     ];
@@ -27,7 +27,7 @@ class Controller {
      * @var array
      * @access private
      */
-    private $optionen = NULL;
+    private $optionen = null;
 
     /**
      * Constructor.
@@ -37,7 +37,8 @@ class Controller {
      * @param Pfad zu Conf Datei
      * @access 	public
      */
-    public function __construct($task, $type, $atts = NULL) {
+    public function __construct($task, $type, $atts = null)
+    {
         $this->_ladeConf($type, $atts);
 
         if ($task && $this->optionen) {
@@ -45,7 +46,8 @@ class Controller {
         }
     }
 
-    private function _ladeConf($type, $atts = NULL) {
+    private function _ladeConf($type, $atts = null)
+    {
         $options = array();
         if (is_array($atts)) {
             $this->optionen = $atts;
@@ -53,7 +55,8 @@ class Controller {
         }
     }
     
-    public function ladeHTML($args = NULL) {        
+    public function ladeHTML($args = null)
+    {
         // Lade Daten von Univis
         $univis = new UnivIS($this->optionen);
         $daten = $univis->ladeDaten();
@@ -65,8 +68,8 @@ class Controller {
             $daten = $render->bearbeiteDaten($daten);
 
             // Lade Zusatzinformationen
-//			$assets = new univisAssets($this->optionen);
-//			$daten["assets"] = $assets->holeDaten();
+            //			$assets = new univisAssets($this->optionen);
+            //			$daten["assets"] = $assets->holeDaten();
             // Daten rendern
             $html = $this->_renderTemplate($daten);
 
@@ -86,8 +89,8 @@ class Controller {
         }
     }
 
-    private function _renderTemplate($daten) {
-
+    private function _renderTemplate($daten)
+    {
         $daten = self::_sanitize_key($daten);
 
         // Sprachunterstützung
@@ -108,7 +111,8 @@ class Controller {
         return -1;
     }
 
-    private static function get_key($array, $key, $option) {
+    private static function get_key($array, $key, $option)
+    {
         if (!is_array($array)) {
             return false;
         }
@@ -125,7 +129,8 @@ class Controller {
         return false;
     }
 
-    private static function _sanitize_key($array) {
+    private static function _sanitize_key($array)
+    {
         $data = array();
         foreach ($array as $key => $value) {
             if (is_array($value)) {
@@ -138,8 +143,9 @@ class Controller {
         return $data;
     }
 
-    private static function correct_phone_number($phone_number) {
-        if (( strpos($phone_number, '+49 9131 85-') !== 0 ) && ( strpos($phone_number, '+49 911 5302-') !== 0 )) {
+    private static function correct_phone_number($phone_number)
+    {
+        if ((strpos($phone_number, '+49 9131 85-') !== 0) && (strpos($phone_number, '+49 911 5302-') !== 0)) {
             if (!preg_match('/\+49 [1-9][0-9]{1,4} [1-9][0-9]+/', $phone_number)) {
                 $phone_data = preg_replace('/\D/', '', $phone_number);
                 $vorwahl_erl = '+49 9131 85-';
@@ -158,7 +164,7 @@ class Controller {
                         $phone_number = $vorwahl_erl . $phone_data;
                         break;
 
-                    case '7':                       
+                    case '7':
                         if (strpos($phone_data, '85') === 0 || strpos($phone_data, '06') === 0) {
                             $phone_number = $vorwahl_erl . substr($phone_data, -5);
                             break;
@@ -169,8 +175,9 @@ class Controller {
                             break;
                         }
                         
+                        // no break
                     default:
-                        if (strpos($phone_data, '9115302') !== FALSE) {
+                        if (strpos($phone_data, '9115302') !== false) {
                             $durchwahl = explode('9115302', $phone_data);
                             if (strlen($durchwahl[1]) === 3 || strlen($durchwahl[1]) === 5) {
                                 $phone_number = $vorwahl_nbg . $durchwahl[1];
@@ -178,7 +185,7 @@ class Controller {
                             break;
                         }
                         
-                        if (strpos($phone_data, '913185') !== FALSE) {
+                        if (strpos($phone_data, '913185') !== false) {
                             $durchwahl = explode('913185', $phone_data);
                             if (strlen($durchwahl[1]) === 5) {
                                 $phone_number = $vorwahl_erl . $durchwahl[1];
@@ -202,6 +209,5 @@ class Controller {
         }
         
         return $phone_number;
-    }    
-
+    }
 }

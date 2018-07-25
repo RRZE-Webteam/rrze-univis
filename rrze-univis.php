@@ -29,15 +29,17 @@ add_action('plugins_loaded', 'RRZE\UnivIS\loaded');
  * Einbindung der Sprachdateien.
  * @return void
  */
-function load_textdomain() {
-    load_plugin_textdomain('rrze-univis', FALSE, sprintf('%s/languages/', dirname(plugin_basename(__FILE__))));
+function load_textdomain()
+{
+    load_plugin_textdomain('rrze-univis', false, sprintf('%s/languages/', dirname(plugin_basename(__FILE__))));
 }
 
 /*
 * Wird durchgeführt, nachdem das Plugin aktiviert wurde.
 * @return void
 */
-function activation() {
+function activation()
+{
     // Sprachdateien werden eingebunden.
     load_textdomain();
 
@@ -45,7 +47,7 @@ function activation() {
     system_requirements();
     
     // Endpoint hinzufügen
-    add_endpoint(TRUE);
+    add_endpoint(true);
     flush_rewrite_rules();
 }
 
@@ -53,11 +55,13 @@ function activation() {
  * Wird durchgeführt, nachdem das Plugin deaktiviert wurde.
  * @return void
  */
-function deactivation() {
+function deactivation()
+{
     flush_rewrite_rules();
 }
 
-function add_endpoint() {
+function add_endpoint()
+{
     add_rewrite_endpoint('univisid', EP_PERMALINK | EP_PAGES);
     add_rewrite_endpoint('lv_id', EP_PERMALINK | EP_PAGES);
 }
@@ -66,7 +70,8 @@ function add_endpoint() {
   * Überprüft die minimal erforderliche PHP- u. WP-Version.
   * @return void
   */
-function system_requirements() {
+function system_requirements()
+{
     $error = '';
 
     if (version_compare(PHP_VERSION, RRZE_PHP_VERSION, '<')) {
@@ -79,7 +84,7 @@ function system_requirements() {
 
     // Wenn die Überprüfung fehlschlägt, dann wird das Plugin automatisch deaktiviert.
     if (!empty($error)) {
-        deactivate_plugins(plugin_basename(__FILE__), FALSE, TRUE);
+        deactivate_plugins(plugin_basename(__FILE__), false, true);
         wp_die($error);
     }
 }
@@ -89,7 +94,8 @@ function system_requirements() {
  * und alle Plugins eingebunden wurden.
  * @return void
  */
-function loaded() {
+function loaded()
+{
     // Sprachdateien werden eingebunden.
     load_textdomain();
         
@@ -101,7 +107,8 @@ function loaded() {
  * Automatische Laden von Klassen.
  * @return void
  */
-function autoload() {
-    require 'autoload.php';    
+function autoload()
+{
+    require 'autoload.php';
     $main = new Main(__FILE__);
 }
