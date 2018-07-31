@@ -33,6 +33,12 @@ class UnivIS
     protected $univis_url = 'https://univis.uni-erlangen.de/prg';
 
     /**
+     * @var array
+     * @access protected
+     */
+    protected $parent_lv = null;
+    
+    /**
      * Constructor
      *
      * @param array Uebergebene argumente
@@ -487,16 +493,28 @@ class UnivIS
             return -1;
         } else {
             $veranstaltungen = $array["Lecture"];
-
-            // Ausblenden importierter Lehrveranstaltungen über Shortcodeparameter lv_import="0"
-            if ($this->optionen["lv_import"] == 0) {
-                for ($i = 0; $i < count($veranstaltungen); $i++) {
-                    if (isset($veranstaltungen[$i]["import_parent_id"])) {
-                        array_splice($veranstaltungen, $i, 1);
-                        $i = $i - 1;
+            
+            foreach ($veranstaltungen as $veranstaltung) {
+                if (array_key_exists('parent-lv', $veranstaltung)) {
+                    foreach ($veranstaltung['parent-lv'] as $ref) {
+                        $parent_lv = $ref['UnivISRef'][0]['key'];
+                        $this->parent_lv[$parent_lv] = $parent_lv;
                     }
+                }                
+            }
+            
+            for ($i = 0; $i < count($veranstaltungen); $i++) {
+                if ($this->optionen["lv_import"] == 0 && isset($veranstaltungen[$i]["import_parent_id"])) {
+                    // Ausblenden importierter Lehrveranstaltungen über Shortcodeparameter lv_import="0"
+                    array_splice($veranstaltungen, $i, 1);
+                    $i = $i - 1;
+                } elseif($this->optionen["parent_lv"] == 0 && isset($this->parent_lv[$veranstaltungen[$i]['@attributes']['key']])) {
+                    // Ausblenden Eltern-Lehrveranstaltungen über Shortcodeparameter parent_lv="0"
+                    array_splice($veranstaltungen, $i, 1);
+                    $i = $i - 1;                    
                 }
             }
+
             $univis_refs = $this->get_univis_ref($array);
 
             //Referenzinformationen einfügen

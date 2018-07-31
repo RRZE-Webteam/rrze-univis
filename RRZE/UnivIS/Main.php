@@ -306,6 +306,7 @@ class Main
             'dozentname' => '',
             'type' => '', // für Selektion nach Lehrveranstaltungstypen wie vorl
             'lv_import' => 1, // importierte Lehrveranstaltungen werden mit angezeigt, ausblenden über Shortcode
+            'parent_lv' => 1, // Eltern-Lehrveranstaltungen werden mit angezeigt, ausblenden über Shortcode
             'sem' => '', // Semesterauswahl
             'univisid' => '', // ist die Personen-ID, egal ob dozentid oder MA-ID
             'name' => '', // Synonym zur Angabe von firstname und lastname
@@ -313,7 +314,7 @@ class Main
             'lv_type' => 1, // Anzeige LV-Typ-Überschriften
             'lang' => $language, // wichtig für die Ausgabe englischer Bezeichnungen von orgunit, orgunits, text, description
             'leclanguage' => '', // Veranstaltungssprache
-            'kompakt' => ''              // Ausschließliche Anzeige LV-Überschriften
+            'kompakt' => '' // Ausschließliche Anzeige LV-Überschriften
         ];
 
         return $atts;
