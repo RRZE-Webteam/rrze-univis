@@ -2,9 +2,9 @@
 
 namespace RRZE\UnivIS\Core;
 
-class Dicts {
-
-    public static $acronyms = array(
+class Dicts
+{
+    public static $acronyms = [
         "Dr." => "Doktor",
         "Prof." => "Professor",
         "Dipl." => "Diplom",
@@ -17,7 +17,7 @@ class Dicts {
 //        "M.Sc." => "Master of Science",
 //        //"M. Sc." => "Master of Science",
 //        "M.Eng." => "Master of Engineering",
-//        //"M. Eng." => "Master of Engineering",        
+//        //"M. Eng." => "Master of Engineering",
 //        "M.Ed." => "Master of Education",
 //        //"M. Ed." => "Master of Education",
         "phil." => "Geisteswissenschaft",
@@ -31,10 +31,10 @@ class Dicts {
         "med." => "Medizin",
         "jur." => "Recht",
         "rer." => ""
-    );
+    ];
    
     // Reihenfolge wichtig, da sonst Mehrfachersetzung von z.B. sem
-    public static $lecturetypen = array(
+    public static $lecturetypen = [
         "awa" => "Anleitung zu wiss. Arbeiten  (AWA)",
         "ku" => "Kurs  (KU)",
         "ak" => "Aufbaukurs  (AK)",
@@ -44,7 +44,7 @@ class Dicts {
         "es" => "Examensseminar  (ES)",
         "ts" => "Theorieseminar  (TS)",
         "ag" => "Arbeitsgemeinschaft  (AG)",
-        "mas" => "Masterseminar  (MAS)", 
+        "mas" => "Masterseminar  (MAS)",
         "gs" => "Grundseminar  (GS)",
         "us" => "Übungsseminar (US)",
         "as" => "Aufbauseminar  (AS)",
@@ -71,9 +71,9 @@ class Dicts {
         "gsz" => "Gremiensitzung  (GSZ)",
         "ppu" => "Propädeutische Übung (PPU)",
         "his" => "Sprachhistorisches Seminar (HIS)"
-    );
+    ];
     
-    public static $lecturetypen_short = array(
+    public static $lecturetypen_short = [
         "awa" => "Anleitung zu wiss. Arbeiten",
         "ts" => "Theorieseminar",
         "ag" => "Arbeitsgemeinschaft",
@@ -110,13 +110,13 @@ class Dicts {
         "gsz" => "Gremiensitzung",
         "ppu" => "Propädeutische Übung",
         "his" => "Sprachhistorisches Seminar"
-    );
+    ];
     
-    public static $leclanguages = array(
+    public static $leclanguages = [
         "D" => "Deutsch"
-    );
+    ];
     
-    public static $pubtypes = array(
+    public static $pubtypes = [
         "artmono" => "Artikel im Sammelband",
         "arttagu" => "Artikel im Tagungsband",
         "artzeit" => "Artikel in Zeitschrift",
@@ -126,9 +126,9 @@ class Dicts {
         "monogr" => "Monographie",
         "tagband" => "Tagungsband (nicht im Verlag erschienen)",
         "schutzr" => "Schutzrecht"
-    );
+    ];
     
-    public static $hstypes = array(
+    public static $hstypes = [
         "diss" => "Dissertation",
         "dipl" => "Diplomarbeit",
         "mag" => "Magisterarbeit",
@@ -145,6 +145,5 @@ class Dicts {
         "offenleg" => "Offenlegungsschrift",
         "patanmel" => "Patentanmeldung",
         "gebrmust" => "Gebrauchsmuster"
-    );
-
+    ];
 }

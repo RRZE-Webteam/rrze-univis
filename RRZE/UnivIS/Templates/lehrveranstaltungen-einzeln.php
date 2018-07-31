@@ -78,8 +78,7 @@
                 ?>    
                 <li><?php echo $term_formatted; ?></li>
             <?php endforeach;
-        elseif (array_key_exists('terms', $veranstaltung) && array_key_exists('term', $veranstaltung['terms'][0])) :                  
-        //if (!empty(univisController::get_key($veranstaltung, 'terms', 0)) && !empty(univisController::get_key($veranstaltung['terms'], 'term', 0))) {
+        elseif (array_key_exists('terms', $veranstaltung) && array_key_exists('term', $veranstaltung['terms'][0])) :
             foreach ($veranstaltung['terms'][0]['term'] as $term) :
                 $t = array();
                 $time = array();
