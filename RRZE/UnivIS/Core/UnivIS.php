@@ -12,32 +12,30 @@ class UnivIS
      * Optionen
      *
      * @var array
-     * @access private
+     * @access protected
      */
-    private $optionen = null;
+    protected $optionen = null;
 
     /**
      * Enthaelt die geparsten XML Daten in Form von Arrays
      *
      * @var array
-     * @access private
+     * @access protected
      */
-    private $daten = null;
+    protected $daten = null;
 
     /**
      * UnivIS Url
      *
      * @var string
-     * @access private
+     * @access protected
      */
-    private $univis_url = "https://univis.uni-erlangen.de/prg";
+    protected $univis_url = 'https://univis.uni-erlangen.de/prg';
 
     /**
-     * Constructor.
+     * Constructor
      *
-     *
-     * @param Uebergebene argumente
-     * @param Pfad zu Conf Datei
+     * @param array Uebergebene argumente
      * @access 	public
      */
     public function __construct($optionen)
@@ -45,43 +43,40 @@ class UnivIS
         $this->optionen = $optionen;
     }
 
-    /*
-      public function test() {
-      if (!empty($this->optionen)) {
-      $this->daten = $this->_ladeMitarbeiterAlle();
-      }
-      return $this->daten;
-      }
+    /**
+     * ladeDaten
+     *
+     * @return array
+     * @access 	public
      */
-
     public function ladeDaten()
     {
         if (!empty($this->optionen)) {
             switch ($this->optionen["task"]) {
                 case "mitarbeiter-alle":
-                    $this->daten = $this->_ladeMitarbeiterAlle();
+                    $this->daten = $this->ladeMitarbeiterAlle();
                     break;
 
                 case "mitarbeiter-orga":
                 case "mitarbeiter-telefonbuch":
-                    $this->daten = $this->_ladeMitarbeiterOrga();
+                    $this->daten = $this->ladeMitarbeiterOrga();
                     break;
 
                 case "mitarbeiter-einzeln":
                 case "mitarbeiter-content":
-                    $this->daten = $this->_ladeMitarbeiterEinzeln();
+                    $this->daten = $this->ladeMitarbeiterEinzeln();
                     break;
 
                 case "publikationen":
-                    $this->daten = $this->_ladePublikationen();
+                    $this->daten = $this->ladePublikationen();
                     break;
 
                 case "lehrveranstaltungen-alle":
-                    $this->daten = $this->_ladeLehrveranstaltungenAlle();
+                    $this->daten = $this->ladeLehrveranstaltungenAlle();
                     break;
 
                 case "lehrveranstaltungen-einzeln":
-                    $this->daten = $this->_ladeLehrveranstaltungenEinzeln();
+                    $this->daten = $this->ladeLehrveranstaltungenEinzeln();
                     break;
 
                 default:
@@ -93,11 +88,17 @@ class UnivIS
         return $this->daten;
     }
 
-    private function _ladeMitarbeiterAlle()
+    /**
+     * ladeMitarbeiterAlle
+     *
+     * @return mixed
+     * @access protected
+     */
+    protected function ladeMitarbeiterAlle()
     {
         // Hole Daten von Univis
         $url = esc_url_raw($this->univis_url . "?search=departments&number=" . $this->optionen["UnivISOrgNr"] . "&show=xml");
-        do_action('rrze.log.debug', ['plugin' => 'rrze-univis', 'function' => '_ladeMitarbeiterAlle', 'url' => $url]);
+        do_action('rrze.log.debug', ['plugin' => 'rrze-univis', 'function' => 'ladeMitarbeiterAlle', 'url' => $url]);
         
         if (!fopen($url, "r")) {
             if (isset($this->optionen['errormsg']) && $this->optionen['errormsg'] == 1) {
@@ -217,17 +218,20 @@ class UnivIS
         }
     }
 
-    // Todo: wenn kein mitarbeiter gefunden alle anzeigen
-    // sprungmarken optional
-    // nach ueberschrift filtern
-    // wenn nur eine org unit da is dann sprungmarke weglassen
-    // nach alphabet sortieren
-
-    private function _ladeMitarbeiterOrga()
+    /**
+     * ladeMitarbeiterOrga
+     *
+     * @return mixed
+     * @access protected
+     * @todo Wenn kein mitarbeiter gefunden alle anzeigen, sprungmarken optional,
+     * nach ueberschrift filtern, wenn nur eine org unit da is dann sprungmarke weglassen,
+     * nach alphabet sortieren
+     */
+    protected function ladeMitarbeiterOrga()
     {
         // Hole Daten von Univis
         $url = esc_url_raw($this->univis_url . "?search=persons&department=" . $this->optionen["UnivISOrgNr"] . "&show=xml");
-        do_action('rrze.log.debug', ['plugin' => 'rrze-univis', 'function' => '_ladeMitarbeiterOrga', 'url' => $url]);
+        do_action('rrze.log.debug', ['plugin' => 'rrze-univis', 'function' => 'ladeMitarbeiterOrga', 'url' => $url]);
         
         if (!fopen($url, "r")) {
             if (isset($this->optionen['errormsg']) && $this->optionen['errormsg'] == 1) {
@@ -258,7 +262,13 @@ class UnivIS
         }
     }
 
-    private function _ladeMitarbeiterEinzeln()
+    /**
+     * ladeMitarbeiterEinzeln
+     *
+     * @return mixed
+     * @access protected
+     */
+    protected function ladeMitarbeiterEinzeln()
     {
         if ($this->optionen["univisid"]) {
             $id = $this->optionen["univisid"];
@@ -292,7 +302,7 @@ class UnivIS
             $url = $this->umlaute_ersetzen($url);
         }
 
-        do_action('rrze.log.debug', ['plugin' => 'rrze-univis', 'function' => '_ladeMitarbeiterEinzeln', 'url' => $url]);
+        do_action('rrze.log.debug', ['plugin' => 'rrze-univis', 'function' => 'ladeMitarbeiterEinzeln', 'url' => $url]);
 
         if (!fopen($url, "r")) {
             if (isset($this->optionen['errormsg']) && $this->optionen['errormsg'] == 1) {
@@ -336,23 +346,31 @@ class UnivIS
 
             // Lade Publikationen und Lehrveranstaltungen falls noetig
             if ($this->optionen["personenanzeige_publikationen"]) {
-                $person["publikationen"] = $this->_ladePublikationen($person["id"]);
+                $person["publikationen"] = $this->ladePublikationen($person["id"]);
             }
 
             if ($this->optionen["personenanzeige_lehrveranstaltungen"]) {
-                $person["lehrveranstaltungen"] = $this->_ladeLehrveranstaltungenAlle($person["id"]);
+                $person["lehrveranstaltungen"] = $this->ladeLehrveranstaltungenAlle($person["id"]);
             }
             return $person;
         }
     }
 
-    // $authorid muss evtl. noch mit $univisid ersetzt werden, dann aber auch in rrze_univis.php
-    private function _ladePublikationen($authorid = null)
+    /**
+     * ladePublikationen
+     *
+     * @param integer $authorid
+     * @return mixed
+     * @access protected
+     */
+    protected function ladePublikationen($authorid = null)
     {
+        // $authorid muss evtl. noch mit $univisid ersetzt werden (?!)
+        
         // Hole Daten von Univis
         $url = esc_url_raw($this->univis_url . "?search=publications&show=xml");
         
-        do_action('rrze.log.debug', ['plugin' => 'rrze-univis', 'function' => '_ladePublikationen', 'url' => $url]);
+        do_action('rrze.log.debug', ['plugin' => 'rrze-univis', 'function' => 'ladePublikationen', 'url' => $url]);
         
         if ($authorid) {
             // Suche nur Publikationen von einen bestimmten Autoren
@@ -407,7 +425,14 @@ class UnivIS
         }
     }
 
-    private function _ladeLehrveranstaltungenAlle($univisid = null)
+    /**
+     * ladeLehrveranstaltungenAlle
+     *
+     * @param integer $univisid
+     * @return mixed
+     * @access protected
+     */
+    protected function ladeLehrveranstaltungenAlle($univisid = null)
     {
         // Hole Daten von Univis
         //&sem=2012w
@@ -451,7 +476,7 @@ class UnivIS
         }
         fclose($handle);
 
-        do_action('rrze.log.debug', ['plugin' => 'rrze-univis', 'function' => '_ladeLehrveranstaltungenAlle', 'url' => $url]);
+        do_action('rrze.log.debug', ['plugin' => 'rrze-univis', 'function' => 'ladeLehrveranstaltungenAlle', 'url' => $url]);
         
         $array = $this->xml2array($url);
 
@@ -472,7 +497,7 @@ class UnivIS
                     }
                 }
             }
-            $univis_refs = $this->_get_univis_ref($array);
+            $univis_refs = $this->get_univis_ref($array);
 
             //Referenzinformationen einfügen
             $this->univis_refs_ersetzen($univis_refs, $veranstaltungen);
@@ -480,7 +505,13 @@ class UnivIS
         }
     }
 
-    private function _ladeLehrveranstaltungenEinzeln()
+    /**
+     * ladeLehrveranstaltungenEinzeln
+     *
+     * @return mixed
+     * @access protected
+     */
+    protected function ladeLehrveranstaltungenEinzeln()
     {
         // Hole Daten von Univis
         if ($this->optionen["lv_id"] == "") {
@@ -493,7 +524,7 @@ class UnivIS
         $url = esc_url_raw($this->univis_url . "?search=lectures&show=xml");
         //Auskommentiert, da das aktuelle Semester in UnivIS beliebieg zum Ende der vorlesungsfreien Zeit umgestellt wird
         //$url = $this->univis_url."?search=lectures&show=xml&sem=".$this->aktuellesSemester() ;
-        do_action('rrze.log.debug', ['plugin' => 'rrze-univis', 'function' => '_ladeLehrveranstaltungenEinzeln', 'url' => $url]);
+        do_action('rrze.log.debug', ['plugin' => 'rrze-univis', 'function' => 'ladeLehrveranstaltungenEinzeln', 'url' => $url]);
         
         if (isset($this->optionen["lv_id"])) {
             $url .= "&id=" . $this->toNumber($this->optionen["lv_id"]);
@@ -531,24 +562,38 @@ class UnivIS
             $veranstaltung = $array["Lecture"][0];
 
             //Ersetze Referenzen
-            $univis_refs = $this->_get_univis_ref($array);
+            $univis_refs = $this->get_univis_ref($array);
             $this->univis_refs_ersetzen($univis_refs, $veranstaltung);
 
             return $veranstaltung;
         }
     }
 
-    ///////////////////////////////////////////////////////////////
-    /////		Hilfsmethoden
-    ///////////////////////////////////////////////////////////////
-    // XML Parser
+    /**
+     * xml2array
+     *
+     * XML Parser
+     *
+     * @param string $url
+     * @return array
+     * @access public
+     */
     public function xml2array($url)
     {
         $sxi = new SimpleXmlIterator($url, null, true);
         return $this->sxi2array($sxi);
     }
 
-    private function sxi2array($sxi)
+    /**
+     * sxi2array
+     *
+     * XML Parser
+     *
+     * @param object $sxi
+     * @return array
+     * @access protected
+     */
+    protected function sxi2array($sxi)
     {
         $a = array();
 
@@ -585,7 +630,14 @@ class UnivIS
         return $a;
     }
 
-    private function umlaute_ersetzen($text)
+    /**
+     * umlaute_ersetzen
+     *
+     * @param string $text
+     * @return string
+     * @access protected
+     */
+    protected function umlaute_ersetzen($text)
     {
         $such_array = array('ä', 'ö', 'ü', 'ß');
         $ersetzen_array = array('ae', 'oe', 'ue', 'ss');
@@ -593,10 +645,19 @@ class UnivIS
         return $neuer_text;
     }
 
-    // Ersetzt die Referenzen von Univis durch den jeweilig dazugehoerigen Datensatz.
-    private function univis_refs_ersetzen($refs, &$arr)
+    /**
+     * univis_refs_ersetzen
+     *
+     * Ersetzt die Referenzen von Univis durch den jeweilig dazugehoerigen Datensatz.
+     *
+     * @param array $refs
+     * @param array $arr
+     * @return array
+     * @access protected
+     */
+    protected function univis_refs_ersetzen($refs, &$arr)
     {
-        $search_results = array();
+        $search_results = [];
         $search_key = "UnivISRef";
 
         foreach ($arr as &$child) {
@@ -612,14 +673,21 @@ class UnivIS
         return $search_results;
     }
 
-    private function _get_univis_ref($arr)
+    /**
+     * get_univis_ref
+     *
+     * @param array $arr
+     * @return array
+     * @access protected
+     */
+    protected function get_univis_ref($arr)
     {
-        $univis_refs = array();
+        $univis_refs = [];
 
         $dict = array("Room", "Person", "Title", "Lecture");
         foreach ($dict as $type) {
             if (!isset($arr[$type])) {
-                $arr[$type] = array();
+                $arr[$type] = [];
             }
             $univis_refs = array_merge($univis_refs, $arr[$type]);
         }
@@ -636,11 +704,18 @@ class UnivIS
         return $refs;
     }
 
-    // Gibt aktuelles Semester zurueck:
-    // 01.04 - 01.10 Sommersemester
-    // 01.10 - 01.04 Wintersemester
-    // Beispiel: Aktuelles Datum: 12.02.2013 -> 2012w
-    private function aktuellesSemester()
+    /**
+     * aktuellesSemester
+     *
+     * Gibt aktuelles Semester zurueck:
+     * 01.04 - 01.10 Sommersemester
+     * 01.10 - 01.04 Wintersemester
+     * Beispiel: Aktuelles Datum: 12.02.2013 -> 2012w
+     *
+     * @return string
+     * @access protected
+     */
+    protected function aktuellesSemester()
     {
         $heute = explode(".", date("d.m"));
         $fruehling = explode(".", $this->optionen["start_sommersemester"]);
@@ -655,14 +730,21 @@ class UnivIS
         // Wintersemester
         $jahr = $this->toNumber(date("Y"));
 
-        //Wenn das neue Kalenderjahrangefangen hat, aber das Semester noch vom Vorjahr gilt. -> Einmal runterzaehlen
+        // Wenn das neue Kalenderjahrangefangen hat, aber das Semester noch vom Vorjahr gilt. -> Einmal runterzaehlen
         if ($heute[1] < $fruehling[1]) {
             $jahr--;
         }
         return $jahr . "w";
     }
 
-    private function toNumber($data)
+    /**
+     * toNumber
+     *
+     * @param mixed $data
+     * @return integer
+     * @access protected
+     */
+    protected function toNumber($data)
     {
         return (int) $data;
     }

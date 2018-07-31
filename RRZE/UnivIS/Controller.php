@@ -9,6 +9,10 @@ defined('ABSPATH') || exit;
 
 class Controller
 {
+    /**
+     * @var array
+     * @access public
+     */    
     public $language = [
         'suffix' => '',
         'orgunit' => 'orgunit',
@@ -19,42 +23,67 @@ class Controller
         'title' => 'title'
     ];
      
-    protected $messages = [ ];
+    /**
+     * @var array
+     * @access protected
+     */      
+    protected $messages = [];
 
     /**
      * Optionen
      *
      * @var array
-     * @access private
+     * @access protected
      */
-    private $optionen = null;
+    protected $optionen = null;
 
     /**
-     * Constructor.
+     * Constructor
      *
-     *
-     * @param Uebergebene argumente
-     * @param Pfad zu Conf Datei
-     * @access 	public
+     * @access public
      */
-    public function __construct($task, $type, $atts = null)
+    public function __construct()
     {
-        $this->_ladeConf($type, $atts);
+    }
+
+    /**
+     * init
+     *
+     * @param string $task
+     * @param array $atts
+     * @access public
+     */
+    public function init($task, $atts = null)
+    {
+        $this->ladeConf($atts);
 
         if ($task && $this->optionen) {
             $this->optionen['task'] = $task;
         }
     }
 
-    private function _ladeConf($type, $atts = null)
+    /**
+     * ladeConf
+     *
+     * @param array $atts
+     * @return void
+     * @access protected
+     */
+    protected function ladeConf($atts = null)
     {
-        $options = array();
         if (is_array($atts)) {
             $this->optionen = $atts;
             return;
         }
     }
     
+    /**
+     * ladeHTML
+     *
+     * @param array $args
+     * @return mixed
+     * @access public
+     */    
     public function ladeHTML($args = null)
     {
         // Lade Daten von Univis
@@ -71,7 +100,7 @@ class Controller
             //			$assets = new univisAssets($this->optionen);
             //			$daten["assets"] = $assets->holeDaten();
             // Daten rendern
-            $html = $this->_renderTemplate($daten);
+            $html = $this->renderTemplate($daten);
 
             if ($html != -1) { //Rendern erfolgreich?
                 // Gerenderte Daten in Cache speichern
@@ -89,9 +118,16 @@ class Controller
         }
     }
 
-    private function _renderTemplate($daten)
+    /**
+     * renderTemplate
+     *
+     * @param array $daten
+     * @return mixed
+     * @access protected
+     */    
+    protected function renderTemplate($daten)
     {
-        $daten = self::_sanitize_key($daten);
+        $daten = self::sanitize_key($daten);
 
         // Sprachunterstützung
         if (isset($daten['optionen']['lang'])) {
@@ -100,7 +136,8 @@ class Controller
             extract($this->language);
         }
 
-        $filename = plugin_dir_path(__FILE__) . "Templates/" . $this->optionen['task'] . ".php";
+        $filename = trailingslashit(dirname(__FILE__)) . 'Templates/' . $this->optionen['task'] . '.php';
+        do_action('rrze.log.debug', ['plugin' => 'rrze-univis', 'filename' => $filename]);
 
         if (is_file($filename)) {
             ob_start();
@@ -111,30 +148,19 @@ class Controller
         return -1;
     }
 
-    private static function get_key($array, $key, $option)
+    /**
+     * sanitize_key
+     *
+     * @param array $array
+     * @return array
+     * @access public
+     */    
+    public static function sanitize_key($array)
     {
-        if (!is_array($array)) {
-            return false;
-        }
-        foreach ($array as $k => $v) {
-            if ($k == $key && is_array($v) && isset($v[$option])) {
-                return $v;
-            }
-            $data = self::get_key($v, $key, $option);
-            if ($data != false) {
-                return $data;
-            }
-        }
-
-        return false;
-    }
-
-    private static function _sanitize_key($array)
-    {
-        $data = array();
+        $data = [];
         foreach ($array as $key => $value) {
             if (is_array($value)) {
-                $value = self::_sanitize_key($value);
+                $value = self::sanitize_key($value);
             }
 
             $key = preg_replace('/[^a-z0-9_]/', '_', strtolower($key));
@@ -143,7 +169,14 @@ class Controller
         return $data;
     }
 
-    private static function correct_phone_number($phone_number)
+    /**
+     * correct_phone_number
+     *
+     * @param string $phone_number
+     * @return string
+     * @access public
+     */    
+    public static function correct_phone_number($phone_number)
     {
         if ((strpos($phone_number, '+49 9131 85-') !== 0) && (strpos($phone_number, '+49 911 5302-') !== 0)) {
             if (!preg_match('/\+49 [1-9][0-9]{1,4} [1-9][0-9]+/', $phone_number)) {

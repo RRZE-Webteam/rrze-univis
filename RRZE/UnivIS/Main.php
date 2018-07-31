@@ -2,6 +2,7 @@
 
 namespace RRZE\UnivIS;
 
+use RRZE\UnivIS\Controller;
 use RRZE\UnivIS\Core\Options;
 use RRZE\UnivIS\Core\Settings;
 
@@ -9,19 +10,42 @@ defined('ABSPATH') || exit;
 
 class Main
 {
+    /**
+     * @var string
+     * @access public
+     */      
     public $plugin_file;
+
+    /**
+     * @var object
+     * @access public
+     */
     public $options;
+    
+    /**
+     * @var object
+     * @access public
+     */    
     public $settings;
+    
+    /**
+     * @var object
+     * @access public
+     */    
     public $controller;
 
     /**
      * UnivIS Url
      *
      * @var string
-     * @access private
+     * @access public
      */
-    private $univis_url = 'https://univis.uni-erlangen.de';
+    public $univis_url = 'https://univis.uni-erlangen.de';
 
+    /**
+     * @var array
+     * @access public
+     */
     public $language = [
         'suffix' => '',
         'orgunit' => 'orgunit',
@@ -32,6 +56,10 @@ class Main
         'title' => 'title'
     ];
     
+    /**
+     * @var array
+     * @access public
+     */    
     public $allowed_stylesheets = [
         'FAU' => [
             'FAU-Einrichtungen',
@@ -58,8 +86,8 @@ class Main
         $this->plugin_file = $plugin_file;
 
         $this->options = new Options();
-
-        $this->settings = new Settings();
+        $this->settings = new Settings();        
+        $this->controller = new Controller();
 
         add_action('admin_menu', array($this->settings, 'admin_settings_page'));
         add_action('admin_init', array($this->settings, 'admin_settings'));
@@ -80,50 +108,48 @@ class Main
         if (empty($atts)) {
             $ausgabe = $univis_link;
         } else {
-            if (isset($atts['show'])) { // über show können die Default-Werte (in Großbuchstaben) eingeblendet werden
-                $atts['show'] = wp_kses(str_replace(' ', '', $atts['show']), array());
-                $optionen = explode(',', $atts['show']);
-                foreach ($optionen as $key => $value) {
-                    $atts[$value] = 1;
+            $atts = array_change_key_case($atts);
+            
+            if (isset($atts['show'])) {
+                $show = trim(preg_replace('/\s+/', ' ', $atts['show']));
+                $show = explode(',', $show);
+                foreach ($show as $value) {
+                    $atts[strtolower($value)] = 1;
                 }
             }
 
-            if (isset($atts['hide'])) { // über hide können die Default-Werte (in Großbuchstaben) ausgeblendet werden
-                $atts['hide'] = wp_kses(str_replace(' ', '', $atts['hide']), array());
-                $optionen = explode(',', $atts['hide']);
-                foreach ($optionen as $key => $value) {
-                    $atts[$value] = 0;
+            if (isset($atts['hide'])) {
+                $hide = trim(preg_replace('/\s+/', ' ', $atts['show']));
+                $hide = explode(',', $hide);
+                foreach ($hide as $value) {
+                    $atts[strtolower($value)] = '';
                 }
             }
-
-            if (isset($atts['number']) && ctype_digit($atts['number'])) {
-                $atts['UnivISOrgNr'] = wp_kses($atts['number'], array());
-            } else {
-                $atts['UnivISOrgNr'] = $options->UnivISOrgNr;
+            
+            $atts['UnivISOrgNr'] = isset($atts['number']) && absint($atts['number']) ? absint($atts['number']) : $options->UnivISOrgNr;
+            
+            if (isset($atts['id']) && absint($atts['id'])) {
+                $atts['id'] = absint($atts['id']);
             }
 
-            if (isset($atts['id']) && ctype_digit($atts['id'])) {
-                $atts['id'] = wp_kses($atts['id'], array());
+            if (isset($atts['dozentid']) && absint($atts['dozentid'])) {
+                $atts['dozentid'] = absint($atts['dozentid']);
             }
 
-            if (isset($atts['dozentid']) && ctype_digit($atts['dozentid'])) {
-                $atts['dozentid'] = wp_kses($atts['dozentid'], array());
+            if (isset($atts['univisid']) && absint($atts['univisid'])) {
+                $atts['univisid'] = absint($atts['univisid']);
             }
-
-            if (isset($atts['univisid']) && ctype_digit($atts['univisid'])) {
-                $atts['univisid'] = wp_kses($atts['univisid'], array());
-            }
-
+            
             if (isset($atts['dozentname'])) {
-                $atts['dozentname'] = wp_kses(str_replace(' ', '', $atts['dozentname']), array());
+                $atts['dozentname'] = wp_kses(trim(preg_replace('/\s+/', ' ', $atts['dozentname'])), []);
             }
 
             if (isset($atts['name'])) {
-                $atts['name'] = wp_kses(str_replace(' ', '', $atts['name']), array());
+                $atts['name'] = wp_kses(trim(preg_replace('/\s+/', ' ', $atts['name'])), []);
             }
 
             if (isset($atts['sem'])) {
-                $sem = wp_kses(str_replace(' ', '', $atts['sem']), array());
+                $sem = wp_kses(trim(preg_replace('/\s+/', ' ', $atts['sem'])), []);
                 if (preg_match('/[12]\d{3}[ws]/', $sem)) {
                     $atts['sem'] = $sem;
                 }
@@ -161,12 +187,12 @@ class Main
                 }
             }
 
-            if (isset($atts['ignoriere_jobs'])) { // Übergabe in Großbuchstaben
+            if (isset($atts['ignoriere_jobs'])) {
                 $atts['ignoriere_jobs'] = wp_kses(str_replace(', ', ',', $atts['ignoriere_jobs']), array());
                 $atts['ignoriere_jobs'] = wp_kses(str_replace(',', '|', $atts['ignoriere_jobs']), array());
             }
 
-            if (isset($atts['zeige_jobs'])) { // Übergabe in Großbuchstaben
+            if (isset($atts['zeige_jobs'])) {
                 $zeige_jobs = wp_kses(str_replace(', ', ',', $atts['zeige_jobs']), array());
                 $atts['zeige_jobs'] = explode(',', $zeige_jobs);
             }
@@ -184,16 +210,13 @@ class Main
                     $atts['lang'] = $this->set_language('_en');
                 } elseif ($atts['lang'] == 'de') {
                     $atts['lang'] = $this->set_language('');
-                // NUR FÜR _rrze_debug
-//                } elseif ( $atts['lang'] == 'test' ) {
-//                    $atts['lang'] = $this->set_language('_test');
                 } else {
                     $atts['lang'] = $defaults['lang'];
                 }
             }
 
             $shortcode_atts = shortcode_atts($defaults, $atts);
-
+            do_action('rrze.log.debug', ['plugin' => 'rrze-univis', 'shortcode atts' => $shortcode_atts]);
             extract($shortcode_atts);
             
             switch ($task) {
@@ -203,8 +226,8 @@ class Main
                 case 'lehrveranstaltungen-alle':
                     // Selektion nach Lehrveranstaltungstypen über Shortcodeparameter (z.B. vorl)
                     if ($type) {
-                        $controller = new Controller($task, $type, $shortcode_atts);
-                        $ausgabe = $controller->ladeHTML();
+                        $this->controller->init($task, $shortcode_atts);
+                        $ausgabe = $this->controller->ladeHTML();
                         break;
                     }
                     // no break
@@ -213,24 +236,24 @@ class Main
                         $ausgabe = '<p>' . __('Please enter a valid UnivIS OrgNr.', 'rrze-univis') . '</p>';
                         break;
                     }
-                    $controller = new Controller($task, null, $shortcode_atts);
-                    $ausgabe = $controller->ladeHTML();
+                    $this->controller->init($task, $shortcode_atts);
+                    $ausgabe = $this->controller->ladeHTML();
                     break;
                 case 'lehrveranstaltungen-einzeln':
                     if (!$lv_id) {
                         $ausgabe = '<p>' . __('Please enter a valid lecture ID.', 'rrze-univis') . '</p>';
                         break;
                     }
-                    $controller = new Controller($task, null, $shortcode_atts);
-                    $ausgabe = $controller->ladeHTML();
+                    $this->controller->init($task, $shortcode_atts);
+                    $ausgabe = $this->controller->ladeHTML();
                     break;
                 case 'mitarbeiter-einzeln':
                     if (!($name || ($firstname && $lastname) || $univisid)) {
                         $ausgabe = '<p>' . __('Please enter a first and last name or a UnivIS ID.', 'rrze-univis') . '</p>';
                         break;
                     }
-                    $controller = new Controller($task, null, $shortcode_atts);
-                    $ausgabe = $controller->ladeHTML();
+                    $this->controller->init($task, $shortcode_atts);
+                    $ausgabe = $this->controller->ladeHTML();
                     break;
                 default:
                     $ausgabe = $univis_link;
@@ -241,9 +264,9 @@ class Main
 
     /*
      * Standard Shortcode-Attribute
+     *
      * @return array
      */
-
     protected function default_atts()
     {
         $lang = get_locale();
@@ -257,18 +280,18 @@ class Main
             'UnivISOrgNr' => '0',
             'task' => 'mitarbeiter-alle',
             'personenanzeige_verzeichnis' => '',
-            'personenanzeige_bildsuche' => '1',
-            'personenanzeige_zusatzdatenInDatei' => '1',
-            'personenanzeige_publikationen' => '1',
-            'personenanzeige_lehrveranstaltungen' => '1',
+            'personenanzeige_bildsuche' => 1,
+            'personenanzeige_zusatzdatenInDatei' => 1,
+            'personenanzeige_publikationen' => 1,
+            'personenanzeige_lehrveranstaltungen' => 1,
             'lehrveranstaltung_verzeichnis' => '',
             'seiten_cache' => '0',
             'start_sommersemester' => '1.4',
             'start_wintersemester' => '1.10',
-            'zeige_sprungmarken' => '0',
+            'zeige_sprungmarken' => '',
             'orgunit' => '',
-            'sortiere_alphabet' => '0',
-            'sortiere_jobs' => '1',
+            'sortiere_alphabet' => '',
+            'sortiere_jobs' => 1,
             'ignoriere_jobs' => [
                 '_de' => 'Sicherheitsbeauftragter|IT-Sicherheits-Beauftragter|Webmaster|Postmaster|IT-Betreuer|UnivIS-Beauftragte',
                 '_en' => 'Security commissary|IT-security commissary|Webmaster|Postmaster|IT-support|Local UnivIS administration',
@@ -282,15 +305,15 @@ class Main
             'dozentid' => '', // ist im Shortcode ein Synonym zu univisid
             'dozentname' => '',
             'type' => '', // für Selektion nach Lehrveranstaltungstypen wie vorl
-            'lv_import' => '1', // importierte Lehrveranstaltungen werden mit angezeigt, ausblenden über Shortcode
+            'lv_import' => 1, // importierte Lehrveranstaltungen werden mit angezeigt, ausblenden über Shortcode
             'sem' => '', // Semesterauswahl
             'univisid' => '', // ist die Personen-ID, egal ob dozentid oder MA-ID
             'name' => '', // Synonym zur Angabe von firstname und lastname
             'errormsg' => '', // Anzeige von Fehlermeldungen bei Ausgabe
-            'lv_type' => '1', // Anzeige LV-Typ-Überschriften
+            'lv_type' => 1, // Anzeige LV-Typ-Überschriften
             'lang' => $language, // wichtig für die Ausgabe englischer Bezeichnungen von orgunit, orgunits, text, description
             'leclanguage' => '', // Veranstaltungssprache
-            'kompakt' => 0              // Ausschließliche Anzeige LV-Überschriften
+            'kompakt' => ''              // Ausschließliche Anzeige LV-Überschriften
         ];
 
         return $atts;
@@ -349,16 +372,15 @@ class Main
         if (!empty($slug)) {
             $slug = $key . '=' . $slug;
             $slugs = explode('&', $slug);
-            $atts = array();
+            $atts = [];
 
             foreach ($slugs as $k => $v) {
                 $arr = explode('=', $v);
                 $atts[$arr[0]] = $arr[1];
             }
 
-            $controller = new Controller($task, null, $atts);
-
-            $data = $controller->ladeHTML();
+            $this->controller->init($task, $atts);
+            $data = $this->controller->ladeHTML();
         } else {
             $data = null;
         }
