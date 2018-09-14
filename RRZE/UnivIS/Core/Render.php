@@ -247,7 +247,7 @@ class Render
                 $gruppen[$i]["name"] = '';
             }
         }
-        
+
         return array("gruppen" => $gruppen, "optionen" => $this->optionen);
     }
 
@@ -335,7 +335,7 @@ class Render
         if (count($gruppen) <= 1) {
             $this->optionen["zeige_sprungmarken"] = 0;
         }
-        
+
         return array("gruppen" => $gruppen, "optionen" => $this->optionen);
     }
 
@@ -438,7 +438,7 @@ class Render
                     unset($person["lehrveranstaltungen"]);
                 }
             }
-            
+
             return array("person" => $person, "optionen" => $this->optionen);
         }
     }
@@ -839,12 +839,9 @@ class Render
             $veranstaltung["ects_summary"] = str_replace("\n", "<br/>", $veranstaltung["ects_summary"]);
         }
 
-        if (isset($veranstaltung["ects_infos"])) {
-            $veranstaltung["ects_infos"] = ($veranstaltung["ects_name"] || $veranstaltung["ects_summary"] || $veranstaltung["ects_literature"]);
-        }
-        if (isset($veranstaltung["zusatzinfos"])) {
-            $veranstaltung["zusatzinfos"] = ($veranstaltung["keywords"] || $veranstaltung["turnout"] || $veranstaltung["url_description"]);
-        }
+        $veranstaltung["ects_infos"] = isset($veranstaltung["ects_name"]) || isset($veranstaltung["ects_summary"]) || isset($veranstaltung["ects_literature"]);
+
+        $veranstaltung["zusatzinfos"] = isset($veranstaltung["keywords"]) || isset($veranstaltung["turnout"]) || isset($veranstaltung["url_description"]);
 
         return array("veranstaltung" => $veranstaltung, "optionen" => $this->optionen);
     }
@@ -919,7 +916,7 @@ class Render
     private function record_sort($records, $field, $reverse = false)
     {
         $hash = array();
-        
+
         foreach ($records as $record) {
             if (!isset($hash[$record[$field]])) {
                 $hash[$record[$field]] = $record;
