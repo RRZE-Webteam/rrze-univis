@@ -4,7 +4,7 @@
  * Plugin Name:     RRZE UnivIS
  * Plugin URI:      https://github.com/RRZE-Webteam/rrze-univis
  * Description:     Einbindung von Daten aus UnivIS für den Geschäftsverteilungsplan.
- * Version:         2.2.3
+ * Version:         2.2.1
  * Author:          RRZE-Webteam
  * Author URI:      https://blogs.fau.de/webworking/
  * License:         GNU General Public License v2
@@ -45,7 +45,7 @@ function activation()
 
     // Überprüft die minimal erforderliche PHP- u. WP-Version.
     system_requirements();
-    
+
     // Endpoint hinzufügen
     add_endpoint(true);
     flush_rewrite_rules();
@@ -65,7 +65,7 @@ function add_endpoint()
     add_rewrite_endpoint('univisid', EP_PERMALINK | EP_PAGES);
     add_rewrite_endpoint('lv_id', EP_PERMALINK | EP_PAGES);
 }
- 
+
  /*
   * Überprüft die minimal erforderliche PHP- u. WP-Version.
   * @return void
@@ -98,7 +98,7 @@ function loaded()
 {
     // Sprachdateien werden eingebunden.
     load_textdomain();
-        
+
     // Automatische Laden von Klassen.
     autoload();
 }

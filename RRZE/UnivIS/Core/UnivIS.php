@@ -37,7 +37,7 @@ class UnivIS
      * @access protected
      */
     protected $parent_lv = null;
-    
+
     /**
      * Constructor
      *
@@ -105,7 +105,7 @@ class UnivIS
         // Hole Daten von Univis
         $url = esc_url_raw($this->univis_url . "?search=departments&number=" . $this->optionen["UnivISOrgNr"] . "&show=xml");
         do_action('rrze.log.debug', ['plugin' => 'rrze-univis', 'function' => 'ladeMitarbeiterAlle', 'url' => $url]);
-        
+
         if (!fopen($url, "r")) {
             if (isset($this->optionen['errormsg']) && $this->optionen['errormsg'] == 1) {
                 echo "Leider konnte zu UnivIS keine Verbindung aufgebaut werden.";
@@ -238,7 +238,7 @@ class UnivIS
         // Hole Daten von Univis
         $url = esc_url_raw($this->univis_url . "?search=persons&department=" . $this->optionen["UnivISOrgNr"] . "&show=xml");
         do_action('rrze.log.debug', ['plugin' => 'rrze-univis', 'function' => 'ladeMitarbeiterOrga', 'url' => $url]);
-        
+
         if (!fopen($url, "r")) {
             if (isset($this->optionen['errormsg']) && $this->optionen['errormsg'] == 1) {
                 echo "Leider konnte zu UnivIS keine Verbindung aufgebaut werden.";
@@ -372,12 +372,12 @@ class UnivIS
     protected function ladePublikationen($authorid = null)
     {
         // $authorid muss evtl. noch mit $univisid ersetzt werden (?!)
-        
+
         // Hole Daten von Univis
         $url = esc_url_raw($this->univis_url . "?search=publications&show=xml");
-        
+
         do_action('rrze.log.debug', ['plugin' => 'rrze-univis', 'function' => 'ladePublikationen', 'url' => $url]);
-        
+
         if ($authorid) {
             // Suche nur Publikationen von einen bestimmten Autoren
             $url .= "&authorid=" . $authorid;
@@ -445,7 +445,7 @@ class UnivIS
         $url = esc_url_raw($this->univis_url . "?search=lectures&show=xml");
         //Auskommentiert, da das aktuelle Semester in UnivIS beliebieg zum Ende der vorlesungsfreien Zeit umgestellt wird
         //$url = esc_url_raw( $this->univis_url."?search=lectures&show=xml&sem=".$this->aktuellesSemester() );
-        
+
         if ($univisid) {
             $url .= "&lecturerid=" . $univisid;
         } elseif ($this->optionen["univisid"]) {
@@ -483,7 +483,7 @@ class UnivIS
         fclose($handle);
 
         do_action('rrze.log.debug', ['plugin' => 'rrze-univis', 'function' => 'ladeLehrveranstaltungenAlle', 'url' => $url]);
-        
+
         $array = $this->xml2array($url);
 
         if (empty($array)) {
@@ -493,16 +493,16 @@ class UnivIS
             return -1;
         } else {
             $veranstaltungen = $array["Lecture"];
-            
+
             foreach ($veranstaltungen as $veranstaltung) {
                 if (array_key_exists('parent-lv', $veranstaltung)) {
                     foreach ($veranstaltung['parent-lv'] as $ref) {
                         $parent_lv = $ref['UnivISRef'][0]['key'];
                         $this->parent_lv[$parent_lv] = $parent_lv;
                     }
-                }                
+                }
             }
-            
+
             for ($i = 0; $i < count($veranstaltungen); $i++) {
                 if ($this->optionen["lv_import"] == 0 && isset($veranstaltungen[$i]["import_parent_id"])) {
                     // Ausblenden importierter Lehrveranstaltungen über Shortcodeparameter lv_import="0"
@@ -511,7 +511,7 @@ class UnivIS
                 } elseif($this->optionen["parent_lv"] == 0 && isset($this->parent_lv[$veranstaltungen[$i]['@attributes']['key']])) {
                     // Ausblenden Eltern-Lehrveranstaltungen über Shortcodeparameter parent_lv="0"
                     array_splice($veranstaltungen, $i, 1);
-                    $i = $i - 1;                    
+                    $i = $i - 1;
                 }
             }
 
@@ -542,14 +542,15 @@ class UnivIS
         $url = esc_url_raw($this->univis_url . "?search=lectures&show=xml");
         //Auskommentiert, da das aktuelle Semester in UnivIS beliebieg zum Ende der vorlesungsfreien Zeit umgestellt wird
         //$url = $this->univis_url."?search=lectures&show=xml&sem=".$this->aktuellesSemester() ;
-        do_action('rrze.log.debug', ['plugin' => 'rrze-univis', 'function' => 'ladeLehrveranstaltungenEinzeln', 'url' => $url]);
-        
+
         if (isset($this->optionen["lv_id"])) {
             $url .= "&id=" . $this->toNumber($this->optionen["lv_id"]);
         }
         if (isset($this->optionen["sem"])) {
             $url .= "&sem=" . $this->optionen["sem"];
         }
+
+        do_action('rrze.log.debug', ['plugin' => 'rrze-univis', 'function' => 'ladeLehrveranstaltungenEinzeln', 'url' => $url]);
 
         if (!fopen($url, "r")) {
             if (isset($this->optionen['errormsg']) && $this->optionen['errormsg'] == 1) {
@@ -577,7 +578,15 @@ class UnivIS
             }
             return -1;
         } else {
-            $veranstaltung = $array["Lecture"][0];
+            $veranstaltungen = $array["Lecture"];
+            $key = 0;
+            foreach ($veranstaltungen as $k => $v) {
+                if (array_key_exists('id', $v) && $v['id'] == $this->optionen["lv_id"]) {
+                    $key = $k;
+                }
+            }
+
+            $veranstaltung = $array["Lecture"][$key];
 
             //Ersetze Referenzen
             $univis_refs = $this->get_univis_ref($array);
