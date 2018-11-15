@@ -140,7 +140,7 @@
 
 
     <?php if (!empty($veranstaltung['organizational'])) : ?>
-        <h4><?php _e('Prerequisites / Organisational information', 'rrze-univis');?></h4>
+        <h4><?php _e('Prerequisites / Organizational information', 'rrze-univis');?></h4>
         <p><?php echo $veranstaltung['organizational']; ?></p>
         <?php endif;
     ?>

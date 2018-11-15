@@ -86,7 +86,7 @@ class UnivIS
                     break;
 
                 default:
-                    _e('Error: Unknown command\n', 'rrze-univis');
+                    _e('Error: Unknown command', 'rrze-univis');
                     //echo "Fehler: Unbekannter Befehl\n";
                     break;
             }
@@ -133,7 +133,7 @@ class UnivIS
 
         if (empty($daten)) {
             if (isset($this->optionen['errormsg']) && $this->optionen['errormsg'] == 1) {
-                _e('Leider konnte die Organisationseinheit nicht gefunden werden.', 'rrze-univis');
+                _e('The organizational unit could not be found.', 'rrze-univis');
                 //echo "Leider konnte die Organisationseinheit nicht gefunden werden.";
             }
             return -1;
@@ -246,7 +246,7 @@ class UnivIS
 
         if (!fopen($url, "r")) {
             if (isset($this->optionen['errormsg']) && $this->optionen['errormsg'] == 1) {
-                _e('Leider konnte zu UnivIS keine Verbindung aufgebaut werden.', 'rrze-univis');
+                _e('No connection could be stablished to UnivIS.', 'rrze-univis');
                 //echo "Leider konnte zu UnivIS keine Verbindung aufgebaut werden.";
             }
             // Univis Server ist nicht erreichbar
@@ -341,7 +341,7 @@ class UnivIS
         $persArray = $this->xml2array($url);
         if (empty($persArray)) {
             if (isset($this->optionen['errormsg']) && $this->optionen['errormsg'] == 1) {
-                _e('Leider konnte die Person nicht gefunden werden.', 'rrze-univis');
+                _e('The person could not be found.', 'rrze-univis');
                 //echo "Leider konnte die Person nicht gefunden werden.";
             }
             return -1;
@@ -350,7 +350,7 @@ class UnivIS
 
             if (count($persArray) == 0) {
                 if (isset($this->optionen['errormsg']) && $this->optionen['errormsg'] == 1) {
-                    _e('Leider konnte die Person nicht gefunden werden.', 'rrze-univis');
+                    _e('The person could not be found.', 'rrze-univis');
                     //echo "Leider konnte die Person nicht gefunden werden.";
                 }
                 // Keine Person gefunden
@@ -422,7 +422,7 @@ class UnivIS
         $array = $this->xml2array($url);
         if (empty($array)) {
             if (isset($this->optionen['errormsg']) && $this->optionen['errormsg'] == 1) {
-                _e('Leider konnten keine Publikationen gefunden werden.', 'rrze-univis');
+                _e('No publications could be found.', 'rrze-univis');
                 //echo "Leider konnten keine Publikationen gefunden werden.";
             }
             return -1;
@@ -505,7 +505,7 @@ class UnivIS
 
         if (empty($array)) {
             if (isset($this->optionen['errormsg']) && $this->optionen['errormsg'] == 1) {
-                _e('Leider konnten keine Lehrveranstaltungen gefunden werden.', 'rrze-univis');
+                _e('No lectures could be found.', 'rrze-univis');
                 //echo "Leider konnten keine Lehrveranstaltungen gefunden werden.";
             }
             return -1;
@@ -553,7 +553,7 @@ class UnivIS
         if ($this->optionen["lv_id"] == "") {
             if (isset($this->optionen['errormsg']) && $this->optionen['errormsg'] == 1) {
                 // Fehler: Bitte geben Sie eine Lehrveranstaltung an
-                _e('<div class=\"hinweis_wichtig\">Please specify a course.</div>', 'rrze-univis');
+                _e('<div class=\"hinweis_wichtig\">Please specify a lecture.</div>', 'rrze-univis');
                 //echo "<div class=\"hinweis_wichtig\">Bitte geben Sie eine Lehrveranstaltung an.</div>";
             }
             return -1;

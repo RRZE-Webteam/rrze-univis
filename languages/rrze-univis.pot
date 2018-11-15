@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: RRZE UnivIS\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-09-25 08:43+0000\n"
+"POT-Creation-Date: 2018-11-15 10:23+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: \n"
@@ -28,6 +28,10 @@ msgid ""
 "%s."
 msgstr ""
 
+#: RRZE/UnivIS/Controller.php:112
+msgid "Template Error: Could not find template file."
+msgstr ""
+
 #: RRZE/UnivIS/Main.php:236
 msgid "Please enter a valid UnivIS OrgNr."
 msgstr ""
@@ -38,34 +42,6 @@ msgstr ""
 
 #: RRZE/UnivIS/Main.php:252
 msgid "Please enter a first and last name or a UnivIS ID."
-msgstr ""
-
-#: RRZE/UnivIS/Core/Settings.php:32
-msgid "UnivIS"
-msgstr ""
-
-#: RRZE/UnivIS/Core/Settings.php:44
-msgid "UnivIS Settings"
-msgstr ""
-
-#: RRZE/UnivIS/Core/Settings.php:63
-msgid "Text for link to UnivIS"
-msgstr ""
-
-#: RRZE/UnivIS/Core/Settings.php:64
-msgid "UnivIS OrgNr."
-msgstr ""
-
-#: RRZE/UnivIS/Core/Settings.php:114
-msgid "Overview"
-msgstr ""
-
-#: RRZE/UnivIS/Core/Settings.php:118
-msgid "For more information"
-msgstr ""
-
-#: RRZE/UnivIS/Core/Settings.php:118
-msgid "RRZE Webteam on Github"
 msgstr ""
 
 #: RRZE/UnivIS/Core/Options.php:22
@@ -150,6 +126,90 @@ msgstr ""
 msgid "Saturday"
 msgstr ""
 
+#: RRZE/UnivIS/Core/Settings.php:32
+msgid "UnivIS"
+msgstr ""
+
+#: RRZE/UnivIS/Core/Settings.php:44
+msgid "UnivIS Settings"
+msgstr ""
+
+#: RRZE/UnivIS/Core/Settings.php:63
+msgid "Text for link to UnivIS"
+msgstr ""
+
+#: RRZE/UnivIS/Core/Settings.php:64
+msgid "UnivIS OrgNr."
+msgstr ""
+
+#: RRZE/UnivIS/Core/Settings.php:114
+msgid "Overview"
+msgstr ""
+
+#: RRZE/UnivIS/Core/Settings.php:118
+msgid "For more information"
+msgstr ""
+
+#: RRZE/UnivIS/Core/Settings.php:118
+msgid "RRZE Webteam on Github"
+msgstr ""
+
+#: RRZE/UnivIS/Core/UnivIS.php:89
+msgid "Error: Unknown command"
+msgstr ""
+
+#: RRZE/UnivIS/Core/UnivIS.php:112
+msgid "No connection could be established to UnivIS."
+msgstr ""
+
+#: RRZE/UnivIS/Core/UnivIS.php:123 RRZE/UnivIS/Core/UnivIS.php:259
+#: RRZE/UnivIS/Core/UnivIS.php:334 RRZE/UnivIS/Core/UnivIS.php:414
+#: RRZE/UnivIS/Core/UnivIS.php:494 RRZE/UnivIS/Core/UnivIS.php:587
+msgid "No results. Please check the search parameters."
+msgstr ""
+
+#: RRZE/UnivIS/Core/UnivIS.php:136
+msgid "The organizational unit could not be found."
+msgstr ""
+
+#: RRZE/UnivIS/Core/UnivIS.php:142
+msgid "No employees can be found in this organizational unit."
+msgstr ""
+
+#: RRZE/UnivIS/Core/UnivIS.php:249
+msgid "No connection could be stablished to UnivIS."
+msgstr ""
+
+#: RRZE/UnivIS/Core/UnivIS.php:270
+msgid "Leider konnte die Organisationseinheit nicht gefunden werden."
+msgstr ""
+
+#: RRZE/UnivIS/Core/UnivIS.php:323 RRZE/UnivIS/Core/UnivIS.php:403
+#: RRZE/UnivIS/Core/UnivIS.php:483 RRZE/UnivIS/Core/UnivIS.php:576
+msgid "Leider konnte zu UnivIS keine Verbindung aufgebaut werden."
+msgstr ""
+
+#: RRZE/UnivIS/Core/UnivIS.php:344 RRZE/UnivIS/Core/UnivIS.php:353
+msgid "The person could not be found."
+msgstr ""
+
+#: RRZE/UnivIS/Core/UnivIS.php:425
+msgid "No publications could be found."
+msgstr ""
+
+#: RRZE/UnivIS/Core/UnivIS.php:508
+msgid "No lectures could be found."
+msgstr ""
+
+#. Fehler: Bitte geben Sie eine Lehrveranstaltung an
+#: RRZE/UnivIS/Core/UnivIS.php:556
+msgid "<div class=\\\"hinweis_wichtig\\\">Please specify a lecture.</div>"
+msgstr ""
+
+#: RRZE/UnivIS/Core/UnivIS.php:598
+msgid "No results."
+msgstr ""
+
 #: RRZE/UnivIS/MCE/langs.php:17
 msgid "Add UnivIS"
 msgstr ""
@@ -206,7 +266,7 @@ msgid "from SEM"
 msgstr ""
 
 #: RRZE/UnivIS/Templates/lehrveranstaltungen-einzeln.php:143
-msgid "Prerequisites / Organisational information"
+msgid "Prerequisites / Organizational information"
 msgstr ""
 
 #: RRZE/UnivIS/Templates/lehrveranstaltungen-einzeln.php:150
@@ -246,18 +306,12 @@ msgstr ""
 msgid "Expected participants"
 msgstr ""
 
-#: RRZE/UnivIS/Templates/single-univis.php:9
-#: RRZE/UnivIS/Templates/Themes/Blue-Edgy/content-univis.php:9
-#: RRZE/UnivIS/Templates/Themes/FAU/single-univis.php:14
-msgid "Back to overview"
-msgstr ""
-
 #: RRZE/UnivIS/Templates/mitarbeiter-einzeln.php:25
 msgid "Job title"
 msgstr ""
 
 #: RRZE/UnivIS/Templates/mitarbeiter-einzeln.php:41
-msgid "Organisation"
+msgid "Organization"
 msgstr ""
 
 #: RRZE/UnivIS/Templates/mitarbeiter-einzeln.php:51
@@ -282,6 +336,12 @@ msgstr ""
 
 #: RRZE/UnivIS/Templates/mitarbeiter-einzeln.php:71
 msgid "Address"
+msgstr ""
+
+#: RRZE/UnivIS/Templates/single-univis.php:9
+#: RRZE/UnivIS/Templates/Themes/Blue-Edgy/content-univis.php:9
+#: RRZE/UnivIS/Templates/Themes/FAU/single-univis.php:14
+msgid "Back to overview"
 msgstr ""
 
 #: RRZE/UnivIS/Templates/Themes/Blue-Edgy/content-univis.php:14
