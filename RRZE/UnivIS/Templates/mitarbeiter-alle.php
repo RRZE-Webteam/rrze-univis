@@ -21,7 +21,7 @@
                     if (!empty($person['lastname'])) :
                         $p['lastname'] = '<span itemprop="familyName">' . $person['lastname'] . '</span>';
                         if (!empty($person['firstname'])) : 
-                            $p['lastname'] .= ', ';
+                            $p['lastname'] .= ',';
                         endif;
                     endif;
                     if (!empty($person['firstname'])) :
