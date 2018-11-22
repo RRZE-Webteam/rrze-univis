@@ -109,9 +109,9 @@ class Main
             $ausgabe = $univis_link;
         } else {
             $atts = array_change_key_case($atts);
-            
+
             if (isset($atts['show'])) {
-                $show = trim(preg_replace('/\s+/', ' ', $atts['show']));
+                $show = trim(preg_replace('/\s+/', '', $atts['show']));
                 $show = explode(',', $show);
                 foreach ($show as $value) {
                     $atts[strtolower($value)] = 1;
@@ -119,7 +119,7 @@ class Main
             }
 
             if (isset($atts['hide'])) {
-                $hide = trim(preg_replace('/\s+/', ' ', $atts['show']));
+                $hide = trim(preg_replace('/\s+/', '', $atts['show']));
                 $hide = explode(',', $hide);
                 foreach ($hide as $value) {
                     $atts[strtolower($value)] = '';
@@ -314,7 +314,9 @@ class Main
             'lv_type' => 1, // Anzeige LV-Typ-Überschriften
             'lang' => $language, // wichtig für die Ausgabe englischer Bezeichnungen von orgunit, orgunits, text, description
             'leclanguage' => '', // Veranstaltungssprache
-            'kompakt' => '' // Ausschließliche Anzeige LV-Überschriften
+            'kompakt' => '', // Ausschließliche Anzeige LV-Überschriften
+            'telefon' => 0, // optionale Anzeige von Telefonnumern bei den Mitarbeiter-Übersichten
+            'mail' => 0, // optionale Anzeige von Mailadressen bei den Mitarbeiter-Übersichten
         ];
 
         return $atts;
