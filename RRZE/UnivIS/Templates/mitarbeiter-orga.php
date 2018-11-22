@@ -1,6 +1,6 @@
 <div id="univis-personenindex">
     <ul class="groupindex">
-        <?php if ($daten['optionen']['zeige_sprungmarken']) : ?>
+        <?php if ($daten['optionen']['zeige_sprungmarken']) : // wird nur angezeigt, wenn es mehr als eine OrgUnit gibt ?>
         <?php foreach ($daten['gruppen'] as $v) : ?>
         <li><a href="#<?php echo $v['name'];?>"><?php echo $v['name'];?></a></li>
         <?php endforeach; ?>
