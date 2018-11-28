@@ -46,7 +46,7 @@
                             $email = $location['email'];
                             $pers['email'] = '<span class="person-info-email">E-Mail: <a itemprop="email" href="mailto:' . strtolower($email) . '">' . strtolower($email) . '</a></span>';                        
                         endif;
-                                                _rrze_debug($pers);
+                        //_rrze_debug($pers);
                     $out = implode(', ', $pers);    
 ?>                  
                     <span itemprop="name" class="person liste-person" itemscope itemtype="http://schema.org/Person"><?php echo $out;?></span>

@@ -10,9 +10,13 @@
     <?php foreach ($daten['gruppen'] as $gruppe) : ?>
     <h2><a name="<?php echo $gruppe['name'];?>"><?php echo $gruppe['name'];?></a></h2>
     <ul>
-        <?php foreach ($gruppe['personen'] as $person) : ?>
-        <li class="vcard" itemprop="name" class="person liste-person" itemscope itemtype="http://schema.org/Person">
-            <span class="fn n">
+        <?php foreach ($gruppe['personen'] as $person) : 
+            $p = array();
+            $pers = array();
+            $fullname = '';
+            $out = '';
+            ?>
+        <li itemprop="name" class="person liste-person" itemscope itemtype="http://schema.org/Person">
                 <?php $url = get_permalink() . 'univisid/' . $person['id']; ?>
                 <a class="url" href="<?php echo $url;?>">
                     <?php if (!empty($person['title'])) : ?>
@@ -28,7 +32,6 @@
                     </span>
                     <?php endif; ?>
                 </a>
-            </span>
         </li>
         <?php endforeach; ?>
     </ul>

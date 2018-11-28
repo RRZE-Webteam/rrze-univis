@@ -44,10 +44,15 @@
                         $pers['atitle'] = '<span itemprop="honorificSuffix"><acronym title="' . $person['atitle_long'] . '">' . $person['atitle'] . '</acronym></span>';                      
                     endif;
                     $location = $person['locations'][0]['location'][0]; 
-                    if (!empty($location['tel'])) : 
+                    if (!empty($location['tel'])  && (!empty( $daten['optionen']['telefon']))) : 
                         $phone_number = self::correct_phone_number($location['tel']); 
                         $pers['phone_number'] = '<span class="person-info-phone" itemprop="telephone">Tel. ' . $phone_number . '</span>';
                     endif; 
+                    if (!empty($location['email']) && (!empty( $daten['optionen']['mail']))) : 
+                        $email = $location['email'];
+                        $pers['email'] = '<span class="person-info-email">E-Mail: <a itemprop="email" href="mailto:' . strtolower($email) . '">' . strtolower($email) . '</a></span>';                        
+                    endif;
+                    //_rrze_debug($pers);
                     $out = implode(', ', $pers);
                     ?>
                     <span itemprop="name" class="person liste-person" itemscope itemtype="http://schema.org/Person"><?php echo $out;?></span>
