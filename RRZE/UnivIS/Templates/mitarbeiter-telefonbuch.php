@@ -1,7 +1,6 @@
 <div id="univis-personenindex">
     <p class="groupindex">
-        <?php _rrze_debug('Sprungmarken: ' . $daten['optionen']['zeige_sprungmarken']);
-        if ($daten['optionen']['zeige_sprungmarken']) : ?>
+        <?php if ($daten['optionen']['zeige_sprungmarken']) : ?>
         <?php foreach ($daten['gruppen'] as $v) : ?>
         <a href="#<?php echo $v['name'];?>"><?php echo $v['name'];?></a>&nbsp;
         <?php endforeach; ?>
@@ -37,16 +36,18 @@
                         endif;  
                     endif;
                         $pers['fullname'] = $fullname; 
-                        $location = $person['locations'][0]['location'][0]; 
-                        if (!empty($location['tel']) && (!empty( $daten['optionen']['telefon']))) : 
-                            $phone_number = self::correct_phone_number($location['tel']); 
-                            $pers['phone_number'] = '<span class="person-info-phone" itemprop="telephone">Tel. ' . $phone_number . '</span>';
-                        endif; 
-                        if (!empty($location['email']) && (!empty( $daten['optionen']['mail']))) : 
-                            $email = $location['email'];
-                            $pers['email'] = '<span class="person-info-email">E-Mail: <a itemprop="email" href="mailto:' . strtolower($email) . '">' . strtolower($email) . '</a></span>';                        
+                        if (!empty( $person['locations'][0]['location'][0] ) ) :
+                            $location = $person['locations'][0]['location'][0]; 
+                            if (!empty($location['tel']) && (!empty( $daten['optionen']['telefon']))) : 
+                                $phone_number = self::correct_phone_number($location['tel']); 
+                                $pers['phone_number'] = '<span class="person-info-phone" itemprop="telephone">Tel. ' . $phone_number . '</span>';
+                            endif; 
+                            if (!empty($location['email']) && (!empty( $daten['optionen']['mail']))) : 
+                                $email = $location['email'];
+                                $pers['email'] = '<span class="person-info-email">E-Mail: <a itemprop="email" href="mailto:' . strtolower($email) . '">' . strtolower($email) . '</a></span>';                        
+                            endif;
                         endif;
-                        //_rrze_debug($pers);
+
                     $out = implode(', ', $pers);    
 ?>                  
                     <span itemprop="name" class="person liste-person" itemscope itemtype="http://schema.org/Person"><?php echo $out;?></span>

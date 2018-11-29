@@ -2,7 +2,7 @@
     <?php foreach ($daten['gruppen'] as $gruppe) : 
         if ( (empty( $daten['optionen']['zeige_jobs']) || in_array($gruppe['name'], $daten['optionen']['zeige_jobs']) ) && !empty( $gruppe['personen'] ) ) : ?>
     <h4><?php echo $gruppe['name']; ?></h4>
-    <ul>
+    <ul class="person liste-person" itemscope itemtype="http://schema.org/Person">
         <?php foreach ($gruppe['personen'] as $person) : 
             $name = array(); 
             $p = array();
@@ -13,7 +13,6 @@
             $out = '';
             ?>
             <li>                
-                <?php if (!empty($person['lastname'])) : ?>
                     <?php 
                     if (!empty($person['title'])) : 
                         $name['title'] = '<span itemprop="honorificPrefix"><acronym title="' . $person['title_long'] . '">' . $person['title'] . '</acronym></span>';
@@ -43,22 +42,22 @@
                     if (!empty($person['atitle'])) :
                         $pers['atitle'] = '<span itemprop="honorificSuffix"><acronym title="' . $person['atitle_long'] . '">' . $person['atitle'] . '</acronym></span>';                      
                     endif;
-                    $location = $person['locations'][0]['location'][0]; 
-                    if (!empty($location['tel'])  && (!empty( $daten['optionen']['telefon']))) : 
-                        $phone_number = self::correct_phone_number($location['tel']); 
-                        $pers['phone_number'] = '<span class="person-info-phone" itemprop="telephone">Tel. ' . $phone_number . '</span>';
-                    endif; 
-                    if (!empty($location['email']) && (!empty( $daten['optionen']['mail']))) : 
-                        $email = $location['email'];
-                        $pers['email'] = '<span class="person-info-email">E-Mail: <a itemprop="email" href="mailto:' . strtolower($email) . '">' . strtolower($email) . '</a></span>';                        
+                    if (!empty( $person['locations'][0]['location'][0] ) ) :
+                        $location = $person['locations'][0]['location'][0]; 
+                        if (!empty($location['tel'])  && (!empty( $daten['optionen']['telefon']))) : 
+                            $phone_number = self::correct_phone_number($location['tel']); 
+                            $pers['phone_number'] = '<span class="person-info-phone" itemprop="telephone">Tel. ' . $phone_number . '</span>';
+                        endif; 
+                        if (!empty($location['email']) && (!empty( $daten['optionen']['mail']))) : 
+                            $email = $location['email'];
+                            $pers['email'] = '<span class="person-info-email">E-Mail: <a itemprop="email" href="mailto:' . strtolower($email) . '">' . strtolower($email) . '</a></span>';                        
+                        endif;
                     endif;
-                    //_rrze_debug($pers);
                     $out = implode(', ', $pers);
                     ?>
-                    <span itemprop="name" class="person liste-person" itemscope itemtype="http://schema.org/Person"><?php echo $out;?></span>
+                    <span class="person-info" itemprop="name"><?php echo $out;?></span>
                     
-                <?php endif; 
-                $text_out = '';
+                <?php $text_out = '';
                 if ( $suffix!='' && !empty( $person[$text] ) ): 
                     $text_out = $person[$text];
                 elseif ( !empty( $person['text'] ) ) :

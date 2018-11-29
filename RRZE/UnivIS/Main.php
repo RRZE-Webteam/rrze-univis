@@ -113,14 +113,12 @@ class Main
             if (isset($atts['task']) && ($atts['task']=='mitarbeiter-alle')) {
                 $defaults['telefon'] = 1;
             }
-            _rrze_debug($atts);
-            //_rrze_debug($defaults);
+
             if (isset($atts['show'])) {
                 $show = trim(preg_replace('/\s+/', '', $atts['show']));
                 $show = explode(',', $show);
                 foreach ($show as $value) {
                     if (strtolower($value) == 'sprungmarken') $value = 'zeige_sprungmarken';
-                    if (strtolower($value) == 'jobs') $value = 'zeige_jobs';
                     $atts[strtolower($value)] = 1;
                 }
             }
@@ -130,11 +128,10 @@ class Main
                 $hide = explode(',', $hide);
                 foreach ($hide as $value) {
                     if (strtolower($value) == 'sprungmarken') $value = 'zeige_sprungmarken';
-                    if (strtolower($value) == 'jobs') $value = 'ignoriere_jobs';
                     $atts[strtolower($value)] = '';
                 }
             }
-                        _rrze_debug($atts);
+            
             $atts['UnivISOrgNr'] = isset($atts['number']) && absint($atts['number']) ? absint($atts['number']) : $options->UnivISOrgNr;
             
             if (isset($atts['id']) && absint($atts['id'])) {
