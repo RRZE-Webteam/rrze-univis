@@ -649,7 +649,10 @@ class Render
                     }
                 }//end Zeit und Ort
             }
-            if (isset($course_terms['sort'])) {
+                            _rrze_debug($course_terms);
+                            _rrze_debug("blabla");
+            if (isset($course_terms[0]['sort'])) {
+                _rrze_debug("blablasort");
                 $course_terms = $this->array_orderby($course_terms, 'sort', SORT_NUMERIC, 'starttime', SORT_NUMERIC);
             }
             $veranstaltung["course_terms"] = $course_terms;
