@@ -38,7 +38,7 @@
                     endif;
                     $orgunit = $person_orgunits[$i];
                         ?>
-                     <li class="person-info-institution"><span class="screen-reader-text"><?php _e('Organisation', 'rrze-univis');?>: </span><span itemprop="worksFor"><?php echo $orgunit;?></span></li>
+                     <li class="person-info-institution"><span class="screen-reader-text"><?php _e('Organization', 'rrze-univis');?>: </span><span itemprop="worksFor"><?php echo $orgunit;?></span></li>
                     <?php endif;?>
 
 

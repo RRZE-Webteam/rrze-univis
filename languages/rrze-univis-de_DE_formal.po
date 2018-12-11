@@ -2,9 +2,9 @@ msgid ""
 msgstr ""
 "Project-Id-Version: RRZE UnivIS\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-09-25 08:43+0000\n"
-"PO-Revision-Date: 2018-09-25 08:59+0000\n"
-"Last-Translator: RRZE Webteam <webmaster@fau.de>\n"
+"POT-Creation-Date: 2018-11-14 10:13+0000\n"
+"PO-Revision-Date: 2018-11-14 13:52+0000\n"
+"Last-Translator: manager <karin.kimpan@fau.de>\n"
 "Language-Team: \n"
 "Language: de_DE_formal\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
@@ -32,6 +32,10 @@ msgstr ""
 "Ihre Wordpress-Version %s ist veraltet. Bitte aktualisieren Sie mindestens "
 "auf die Wordpress-Version %s."
 
+#: RRZE/UnivIS/Controller.php:112
+msgid "Template Error: Could not find template file."
+msgstr "Template Error: Could not find template file."
+
 #: RRZE/UnivIS/Main.php:236
 msgid "Please enter a valid UnivIS OrgNr."
 msgstr "Bitte geben Sie eine gültige UnivIS-Organisationsnummer an."
@@ -43,34 +47,6 @@ msgstr "Bitte geben Sie eine gültige Lehrveranstaltungs-ID an."
 #: RRZE/UnivIS/Main.php:252
 msgid "Please enter a first and last name or a UnivIS ID."
 msgstr "Bitte geben Sie einen Vor- und Nachnamen oder eine UnivIS-ID an."
-
-#: RRZE/UnivIS/Core/Settings.php:32
-msgid "UnivIS"
-msgstr "UnivIS"
-
-#: RRZE/UnivIS/Core/Settings.php:44
-msgid "UnivIS Settings"
-msgstr "Einstellungen &rsaquo; UnivIS"
-
-#: RRZE/UnivIS/Core/Settings.php:63
-msgid "Text for link to UnivIS"
-msgstr "Linktext zu UnivIS"
-
-#: RRZE/UnivIS/Core/Settings.php:64
-msgid "UnivIS OrgNr."
-msgstr "UnivIS-OrgNr."
-
-#: RRZE/UnivIS/Core/Settings.php:114
-msgid "Overview"
-msgstr "Übersicht"
-
-#: RRZE/UnivIS/Core/Settings.php:118
-msgid "For more information"
-msgstr "Für mehr Information"
-
-#: RRZE/UnivIS/Core/Settings.php:118
-msgid "RRZE Webteam on Github"
-msgstr "RRZE-Webteam in Github"
 
 #: RRZE/UnivIS/Core/Options.php:22
 msgid "<b><i>Univ</i>IS</b> - Information System of the FAU"
@@ -153,6 +129,97 @@ msgstr "Freitag"
 #: RRZE/UnivIS/Core/Render.php:604 RRZE/UnivIS/Core/Render.php:788
 msgid "Saturday"
 msgstr "Samstag"
+
+#: RRZE/UnivIS/Core/Settings.php:32
+msgid "UnivIS"
+msgstr "UnivIS"
+
+#: RRZE/UnivIS/Core/Settings.php:44
+msgid "UnivIS Settings"
+msgstr "Einstellungen &rsaquo; UnivIS"
+
+#: RRZE/UnivIS/Core/Settings.php:63
+msgid "Text for link to UnivIS"
+msgstr "Linktext zu UnivIS"
+
+#: RRZE/UnivIS/Core/Settings.php:64
+msgid "UnivIS OrgNr."
+msgstr "UnivIS-OrgNr."
+
+#: RRZE/UnivIS/Core/Settings.php:114
+msgid "Overview"
+msgstr "Übersicht"
+
+#: RRZE/UnivIS/Core/Settings.php:118
+msgid "For more information"
+msgstr "Für mehr Information"
+
+#: RRZE/UnivIS/Core/Settings.php:118
+msgid "RRZE Webteam on Github"
+msgstr "RRZE-Webteam in Github"
+
+#: RRZE/UnivIS/Core/UnivIS.php:89
+msgid "Error: Unknown command"
+msgstr "Error: Unknown command"
+
+#: RRZE/UnivIS/Core/UnivIS.php:112
+msgid "No connection could be established to UnivIS."
+msgstr "No connection could be established to UnivIS."
+
+#: RRZE/UnivIS/Core/UnivIS.php:123
+msgid "No results. Please check the search parameters."
+msgstr "No results. Please check the search parameters."
+
+#: RRZE/UnivIS/Core/UnivIS.php:136 RRZE/UnivIS/Core/UnivIS.php:270
+msgid "Leider konnte die Organisationseinheit nicht gefunden werden."
+msgstr "Leider konnte die Organisationseinheit nicht gefunden werden."
+
+#: RRZE/UnivIS/Core/UnivIS.php:142
+msgid ""
+"In dieser Organisationseinheit konnten keine Mitarbeiter gefunden werden."
+msgstr ""
+"In dieser Organisationseinheit konnten keine Mitarbeiter gefunden werden."
+
+#: RRZE/UnivIS/Core/UnivIS.php:249 RRZE/UnivIS/Core/UnivIS.php:323
+#: RRZE/UnivIS/Core/UnivIS.php:403 RRZE/UnivIS/Core/UnivIS.php:483
+#: RRZE/UnivIS/Core/UnivIS.php:576
+msgid "Leider konnte zu UnivIS keine Verbindung aufgebaut werden."
+msgstr "Leider konnte zu UnivIS keine Verbindung aufgebaut werden."
+
+#: RRZE/UnivIS/Core/UnivIS.php:259 RRZE/UnivIS/Core/UnivIS.php:334
+#: RRZE/UnivIS/Core/UnivIS.php:414 RRZE/UnivIS/Core/UnivIS.php:494
+#: RRZE/UnivIS/Core/UnivIS.php:587
+msgid ""
+"Leider brachte Ihre Suche kein Ergebnis. Bitte überprüfen Sie die "
+"Suchparameter."
+msgstr ""
+"Leider brachte Ihre Suche kein Ergebnis. Bitte überprüfen Sie die "
+"Suchparameter."
+
+#: RRZE/UnivIS/Core/UnivIS.php:344 RRZE/UnivIS/Core/UnivIS.php:353
+msgid "Leider konnte die Person nicht gefunden werden."
+msgstr "Leider konnte die Person nicht gefunden werden."
+
+#: RRZE/UnivIS/Core/UnivIS.php:425
+msgid "Leider konnten keine Publikationen gefunden werden."
+msgstr "Leider konnten keine Publikationen gefunden werden."
+
+#: RRZE/UnivIS/Core/UnivIS.php:508
+msgid "Leider konnten keine Lehrveranstaltungen gefunden werden."
+msgstr "Leider konnten keine Lehrveranstaltungen gefunden werden."
+
+#. Fehler: Bitte geben Sie eine Lehrveranstaltung an
+#: RRZE/UnivIS/Core/UnivIS.php:556
+msgid ""
+"<div class=\\\"hinweis_wichtig\\\">Bitte geben Sie eine Lehrveranstaltung an."
+"</div>"
+msgstr ""
+"<div class=\\\"hinweis_wichtig\\\">Bitte geben Sie eine Lehrveranstaltung an."
+"</div>"
+
+#: RRZE/UnivIS/Core/UnivIS.php:598
+msgid "Leider brachte Ihre Suche kein Ergebnis."
+msgstr "Leider brachte Ihre Suche kein Ergebnis."
 
 #: RRZE/UnivIS/MCE/langs.php:17
 msgid "Add UnivIS"
@@ -250,12 +317,6 @@ msgstr "Schlagwörter"
 msgid "Expected participants"
 msgstr "Erwartete Teilnehmerzahl"
 
-#: RRZE/UnivIS/Templates/single-univis.php:9
-#: RRZE/UnivIS/Templates/Themes/Blue-Edgy/content-univis.php:9
-#: RRZE/UnivIS/Templates/Themes/FAU/single-univis.php:14
-msgid "Back to overview"
-msgstr "Zurück zur Übersicht"
-
 #: RRZE/UnivIS/Templates/mitarbeiter-einzeln.php:25
 msgid "Job title"
 msgstr "Tätigkeit"
@@ -288,6 +349,12 @@ msgstr "Website"
 msgid "Address"
 msgstr "Adresse"
 
+#: RRZE/UnivIS/Templates/single-univis.php:9
+#: RRZE/UnivIS/Templates/Themes/Blue-Edgy/content-univis.php:9
+#: RRZE/UnivIS/Templates/Themes/FAU/single-univis.php:14
+msgid "Back to overview"
+msgstr "Zurück zur Übersicht"
+
 #: RRZE/UnivIS/Templates/Themes/Blue-Edgy/content-univis.php:14
 msgid "(Edit)"
 msgstr "(Bearbeiten)"
@@ -298,7 +365,7 @@ msgstr ""
 
 #. Description of the plugin
 msgid "Einbindung von Daten aus UnivIS für den Geschäftsverteilungsplan."
-msgstr ""
+msgstr "Einbindung von Daten aus UnivIS für den Geschäftsverteilungsplan."
 
 #. URI of the plugin
 msgid "https://github.com/RRZE-Webteam/rrze-univis"

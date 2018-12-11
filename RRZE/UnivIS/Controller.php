@@ -109,7 +109,8 @@ class Controller
             } else {
                 // Fehleranzeige vorerst rausgenommen
                 if (isset($this->optionen['errormsg'])) {
-                    return "Template Fehler: Konnte Template Datei nicht finden.";
+                    return __('Template Error: Could not find template file.', 'rrze-univis');
+                    //return "Template Fehler: Konnte Template Datei nicht finden.";
                     //return;
                 }
             }
