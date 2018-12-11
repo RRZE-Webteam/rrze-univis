@@ -16,14 +16,22 @@ Einstellungen › UnivIS
 ```
 [univis]
 ```
-- Bindet die Mitarbeiterübersicht der Organisationseinheit mit der UnivISOrgNr 1005681200 ein, besonders geeignet für wissenschaftliche Einrichtungen
+- Bindet die Mitarbeiterübersicht der Organisationseinheit mit der UnivISOrgNr 1005681200 ein, besonders geeignet für wissenschaftliche Einrichtungen (optional mit Telefonnummern, E-Mail-Adressen)
 ```
 [univis number="1005681200"]
 [univis number="1005681200" task="mitarbeiter-alle"]
+[univis number="1005681200" task="mitarbeiter-alle" show="telefon, mail"]
 ```    
-- Bindet die Mitarbeiterübersicht der Organisationseinheit mit der UnivISOrgNr 1005681200 ein, besonders geeignet für nicht-wissenschaftliche Einrichtungen
+- Bindet die Mitarbeiterübersicht der Organisationseinheit mit der UnivISOrgNr 1005681200 ein, besonders geeignet für nicht-wissenschaftliche Einrichtungen (optional ohne Telefonnummern oder mit Mailadressen)
 ```
 [univis number="1005681200" task="mitarbeiter-orga"]
+[univis number="1005681200" task="mitarbeiter-orga" hide="telefon"]
+[univis number="1005681200" task="mitarbeiter-orga" show="mail"]
+```
+- Bindet die Mitarbeiterübersicht der Organisationseinheit mit der UnivISOrgNr 1005681200 im Telefonbuchformat ein (alphabetische Sortierung, optional mit Telefonnummern, E-Mail-Adressen, Sprungmarken)
+```
+[univis number="1005681200" task="mitarbeiter-telefonbuch"]
+[univis number="1005681200" task="mitarbeiter-telefonbuch" show="telefon, mail, sprungmarken"]
 ```
 - Bindet sämtliche Lehrveranstaltungen der Organisationseinheit mit der UnivISOrgNr 1005681200 ein
 ```

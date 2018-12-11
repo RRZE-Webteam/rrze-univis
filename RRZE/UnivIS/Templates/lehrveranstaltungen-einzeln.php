@@ -41,8 +41,7 @@
             <p><?php echo $veranstaltung['comment']; ?></p>
             <?php endif; ?>
     <ul>
-        <?php _rrze_debug($veranstaltung['course_terms']);
-        if (array_key_exists('course_terms', $veranstaltung)) :
+        <?php if (array_key_exists('course_terms', $veranstaltung)) :
             foreach ($veranstaltung['course_terms'] as $course_terms):
                 $t = array();
                 $time = array();
