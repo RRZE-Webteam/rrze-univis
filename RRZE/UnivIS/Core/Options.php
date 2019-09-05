@@ -20,8 +20,7 @@ class Options
     {
         $options = [
             'univis_default_link' => __('<b><i>Univ</i>IS</b> - Information System of the FAU', 'rrze-univis'),
-            'UnivISOrgNr' => '',
-            'sortByLastname' => true
+            'UnivISOrgNr' => ''
         ];
 
         return $options;

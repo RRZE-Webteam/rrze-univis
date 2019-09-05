@@ -13,7 +13,7 @@ class Main
     /**
      * @var string
      * @access public
-     */      
+     */
     public $plugin_file;
 
     /**
@@ -21,17 +21,17 @@ class Main
      * @access public
      */
     public $options;
-    
+
     /**
      * @var object
      * @access public
-     */    
+     */
     public $settings;
-    
+
     /**
      * @var object
      * @access public
-     */    
+     */
     public $controller;
 
     /**
@@ -55,11 +55,11 @@ class Main
         'text' => 'text',
         'title' => 'title'
     ];
-    
+
     /**
      * @var array
      * @access public
-     */    
+     */
     public $allowed_stylesheets = [
         'FAU' => [
             'FAU-Einrichtungen',
@@ -80,13 +80,13 @@ class Main
             'FAU-Events'
         ]
     ];
-    
+
     public function __construct($plugin_file = null)
     {
         $this->plugin_file = $plugin_file;
 
         $this->options = new Options();
-        $this->settings = new Settings();        
+        $this->settings = new Settings();
         $this->controller = new Controller();
 
         add_action('admin_menu', array($this->settings, 'admin_settings_page'));
@@ -131,9 +131,9 @@ class Main
                     $atts[strtolower($value)] = '';
                 }
             }
-            
+
             $atts['UnivISOrgNr'] = isset($atts['number']) && absint($atts['number']) ? absint($atts['number']) : $options->UnivISOrgNr;
-            
+
             if (isset($atts['id']) && absint($atts['id'])) {
                 $atts['id'] = absint($atts['id']);
             }
@@ -145,7 +145,7 @@ class Main
             if (isset($atts['univisid']) && absint($atts['univisid'])) {
                 $atts['univisid'] = absint($atts['univisid']);
             }
-            
+
             if (isset($atts['dozentname'])) {
                 $atts['dozentname'] = wp_kses(trim(preg_replace('/\s+/', ' ', $atts['dozentname'])), []);
             }
@@ -224,7 +224,7 @@ class Main
             $shortcode_atts = shortcode_atts($defaults, $atts);
             do_action('rrze.log.debug', ['plugin' => 'rrze-univis', 'shortcode atts' => $shortcode_atts]);
             extract($shortcode_atts);
-            
+
             switch ($task) {
                 case 'mitarbeiter-alle':
                 case 'mitarbeiter-orga':
@@ -323,6 +323,7 @@ class Main
             'kompakt' => '', // Ausschließliche Anzeige LV-Überschriften
             'telefon' => 0, // optionale Anzeige von Telefonnumern bei den Mitarbeiter-Übersichten
             'mail' => 0, // optionale Anzeige von Mailadressen bei den Mitarbeiter-Übersichten
+            'sortByLastname' => 1, // optionale Sortierung nach Mitarbeiter-Nachnamen
         ];
 
         return $atts;
@@ -340,7 +341,7 @@ class Main
         }
         return $language;
     }
-    
+
     public function mce_external_plugins()
     {
         if (current_user_can('edit_posts') && current_user_can('edit_pages')) {
@@ -361,7 +362,7 @@ class Main
         $plugin_array['univis_shortcode'] = plugin_dir_url($this->plugin_file) . "RRZE/UnivIS/MCE/univis-shortcode$min.js";
         return $plugin_array;
     }
-    
+
     public function endpoint_template_redirect()
     {
         global $wp_query;
@@ -395,7 +396,7 @@ class Main
         }
 
         $template = $this->locate_template();
-        
+
         $this->load_template($template, $data);
         exit;
     }
@@ -405,7 +406,7 @@ class Main
         $current_theme = wp_get_theme();
         $default_template = plugin_dir_path($this->plugin_file) . 'RRZE/UnivIS/Templates/single-univis.php';
         $template = '';
-        
+
         foreach ($this->allowed_stylesheets as $theme => $style) {
             if (in_array(strtolower($current_theme->stylesheet), array_map('strtolower', $style))) {
                 $template = plugin_dir_path($this->plugin_file) . "RRZE/UnivIS/Templates/Themes/$theme/single-univis.php";
@@ -415,7 +416,7 @@ class Main
 
         return !empty($template) && file_exists($template) ? $template : $default_template;
     }
-    
+
     protected function load_template($template, $data = array())
     {
         include $template;

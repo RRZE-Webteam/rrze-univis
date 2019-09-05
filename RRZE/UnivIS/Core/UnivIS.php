@@ -224,7 +224,7 @@ class UnivIS
                 }
                 $daten['Person'] = array_merge($daten["Person"], $daten_text);
                 // BK EDIT 05.09.2019 BEGIN : added sort by $lastname
-                if (isset($this->optionen['sortByLastname']) && $this->optionen['sortByLastname'] == true) {
+                if (isset($this->optionen['sortByLastname']) && $this->optionen['sortByLastname'] == 1) {
                   usort($daten['Person'], function($a, $b) {
                     return $a['lastname'] <=> $b['lastname'];
                   });
