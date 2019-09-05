@@ -7,11 +7,11 @@ defined('ABSPATH') || exit;
 class Options
 {
     protected $option_name = '_rrze_univis';
-    
+
     public function __construct()
     {
     }
-    
+
     /*
      * Standard Einstellungen werden definiert
      * @return array
@@ -21,6 +21,7 @@ class Options
         $options = [
             'univis_default_link' => __('<b><i>Univ</i>IS</b> - Information System of the FAU', 'rrze-univis'),
             'UnivISOrgNr' => '',
+            'sortByLastname' => true
         ];
 
         return $options;
@@ -40,7 +41,7 @@ class Options
 
         return (object) $options;
     }
-    
+
     public function get_option_name()
     {
         return $this->option_name;
