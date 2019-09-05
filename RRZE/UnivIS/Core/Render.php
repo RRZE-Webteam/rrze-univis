@@ -827,11 +827,88 @@ class Render
         }//end Zeit und Ort
         //Summary
         if (isset($veranstaltung["summary"])) {
+                // Suche nach eingetragen Mailadressen bzw. URLs
+                $suchstring_0 = '\*\*';   // ** durch * ersetzen
+                $html_0 = '*';
+                $suchstring_1 = '\|\|';  // || durch | ersetzen
+                $html_1 = '|';
+                $suchstring_2 = '\^\^';     // ^^ durch ^ ersetzen
+                $html_2 = '^';
+                $suchstring_3 = '__';  // __ durch _ ersetzen
+                $html_3 = '_';
+
+                $suchstring_4 = '/^- ?(.+)/m';   // - am Anfang der Zeilen: Jeder Listenpunkt wird als vollständige Aufzählung umgesetzt
+                $html_4 = '<ul><li>$1</li></ul>';
+
+                $suchstring_5 = '/\*(.+)\*/';    // *fett*
+                $html_5 = '<b>$1</b>';
+                $suchstring_6 = '/\|(.+)\|/';  // |kursiv|
+                $html_6 = '<i>$1</i>';
+                $suchstring_7 = '/\^(.+)\^/';    // pi^2^
+                $html_7 = '<sup>$1</sup>';
+                $suchstring_8 = '/_(.+)_/';    // H_2_O
+                $html_8 = '<sub>$1</sub>';
+                $suchstring_9 = '/\[(.+?)\]\s?(\S+)/'; // [Linktext] Ziel-URL bzw. -Mailadresse
+                $html_9 = "<a href='$2'>$1</a>";
+                // Umsetzung in HTML-Link
+                for ($i = 0; $i < 4; $i++) {
+                    $suchstring = 'suchstring_' . $i;
+                    $html = 'html_' . $i;
+                    $veranstaltung["summary"] = str_replace($$suchstring, $$html, $veranstaltung["summary"]);
+                }
+
+                for ($i = 4; $i < 10; $i++) {
+                    $suchstring = 'suchstring_' . $i;
+                    $html = 'html_' . $i;
+                    $veranstaltung["summary"] = preg_replace($$suchstring, $$html, $veranstaltung["summary"]);
+                }
+                // Leerzeile durch Zeilenumbruch und zwei Leerzeilen durch Absatz
+                $veranstaltung["summary"] = str_replace(PHP_EOL, '<br>', $veranstaltung["summary"]);
+                $veranstaltung["summary"] = str_replace("<br>\r<br>", '<br>', $veranstaltung["summary"]);
+            
             $veranstaltung["summary"] = str_replace("\n", "<br/>", $veranstaltung["summary"]);
         }
 
         //Organizational
         if (isset($veranstaltung["organizational"])) {
+                            // Suche nach eingetragen Mailadressen bzw. URLs
+                $suchstring_0 = '\*\*';   // ** durch * ersetzen
+                $html_0 = '*';
+                $suchstring_1 = '\|\|';  // || durch | ersetzen
+                $html_1 = '|';
+                $suchstring_2 = '\^\^';     // ^^ durch ^ ersetzen
+                $html_2 = '^';
+                $suchstring_3 = '__';  // __ durch _ ersetzen
+                $html_3 = '_';
+
+                $suchstring_4 = '/^- ?(.+)/m';   // - am Anfang der Zeilen: Jeder Listenpunkt wird als vollständige Aufzählung umgesetzt
+                $html_4 = '<ul><li>$1</li></ul>';
+
+                $suchstring_5 = '/\*(.+)\*/';    // *fett*
+                $html_5 = '<b>$1</b>';
+                $suchstring_6 = '/\|(.+)\|/';  // |kursiv|
+                $html_6 = '<i>$1</i>';
+                $suchstring_7 = '/\^(.+)\^/';    // pi^2^
+                $html_7 = '<sup>$1</sup>';
+                $suchstring_8 = '/_(.+)_/';    // H_2_O
+                $html_8 = '<sub>$1</sub>';
+                $suchstring_9 = '/\[(.+?)\]\s?(\S+)/'; // [Linktext] Ziel-URL bzw. -Mailadresse
+                $html_9 = "<a href='$2'>$1</a>";
+                // Umsetzung in HTML-Link
+                for ($i = 0; $i < 4; $i++) {
+                    $suchstring = 'suchstring_' . $i;
+                    $html = 'html_' . $i;
+                    $veranstaltung["organizational"] = str_replace($$suchstring, $$html, $veranstaltung["organizational"]);
+                }
+
+                for ($i = 4; $i < 10; $i++) {
+                    $suchstring = 'suchstring_' . $i;
+                    $html = 'html_' . $i;
+                    $veranstaltung["organizational"] = preg_replace($$suchstring, $$html, $veranstaltung["organizational"]);
+                }
+                // Leerzeile durch Zeilenumbruch und zwei Leerzeilen durch Absatz
+                $veranstaltung["organizational"] = str_replace(PHP_EOL, '<br>', $veranstaltung["organizational"]);
+                $veranstaltung["organizational"] = str_replace("<br>\r<br>", '<br>', $veranstaltung["organizational"]);
             $veranstaltung["organizational"] = str_replace("\n", "<br/>", $veranstaltung["organizational"]);
         }
 
