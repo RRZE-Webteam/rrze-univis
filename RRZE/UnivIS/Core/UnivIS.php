@@ -85,10 +85,17 @@ class UnivIS
                     $this->daten = $this->ladeLehrveranstaltungenEinzeln();
                     break;
 
+	       default:
+                    $this->daten = $this->ladeMitarbeiterAlle();
+                    //echo "Fehler: Unbekannter Befehl\n";
+                    break;		
+		/*
                 default:
                     _e('Error: Unknown command', 'rrze-univis');
                     //echo "Fehler: Unbekannter Befehl\n";
                     break;
+		 
+		 */
             }
         }
 
