@@ -16,11 +16,12 @@ Einstellungen › UnivIS
 ```
 [univis]
 ```
-- Bindet die Mitarbeiterübersicht der Organisationseinheit mit der UnivISOrgNr 1005681200 ein, besonders geeignet für wissenschaftliche Einrichtungen (optional mit Telefonnummern, E-Mail-Adressen)
+- Bindet die Mitarbeiterübersicht der Organisationseinheit mit der UnivISOrgNr 1005681200 ein, besonders geeignet für wissenschaftliche Einrichtungen (optional mit Telefonnummern und/oder E-Mail-Adressen, optional nach Nachnamen sortiert (standardmässig wird sortiert))
 ```
 [univis number="1005681200"]
 [univis number="1005681200" task="mitarbeiter-alle"]
 [univis number="1005681200" task="mitarbeiter-alle" show="telefon, mail"]
+[univis number="1005681200" task="mitarbeiter-alle" sortByLastname="0"]
 ```    
 - Bindet die Mitarbeiterübersicht der Organisationseinheit mit der UnivISOrgNr 1005681200 ein, besonders geeignet für nicht-wissenschaftliche Einrichtungen (optional ohne Telefonnummern oder mit Mailadressen)
 ```
@@ -54,7 +55,7 @@ Einstellungen › UnivIS
 - Gibt z.B. alle Vorlesungen der Org-Nr. 21101522 aus. Bei type müssen die Kürzel wie im Vorlesungsverzeichnis angegeben werden
 ```
 [univis task="lehrveranstaltungen-alle" id="21101522" type="vorl"]
-``` 
+```
 - Bindet die Daten der einen Person ein. Die Person muss dabei der Organisationseinheit angehören, die in Einstellungen - UnivIS eingegeben wurde
 ```
 [univis task="mitarbeiter-einzeln" firstname="Max" lastname="Mustermann"]
