@@ -15,6 +15,7 @@ class Settings
      * string
      */
     protected $admin_settings_page;
+    protected $admin_utility_page;
     
     public function __construct()
     {
@@ -27,12 +28,22 @@ class Settings
      * Füge eine Optionsseite in das Menü "Einstellungen" hinzu.
      * @return void
      */
-    public function admin_settings_page()
-    {
+    public function admin_settings_page() {
         $this->admin_settings_page = add_options_page(__('UnivIS', 'rrze-univis'), __('UnivIS', 'rrze-univis'), 'manage_options', 'rrze-univis', array($this, 'settings_page'));
         add_action('load-' . $this->admin_settings_page, array($this, 'admin_help_menu'));
     }
     
+
+        /*
+     * Füge eine Optionsseite in das Menü "Werkzeuge" hinzu.
+     * @return void
+     */
+    public function admin_utility_page() {
+        $this->admin_utility_page = add_submenu_page( 'tools.php', __('UnivIS', 'rrze-univis'), __('Suche nach UnivIS OrgID', 'rrze-univis'), 'manage_options', 'rrze-univis', array($this, 'utility_page') );
+        add_action('load-' . $this->admin_utility_page, array($this, 'admin_help_menu'));
+    }
+
+
     /*
      * Die Ausgabe der Optionsseite.
      * @return void
@@ -45,13 +56,66 @@ class Settings
             <form method="post" action="options.php">
                 <?php
                 settings_fields('rrze_univis_options');
-        do_settings_sections('rrze_univis_options');
-        submit_button(); ?>
+                do_settings_sections('rrze_univis_options');
+                submit_button(); ?>
             </form>
         </div>
         <?php
     }
-    
+
+
+    /*
+     * Die Ausgabe der Werkzeuge Seite.
+     * @return void
+     * 
+     */
+    public function utility_page() {
+        ?>
+        <div class="wrap">
+            <h2><?php echo __('Suche nach UnivIS OrgID', 'rrze-univis'); ?></h2>
+            <form method="post">
+            <input type="hidden" name="action" value="search_orgid">
+                <table class="form-table" role="presentation" class="striped">
+                    <tbody>
+                        <tr>
+                            <th scope="row"><?php echo __('Department', 'rrze-univis'); ?></th>
+                            <td><input type="text" name="department_name" id="department_name" value=""></td>
+                        </tr>
+                        <tr>
+                            <td colspan="2"><input type="submit" name="submit" id="submit" class="button button-primary" value="<?php echo __('Suchen', 'rrze-univis'); ?>"></td>
+                        </tr>
+                    </tbody>
+                </table>            
+            </form>
+        </div>
+        <?php
+
+        echo '<div id="result">';
+
+        if (isset($_POST["action"]) && $_POST["action"] == 'search_orgid' ){
+            $department_name = $_POST["department_name"];
+            $api = 'http://univis.uni-erlangen.de/prg?search=departments&show=orglist&name=';
+            if ( isset($department_name) && $department_name != '' ){
+                $api .= $department_name;
+                $json = file_get_contents( $api );
+                $result = utf8_encode( $json );
+                 if ( strpos( $result, 'keine passenden Daten' ) > 0 ){
+                    echo 'Keine passenden Datensätze gefunden.';
+                 } else {
+                    preg_match('/(<table>.*<\/table>)/', $result, $matches );
+                    $table = str_replace( '<table>', '<table class="wp-list-table widefat striped">', $matches[0] );
+                    $table = preg_replace('/<tr>/', '<thead><tr>', $table, 1);
+                    $table = preg_replace('/<\/tr>/', '</tr></thead>', $table, 1);
+                    echo $table;
+                 }
+            }
+        }
+
+        echo '</div>';
+}
+
+
+
     /*
      * Legt die Einstellungen der Optionsseite fest.
      * @return void
