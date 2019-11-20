@@ -92,7 +92,7 @@ class Main
         add_action('admin_menu', array($this->settings, 'admin_settings_page'));
         add_action('admin_init', array($this->settings, 'admin_settings'));
 
-        add_action('admin_menu', array($this->settings, 'admin_utility_page'));
+        // add_action('admin_menu', array($this->settings, 'admin_utility_page'));
 
         add_shortcode('univis', array($this, 'add_shortcode'));
         add_action('admin_init', array($this, 'mce_external_plugins'));

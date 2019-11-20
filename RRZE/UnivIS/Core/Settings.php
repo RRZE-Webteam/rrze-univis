@@ -15,7 +15,7 @@ class Settings
      * string
      */
     protected $admin_settings_page;
-    protected $admin_utility_page;
+    // protected $admin_utility_page;
     
     public function __construct()
     {
@@ -38,10 +38,10 @@ class Settings
      * Füge eine Optionsseite in das Menü "Werkzeuge" hinzu.
      * @return void
      */
-    public function admin_utility_page() {
-        $this->admin_utility_page = add_submenu_page( 'tools.php', __('UnivIS', 'rrze-univis'), __('Suche nach UnivIS OrgID', 'rrze-univis'), 'manage_options', 'rrze-univis', array($this, 'utility_page') );
-        add_action('load-' . $this->admin_utility_page, array($this, 'admin_help_menu'));
-    }
+    // public function admin_utility_page() {
+    //     $this->admin_utility_page = add_submenu_page( 'tools.php', __('UnivIS', 'rrze-univis'), __('Suche nach UnivIS OrgID', 'rrze-univis'), 'manage_options', 'rrze-univis', array($this, 'utility_page') );
+    //     add_action('load-' . $this->admin_utility_page, array($this, 'admin_help_menu'));
+    // }
 
 
     /*
@@ -61,6 +61,7 @@ class Settings
             </form>
         </div>
         <?php
+        $this->utility_page();
     }
 
 
@@ -72,13 +73,13 @@ class Settings
     public function utility_page() {
         ?>
         <div class="wrap">
-            <h2><?php echo __('Suche nach UnivIS OrgID', 'rrze-univis'); ?></h2>
+            <h2><?php echo __('Suche nach UnivIS-OrgNr.', 'rrze-univis'); ?></h2>
             <form method="post">
             <input type="hidden" name="action" value="search_orgid">
                 <table class="form-table" role="presentation" class="striped">
                     <tbody>
                         <tr>
-                            <th scope="row"><?php echo __('Department', 'rrze-univis'); ?></th>
+                            <th scope="row"><?php echo __('Organisationseinheit', 'rrze-univis'); ?></th>
                             <td><input type="text" name="department_name" id="department_name" value=""></td>
                         </tr>
                         <tr>
