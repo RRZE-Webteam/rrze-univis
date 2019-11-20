@@ -93,7 +93,7 @@ class Settings
         echo '<div id="result">';
 
         if (isset($_POST["action"]) && $_POST["action"] == 'search_orgid' ){
-            $department_name = $_POST["department_name"];
+            $department_name = rawurlencode($_POST["department_name"]);
             $api = 'http://univis.uni-erlangen.de/prg?search=departments&show=orglist&name=';
             if ( isset($department_name) && $department_name != '' ){
                 $api .= $department_name;
