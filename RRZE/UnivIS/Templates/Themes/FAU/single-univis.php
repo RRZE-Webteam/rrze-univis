@@ -3,7 +3,6 @@ get_header();
 get_template_part('template-parts/hero', 'small'); ?>
 <div id="content">
     <div class="container">
-        <?php echo fau_get_ad('werbebanner_seitlich', false); ?>
 
         <div class="row">
 
