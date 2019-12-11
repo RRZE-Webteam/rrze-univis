@@ -4,7 +4,7 @@
  * Plugin Name:     RRZE UnivIS
  * Plugin URI:      https://github.com/RRZE-Webteam/rrze-univis
  * Description:     Einbindung von Daten aus UnivIS für den Geschäftsverteilungsplan.
- * Version:         2.4.0
+ * Version:         2.4.1
  * Author:          RRZE-Webteam
  * Author URI:      https://blogs.fau.de/webworking/
  * License:         GNU General Public License v2
@@ -17,8 +17,8 @@ namespace RRZE\UnivIS;
 
 defined('ABSPATH') || exit;
 
-const RRZE_PHP_VERSION = '5.5';
-const RRZE_WP_VERSION = '4.9';
+const RRZE_PHP_VERSION = '7.3';
+const RRZE_WP_VERSION = '5.3';
 
 register_activation_hook(__FILE__, 'RRZE\UnivIS\activation');
 register_deactivation_hook(__FILE__, 'RRZE\UnivIS\deactivation');
