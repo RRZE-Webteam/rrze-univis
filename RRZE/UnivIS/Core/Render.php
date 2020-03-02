@@ -439,6 +439,17 @@ class Render
                 }
             }
 
+				if (isset($person["officehours"])) {
+				foreach($person["officehours"][0]['officehour'] as &$value){ 
+                $repeatString =  $this->_officehours_repeatString($value['repeat']);
+              
+                if ($repeatString) {
+                    $value["repeatString"] = $repeatString;
+                    
+                } 
+            }
+			}
+			unset($value);			   
             return array("person" => $person, "optionen" => $this->optionen);
         }
     }
@@ -1033,4 +1044,85 @@ class Render
         call_user_func_array('array_multisort', $args);
         return array_pop($args);
     }
+	 private function _officehours_repeatString( $repeat ) {
+        $date = array();
+
+       
+            $repeat = strtok($repeat, ' ');
+            $repeat_submode = strtok(' ');
+            $repeat_submode = explode( ',', $repeat_submode );
+       
+
+        if( $repeat ) {
+            $dict = array(
+                'd1' => __('daily', 'rrze-univis'),
+                'w1' => __('weekly', 'rrze-univis'),
+                'w2' => __('Every second week', 'rrze-univis'),
+            );
+
+            if( array_key_exists( $repeat, $dict ) )
+                array_push( $date, $dict[$repeat] );
+
+            if( is_array( $repeat_submode ) && !empty($repeat_submode[0] )) {
+                $days_short = array(
+                    1 => __('Mon', 'rrze-univis'),
+                    2 => __('Tue', 'rrze-univis'),
+                    3 => __('Wed', 'rrze-univis'),
+                    4 => __('Thu', 'rrze-univis'),
+                    5 => __('Fri', 'rrze-univis'),
+                    6 => __('Sat', 'rrze-univis'),
+                    7 => __('Sun', 'rrze-univis')
+                );
+
+                $days_long = array(
+                    1 => __('Monday', 'rrze-univis'),
+                    2 => __('Tueday', 'rrze-univis'),
+                    3 => __('Wednesday', 'rrze-univis'),
+                    4 => __('Thursday', 'rrze-univis'),
+                    5 => __('Friday', 'rrze-univis'),
+                    6 => __('Saturday', 'rrze-univis'),
+                    7 => __('Sunday', 'rrze-univis')
+                );
+                foreach( $repeat_submode as $value ) {
+                        $days_short[$value] = $days_short[$value] . ',';
+                        array_push($date, $days_short[$value]);
+                }
+            }
+        }
+  
+
+		/* von der UnivIS-Doku:
+             * repeat mode is encoded in a string
+             * syntax: <modechar><numbers><space><args>                  
+             * mode  description                  
+             * d     daily                  
+             * w     weekly
+             * m     monthly                  
+             * y     yearly                 
+             * b     block
+             * numbers: number of skips between repeats
+             * example:  "d2":      every second day
+             * weekly and monthly have additional arguments:  
+             * weekly: argument is comma-separated list of weekdays where event is repeated                  
+             * example:  "w3 1,2":  every third week on Monday and Tuesday                  
+             * also possible: „we“ and „wo"
+             * e = even calender week                  
+             * o = odd calender week                  
+             * monthly: argument has syntax "<submodechar><numbers>"                 
+             * submode description                  
+             * d       monthly by date                  
+             * w       monthly by week                  
+             * numbers: monthly by date: number of day (1-31)                  
+             * monthly by week: number of week (1-5,e,o))                  
+             * special case: 5 = last week of month                
+             * examples:  "m1 d23": on the 23rd day of every month
+             * "m2 w5":  in the last week of every second month
+             * Laut UnivIS-Live-Daten werden für die Sprechzeiten aber nur wöchentlich an verschiedenen Tagen, 2-wöchentlich und täglich verwendet. Sollte noch was anderes benötigt werden, muss nachprogrammiert werden.
+             */
+   
+
+        $officehours = implode( ' ', $date );
+        
+        return $officehours;
+    }														
 }

@@ -52,6 +52,14 @@ msgstr "Bitte geben Sie einen Vor- und Nachnamen oder eine UnivIS-ID an."
 msgid "<b><i>Univ</i>IS</b> - Information System of the FAU"
 msgstr "<b><i>Univ</i>IS</b> - Informationssystem der FAU"
 
+#: RRZE/UnivIS/Core/Render.php:561 RRZE/UnivIS/Core/Render.php:985
+msgid "daily"
+msgstr "JEden Tag"
+
+#: RRZE/UnivIS/Core/Render.php:561 RRZE/UnivIS/Core/Render.php:986
+msgid "weekly"
+msgstr "Jede Woche"
+
 #: RRZE/UnivIS/Core/Render.php:561 RRZE/UnivIS/Core/Render.php:746
 msgid "Every second week"
 msgstr "Alle zwei Wochen"
@@ -237,6 +245,7 @@ msgstr "Zeit n.V."
 #: RRZE/UnivIS/Templates/lehrveranstaltungen-einzeln.php:68
 #: RRZE/UnivIS/Templates/lehrveranstaltungen-einzeln.php:105
 #: RRZE/UnivIS/Templates/mitarbeiter-einzeln.php:81
+#: RRZE/UnivIS/Templates/mitarbeiter-einzeln.php:106
 msgid "Room"
 msgstr "Raum"
 
@@ -348,6 +357,10 @@ msgstr "Website"
 #: RRZE/UnivIS/Templates/mitarbeiter-einzeln.php:71
 msgid "Address"
 msgstr "Adresse"
+
+#: RRZE/UnivIS/Templates/mitarbeiter-einzeln.php:91
+msgid "Office hours"
+msgstr "Sprechzeiten"
 
 #: RRZE/UnivIS/Templates/single-univis.php:9
 #: RRZE/UnivIS/Templates/Themes/Blue-Edgy/content-univis.php:9

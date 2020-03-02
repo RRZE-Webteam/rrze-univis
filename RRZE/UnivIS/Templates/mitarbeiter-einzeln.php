@@ -85,8 +85,35 @@
 
                 <?php //
                 endif; ?>
-                <?php //'<li class="person-info-office"><span itemprop="hoursAvailable" itemtype="http://schema.org/ContactPoint"><span class="screen-reader-text"> '. _e('Sprechzeiten', 'rrze-univis') . ': </span>Hier müssen die Öffnungszeiten rein</span></li>';
-                // Öffnungszeiten müssen noch mit rein, werden aus UnivIS noch nicht mit ausgelesen!?>
+           		 <?php if (array_key_exists('officehours', $person) && array_key_exists('officehour', $person['officehours'][0])) :
+					echo '<br><li class="person-info-office"><span itemprop="hoursAvailable" itemtype="http://schema.org/ContactPoint"><span class="screen-reader-text">' ;
+					echo _e('Office hours', 'rrze-univis') . ': </span> <span><b>'; 
+					echo _e('Office hours', 'rrze-univis') .':</b><br>' ;
+					 foreach ($person['officehours'][0]['officehour'] as $officehour){
+					 
+						if (!empty($officehour['repeatstring'])) { 
+							 echo $officehour['repeatstring'] . " ";
+						}
+						if (!empty($officehour['starttime'])) { 
+							 echo $officehour['starttime'];
+						}
+					    if (!empty($officehour['endtime'])) { 
+							echo " bis " . $officehour['endtime'];
+						}
+						if (!empty($officehour['office'])) { 
+							  echo ", " ; 
+							  echo  _e('Room', 'rrze-univis') . " " . $officehour['office'];
+							}
+						if (!empty($officehour['comment'])) { 
+							if (!empty($officehour['repeatstring']) || !empty($officehour['starttime']) ) {
+								echo ", " ;
+							}
+							  echo $officehour['comment'];
+							}
+							echo "<br>";
+					 }
+					 echo " </span></li>"; 
+                endif; ?> 
             </ul>
         </div>
     </div>
