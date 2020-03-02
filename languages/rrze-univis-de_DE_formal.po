@@ -362,6 +362,10 @@ msgstr "Adresse"
 msgid "Office hours"
 msgstr "Sprechzeiten"
 
+#: RRZE/UnivIS/Templates/mitarbeiter-einzeln.php:102
+msgid "to"
+msgstr "bis"
+
 #: RRZE/UnivIS/Templates/single-univis.php:9
 #: RRZE/UnivIS/Templates/Themes/Blue-Edgy/content-univis.php:9
 #: RRZE/UnivIS/Templates/Themes/FAU/single-univis.php:14

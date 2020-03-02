@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: RRZE UnivIS\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2018-11-15 10:23+0000\n"
-"PO-Revision-Date: 2020-02-24 09:44+0100\n"
+"PO-Revision-Date: 2020-03-02 13:23+0100\n"
 "Last-Translator: RRZE Webteam <webmaster@fau.de>\n"
 "Language-Team: Deutsch\n"
 "Language: de_DE\n"
@@ -357,6 +357,10 @@ msgstr "Adresse"
 #: RRZE/UnivIS/Templates/mitarbeiter-einzeln.php:91
 msgid "Office hours"
 msgstr "Sprechzeiten"
+
+#: RRZE/UnivIS/Templates/mitarbeiter-einzeln.php:102
+msgid "to"
+msgstr "bis"
 
 #: RRZE/UnivIS/Templates/single-univis.php:9
 #: RRZE/UnivIS/Templates/Themes/Blue-Edgy/content-univis.php:9

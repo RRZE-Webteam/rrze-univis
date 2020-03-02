@@ -98,7 +98,8 @@
 							 echo $officehour['starttime'];
 						}
 					    if (!empty($officehour['endtime'])) { 
-							echo " bis " . $officehour['endtime'];
+							echo " ";
+							echo _e('to', 'rrze-univis') . " " . $officehour['endtime'];
 						}
 						if (!empty($officehour['office'])) { 
 							  echo ", " ; 
