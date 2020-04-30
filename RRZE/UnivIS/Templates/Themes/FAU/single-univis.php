@@ -6,7 +6,7 @@ get_template_part('template-parts/hero', 'small'); ?>
 
         <div class="row">
 
-                <main>
+                <main class="col-xs-12" id="droppoint">
                     <?php echo $data; ?>
                     <nav class="navigation">
                         <div class="nav-previous">
@@ -18,4 +18,7 @@ get_template_part('template-parts/hero', 'small'); ?>
         </div>
     </div>
 </div>
-<?php get_footer();
+<?php
+get_template_part('template-parts/footer', 'social'); 
+get_footer(); 
+

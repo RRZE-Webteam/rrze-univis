@@ -1,16 +1,39 @@
-RRZE UnivIS
-===========
+# RRZE-UnivIS
 
-Wordpress-Plugin
-----------------
+Darstellung von Lehrveranstaltungen und organisatorischen Daten aus UnivIS.
+
+## Download 
+
+GITHub-Repo: https://github.com/RRZE-Webteam/rrze-univis
+
+
+## Autor 
+RRZE-Webteam , http://www.rrze.fau.de
+
+## Copryright
+
+GNU General Public License (GPL) Version 2 
+
+
+## Zweck 
 
 Shortcode [univis] zum Einbindung von UnivIS-Daten in WordPress-Seiten.
 
-### WP-Einstellungsmenü
+
+## Dokumentation
+
+Eine vollständige Dokumentation mit vielen Anwendungsbeispielen findet sich auf der Seite: 
+https://www.wordpress.rrze.fau.de/plugins/fau-und-rrze-plugins/rrze-univis/
+
+
+### Kurzeinführung
+
+
+#### WP-Einstellungsmenü
 
 Einstellungen › UnivIS
 
-### Verwendung des Shortcodes [univis]
+#### Verwendung des Shortcodes [univis]
 
 - Anzeige eines Links zur UnivIS-Startseite, der Linktext kann unter Einstellungen / UnivIS modifiziert werden
 ```
@@ -43,14 +66,14 @@ Einstellungen › UnivIS
 [univis number="1005681200" task="publikationen"]
 ```
 
-#### Ausblenden importierter Lehrveranstaltungen möglich
+##### Ausblenden importierter Lehrveranstaltungen möglich
 
 - Blendet alle importierten Lehrveranstaltungen aus, um doppelte Ausgaben zu vermeiden
 ```
 [univis task="lehrveranstaltungen-alle" id="49680223" lv_import="0"]
 ```
 
-#### Filterung nach Lehrveranstaltungstyp möglich
+##### Filterung nach Lehrveranstaltungstyp möglich
 
 - Gibt z.B. alle Vorlesungen der Org-Nr. 21101522 aus. Bei type müssen die Kürzel wie im Vorlesungsverzeichnis angegeben werden
 ```
@@ -73,7 +96,7 @@ Einstellungen › UnivIS
 [univis task="lehrveranstaltungen-alle" dozentname="Mustermann,Max"]
 ```
 
-### Hinweise
+#### Hinweise
 
 - Der Shortcode-Parameter number kann weggelassen werden, wenn in der Einstellungsseite des Plugins (Einstellungen - UnivIS) eine UnivISOrgNr vergeben wird. Dann muss aber zwingend der Parameter task vergeben werden (default-Wert für task ist mitarbeiter-alle)
 - Bei der Anzeige von Lehrveranstaltungen wird automatisch das Semester angezeigt, dass gerade bei UnivIS als aktuelles Semester eingestellt ist
