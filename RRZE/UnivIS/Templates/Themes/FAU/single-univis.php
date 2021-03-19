@@ -1,10 +1,10 @@
 <?php
 get_header();
 get_template_part('template-parts/hero', 'small'); ?>
-    <div id="content">
+    <div id="content" class="rrze-univis">
         <div class="container">
             <div class="row">
-               <div <?php post_class( 'entry-content rrze-univis' ); ?>>
+               <div <?php post_class( 'entry-content' ); ?>>
                     <main id="droppoint">
 			<h1 id="droppoint" class="mobiletitle"><?php the_title(); ?></h1>
 			<?php echo $data; ?>
