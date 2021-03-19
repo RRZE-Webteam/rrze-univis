@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: RRZE UnivIS\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2018-11-15 10:23+0000\n"
-"PO-Revision-Date: 2020-03-02 13:23+0100\n"
+"PO-Revision-Date: 2021-03-19 09:59+0000\n"
 "Last-Translator: RRZE Webteam <webmaster@fau.de>\n"
 "Language-Team: Deutsch\n"
 "Language: de_DE\n"
@@ -11,7 +11,397 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Generator: Poedit 2.3\n"
+"X-Generator: Loco https://localise.biz/"
+
+#: RRZE/UnivIS/Templates/Themes/Blue-Edgy/content-univis.php:14
+msgid "(Edit)"
+msgstr "(Bearbeiten)"
+
+#: RRZE/UnivIS/Core/Options.php:22
+msgid "<b><i>Univ</i>IS</b> - Information System of the FAU"
+msgstr "<b><i>Univ</i>IS</b> - Informationssystem der FAU"
+
+#. Fehler: Bitte geben Sie eine Lehrveranstaltung an
+#: RRZE/UnivIS/Core/UnivIS.php:572
+msgid "<div class=\\\"hinweis_wichtig\\\">Please specify a lecture.</div>"
+msgstr ""
+"<div class=\\\"hinweis_wichtig\\\">Bitte geben Sie eine Lehrveranstaltung an."
+"</div>"
+
+#: RRZE/UnivIS/MCE/langs.php:17
+msgid "Add UnivIS"
+msgstr "UnivIS einfügen"
+
+#: RRZE/UnivIS/Templates/lehrveranstaltungen-einzeln.php:181
+msgid "Additional information"
+msgstr "Zusätzliche Informationen"
+
+#: RRZE/UnivIS/Templates/mitarbeiter-einzeln.php:71
+msgid "Address"
+msgstr "Adresse"
+
+#: RRZE/UnivIS/Templates/single-univis.php:9
+#: RRZE/UnivIS/Templates/Themes/FAU/single-univis.php:12
+#: RRZE/UnivIS/Templates/Themes/Blue-Edgy/content-univis.php:9
+msgid "Back to overview"
+msgstr "Zurück zur Übersicht"
+
+#: RRZE/UnivIS/Core/Render.php:576 RRZE/UnivIS/Core/Render.php:762
+msgid "Block appointment"
+msgstr "Blockveranstaltung"
+
+#: RRZE/UnivIS/Templates/lehrveranstaltungen-einzeln.php:150
+#: RRZE/UnivIS/Templates/lehrveranstaltungen-einzeln.php:171
+msgid "Content"
+msgstr "Inhalt"
+
+#: RRZE/UnivIS/Templates/lehrveranstaltungen-einzeln.php:75
+msgid "Course"
+msgstr "Kurs"
+
+#: RRZE/UnivIS/Templates/lehrveranstaltungen-einzeln.php:167
+msgid "Credits"
+msgstr "Credits"
+
+#: RRZE/UnivIS/Core/Render.php:1058
+msgid "daily"
+msgstr "Jeden Tag"
+
+#: RRZE/UnivIS/Templates/lehrveranstaltungen-einzeln.php:33
+msgid "Details"
+msgstr "Details"
+
+#: RRZE/UnivIS/Templates/lehrveranstaltungen-einzeln.php:161
+msgid "ECTS information"
+msgstr "ECTS-Informationen"
+
+#. Description of the plugin
+msgid "Einbindung von Daten aus UnivIS für den Geschäftsverteilungsplan."
+msgstr "Einbindung von Daten aus UnivIS für den Geschäftsverteilungsplan."
+
+#: RRZE/UnivIS/Templates/mitarbeiter-einzeln.php:65
+msgid "Email"
+msgstr "E-Mail"
+
+#: RRZE/UnivIS/Core/Render.php:574 RRZE/UnivIS/Core/Render.php:760
+msgid "Every fourth week"
+msgstr "Alle vier Wochen"
+
+#: RRZE/UnivIS/Core/Render.php:572 RRZE/UnivIS/Core/Render.php:758
+#: RRZE/UnivIS/Core/Render.php:1060
+msgid "Every second week"
+msgstr "Alle zwei Wochen"
+
+#: RRZE/UnivIS/Core/Render.php:573 RRZE/UnivIS/Core/Render.php:759
+msgid "Every third week"
+msgstr "Alle drei Wochen"
+
+#: RRZE/UnivIS/Templates/lehrveranstaltungen-einzeln.php:71
+#: RRZE/UnivIS/Templates/lehrveranstaltungen-einzeln.php:108
+#: RRZE/UnivIS/Templates/lehrveranstaltungen-alle.php:52
+#: RRZE/UnivIS/Templates/lehrveranstaltungen-alle.php:86
+msgid "exclude"
+msgstr "außer"
+
+#: RRZE/UnivIS/Templates/lehrveranstaltungen-einzeln.php:186
+msgid "Expected participants"
+msgstr "Erwartete Teilnehmerzahl"
+
+#: RRZE/UnivIS/Templates/mitarbeiter-einzeln.php:62
+msgid "Fax number"
+msgstr "Faxnummer"
+
+#: RRZE/UnivIS/Templates/lehrveranstaltungen-einzeln.php:120
+msgid "Fields of study"
+msgstr "Studienfächer / Studienrichtungen"
+
+#: RRZE/UnivIS/Core/Settings.php:183
+msgid "For more information"
+msgstr "Für mehr Information"
+
+#: RRZE/UnivIS/Core/Render.php:603 RRZE/UnivIS/Core/Render.php:788
+#: RRZE/UnivIS/Core/Render.php:1072
+msgid "Fri"
+msgstr "Fr"
+
+#: RRZE/UnivIS/Core/Render.php:614 RRZE/UnivIS/Core/Render.php:799
+#: RRZE/UnivIS/Core/Render.php:1082
+msgid "Friday"
+msgstr "Freitag"
+
+#: RRZE/UnivIS/Templates/lehrveranstaltungen-einzeln.php:132
+msgid "from SEM"
+msgstr "ab Sem."
+
+#. Author URI of the plugin
+msgid "https://blogs.fau.de/webworking/"
+msgstr "https://blogs.fau.de/webworking/"
+
+#. URI of the plugin
+msgid "https://github.com/RRZE-Webteam/rrze-univis"
+msgstr "https://github.com/RRZE-Webteam/rrze-univis"
+
+#: RRZE/UnivIS/Templates/mitarbeiter-einzeln.php:25
+msgid "Job title"
+msgstr "Tätigkeit"
+
+#: RRZE/UnivIS/Templates/lehrveranstaltungen-einzeln.php:183
+msgid "Keywords"
+msgstr "Schlagwörter"
+
+#: RRZE/UnivIS/Templates/lehrveranstaltungen-einzeln.php:7
+msgid "Lecturers"
+msgstr "Dozent/in"
+
+#: RRZE/UnivIS/Core/UnivIS.php:286
+msgid "Leider konnte die Organisationseinheit nicht gefunden werden."
+msgstr "Leider konnte die Organisationseinheit nicht gefunden werden."
+
+#: RRZE/UnivIS/Core/UnivIS.php:339 RRZE/UnivIS/Core/UnivIS.php:419
+#: RRZE/UnivIS/Core/UnivIS.php:499 RRZE/UnivIS/Core/UnivIS.php:592
+msgid "Leider konnte zu UnivIS keine Verbindung aufgebaut werden."
+msgstr "Leider konnte zu UnivIS keine Verbindung aufgebaut werden."
+
+#: RRZE/UnivIS/Templates/lehrveranstaltungen-einzeln.php:175
+msgid "Literature"
+msgstr "Literature"
+
+#: RRZE/UnivIS/Core/Render.php:599 RRZE/UnivIS/Core/Render.php:784
+#: RRZE/UnivIS/Core/Render.php:1068
+msgid "Mon"
+msgstr "Mo"
+
+#: RRZE/UnivIS/Core/Render.php:610 RRZE/UnivIS/Core/Render.php:795
+#: RRZE/UnivIS/Core/Render.php:1078
+msgid "Monday"
+msgstr "Montag"
+
+#: RRZE/UnivIS/Core/UnivIS.php:119
+msgid "No connection could be established to UnivIS."
+msgstr "Leider konnte zu UnivIS keine Verbindung aufgebaut werden."
+
+#: RRZE/UnivIS/Core/UnivIS.php:265
+msgid "No connection could be stablished to UnivIS."
+msgstr "Leider konnte zu UnivIS keine Verbindung aufgebaut werden."
+
+#: RRZE/UnivIS/Core/UnivIS.php:149
+msgid "No employees can be found in this organizational unit."
+msgstr ""
+"In dieser Organisationseinheit konnten keine Mitarbeiter gefunden werden."
+
+#: RRZE/UnivIS/Core/Settings.php:104
+msgid "No entrys found."
+msgstr "Keine Einträge gefunden."
+
+#: RRZE/UnivIS/Core/UnivIS.php:524
+msgid "No lectures could be found."
+msgstr "Leider konnten keine Lehrveranstaltungen gefunden werden."
+
+#: RRZE/UnivIS/Core/UnivIS.php:441
+msgid "No publications could be found."
+msgstr "Leider konnten keine Publikationen gefunden werden."
+
+#: RRZE/UnivIS/Core/UnivIS.php:614
+msgid "No results."
+msgstr "Leider brachte Ihre Suche kein Ergebnis."
+
+#: RRZE/UnivIS/Core/UnivIS.php:130 RRZE/UnivIS/Core/UnivIS.php:275
+#: RRZE/UnivIS/Core/UnivIS.php:350 RRZE/UnivIS/Core/UnivIS.php:430
+#: RRZE/UnivIS/Core/UnivIS.php:510 RRZE/UnivIS/Core/UnivIS.php:603
+msgid "No results. Please check the search parameters."
+msgstr ""
+"Leider brachte Ihre Suche kein Ergebnis. Bitte überprüfen Sie die "
+"Suchparameter."
+
+#: RRZE/UnivIS/Templates/mitarbeiter-einzeln.php:90
+#: RRZE/UnivIS/Templates/mitarbeiter-einzeln.php:91
+msgid "Office hours"
+msgstr "Sprechzeiten"
+
+#: RRZE/UnivIS/Core/Settings.php:82
+msgid "Org Unit"
+msgstr "Organisationseinheit"
+
+#: RRZE/UnivIS/Templates/mitarbeiter-einzeln.php:41
+msgid "Organization"
+msgstr "Organisation"
+
+#: RRZE/UnivIS/Core/Settings.php:179
+msgid "Overview"
+msgstr "Übersicht"
+
+#: RRZE/UnivIS/Templates/mitarbeiter-einzeln.php:59
+msgid "Phone number"
+msgstr "Telefonnummer"
+
+#: RRZE/UnivIS/Main.php:260
+msgid "Please enter a first and last name or a UnivIS ID."
+msgstr "Bitte geben Sie einen Vor- und Nachnamen oder eine UnivIS-ID an."
+
+#: RRZE/UnivIS/Main.php:252
+msgid "Please enter a valid lecture ID."
+msgstr "Bitte geben Sie eine gültige Lehrveranstaltungs-ID an."
+
+#: RRZE/UnivIS/Main.php:244
+msgid "Please enter a valid UnivIS OrgNr."
+msgstr "Bitte geben Sie eine gültige UnivIS-Organisationsnummer an."
+
+#: RRZE/UnivIS/Templates/lehrveranstaltungen-einzeln.php:143
+msgid "Prerequisites / Organizational information"
+msgstr "Voraussetzungen / Organisatorisches"
+
+#: RRZE/UnivIS/Templates/lehrveranstaltungen-einzeln.php:156
+msgid "Recommended Literature"
+msgstr "Empfohlene Literatur"
+
+#: RRZE/UnivIS/Templates/lehrveranstaltungen-einzeln.php:68
+#: RRZE/UnivIS/Templates/lehrveranstaltungen-einzeln.php:105
+#: RRZE/UnivIS/Templates/lehrveranstaltungen-alle.php:49
+#: RRZE/UnivIS/Templates/lehrveranstaltungen-alle.php:83
+#: RRZE/UnivIS/Templates/mitarbeiter-einzeln.php:81
+#: RRZE/UnivIS/Templates/mitarbeiter-einzeln.php:106
+msgid "Room"
+msgstr "Raum"
+
+#. Name of the plugin
+msgid "RRZE UnivIS"
+msgstr "RRZE UnivIS"
+
+#: RRZE/UnivIS/Core/Settings.php:183
+msgid "RRZE Webteam on Github"
+msgstr "RRZE-Webteam in Github"
+
+#. Author of the plugin
+msgid "RRZE-Webteam"
+msgstr "RRZE-Webteam"
+
+#: RRZE/UnivIS/Core/Render.php:604 RRZE/UnivIS/Core/Render.php:789
+#: RRZE/UnivIS/Core/Render.php:1073
+msgid "Sat"
+msgstr "Sa"
+
+#: RRZE/UnivIS/Core/Render.php:615 RRZE/UnivIS/Core/Render.php:800
+#: RRZE/UnivIS/Core/Render.php:1083
+msgid "Saturday"
+msgstr "Samstag"
+
+#: RRZE/UnivIS/Core/Settings.php:86
+msgid "Search"
+msgstr "Suche"
+
+#: RRZE/UnivIS/Core/Settings.php:76
+msgid "Search for UnivIS-OrgNr."
+msgstr "Suche nach der UnivIS OrgNr."
+
+#: RRZE/UnivIS/Core/Render.php:575 RRZE/UnivIS/Core/Render.php:761
+msgid "Single appointment on"
+msgstr "Einzeltermin am"
+
+#: RRZE/UnivIS/Core/Render.php:598 RRZE/UnivIS/Core/Render.php:605
+#: RRZE/UnivIS/Core/Render.php:783 RRZE/UnivIS/Core/Render.php:790
+#: RRZE/UnivIS/Core/Render.php:1074
+msgid "Sun"
+msgstr "So"
+
+#: RRZE/UnivIS/Core/Render.php:609 RRZE/UnivIS/Core/Render.php:616
+#: RRZE/UnivIS/Core/Render.php:794 RRZE/UnivIS/Core/Render.php:801
+#: RRZE/UnivIS/Core/Render.php:1084
+msgid "Sunday"
+msgstr "Sonntag"
+
+#: RRZE/UnivIS/Controller.php:112
+msgid "Template Error: Could not find template file."
+msgstr "Template Fehler: Konnte Template Datei nicht finden."
+
+#: RRZE/UnivIS/Core/Settings.php:128
+msgid "Text for link to UnivIS"
+msgstr "Linktext zu UnivIS"
+
+#: RRZE/UnivIS/Core/UnivIS.php:143
+msgid "The organizational unit could not be found."
+msgstr "Leider konnte die Organisationseinheit nicht gefunden werden."
+
+#: RRZE/UnivIS/Core/UnivIS.php:360 RRZE/UnivIS/Core/UnivIS.php:369
+msgid "The person could not be found."
+msgstr "Leider konnte die Person nicht gefunden werden."
+
+#: RRZE/UnivIS/Core/Render.php:602 RRZE/UnivIS/Core/Render.php:787
+#: RRZE/UnivIS/Core/Render.php:1071
+msgid "Thu"
+msgstr "Do"
+
+#: RRZE/UnivIS/Core/Render.php:613 RRZE/UnivIS/Core/Render.php:798
+#: RRZE/UnivIS/Core/Render.php:1081
+msgid "Thursday"
+msgstr "Donnerstag"
+
+#: RRZE/UnivIS/Templates/lehrveranstaltungen-einzeln.php:39
+msgid "Time and place"
+msgstr "Zeit/Ort n.V."
+
+#: RRZE/UnivIS/Templates/lehrveranstaltungen-einzeln.php:114
+#: RRZE/UnivIS/Templates/lehrveranstaltungen-alle.php:93
+msgid "Time and place on appointment"
+msgstr "Zeit/Ort n.V."
+
+#: RRZE/UnivIS/Templates/lehrveranstaltungen-einzeln.php:60
+#: RRZE/UnivIS/Templates/lehrveranstaltungen-einzeln.php:97
+#: RRZE/UnivIS/Templates/lehrveranstaltungen-alle.php:41
+#: RRZE/UnivIS/Templates/lehrveranstaltungen-alle.php:75
+msgid "Time on appointment"
+msgstr "Zeit n.V."
+
+#: RRZE/UnivIS/Templates/lehrveranstaltungen-einzeln.php:163
+msgid "Title"
+msgstr "Titel"
+
+#: RRZE/UnivIS/Templates/mitarbeiter-einzeln.php:102
+msgid "to"
+msgstr "bis"
+
+#: RRZE/UnivIS/Core/Render.php:600 RRZE/UnivIS/Core/Render.php:785
+#: RRZE/UnivIS/Core/Render.php:1069
+msgid "Tue"
+msgstr "Di"
+
+#: RRZE/UnivIS/Core/Render.php:611 RRZE/UnivIS/Core/Render.php:796
+#: RRZE/UnivIS/Core/Render.php:1079
+msgid "Tuesday"
+msgstr "Dienstag"
+
+#: RRZE/UnivIS/Core/Settings.php:32
+msgid "UnivIS"
+msgstr "UnivIS"
+
+#: RRZE/UnivIS/Core/Settings.php:129
+msgid "UnivIS OrgNr."
+msgstr "UnivIS-OrgNr."
+
+#: RRZE/UnivIS/Core/Settings.php:55
+msgid "UnivIS Settings"
+msgstr "Einstellungen &rsaquo; UnivIS"
+
+#: RRZE/UnivIS/Templates/mitarbeiter-einzeln.php:68
+msgid "Website"
+msgstr "Website"
+
+#: RRZE/UnivIS/Core/Render.php:601 RRZE/UnivIS/Core/Render.php:786
+#: RRZE/UnivIS/Core/Render.php:1070
+msgid "Wed"
+msgstr "Mi"
+
+#: RRZE/UnivIS/Core/Render.php:612 RRZE/UnivIS/Core/Render.php:797
+#: RRZE/UnivIS/Core/Render.php:1080
+msgid "Wednesday"
+msgstr "Mittwoch"
+
+#: RRZE/UnivIS/Core/Render.php:1059
+msgid "weekly"
+msgstr "Jede Woche"
+
+#: RRZE/UnivIS/Templates/mitarbeiter-einzeln.php:51
+msgid "Working group"
+msgstr "Abteilung"
 
 #: rrze-univis.php:78
 #, php-format
@@ -30,364 +420,3 @@ msgid ""
 msgstr ""
 "Ihre Wordpress-Version %s ist veraltet. Bitte aktualisieren Sie mindestens "
 "auf die Wordpress-Version %s."
-
-#: RRZE/UnivIS/Controller.php:112
-msgid "Template Error: Could not find template file."
-msgstr "Template Fehler: Konnte Template Datei nicht finden."
-
-#: RRZE/UnivIS/Main.php:236
-msgid "Please enter a valid UnivIS OrgNr."
-msgstr "Bitte geben Sie eine gültige UnivIS-Organisationsnummer an."
-
-#: RRZE/UnivIS/Main.php:244
-msgid "Please enter a valid lecture ID."
-msgstr "Bitte geben Sie eine gültige Lehrveranstaltungs-ID an."
-
-#: RRZE/UnivIS/Main.php:252
-msgid "Please enter a first and last name or a UnivIS ID."
-msgstr "Bitte geben Sie einen Vor- und Nachnamen oder eine UnivIS-ID an."
-
-#: RRZE/UnivIS/Core/Options.php:22
-msgid "<b><i>Univ</i>IS</b> - Information System of the FAU"
-msgstr "<b><i>Univ</i>IS</b> - Informationssystem der FAU"
-
-#: RRZE/UnivIS/Core/Render.php:561 RRZE/UnivIS/Core/Render.php:985
-msgid "daily"
-msgstr "Jeden Tag"
-
-#: RRZE/UnivIS/Core/Render.php:561 RRZE/UnivIS/Core/Render.php:986
-msgid "weekly"
-msgstr "Jede Woche"
-
-#: RRZE/UnivIS/Core/Render.php:561 RRZE/UnivIS/Core/Render.php:746
-msgid "Every second week"
-msgstr "Alle zwei Wochen"
-
-#: RRZE/UnivIS/Core/Render.php:562 RRZE/UnivIS/Core/Render.php:747
-msgid "Every third week"
-msgstr "Alle drei Wochen"
-
-#: RRZE/UnivIS/Core/Render.php:563 RRZE/UnivIS/Core/Render.php:748
-msgid "Every fourth week"
-msgstr "Alle vier Wochen"
-
-#: RRZE/UnivIS/Core/Render.php:564 RRZE/UnivIS/Core/Render.php:749
-msgid "Single appointment on"
-msgstr "Einzeltermin am"
-
-#: RRZE/UnivIS/Core/Render.php:565 RRZE/UnivIS/Core/Render.php:750
-msgid "Block appointment"
-msgstr "Blockveranstaltung"
-
-#: RRZE/UnivIS/Core/Render.php:587 RRZE/UnivIS/Core/Render.php:594
-#: RRZE/UnivIS/Core/Render.php:771 RRZE/UnivIS/Core/Render.php:778
-msgid "Sun"
-msgstr "So"
-
-#: RRZE/UnivIS/Core/Render.php:588 RRZE/UnivIS/Core/Render.php:772
-msgid "Mon"
-msgstr "Mo"
-
-#: RRZE/UnivIS/Core/Render.php:589 RRZE/UnivIS/Core/Render.php:773
-msgid "Tue"
-msgstr "Di"
-
-#: RRZE/UnivIS/Core/Render.php:590 RRZE/UnivIS/Core/Render.php:774
-msgid "Wed"
-msgstr "Mi"
-
-#: RRZE/UnivIS/Core/Render.php:591 RRZE/UnivIS/Core/Render.php:775
-msgid "Thu"
-msgstr "Do"
-
-#: RRZE/UnivIS/Core/Render.php:592 RRZE/UnivIS/Core/Render.php:776
-msgid "Fri"
-msgstr "Fr"
-
-#: RRZE/UnivIS/Core/Render.php:593 RRZE/UnivIS/Core/Render.php:777
-msgid "Sat"
-msgstr "Sa"
-
-#: RRZE/UnivIS/Core/Render.php:598 RRZE/UnivIS/Core/Render.php:605
-#: RRZE/UnivIS/Core/Render.php:782 RRZE/UnivIS/Core/Render.php:789
-msgid "Sunday"
-msgstr "Sonntag"
-
-#: RRZE/UnivIS/Core/Render.php:599 RRZE/UnivIS/Core/Render.php:783
-msgid "Monday"
-msgstr "Montag"
-
-#: RRZE/UnivIS/Core/Render.php:600 RRZE/UnivIS/Core/Render.php:784
-msgid "Tuesday"
-msgstr "Dienstag"
-
-#: RRZE/UnivIS/Core/Render.php:601 RRZE/UnivIS/Core/Render.php:785
-msgid "Wednesday"
-msgstr "Mittwoch"
-
-#: RRZE/UnivIS/Core/Render.php:602 RRZE/UnivIS/Core/Render.php:786
-msgid "Thursday"
-msgstr "Donnerstag"
-
-#: RRZE/UnivIS/Core/Render.php:603 RRZE/UnivIS/Core/Render.php:787
-msgid "Friday"
-msgstr "Freitag"
-
-#: RRZE/UnivIS/Core/Render.php:604 RRZE/UnivIS/Core/Render.php:788
-msgid "Saturday"
-msgstr "Samstag"
-
-#: RRZE/UnivIS/Core/Settings.php:32
-msgid "UnivIS"
-msgstr "UnivIS"
-
-#: RRZE/UnivIS/Core/Settings.php:44
-msgid "UnivIS Settings"
-msgstr "Einstellungen &rsaquo; UnivIS"
-
-#: RRZE/UnivIS/Core/Settings.php:63
-msgid "Text for link to UnivIS"
-msgstr "Linktext zu UnivIS"
-
-#: RRZE/UnivIS/Core/Settings.php:64
-msgid "UnivIS OrgNr."
-msgstr "UnivIS-OrgNr."
-
-#: RRZE/UnivIS/Core/Settings.php:114
-msgid "Overview"
-msgstr "Übersicht"
-
-#: RRZE/UnivIS/Core/Settings.php:118
-msgid "For more information"
-msgstr "Für mehr Information"
-
-#: RRZE/UnivIS/Core/Settings.php:118
-msgid "RRZE Webteam on Github"
-msgstr "RRZE-Webteam in Github"
-
-#: RRZE/UnivIS/Core/UnivIS.php:89
-msgid "Error: Unknown command"
-msgstr "Fehler: Unbekannter Fehler"
-
-#: RRZE/UnivIS/Core/UnivIS.php:112
-msgid "No connection could be established to UnivIS."
-msgstr "Leider konnte zu UnivIS keine Verbindung aufgebaut werden."
-
-#: RRZE/UnivIS/Core/UnivIS.php:123 RRZE/UnivIS/Core/UnivIS.php:259
-#: RRZE/UnivIS/Core/UnivIS.php:334 RRZE/UnivIS/Core/UnivIS.php:414
-#: RRZE/UnivIS/Core/UnivIS.php:494 RRZE/UnivIS/Core/UnivIS.php:587
-msgid "No results. Please check the search parameters."
-msgstr ""
-"Leider brachte Ihre Suche kein Ergebnis. Bitte überprüfen Sie die "
-"Suchparameter."
-
-#: RRZE/UnivIS/Core/UnivIS.php:136
-msgid "The organizational unit could not be found."
-msgstr "Leider konnte die Organisationseinheit nicht gefunden werden."
-
-#: RRZE/UnivIS/Core/UnivIS.php:142
-msgid "No employees can be found in this organizational unit."
-msgstr ""
-"In dieser Organisationseinheit konnten keine Mitarbeiter gefunden werden."
-
-#: RRZE/UnivIS/Core/UnivIS.php:249
-msgid "No connection could be stablished to UnivIS."
-msgstr "Leider konnte zu UnivIS keine Verbindung aufgebaut werden."
-
-#: RRZE/UnivIS/Core/UnivIS.php:270
-msgid "Leider konnte die Organisationseinheit nicht gefunden werden."
-msgstr "Leider konnte die Organisationseinheit nicht gefunden werden."
-
-#: RRZE/UnivIS/Core/UnivIS.php:323 RRZE/UnivIS/Core/UnivIS.php:403
-#: RRZE/UnivIS/Core/UnivIS.php:483 RRZE/UnivIS/Core/UnivIS.php:576
-msgid "Leider konnte zu UnivIS keine Verbindung aufgebaut werden."
-msgstr "Leider konnte zu UnivIS keine Verbindung aufgebaut werden."
-
-#: RRZE/UnivIS/Core/UnivIS.php:344 RRZE/UnivIS/Core/UnivIS.php:353
-msgid "The person could not be found."
-msgstr "Leider konnte die Person nicht gefunden werden."
-
-#: RRZE/UnivIS/Core/UnivIS.php:425
-msgid "No publications could be found."
-msgstr "Leider konnten keine Publikationen gefunden werden."
-
-#: RRZE/UnivIS/Core/UnivIS.php:508
-msgid "No lectures could be found."
-msgstr "Leider konnten keine Lehrveranstaltungen gefunden werden."
-
-#. Fehler: Bitte geben Sie eine Lehrveranstaltung an
-#: RRZE/UnivIS/Core/UnivIS.php:556
-msgid "<div class=\\\"hinweis_wichtig\\\">Please specify a lecture.</div>"
-msgstr ""
-"<div class=\\\"hinweis_wichtig\\\">Bitte geben Sie eine Lehrveranstaltung an."
-"</div>"
-
-#: RRZE/UnivIS/Core/UnivIS.php:598
-msgid "No results."
-msgstr "Leider brachte Ihre Suche kein Ergebnis."
-
-#: RRZE/UnivIS/MCE/langs.php:17
-msgid "Add UnivIS"
-msgstr "UnivIS einfügen"
-
-#: RRZE/UnivIS/Templates/lehrveranstaltungen-alle.php:42
-#: RRZE/UnivIS/Templates/lehrveranstaltungen-alle.php:76
-#: RRZE/UnivIS/Templates/lehrveranstaltungen-einzeln.php:60
-#: RRZE/UnivIS/Templates/lehrveranstaltungen-einzeln.php:97
-msgid "Time on appointment"
-msgstr "Zeit n.V."
-
-#: RRZE/UnivIS/Templates/lehrveranstaltungen-alle.php:50
-#: RRZE/UnivIS/Templates/lehrveranstaltungen-alle.php:84
-#: RRZE/UnivIS/Templates/lehrveranstaltungen-einzeln.php:68
-#: RRZE/UnivIS/Templates/lehrveranstaltungen-einzeln.php:105
-#: RRZE/UnivIS/Templates/mitarbeiter-einzeln.php:81
-msgid "Room"
-msgstr "Raum"
-
-#: RRZE/UnivIS/Templates/lehrveranstaltungen-alle.php:53
-#: RRZE/UnivIS/Templates/lehrveranstaltungen-alle.php:87
-#: RRZE/UnivIS/Templates/lehrveranstaltungen-einzeln.php:71
-#: RRZE/UnivIS/Templates/lehrveranstaltungen-einzeln.php:108
-msgid "exclude"
-msgstr "außer"
-
-#: RRZE/UnivIS/Templates/lehrveranstaltungen-alle.php:94
-#: RRZE/UnivIS/Templates/lehrveranstaltungen-einzeln.php:114
-msgid "Time and place on appointment"
-msgstr "Zeit/Ort n.V."
-
-#: RRZE/UnivIS/Templates/lehrveranstaltungen-einzeln.php:7
-msgid "Lecturers"
-msgstr "Dozent/in"
-
-#: RRZE/UnivIS/Templates/lehrveranstaltungen-einzeln.php:33
-msgid "Details"
-msgstr "Details"
-
-#: RRZE/UnivIS/Templates/lehrveranstaltungen-einzeln.php:39
-msgid "Time and place"
-msgstr "Zeit/Ort n.V."
-
-#: RRZE/UnivIS/Templates/lehrveranstaltungen-einzeln.php:75
-msgid "Course"
-msgstr "Kurs"
-
-#: RRZE/UnivIS/Templates/lehrveranstaltungen-einzeln.php:120
-msgid "Fields of study"
-msgstr "Studienfächer / Studienrichtungen"
-
-#: RRZE/UnivIS/Templates/lehrveranstaltungen-einzeln.php:132
-msgid "from SEM"
-msgstr "ab Sem."
-
-#: RRZE/UnivIS/Templates/lehrveranstaltungen-einzeln.php:143
-msgid "Prerequisites / Organizational information"
-msgstr "Voraussetzungen / Organisatorisches"
-
-#: RRZE/UnivIS/Templates/lehrveranstaltungen-einzeln.php:150
-#: RRZE/UnivIS/Templates/lehrveranstaltungen-einzeln.php:171
-msgid "Content"
-msgstr "Inhalt"
-
-#: RRZE/UnivIS/Templates/lehrveranstaltungen-einzeln.php:156
-msgid "Recommended Literature"
-msgstr "Empfohlene Literatur"
-
-#: RRZE/UnivIS/Templates/lehrveranstaltungen-einzeln.php:161
-msgid "ECTS information"
-msgstr "ECTS-Informationen"
-
-#: RRZE/UnivIS/Templates/lehrveranstaltungen-einzeln.php:163
-msgid "Title"
-msgstr "Titel"
-
-#: RRZE/UnivIS/Templates/lehrveranstaltungen-einzeln.php:167
-msgid "Credits"
-msgstr "Credits"
-
-#: RRZE/UnivIS/Templates/lehrveranstaltungen-einzeln.php:175
-msgid "Literature"
-msgstr "Literature"
-
-#: RRZE/UnivIS/Templates/lehrveranstaltungen-einzeln.php:181
-msgid "Additional information"
-msgstr "Zusätzliche Informationen"
-
-#: RRZE/UnivIS/Templates/lehrveranstaltungen-einzeln.php:183
-msgid "Keywords"
-msgstr "Schlagwörter"
-
-#: RRZE/UnivIS/Templates/lehrveranstaltungen-einzeln.php:186
-msgid "Expected participants"
-msgstr "Erwartete Teilnehmerzahl"
-
-#: RRZE/UnivIS/Templates/mitarbeiter-einzeln.php:25
-msgid "Job title"
-msgstr "Tätigkeit"
-
-#: RRZE/UnivIS/Templates/mitarbeiter-einzeln.php:41
-msgid "Organization"
-msgstr "Organisation"
-
-#: RRZE/UnivIS/Templates/mitarbeiter-einzeln.php:51
-msgid "Working group"
-msgstr "Abteilung"
-
-#: RRZE/UnivIS/Templates/mitarbeiter-einzeln.php:59
-msgid "Phone number"
-msgstr "Telefonnummer"
-
-#: RRZE/UnivIS/Templates/mitarbeiter-einzeln.php:62
-msgid "Fax number"
-msgstr "Faxnummer"
-
-#: RRZE/UnivIS/Templates/mitarbeiter-einzeln.php:65
-msgid "Email"
-msgstr "E-Mail"
-
-#: RRZE/UnivIS/Templates/mitarbeiter-einzeln.php:68
-msgid "Website"
-msgstr "Website"
-
-#: RRZE/UnivIS/Templates/mitarbeiter-einzeln.php:71
-msgid "Address"
-msgstr "Adresse"
-
-#: RRZE/UnivIS/Templates/mitarbeiter-einzeln.php:91
-msgid "Office hours"
-msgstr "Sprechzeiten"
-
-#: RRZE/UnivIS/Templates/mitarbeiter-einzeln.php:102
-msgid "to"
-msgstr "bis"
-
-#: RRZE/UnivIS/Templates/single-univis.php:9
-#: RRZE/UnivIS/Templates/Themes/Blue-Edgy/content-univis.php:9
-#: RRZE/UnivIS/Templates/Themes/FAU/single-univis.php:14
-msgid "Back to overview"
-msgstr "Zurück zur Übersicht"
-
-#: RRZE/UnivIS/Templates/Themes/Blue-Edgy/content-univis.php:14
-msgid "(Edit)"
-msgstr "(Bearbeiten)"
-
-#. Name of the plugin
-msgid "RRZE UnivIS"
-msgstr "RRZE UnivIS"
-
-#. Description of the plugin
-msgid "Einbindung von Daten aus UnivIS für den Geschäftsverteilungsplan."
-msgstr "Einbindung von Daten aus UnivIS für den Geschäftsverteilungsplan."
-
-#. URI of the plugin
-msgid "https://github.com/RRZE-Webteam/rrze-univis"
-msgstr ""
-
-#. Author of the plugin
-msgid "RRZE-Webteam"
-msgstr "RRZE-Webteam"
-
-#. Author URI of the plugin
-msgid "https://blogs.fau.de/webworking/"
-msgstr ""

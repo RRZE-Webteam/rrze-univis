@@ -1076,7 +1076,7 @@ class Render
 
                 $days_long = array(
                     1 => __('Monday', 'rrze-univis'),
-                    2 => __('Tueday', 'rrze-univis'),
+                    2 => __('Tuesday', 'rrze-univis'),
                     3 => __('Wednesday', 'rrze-univis'),
                     4 => __('Thursday', 'rrze-univis'),
                     5 => __('Friday', 'rrze-univis'),
