@@ -1,8 +1,6 @@
 <?php if ($daten['years']) :
     foreach ($daten['years'] as $years) : ?>
-        <h2>
-        <?php echo $years['title']; ?>
-        </h2>  
+        <h2><?php echo $years['title']; ?></h2>  
         <ul>
             <?php foreach ($years['data'] as $data) : ?>
                 <li style="margin-bottom: 10px;">  
@@ -21,7 +19,7 @@
                         endforeach; ?>         
                     </span>
                     <br>
-                    <b><i><?php echo $data['pubtitle']; ?></i></b>
+                    <strong><em><?php echo $data['pubtitle']; ?></em></strong>
                     <br />
                 </li>
         <?php endforeach; ?> 

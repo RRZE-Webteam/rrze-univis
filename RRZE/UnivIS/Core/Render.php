@@ -128,9 +128,9 @@ class Render
                 $html_4 = '<ul><li>$1</li></ul>';
 
                 $suchstring_5 = '/\*(.+)\*/';    // *fett*
-                $html_5 = '<b>$1</b>';
+                $html_5 = '<strong>$1</strong>';
                 $suchstring_6 = '/\|(.+)\|/';  // |kursiv|
-                $html_6 = '<i>$1</i>';
+                $html_6 = '<em>$1</em>';
                 $suchstring_7 = '/\^(.+)\^/';    // pi^2^
                 $html_7 = '<sup>$1</sup>';
                 $suchstring_8 = '/_(.+)_/';    // H_2_O
@@ -852,9 +852,9 @@ class Render
                 $html_4 = '<ul><li>$1</li></ul>';
 
                 $suchstring_5 = '/\*(.+)\*/';    // *fett*
-                $html_5 = '<b>$1</b>';
+                $html_5 = '<strong>$1</strong>';
                 $suchstring_6 = '/\|(.+)\|/';  // |kursiv|
-                $html_6 = '<i>$1</i>';
+                $html_6 = '<em>$1</em>';
                 $suchstring_7 = '/\^(.+)\^/';    // pi^2^
                 $html_7 = '<sup>$1</sup>';
                 $suchstring_8 = '/_(.+)_/';    // H_2_O
@@ -896,9 +896,9 @@ class Render
                 $html_4 = '<ul><li>$1</li></ul>';
 
                 $suchstring_5 = '/\*(.+)\*/';    // *fett*
-                $html_5 = '<b>$1</b>';
+                $html_5 = '<strong>$1</strong>';
                 $suchstring_6 = '/\|(.+)\|/';  // |kursiv|
-                $html_6 = '<i>$1</i>';
+                $html_6 = '<em>$1</em>';
                 $suchstring_7 = '/\^(.+)\^/';    // pi^2^
                 $html_7 = '<sup>$1</sup>';
                 $suchstring_8 = '/_(.+)_/';    // H_2_O
