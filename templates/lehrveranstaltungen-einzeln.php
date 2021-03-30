@@ -1,13 +1,11 @@
-<?php if ($daten['veranstaltung']) :
-    $veranstaltung = $daten['veranstaltung'];
-    ?>
+<?php if ($veranstaltung) : ?>
     <h2><?php echo $veranstaltung['name']; ?></h2>
 
-    <?php if (array_key_exists('dozs', $veranstaltung) && array_key_exists('doz', $veranstaltung['dozs'][0])) : ?>
+    <?php if (!empty($veranstaltung['lecturers'])) : ?>
         <h3><?php _e('Lecturers', 'rrze-univis');?></h3>
         <ul>
         <?php
-        foreach ($veranstaltung['dozs'][0]['doz'] as $doz) :
+        foreach ($veranstaltung['lecturers'] as $doz) :
             $name = array();
             if (!empty($doz['title'])) :
                 $name['title'] = '<span itemprop="honorificPrefix">' . $doz['title'] . '</span>';
@@ -19,8 +17,8 @@
                 $name['lastname'] = '<span itemprop="familyName">' . $doz['lastname'] . '</span>';
             endif;
             $fullname = implode(' ', $name);
-            if (!empty($doz['id'])):
-                $url = '<a href="' . get_permalink() . 'univisid/' . $doz['id'] . '">' . $fullname . '</a>';
+            if (!empty($doz['person_id'])):
+                $url = '<a href="' . get_permalink() . 'univisid/' . $doz['person_id'] . '">' . $fullname . '</a>';
             else:
                 $url = $fullname;
             endif;?>
@@ -177,7 +175,7 @@
         <?php endif; ?>
     <?php endif; ?>
 
-    <?php if (!empty($veranstaltung['zusatzinfos'])) : ?>
+    <?php if ((!empty($veranstaltung['keywords'])) || (!empty($veranstaltung['turnout'])) || (!empty($veranstaltung['url_description']))) : ?>
         <h4><?php _e('Additional information', 'rrze-univis');?></h4>
         <?php if (!empty($veranstaltung['keywords'])) : ?>
             <p><?php _e('Keywords', 'rrze-univis');?>: <?php echo $veranstaltung['keywords']; ?></p>
