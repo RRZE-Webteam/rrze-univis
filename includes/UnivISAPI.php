@@ -329,10 +329,6 @@ class UnivISAPI {
         return strcasecmp($a["lastname"], $b["lastname"]);
     }
 
-    private function sortIt($data, $sort){
-        return $data;
-    }
-
     private function dict($data){
         $fields = [
             'title' => [
