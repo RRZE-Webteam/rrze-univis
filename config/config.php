@@ -166,6 +166,18 @@ function getShortcodeSettings(){
                     'val' =>  __( 'Mitarbeiter Einzeln', 'rrze-univis' )
                 ],
                 [
+                    'id' => 'mitarbeiter-alle',
+                    'val' =>  __( 'Mitarbeiter Alle', 'rrze-univis' )
+                ],
+                [
+                    'id' => 'mitarbeiter-telefonbuch',
+                    'val' =>  __( 'Mitarbeiter Telefonbuch', 'rrze-univis' )
+                ],
+                [
+                    'id' => 'mitarbeiter-orga',
+                    'val' =>  __( 'Mitarbeiter Organisation', 'rrze-univis' )
+                ],
+                [
                     'id' => 'lehrveranstaltungen-einzeln',
                     'val' =>  __( 'Lehrveranstaltungen Einzeln', 'rrze-univis' )
                 ],

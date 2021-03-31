@@ -66,7 +66,8 @@ class UnivISAPI {
                 $url .= 'departments&number=' . $this->orgID;
                 break;
             case 'personByOrga':
-                $url .= 'persons&department=' . $this->orgID;
+            case 'personByOrgaPhonebook':
+                        $url .= 'persons&department=' . $this->orgID;
                 break;
             case 'publicationByAuthorID':
                 $url .= 'publications&authorid=';
@@ -224,6 +225,7 @@ class UnivISAPI {
         ];
         $map['personAll'] = $map['personByID'];
         $map['personByOrga'] = $map['personByID'];
+        $map['personByOrgaPhonebook'] = $map['personByID'];
         $map['personByName'] = $map['personByID'];
         $map['publicationByDepartment'] = $map['publicationByAuthorID'];
         $map['publicationByAuthor'] = $map['publicationByAuthorID'];
@@ -319,7 +321,7 @@ class UnivISAPI {
         $ret = $this->dict($ret);
 
         // sort
-        if ($sort && in_array($dataType, ['personByID', 'personAll', 'personByOrga', 'personByName'])){
+        if ($sort && in_array($dataType, ['personByID', 'personAll', 'personByOrga', 'personByName', 'personByOrgaPhonebook'])){
             usort($ret, [$this, 'sortByLastname']);            
         }
 
@@ -328,6 +330,14 @@ class UnivISAPI {
             $ret = $this->groupBy($ret, 'department');
         }
 
+        // group by lastname's first letter
+        if (in_array($dataType, ['personByOrgaPhonebook'])){
+            foreach($ret as $nr => $entry){
+                $ret[$nr]['letter'] = strtoupper(substr($entry['lastname'], 0, 1));
+            }
+            $ret = $this->groupBy($ret, 'letter');
+        }
+        
         // group by lecture_type_long
         if (in_array($dataType, ['lectureByID', 'lectureByName', 'lectureByDepartment'])){
             $ret = $this->groupBy($ret, 'lecture_type_long');
