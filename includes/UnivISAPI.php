@@ -236,7 +236,6 @@ class UnivISAPI {
 
         if (isset($data[$map[$dataType]['node']])){
             foreach($data[$map[$dataType]['node']] as $nr => $entry){
-
                 foreach($map[$dataType]['fields'] as $k => $v){
                     if (is_array($v)){
                         if (is_int($v[1])){
@@ -261,62 +260,70 @@ class UnivISAPI {
             }
         }
 
-        // add person details
-        if (in_array($dataType, ['jobByID', 'jobAll'])){
-            $persons = $this->mapIt('personByID', $data, $sort);
-            foreach($ret as $e_nr => $entry){
-                foreach($persons as $person){
-                    if (isset($entry['person_key']) && $entry['person_key'] == $person['key']){
-                        unset($person['person_id']);
-                        $ret[$e_nr] = array_merge_recursive($entry, $person);
-                        unset($ret[$e_nr]['person_key']);
-                        unset($ret[$e_nr]['key']);
-                    }
-                }
-            }
-        }elseif (in_array($dataType, ['publicationByAuthorID', 'publicationByAuthor', 'publicationByDepartment'])){
-            $persons = $this->mapIt('personByID', $data, $sort);
-            foreach($ret as $e_nr => $entry){
-                foreach($entry['author'] as $details){
-                    foreach($persons as $p_nr => $person){
-                        if ($person['key'] == $details['pkey']){
-                            unset($person['key']);
-                            $ret[$e_nr]['authors'][] = $person;
-                            unset($person[$p_nr]);
+        switch($dataType){
+            case 'jobByID':
+            case 'jobAll':
+                // add person details
+                $persons = $this->mapIt('personByID', $data, $sort);
+                foreach($ret as $e_nr => $entry){
+                    foreach($persons as $person){
+                        if (isset($entry['person_key']) && $entry['person_key'] == $person['key']){
+                            unset($person['person_id']);
+                            $ret[$e_nr] = array_merge_recursive($entry, $person);
+                            unset($ret[$e_nr]['person_key']);
+                            unset($ret[$e_nr]['key']);
                         }
                     }
                 }
-                unset($ret[$e_nr]['author']);
-            }
-        }elseif (in_array($dataType, ['lectureByID', 'lectureByName', 'lectureByDepartment'])){
-            $persons = $this->mapIt('personByID', $data, $sort);
-            foreach($ret as $e_nr => $entry){
-                foreach($entry['doz'] as $doz_key){
-                    foreach($persons as $p_nr => $person){
-                        if ($person['key'] == 'Person.' . $doz_key){
-                            unset($person['key']);
-                            $ret[$e_nr]['lecturers'][] = $person;
-                            unset($person[$p_nr]);
+                break;
+            case 'publicationByAuthorID':
+            case 'publicationByAuthor':
+            case 'publicationByDepartment':
+                // add person details
+                $persons = $this->mapIt('personByID', $data, $sort);
+                foreach($ret as $e_nr => $entry){
+                    foreach($entry['author'] as $details){
+                        foreach($persons as $p_nr => $person){
+                            if ($person['key'] == $details['pkey']){
+                                unset($person['key']);
+                                $ret[$e_nr]['authors'][] = $person;
+                                unset($person[$p_nr]);
+                            }
+                        }
+                    }
+                    unset($ret[$e_nr]['author']);
+                }
+                break;                        
+            case 'lectureByID':
+            case 'lectureByName':
+            case 'lectureByDepartment':
+                // add person details
+                $persons = $this->mapIt('personByID', $data, $sort);
+                foreach($ret as $e_nr => $entry){
+                    foreach($entry['doz'] as $doz_key){
+                        foreach($persons as $p_nr => $person){
+                            if ($person['key'] == 'Person.' . $doz_key){
+                                unset($person['key']);
+                                $ret[$e_nr]['lecturers'][] = $person;
+                                unset($person[$p_nr]);
+                            }
+                        }
+                    }
+                    unset($ret[$e_nr]['doz']);
+                }
+                // add room details
+                $rooms = $this->mapIt('roomByID', $data, $sort);
+                foreach($ret as $nr => $entry){
+                    foreach($rooms as $room){
+                        if (isset($entry['room']) && $entry['room'] == $room['key']){
+                            $ret[$nr] = array_merge_recursive($entry, $room);
+                            unset($ret[$nr]['room']);
+                            unset($ret[$nr]['key']);
                         }
                     }
                 }
-                unset($ret[$e_nr]['doz']);
+                break;
             }
-        }
-
-        // add room details
-        if (in_array($dataType, ['lectureByID', 'lectureByName', 'lectureByDepartment'])){
-            $rooms = $this->mapIt('roomByID', $data, $sort);
-            foreach($ret as $nr => $entry){
-                foreach($rooms as $room){
-                    if (isset($entry['room']) && $entry['room'] == $room['key']){
-                        $ret[$nr] = array_merge_recursive($entry, $room);
-                        unset($ret[$nr]['room']);
-                        unset($ret[$nr]['key']);
-                    }
-                }
-            }
-        }
 
         $ret = $this->dict($ret);
 
