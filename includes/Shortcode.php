@@ -93,6 +93,10 @@ class Shortcode
                     $person['lectures'] = $univis->getData('lectureByName', $atts['name']);
                 }
                 break;
+            case 'mitarbeiter-orga': 
+                $data = $univis->getData('personByOrga');
+                $show_location = 0;
+                break;
             case 'lehrveranstaltungen-einzeln': 
                 if (isset($atts['lv_id'])){
                     $data = $univis->getData('lectureByID', $atts['lv_id']);

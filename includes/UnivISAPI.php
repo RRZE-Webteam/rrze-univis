@@ -323,6 +323,11 @@ class UnivISAPI {
             usort($ret, [$this, 'sortByLastname']);            
         }
 
+        // group by department
+        if (in_array($dataType, ['personByOrga'])){
+            $ret = $this->groupBy($ret, 'department');
+        }
+
         // group by lecture_type_long
         if (in_array($dataType, ['lectureByID', 'lectureByName', 'lectureByDepartment'])){
             $ret = $this->groupBy($ret, 'lecture_type_long');

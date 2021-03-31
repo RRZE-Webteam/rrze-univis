@@ -169,6 +169,10 @@ function getShortcodeSettings(){
                     'id' => 'lehrveranstaltungen-einzeln',
                     'val' =>  __( 'Lehrveranstaltungen Einzeln', 'rrze-univis' )
                 ],
+                [
+                    'id' => 'lehrveranstaltungen-alle',
+                    'val' =>  __( 'Lehrveranstaltungen Alle', 'rrze-univis' )
+                ],
 			],
 			'default' => 'wert1', // vorausgewählter Wert: Achtung: string, kein array!
 			'field_type' => 'select',
