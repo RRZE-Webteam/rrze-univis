@@ -1,3 +1,4 @@
+<!-- 2DO: Termine -->
 <?php if ($veranstaltung) : ?>
     <h2><?php echo $veranstaltung['name']; ?></h2>
 

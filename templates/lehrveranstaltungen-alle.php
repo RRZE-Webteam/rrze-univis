@@ -1,25 +1,30 @@
-<?php if ($daten['veranstaltungen']) :
-    foreach ($daten['veranstaltungen'] as $veranstaltung) : 
-        if($this->optionen['lv_type'] == 1) : ?>
+<!-- 2DO: Termine -->
+<?php if ($data) :
+    foreach ($data as $typ => $veranstaltungen) : 
+        ?>
 	<h2>
-            <?php echo $veranstaltung['title']; ?>
+            <?php echo $typ; ?>
         </h2>
-        <?php endif; ?>
 	<ul>
-        <?php if (!empty($veranstaltung['data'])) : 
-            foreach ($veranstaltung['data'] as $data) : 
-            if( empty( $this->optionen['leclanguage'] ) || ( isset( $data['leclanguage'] ) && strpbrk( $data['leclanguage'], $this->optionen['leclanguage'] ) != FALSE  ) )  :
-                if ( !isset ($data['parent_course_id']) ): 
-                $url = get_permalink() . 'lv_id/' . $data['id'];
-                if (!empty($daten['optionen']['sem'])) :
-                    $url .= '&sem=' . $daten['optionen']['sem']; 
-                endif; ?>
+        <?php 
+            foreach ($veranstaltungen as $veranstaltung) : 
+            // if( empty( $this->optionen['leclanguage'] ) || ( isset( $data['leclanguage'] ) && strpbrk( $data['leclanguage'], $this->optionen['leclanguage'] ) != FALSE  ) )  :
+                // if ( !isset ($data['parent_course_id']) ): 
+                // $url = get_permalink() . 'lv_id/' . $data['id'];
+                // if (!empty($daten['optionen']['sem'])) :
+                //     $url .= '&sem=' . $daten['optionen']['sem']; 
+                // endif; 
+                $url = get_permalink() . 'lv_id/' . $veranstaltung['lecture_id'];
+                ?>
                 <li>
-                    <h3><a href="<?php echo $url; ?>"><?php echo $data['name']; ?></a></h3>
-                    <?php if( $this->optionen['kompakt'] == 0 ):
-                    if (array_key_exists('comment', $data)) : ?>
-                        <p><?php echo $data['comment']; ?></p>
-                    <?php endif; ?>
+                    <h3><a href="<?php echo $url; ?>"><?php echo $veranstaltung['name']; ?></a></h3>
+                    <?php 
+                    // if( $this->optionen['kompakt'] == 0 ):
+                    if (!empty($veranstaltung['comment'])) : ?>
+                        <p><?php echo $veranstaltung['comment']; ?></p>
+                    <?php
+                    endif; 
+                    ?>
                     <ul>
                         <?php
                         if (array_key_exists('course_terms', $data)) :
@@ -95,11 +100,12 @@
                         </ul>
 
                 </li>
-                <?php endif;
-                endif;
-                endif;
+                <?php 
+                // endif;
+                // endif;
+                // endif;
             endforeach;
-        endif; ?>
+        ?>
 
                 
 	</ul>

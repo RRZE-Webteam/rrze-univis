@@ -101,6 +101,9 @@ class Shortcode
                     }
                 }
                 break;
+            case 'lehrveranstaltungen-alle': 
+                $data = $univis->getData('lectureByDepartment');
+                break;
             case 'publikationen': 
                 $data = $univis->getData('publicationByDepartment', NULL, 1);
             break;
