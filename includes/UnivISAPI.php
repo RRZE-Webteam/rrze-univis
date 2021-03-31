@@ -137,7 +137,8 @@ class UnivISAPI {
                     'journal' => 'journal',
                     'pubtitle' => 'pubtitle',
                     'year' => 'year',
-                    'person_key' => ['author', 'pkey'],
+                    // 'person_key' => ['author', 'pkey'],
+                    'author' => 'author',
                     'publication_type' => 'type',
                     'hstype' => 'hstype',
                 ],
@@ -259,7 +260,7 @@ class UnivISAPI {
         }
 
         // add person details
-        if (in_array($dataType, ['jobByID', 'jobAll', 'publicationByAuthorID', 'publicationByAuthor', 'publicationByDepartment'])){
+        if (in_array($dataType, ['jobByID', 'jobAll'])){
             $persons = $this->mapIt('personByID', $data, $sort);
             foreach($ret as $e_nr => $entry){
                 foreach($persons as $person){
@@ -270,6 +271,20 @@ class UnivISAPI {
                         unset($ret[$e_nr]['key']);
                     }
                 }
+            }
+        }elseif (in_array($dataType, ['publicationByAuthorID', 'publicationByAuthor', 'publicationByDepartment'])){
+            $persons = $this->mapIt('personByID', $data, $sort);
+            foreach($ret as $e_nr => $entry){
+                foreach($entry['author'] as $details){
+                    foreach($persons as $p_nr => $person){
+                        if ($person['key'] == $details['pkey']){
+                            unset($person['key']);
+                            $ret[$e_nr]['authors'][] = $person;
+                            unset($person[$p_nr]);
+                        }
+                    }
+                }
+                unset($ret[$e_nr]['author']);
             }
         }elseif (in_array($dataType, ['lectureByID', 'lectureByName', 'lectureByDepartment'])){
             $persons = $this->mapIt('personByID', $data, $sort);
@@ -313,6 +328,12 @@ class UnivISAPI {
             $ret = $this->groupBy($ret, 'lecture_type_long');
         }
 
+        // sort desc and group by year
+        if (in_array($dataType, ['publicationByAuthorID', 'publicationByAuthor', 'publicationByDepartment'])){
+            usort($ret, [$this, 'sortByYear']);            
+            $ret = $this->groupBy($ret, 'year');
+        }
+
         return $ret;
     }
 
@@ -327,6 +348,10 @@ class UnivISAPI {
 
     private function sortByLastname($a, $b){
         return strcasecmp($a["lastname"], $b["lastname"]);
+    }
+
+    private function sortByYear($a, $b){
+        return strcasecmp($b["year"], $a["year"]);
     }
 
     private function dict($data){

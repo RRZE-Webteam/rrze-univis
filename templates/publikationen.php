@@ -1,27 +1,23 @@
-<?php if ($daten['years']) :
-    foreach ($daten['years'] as $years) : ?>
+<?php if ($data) :
+    foreach ($data as $year => $entries) : ?>
         <h2>
-        <?php echo $years['title']; ?>
+        <?php echo $year ?>
         </h2>  
         <ul>
-            <?php foreach ($years['data'] as $data) : ?>
+            <?php foreach ($entries as $entry) : ?>
                 <li style="margin-bottom: 10px;">  
                     <span>
-                        <?php foreach ($data['authors'] as $authors) :
-                            foreach ($authors['author'] as $author) :
-                                if (array_key_exists('full_profile', $author['pkey'])) :
-                                    $url = get_permalink() . 'univisid/' . $author['pkey']['full_profile'][0]['id'];
-                                    ?>
-                                    <a href="<?php echo $url; ?>"><?php echo $author['pkey']['full_profile'][0]['lastname'] . ', ' . $author['pkey']['full_profile'][0]['firstname']; ?></a>;
-                                <?php
-                                else :
-                                    echo $author['pkey'][0]['name'] . ';';
-                                endif; ?>
-                            <?php endforeach;
+                        <?php foreach ($entry['authors'] as $author) :
+                            if (isset($author['person_id'])) : 
+                                $url = get_permalink() . 'univisid/' . $author['person_id'];
+                                echo '<a href="' . $url . '">' . $author['lastname'] . (isset($author['firstname'])?', ' . $author['firstname']:'') . '</a>; ';
+                            else :    
+                                echo $author['lastname'] . (isset($author['firstname'])?', ' . $author['firstname']:'') . '; ';
+                            endif;
                         endforeach; ?>         
                     </span>
                     <br>
-                    <b><i><?php echo $data['pubtitle']; ?></i></b>
+                    <b><i><?php echo $entry['pubtitle']; ?></i></b>
                     <br />
                 </li>
         <?php endforeach; ?> 

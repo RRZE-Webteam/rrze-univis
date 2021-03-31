@@ -101,8 +101,10 @@ class Shortcode
                     }
                 }
                 break;
+            case 'publikationen': 
+                $data = $univis->getData('publicationByDepartment', NULL, 1);
+            break;
         }
-
 
         if ($data){
             // $data = '<pre>' . json_encode($data, JSON_PRETTY_PRINT) . '</pre>';
