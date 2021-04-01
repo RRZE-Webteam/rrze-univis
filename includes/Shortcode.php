@@ -102,10 +102,10 @@ class Shortcode
                 $show_jumpmark = 1;
                 $data = $univis->getData('personByOrgaPhonebook');
                 break;
-            // case 'mitarbeiter-alle': 
-            //     $data = $univis->getData('personAll');
-            //     $show_location = 0;
-            //     break;
+            case 'mitarbeiter-alle': 
+                $data = $univis->getData('personAll');
+                $show_location = 0;
+                break;
             case 'lehrveranstaltungen-einzeln': 
                 if (isset($atts['lv_id'])){
                     $data = $univis->getData('lectureByID', $atts['lv_id']);

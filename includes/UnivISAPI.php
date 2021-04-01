@@ -43,6 +43,10 @@ class UnivISAPI {
 
     public function getData($dataType, $ID = NULL, $sort = NULL){
         $url = $this->getUrl($dataType) . $ID;
+
+        // echo $url;
+        // exit;
+
         $data = file_get_contents($url);
         if ( !$data ){
             UnivIS::log('getData', 'error', "no data returned using $url");
@@ -67,7 +71,7 @@ class UnivISAPI {
                 break;
             case 'personByOrga':
             case 'personByOrgaPhonebook':
-                        $url .= 'persons&department=' . $this->orgID;
+                $url .= 'persons&department=' . $this->orgID;
                 break;
             case 'publicationByAuthorID':
                 $url .= 'publications&authorid=';
@@ -222,7 +226,16 @@ class UnivISAPI {
                     'internet' => 'inet',
                 ],
             ],
+            'orga' => [
+                'node' => 'Org',
+                'fields' => [
+                    'orga_positions' => 'job',
+                ],
+            ],
         ];
+
+
+
         $map['personAll'] = $map['personByID'];
         $map['personByOrga'] = $map['personByID'];
         $map['personByOrgaPhonebook'] = $map['personByID'];
@@ -323,6 +336,29 @@ class UnivISAPI {
                     }
                 }
                 break;
+            case 'personAll':
+                // add orga details
+                $orga = $this->mapIt('orga', $data, $sort);
+                $orga_positions = $orga[0]['orga_positions'];
+                foreach($ret as $e_nr => $entry){
+                    foreach($orga_positions as $orga_position => $vals){
+                        if (isset($vals['per'])){
+                            foreach($vals['per'] as $person_key){
+                                if (isset($entry['key']) && $entry['key'] == 'Person.' . $person_key){
+                                    if (isset($ret[$e_nr]['orga_position'])){
+                                        $cnt = count($ret);
+                                        $ret[$cnt] = $ret[$e_nr];
+                                    }else{
+                                        $cnt = $e_nr;
+                                    }
+                                    $ret[$cnt]['orga_position'] = $vals['description'];
+                                    $ret[$cnt]['orga_position_order'] = $vals['joborder'];
+                                }
+                            }
+                        }
+                    }
+                }
+                break;
             }
 
         $ret = $this->dict($ret);
@@ -356,9 +392,14 @@ class UnivISAPI {
             $ret = $this->groupBy($ret, 'year');
         }
 
+        // sort orga_position_order and group by orga_position
+        if (in_array($dataType, ['personAll'])){
+            usort($ret, [$this, 'sortByPositionorder']);            
+            $ret = $this->groupBy($ret, 'orga_position');
+        }
+
         return $ret;
     }
-
 
     private function groupBy($arr, $key) {
         $ret = [];
@@ -374,6 +415,10 @@ class UnivISAPI {
 
     private function sortByYear($a, $b){
         return strcasecmp($b["year"], $a["year"]);
+    }
+
+    private function sortByPositionorder($a, $b){
+        return strnatcmp($a["orga_position_order"], $b["orga_position_order"]);
     }
 
     private function dict($data){
