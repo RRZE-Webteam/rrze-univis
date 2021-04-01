@@ -1,4 +1,4 @@
-<!-- 2DO: Termine: label "Einzeltermin" / Rooms -->
+<!-- 2DO: Termine: label "Einzeltermin" / Rooms by term -->
 <?php if ($veranstaltung) : ?>
     <h2><?php echo $veranstaltung['name']; ?></h2>
 
