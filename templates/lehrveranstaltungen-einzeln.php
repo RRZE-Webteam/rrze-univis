@@ -1,4 +1,4 @@
-<!-- 2DO: Termine -->
+<!-- 2DO: Termine: label "Einzeltermin" / Rooms -->
 <?php if ($veranstaltung) : ?>
     <h2><?php echo $veranstaltung['name']; ?></h2>
 
@@ -40,75 +40,45 @@
             <p><?php echo $veranstaltung['comment']; ?></p>
             <?php endif; ?>
     <ul>
-        <?php if (array_key_exists('course_terms', $veranstaltung)) :
-            foreach ($veranstaltung['course_terms'] as $course_terms):
-                $t = array();
-                $time = array();
-                if (!empty($course_terms['date'])) :
-                    $t['date'] = $course_terms['date'];
-                endif;
-                if (!empty($course_terms['starttime'])) :
-                    $time['starttime'] = $course_terms['starttime'];
-                endif;
-                if (!empty($course_terms['endtime'])) :
-                    $time['endtime'] = $course_terms['endtime'];
-                endif;
-                if (!empty($time)) :
-                    $t['time'] = $time['starttime'] . '-' . $time['endtime'];
-                else:
-                    $t['time'] = __('Time on appointment', 'rrze-univis');
-                endif;
-                if (!empty($course_terms['room_short'])) :
-                    if (!empty($t['time'])) :
-                        $t['time'] .= ',';
-                    elseif (!empty($t['date'])) :
-                        $t['date'] .= ',';
+        <?php if (isset($veranstaltung['courses'])) :
+            foreach ($veranstaltung['courses'] as $course):
+                foreach ($course['term'] as $term):
+                    $t = array();
+                    $time = array();
+                    if (!empty($term['startdate'])) :
+                        $t['date'] = $term['startdate'];
                     endif;
-                    $t['room_short'] = __('Room', 'rrze-univis') . ' ' . $course_terms['room_short'];
-                endif;
-                if (!empty($course_terms['exclude'])) :
-                    $t['exclude'] = '(' . __('exclude', 'rrze-univis') . ' ' . $course_terms['exclude'] . ')';
-                endif;
-                // Kursname
-                if (!empty($course_terms['coursename'])) :
-                    $t['coursename'] = '(' . __('Course', 'rrze-univis') . ' ' . $course_terms['coursename'] . ')';
-                endif;
-                $term_formatted = implode(' ', $t);
-                ?>
-                <li><?php echo $term_formatted; ?></li>
-            <?php endforeach;
-        elseif (array_key_exists('terms', $veranstaltung) && array_key_exists('term', $veranstaltung['terms'][0])) :
-            foreach ($veranstaltung['terms'][0]['term'] as $term) :
-                $t = array();
-                $time = array();
-                if (!empty($term['date'])) :
-                    $t['date'] = $term['date'];
-                endif;
-                if (!empty($term['starttime'])) :
-                    $time['starttime'] = $term['starttime'];
-                endif;
-                if (!empty($term['endtime'])) :
-                    $time['endtime'] = $term['endtime'];
-                endif;
-                if (!empty($time)) :
-                    $t['time'] = $time['starttime'] . '-' . $time['endtime'];
-                else:
-                    $t['time'] = __('Time on appointment', 'rrze-univis');
-                endif;
-                if (!empty($term['room_short'])) :
-                    if (!empty($t['time'])) :
-                        $t['time'] .= ',';
-                    elseif (!empty($t['date'])) :
-                        $t['date'] .= ',';
+                    if (!empty($term['starttime'])) :
+                        $time['starttime'] = $term['starttime'];
                     endif;
-                    $t['room_short'] = __('Room', 'rrze-univis') . ' ' . $term['room_short'];
-                endif;
-                if (!empty($term['exclude'])) :
-                    $t['exclude'] = '(' . __('exclude', 'rrze-univis') . ' ' . $term['exclude'] . ')';
-                endif;
-                $term_formatted = implode(' ', $t);?>
-                <li><?php echo $term_formatted; ?></li>
+                    if (!empty($term['endtime'])) :
+                        $time['endtime'] = $term['endtime'];
+                    endif;
+                    if (!empty($time)) :
+                        $t['time'] = $time['starttime'] . '-' . $time['endtime'];
+                    else:
+                        $t['time'] = __('Time on appointment', 'rrze-univis');
+                    endif;
+                    // if (!empty($course_terms['room_short'])) :
+                    //     if (!empty($t['time'])) :
+                    //         $t['time'] .= ',';
+                    //     elseif (!empty($t['date'])) :
+                    //         $t['date'] .= ',';
+                    //     endif;
+                    //     $t['room_short'] = __('Room', 'rrze-univis') . ' ' . $course_terms['room_short'];
+                    // endif;
+                    if (!empty($term['exclude'])) :
+                        $t['exclude'] = '(' . __('exclude', 'rrze-univis') . ' ' . $term['exclude'] . ')';
+                    endif;
+                    // Kursname
+                    if (!empty($course['coursename'])) :
+                        $t['coursename'] = '(' . __('Course', 'rrze-univis') . ' ' . $course['coursename'] . ')';
+                    endif;
+                    $term_formatted = implode(' ', $t);
+                    ?>
+                    <li><?php echo $term_formatted; ?></li>
             <?php endforeach;
+            endforeach;
         else : ?>
             <li><?php _e('Time and place on appointment', 'rrze-univis'); ?></li>
         <?php endif; ?>

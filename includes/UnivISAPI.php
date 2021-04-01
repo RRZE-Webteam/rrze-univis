@@ -43,10 +43,6 @@ class UnivISAPI {
 
     public function getData($dataType, $ID = NULL, $sort = NULL){
         $url = $this->getUrl($dataType) . $ID;
-
-        // echo $url;
-        // exit;
-
         $data = file_get_contents($url);
         if ( !$data ){
             UnivIS::log('getData', 'error', "no data returned using $url");
@@ -155,13 +151,8 @@ class UnivISAPI {
                     'name' => 'name',
                     'comment' => 'comment',
                     'leclanguage' => 'leclanguage',
-                    'repeat' => ['term', 'repeat'],
-                    'startdate' => ['term', 'startdate'],
-                    'exclude' => ['term', 'exclude'],
-                    'starttime' => ['term', 'starttime'],
-                    'enddate' => ['term', 'enddate'],
-                    'endtime' => ['term', 'endtime'],
                     'room' => ['term', 'room'],
+                    'course_keys' => 'course', 
                     'lecture_type' => 'type',
                     'keywords' => 'keywords',
                     'maxturnout' => 'maxturnout',
@@ -174,6 +165,14 @@ class UnivISAPI {
                     'gast' => 'gast',
                     'evaluation' => 'evaluation',
                     'doz' => 'doz',
+                ],
+            ],
+            'courses' => [
+                'node' => 'Lecture',
+                'fields' => [
+                    'term' => 'term',
+                    'coursename' => 'coursename',
+                    'course_key' => 'key',
                 ],
             ],
             'jobByID' => [
@@ -310,6 +309,22 @@ class UnivISAPI {
             case 'lectureByID':
             case 'lectureByName':
             case 'lectureByDepartment':
+                // add course details
+                $courses = $this->mapIt('courses', $data, $sort);
+                foreach($ret as $e_nr => $entry){
+                    if (isset($entry['course_keys'])){
+                        foreach($entry['course_keys'] as $course_key){
+                            foreach($courses as $course){
+                                if (($course['course_key'] == 'Lecture.' . $course_key) && (isset($course['term']))){
+                                    unset($course['course_key']);
+                                    $ret[$e_nr]['courses'][] = $course;
+                                }
+                            }
+                        }
+                        unset($ret[$e_nr]['course_keys']);
+                    }
+                }
+
                 // add person details
                 $persons = $this->mapIt('personByID', $data, $sort);
                 foreach($ret as $e_nr => $entry){
