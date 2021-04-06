@@ -17,7 +17,7 @@
                 endif;
             endif;
             if (!empty($person['atitle'])) :
-                $name['atitle'] = '<span class="honorific-suffix" itemprop="honorificSuffix"><acronym title="' . $person['atitle_long'] . '">' . $person['atitle'] . '</span>';
+                $name['atitle'] = '<span class="honorific-suffix" itemprop="honorificSuffix"><acronym title="' . (!empty($person['atitle_long']) ? $person['atitle_long'] : $person['atitle']) . '">' . $person['atitle'] . '</span>';
             endif;
             $fullname = implode(' ', $name); ?>
             <h2><span itemprop="name"><?php echo $fullname;?></span></h2>
@@ -32,8 +32,7 @@
                     <li class="person-info-abteilung"><span class="screen-reader-text"><?php _e('Working group', 'rrze-univis');?>: </span><?php echo $person['department']; ?></li>
                 <?php endif;?>
 
-                <?php if (!empty($person['phone'])) :
-                        // $phone_number = self::correct_phone_number($location['tel']); ?>
+                <?php if (!empty($person['phone'])) : ?>
                         <li class="person-info-phone"><span class="screen-reader-text"><?php _e('Phone number', 'rrze-univis');?>: </span><span itemprop="telephone"><?php echo $person['phone'];?></span></li>
                     <?php endif;?>
                     <?php if (!empty($person['fax'])) : ?>
@@ -61,14 +60,14 @@
                         endif;?>
                     </li>
 
-           		 <?php if (array_key_exists('officehours', $person) && array_key_exists('officehour', $person['officehours'][0])) :
-					echo '<br><li class="person-info-office"><span itemprop="hoursAvailable" itemtype="http://schema.org/ContactPoint"><span class="screen-reader-text">' ;
+           		 <?php if (!empty($person['officehours'])) :
+					echo '<li class="person-info-office"><span itemprop="hoursAvailable" itemtype="http://schema.org/ContactPoint"><span class="screen-reader-text">' ;
 					echo _e('Office hours', 'rrze-univis') . ': </span> <span><b>'; 
 					echo _e('Office hours', 'rrze-univis') .':</b><br>' ;
-					 foreach ($person['officehours'][0]['officehour'] as $officehour){
+					 foreach ($person['officehours'] as $officehour){
 					 
-						if (!empty($officehour['repeatstring'])) { 
-							 echo $officehour['repeatstring'] . " ";
+						if (!empty($officehour['repeat'])) { 
+							 echo $officehour['repeat'] . " ";
 						}
 						if (!empty($officehour['starttime'])) { 
 							 echo $officehour['starttime'];
@@ -82,7 +81,7 @@
 							  echo  _e('Room', 'rrze-univis') . " " . $officehour['office'];
 							}
 						if (!empty($officehour['comment'])) { 
-							if (!empty($officehour['repeatstring']) || !empty($officehour['starttime']) ) {
+							if (!empty($officehour['repeat']) || !empty($officehour['starttime']) ) {
 								echo ", " ;
 							}
 							  echo $officehour['comment'];

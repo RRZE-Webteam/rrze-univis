@@ -43,7 +43,6 @@
                     endif;
                     if ($show_location) :
                         if (!empty($person['phone'])) : 
-                            // $phone_number = self::correct_phone_number($location['tel']); 
                             $pers['phone_number'] = '<span class="person-info-phone" itemprop="telephone">Tel. ' . $person['phone'] . '</span>';
                         endif; 
                         if (!empty($person['email'])) : 

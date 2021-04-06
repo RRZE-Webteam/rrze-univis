@@ -122,6 +122,7 @@ class UnivISAPI {
                     'firstname' => 'firstname',
                     'lastname' => 'lastname',
                     'work' => 'work',
+                    'officehours' => 'officehour',
                     'department' => 'orgname',
                     'organization' => ['orgunit', 1], 
                     'email' => ['location', 'email'],
@@ -140,7 +141,6 @@ class UnivISAPI {
                     'journal' => 'journal',
                     'pubtitle' => 'pubtitle',
                     'year' => 'year',
-                    // 'person_key' => ['author', 'pkey'],
                     'author' => 'author',
                     'publication_type' => 'type',
                     'hstype' => 'hstype',
@@ -533,7 +533,7 @@ class UnivISAPI {
                 "h.c." => __('ehrenhalber', 'rrze-univis'),
                 "med." => __('Medizin', 'rrze-univis'),
                 "jur." => __('Recht', 'rrze-univis'),
-                "rer." => ""
+                "rer." => "",
             ],
             'lecture_type' => [
                 "awa" => __('Anleitung zu wiss. Arbeiten (AWA)', 'rrze-univis'),
@@ -578,6 +578,8 @@ class UnivISAPI {
                 "w2" => __('Jede zweite Woche', 'rrze-univis'),
                 "w3" => __('Jede dritte Woche', 'rrze-univis'),
                 "w4" => __('Jede vierte Woche', 'rrze-univis'),
+                "w5" => "",
+                "m1" => "",
                 "s1" => __('Einzeltermin am', 'rrze-univis'),
                 "bd" => __('Blockveranstaltung', 'rrze-univis'),
                 '0' => __(' So', 'rrze-univis'),
@@ -645,6 +647,12 @@ class UnivISAPI {
                                 if (isset($data[$i]['courses'][$c_nr]['term'][$m_nr]['repeat'])){
                                     $data[$i]['courses'][$c_nr]['term'][$m_nr]['repeat'] = str_replace(array_keys($values), array_values($values), $data[$i]['courses'][$c_nr]['term'][$m_nr]['repeat']);
                                 }
+                            }
+                        }
+                    }elseif(isset($data[$i]['officehours'])){
+                        foreach($data[$i]['officehours'] as $c_nr => $entry){
+                            if (isset($data[$i]['officehours'][$c_nr]['repeat'])){
+                                $data[$i]['officehours'][$c_nr]['repeat'] = trim(str_replace(array_keys($values), array_values($values), $data[$i]['officehours'][$c_nr]['repeat']));
                             }
                         }
                     }
