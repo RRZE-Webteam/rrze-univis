@@ -325,6 +325,8 @@ class UnivISAPI {
             case 'lectureByDepartment':
                 // add course details
                 $courses = $this->mapIt('courses', $data, $sort);
+                $persons = $this->mapIt('personByID', $data, $sort);
+                $rooms = $this->mapIt('roomByID', $data, $sort);
                 foreach($ret as $e_nr => $entry){
                     if (isset($entry['course_keys'])){
                         foreach($entry['course_keys'] as $course_key){
@@ -340,11 +342,7 @@ class UnivISAPI {
                         unset($ret[$e_nr]['courses']);
                         $ret[$e_nr]['courses'][] = ['term' => $entry['courses']];
                     }
-                }
-
-                // add person details
-                $persons = $this->mapIt('personByID', $data, $sort);
-                foreach($ret as $e_nr => $entry){
+                    // add person details
                     foreach($entry['doz'] as $doz_key){
                         foreach($persons as $p_nr => $person){
                             if ($person['key'] == 'Person.' . $doz_key){
@@ -696,4 +694,3 @@ class UnivISAPI {
     }
 
 }
-
