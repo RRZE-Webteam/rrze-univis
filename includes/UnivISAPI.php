@@ -43,6 +43,8 @@ class UnivISAPI {
 
     public function getData($dataType, $ID = NULL, $sort = NULL){
         $url = $this->getUrl($dataType) . $ID;
+        // echo $url;
+        // exit;
         $data = file_get_contents($url);
         if ( !$data ){
             UnivIS::log('getData', 'error', "no data returned using $url");
@@ -151,7 +153,8 @@ class UnivISAPI {
                     'name' => 'name',
                     'comment' => 'comment',
                     'leclanguage' => 'leclanguage',
-                    'room' => ['term', 'room'],
+                    'main' => '__type',
+                    'courses' => 'term',
                     'course_keys' => 'course', 
                     'lecture_type' => 'type',
                     'keywords' => 'keywords',
@@ -322,6 +325,9 @@ class UnivISAPI {
                             }
                         }
                         unset($ret[$e_nr]['course_keys']);
+                    }elseif(isset($entry['courses'])){
+                        unset($ret[$e_nr]['courses']);
+                        $ret[$e_nr]['courses'][] = ['term' => $entry['courses']];
                     }
                 }
 
@@ -342,11 +348,15 @@ class UnivISAPI {
                 // add room details
                 $rooms = $this->mapIt('roomByID', $data, $sort);
                 foreach($ret as $nr => $entry){
-                    foreach($rooms as $room){
-                        if (isset($entry['room']) && $entry['room'] == $room['key']){
-                            $ret[$nr] = array_merge_recursive($entry, $room);
-                            unset($ret[$nr]['room']);
-                            unset($ret[$nr]['key']);
+                    if (isset($entry['courses'])){
+                        foreach($entry['courses'] as $c_nr => $course){
+                            foreach($course['term'] as $t_nr => $term){
+                                foreach($rooms as $room){
+                                    if (isset($term['room']) && $term['room'] == $room['key']){
+                                        $ret[$nr]['courses'][$c_nr]['term'][$t_nr]['room'] = $room['short'];
+                                    }
+                                }
+                            }
                         }
                     }
                 }
@@ -375,6 +385,8 @@ class UnivISAPI {
                 }
                 break;
             }
+
+
 
         $ret = $this->dict($ret);
 
@@ -504,15 +516,15 @@ class UnivISAPI {
                 "w3" => __('Jede dritte Woche', 'rrze-univis'),
                 "w4" => __('Jede vierte Woche', 'rrze-univis'),
                 "s1" => __('Einzeltermin am', 'rrze-univis'),
-                "bd" => __('Blocktermin', 'rrze-univis'),
-                '0' => __(' Sonntag', 'rrze-univis'),
-                '1' => __(' Montag', 'rrze-univis'),
-                '2' => __(' Dienstag', 'rrze-univis'),
-                '3' => __(' Mittwoch', 'rrze-univis'),
-                '4' => __(' Donnerstag', 'rrze-univis'),
-                '5' => __(' Freitag', 'rrze-univis'),
-                '6' => __(' Samstag', 'rrze-univis'),
-                '7' => __(' Sonntag', 'rrze-univis'),
+                "bd" => __('Blockveranstaltung', 'rrze-univis'),
+                '0' => __(' So', 'rrze-univis'),
+                '1' => __(' Mo', 'rrze-univis'),
+                '2' => __(' Di', 'rrze-univis'),
+                '3' => __(' Mi', 'rrze-univis'),
+                '4' => __(' Do', 'rrze-univis'),
+                '5' => __(' Fr', 'rrze-univis'),
+                '6' => __(' Sa', 'rrze-univis'),
+                '7' => __(' So', 'rrze-univis'),
             ],                                        
             'publication_type' => [
                 "artmono" => __('Artikel im Sammelband', 'rrze-univis'),
@@ -563,7 +575,9 @@ class UnivISAPI {
                     if (isset($data[$i]['courses'])){
                         foreach($data[$i]['courses'] as $c_nr => $course){
                             foreach($course['term'] as $m_nr => $meeting){
-                                $data[$i]['courses'][$c_nr]['term'][$m_nr]['repeat'] = $values[$data[$i]['courses'][$c_nr]['term'][$m_nr]['repeat']];
+                                if (isset($data[$i]['courses'][$c_nr]['term'][$m_nr]['repeat'])){
+                                    $data[$i]['courses'][$c_nr]['term'][$m_nr]['repeat'] = str_replace(array_keys($values), array_values($values), $data[$i]['courses'][$c_nr]['term'][$m_nr]['repeat']);
+                                }
                             }
                         }
                     }

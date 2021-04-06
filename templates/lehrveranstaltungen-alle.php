@@ -1,4 +1,3 @@
-<!-- 2DO: Termine: label "Einzeltermin" / Rooms by term -->
 <?php if ($data) :
     foreach ($data as $typ => $veranstaltungen) : 
         ?>
@@ -8,18 +7,12 @@
 	<ul>
         <?php 
             foreach ($veranstaltungen as $veranstaltung) : 
-            // if( empty( $this->optionen['leclanguage'] ) || ( isset( $data['leclanguage'] ) && strpbrk( $data['leclanguage'], $this->optionen['leclanguage'] ) != FALSE  ) )  :
-                // if ( !isset ($data['parent_course_id']) ): 
-                // $url = get_permalink() . 'lv_id/' . $data['id'];
-                // if (!empty($daten['optionen']['sem'])) :
-                //     $url .= '&sem=' . $daten['optionen']['sem']; 
-                // endif; 
+                if(!empty($veranstaltung['main'])):
                 $url = get_permalink() . 'lv_id/' . $veranstaltung['lecture_id'];
                 ?>
                 <li>
                     <h3><a href="<?php echo $url; ?>"><?php echo $veranstaltung['name']; ?></a></h3>
                     <?php 
-                    // if( $this->optionen['kompakt'] == 0 ):
                     if (!empty($veranstaltung['comment'])) : ?>
                         <p><?php echo $veranstaltung['comment']; ?></p>
                     <?php
@@ -36,7 +29,11 @@
                                         $t['repeat'] = $term['repeat'];
                                     endif;
                                     if (!empty($term['startdate'])) :
-                                        $t['date'] = date("d.m.Y", strtotime($term['startdate']));
+                                        if (!empty($term['enddate']) && $term['startdate'] != $term['enddate']):
+                                            $t['date'] = date("d.m.Y", strtotime($term['startdate'])) . '-' . date("d.m.Y", strtotime($term['enddate']));
+                                        else:
+                                            $t['date'] = date("d.m.Y", strtotime($term['startdate']));
+                                        endif;
                                     endif;
                                     if (!empty($term['starttime'])) :
                                         $time['starttime'] = $term['starttime'];
@@ -45,17 +42,12 @@
                                         $time['endtime'] = $term['endtime'];
                                     endif;
                                     if (!empty($time)) :
-                                        $t['time'] = $time['starttime'] . '-' . $time['endtime'];
+                                        $t['time'] = $time['starttime'] . '-' . $time['endtime'] . ',';
                                     else:
-                                        $t['time'] = __('Time on appointment', 'rrze-univis');
+                                        $t['time'] = __('Time on appointment', 'rrze-univis') . ',';
                                     endif;
-                                    if (!empty($term['room_short'])) :
-                                        if (!empty($t['time'])) :
-                                            $t['time'] .= ',';
-                                        elseif (!empty($t['date'])) :
-                                            $t['date'] .= ',';
-                                        endif;
-                                        $t['room_short'] = __('Room', 'rrze-univis') . ' ' . $term['room_short'];
+                                    if (!empty($term['room'])) :
+                                        $t['room'] = __('Room', 'rrze-univis') . ' ' . $term['room'];
                                     endif;
                                     if (!empty($term['exclude'])) :
                                         $t['exclude'] = '(' . __('exclude', 'rrze-univis') . ' ' . $term['exclude'] . ')';
@@ -76,13 +68,9 @@
 
                 </li>
                 <?php 
-                // endif;
-                // endif;
-                // endif;
+                endif;
             endforeach;
         ?>
-
-                
 	</ul>
     <?php 
     endforeach;

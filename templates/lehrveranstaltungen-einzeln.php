@@ -1,4 +1,4 @@
-<!-- 2DO: Rooms by term -->
+<!-- 2DO: check ects_infos, literature, organization -->
 <?php if ($veranstaltung) : ?>
     <h2><?php echo $veranstaltung['name']; ?></h2>
 
@@ -49,7 +49,11 @@
                         $t['repeat'] = $term['repeat'];
                     endif;
                     if (!empty($term['startdate'])) :
-                        $t['date'] = date("d.m.Y", strtotime($term['startdate']));
+                        if (!empty($term['enddate']) && $term['startdate'] != $term['enddate']):
+                            $t['date'] = date("d.m.Y", strtotime($term['startdate'])) . '-' . date("d.m.Y", strtotime($term['enddate']));
+                        else:
+                            $t['date'] = date("d.m.Y", strtotime($term['startdate']));
+                        endif;
                     endif;
                     if (!empty($term['starttime'])) :
                         $time['starttime'] = $term['starttime'];
@@ -58,18 +62,13 @@
                         $time['endtime'] = $term['endtime'];
                     endif;
                     if (!empty($time)) :
-                        $t['time'] = $time['starttime'] . '-' . $time['endtime'];
+                        $t['time'] = $time['starttime'] . '-' . $time['endtime'] . ',';
                     else:
-                        $t['time'] = __('Time on appointment', 'rrze-univis');
+                        $t['time'] = __('Time on appointment', 'rrze-univis') . ',';
                     endif;
-                    // if (!empty($course_terms['room_short'])) :
-                    //     if (!empty($t['time'])) :
-                    //         $t['time'] .= ',';
-                    //     elseif (!empty($t['date'])) :
-                    //         $t['date'] .= ',';
-                    //     endif;
-                    //     $t['room_short'] = __('Room', 'rrze-univis') . ' ' . $course_terms['room_short'];
-                    // endif;
+                    if (!empty($term['room'])) :
+                        $t['room'] = __('Room', 'rrze-univis') . ' ' . $term['room'];
+                    endif;
                     if (!empty($term['exclude'])) :
                         $t['exclude'] = '(' . __('exclude', 'rrze-univis') . ' ' . $term['exclude'] . ')';
                     endif;
