@@ -17,8 +17,8 @@ class Shortcode
      * @var string
      */
     protected $pluginFile;
-
     protected $UnivISOrgNr;
+    protected $UnivISLink;
 
     /**
      * Settings-Objekt
@@ -37,7 +37,7 @@ class Shortcode
         add_action( 'admin_enqueue_scripts', [$this, 'enqueueGutenberg'] );
         $options = get_option( 'rrze-univis' );
         $this->UnivISOrgNr = (!empty($options['basic_UnivISOrgNr']) ? $options['basic_UnivISOrgNr'] : 0);
-        // add_action( 'init',  [$this, 'initGutenberg'] );
+        $this->UnivISLink = sprintf('<a href="%1$s">%2$s</a>', (!empty($options['basic_univis_url']) ? $options['basic_univis_url'] : __('URL zu UnivIS fehlt', 'rrze-univis')), (!empty($options['basic_univis_linktxt']) ? $options['basic_univis_linktxt'] : __('Text zum UnivIS Link fehlt', 'rrze-univis')));
     }
 
     /**
@@ -66,6 +66,11 @@ class Shortcode
      * @return string Gib den Inhalt zurück
      */
     public function shortcodeOutput( $atts ) {
+
+        if (empty($atts)){
+            return $this->UnivISLink;
+        }
+
         // merge given attributes with default ones
         $atts_default = array();
         foreach( $this->settings as $k => $v ){

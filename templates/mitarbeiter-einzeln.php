@@ -1,5 +1,3 @@
-<!-- 2DO: Öffnungszeiten -->
-
 <?php if ($person) : ?>
 	<div class="person" class="person liste-person" itemscope itemtype="http://schema.org/Person">
         <div class="page">

@@ -69,8 +69,17 @@ function getFields()
     return [
         'basic' => [
             [
-                'name'              => 'univis_default_link',
+                'name'              => 'univis_url',
                 'label'             => __('Link zu <b><i>Univ</i>IS</b>', 'rrze-univis'),
+                'desc'              => __('', 'rrze-univis'),
+                'placeholder'       => __('', 'rrze-univis'),
+                'type'              => 'text',
+                'default'           => 'https://univis.uni-erlangen.de',
+                'sanitize_callback' => 'sanitize_url'
+            ],
+            [
+                'name'              => 'univis_linktxt',
+                'label'             => __('Text zum <b><i>Univ</i>IS</b> Link', 'rrze-univis'),
                 'desc'              => __('', 'rrze-univis'),
                 'placeholder'       => __('', 'rrze-univis'),
                 'type'              => 'text',
