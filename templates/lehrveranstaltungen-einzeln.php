@@ -1,4 +1,4 @@
-<!-- 2DO: Termine: label "Einzeltermin" / Rooms by term -->
+<!-- 2DO: Rooms by term -->
 <?php if ($veranstaltung) : ?>
     <h2><?php echo $veranstaltung['name']; ?></h2>
 
@@ -45,8 +45,11 @@
                 foreach ($course['term'] as $term):
                     $t = array();
                     $time = array();
+                    if (!empty($term['repeat'])) :
+                        $t['repeat'] = $term['repeat'];
+                    endif;
                     if (!empty($term['startdate'])) :
-                        $t['date'] = $term['startdate'];
+                        $t['date'] = date("d.m.Y", strtotime($term['startdate']));
                     endif;
                     if (!empty($term['starttime'])) :
                         $time['starttime'] = $term['starttime'];
@@ -146,13 +149,13 @@
         <?php endif; ?>
     <?php endif; ?>
 
-    <?php if ((!empty($veranstaltung['keywords'])) || (!empty($veranstaltung['turnout'])) || (!empty($veranstaltung['url_description']))) : ?>
+    <?php if ((!empty($veranstaltung['keywords'])) || (!empty($veranstaltung['maxturnout'])) || (!empty($veranstaltung['url_description']))) : ?>
         <h4><?php _e('Additional information', 'rrze-univis');?></h4>
         <?php if (!empty($veranstaltung['keywords'])) : ?>
             <p><?php _e('Keywords', 'rrze-univis');?>: <?php echo $veranstaltung['keywords']; ?></p>
         <?php endif; ?>
-        <?php if (!empty($veranstaltung['turnout'])) : ?>
-            <p><?php _e('Expected participants', 'rrze-univis');?>: <?php echo $veranstaltung['turnout']; ?></p>
+        <?php if (!empty($veranstaltung['maxturnout'])) : ?>
+            <p><?php _e('Expected participants', 'rrze-univis');?>: <?php echo $veranstaltung['maxturnout']; ?></p>
         <?php endif; ?>
         <?php if (!empty($veranstaltung['url_description'])) : ?>
             <p>www: <a href="<?php echo $veranstaltung['url_description']; ?>"><?php echo $veranstaltung['url_description']; ?></a></p>

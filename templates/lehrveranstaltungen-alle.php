@@ -32,8 +32,11 @@
                                 foreach ($course['term'] as $term):
                                     $t = array();
                                     $time = array();
+                                    if (!empty($term['repeat'])) :
+                                        $t['repeat'] = $term['repeat'];
+                                    endif;
                                     if (!empty($term['startdate'])) :
-                                        $t['date'] = $term['startdate'];
+                                        $t['date'] = date("d.m.Y", strtotime($term['startdate']));
                                     endif;
                                     if (!empty($term['starttime'])) :
                                         $time['starttime'] = $term['starttime'];
@@ -56,6 +59,9 @@
                                     endif;
                                     if (!empty($term['exclude'])) :
                                         $t['exclude'] = '(' . __('exclude', 'rrze-univis') . ' ' . $term['exclude'] . ')';
+                                    endif;
+                                    if (!empty($course['coursename'])) :
+                                        $t['coursename'] = '(' . __('Course', 'rrze-univis') . ' ' . $course['coursename'] . ')';
                                     endif;
                                     $term_formatted = implode(' ', $t);
                                     ?>    

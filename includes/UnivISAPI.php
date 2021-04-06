@@ -559,8 +559,16 @@ class UnivISAPI {
 
         foreach($data as $row){
             foreach($fields as $field => $values){
-                if (isset($data[$i][$field])){
-                    if (in_array($field, ['title', 'repeat'])){
+                if ($field == 'repeat'){
+                    if (isset($data[$i]['courses'])){
+                        foreach($data[$i]['courses'] as $c_nr => $course){
+                            foreach($course['term'] as $m_nr => $meeting){
+                                $data[$i]['courses'][$c_nr]['term'][$m_nr]['repeat'] = $values[$data[$i]['courses'][$c_nr]['term'][$m_nr]['repeat']];
+                            }
+                        }
+                    }
+                }elseif (isset($data[$i][$field])){
+                    if (in_array($field, ['title'])){ // 'repeat'
                         // multi replace
                         $data[$i][$field . '_long'] = str_replace(array_keys($values), array_values($values), $data[$i][$field]);
                     }else{
