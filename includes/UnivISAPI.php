@@ -276,17 +276,6 @@ class UnivISAPI {
         }
 
         switch($dataType){
-            case 'personByID':
-            case 'personByOrgaPhonebook':
-                foreach($ret as $e_nr => $entry){
-                    if (isset($entry['phone'])){
-                        $ret[$e_nr]['phone'] = self::correctPhone($ret[$e_nr]['phone']);
-                    }
-                    if (isset($entry['fax'])){
-                        $ret[$e_nr]['fax'] = self::correctPhone($ret[$e_nr]['fax']);
-                    }
-                }
-                break;
             case 'jobByID':
             case 'jobAll':
                 // add person details
@@ -375,12 +364,6 @@ class UnivISAPI {
                 $orga = $this->mapIt('orga', $data, $sort);
                 $orga_positions = $orga[0]['orga_positions'];
                 foreach($ret as $e_nr => $entry){
-                    if (isset($entry['phone'])){
-                        $ret[$e_nr]['phone'] = self::correctPhone($ret[$e_nr]['phone']);
-                    }
-                    if (isset($entry['fax'])){
-                        $ret[$e_nr]['fax'] = self::correctPhone($ret[$e_nr]['fax']);
-                    }
                     foreach($orga_positions as $orga_position => $vals){
                         if (isset($vals['per'])){
                             foreach($vals['per'] as $person_key){
@@ -400,8 +383,6 @@ class UnivISAPI {
                 }
                 break;
             }
-
-
 
         $ret = $this->dict($ret);
 
@@ -647,13 +628,17 @@ class UnivISAPI {
             'beginners' => __('für Anfänger geeignet', 'rrze-univis'),
             'gast' => __('für Gasthörer zugelassen', 'rrze-univis'),
             'evaluation' => __('Evaluation', 'rrze-univis'),
+            'phone' => '',
+            'fax' => '',
         ];
 
         $i = 0;
 
         foreach($data as $row){
             foreach($fields as $field => $values){
-                if ($field == 'repeat'){
+                if (isset($data[$i][$field]) && ($field == 'phone' || $field == 'fax')){
+                    $data[$i][$field] = self::correctPhone($data[$i][$field]);
+                }elseif ($field == 'repeat'){
                     if (isset($data[$i]['courses'])){
                         foreach($data[$i]['courses'] as $c_nr => $course){
                             foreach($course['term'] as $m_nr => $meeting){
@@ -664,7 +649,7 @@ class UnivISAPI {
                         }
                     }
                 }elseif (isset($data[$i][$field])){
-                    if (in_array($field, ['title'])){ // 'repeat'
+                    if (in_array($field, ['title'])){
                         // multi replace
                         $data[$i][$field . '_long'] = str_replace(array_keys($values), array_values($values), $data[$i][$field]);
                     }else{
