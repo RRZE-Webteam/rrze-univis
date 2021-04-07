@@ -71,6 +71,65 @@ class Shortcode
             return $this->UnivISLink;
         }
 
+        // normalize given attributes according to rrze-univis version 2
+        if (empty($atts['task'])){
+            $atts['task'] = 'mitarbeiter-orga';
+        }
+
+        if (!empty($atts['number'])){
+            $this->UnivISOrgNr = (int)$atts['number'];
+        }elseif (!empty($atts['task']) && ($atts['task'] == 'lehrveranstaltungen-alle' || $atts['task'] == 'mitarbeiter-einzeln') && !empty($atts['id'])){
+            $this->UnivISOrgNr = (int)$atts['id'];
+        }
+
+        if (!empty($atts['lv_id'])){
+            $atts['id'] = (int)$atts['lv_id'];
+            if ($atts['task'] == 'lehrveranstaltungen-alle'){
+                $atts['task'] = 'lehrveranstaltungen-einzeln';
+            }
+        }
+
+        if (!empty($atts['dozentid'])){
+            $atts['id'] = (int)$atts['dozentid'];
+        }
+
+        if (!empty($atts['univisid'])){
+            $atts['id'] = (int)$atts['univisid'];
+        }
+
+        if (!empty($atts['dozentname'])){
+            $atts['name'] = $atts['dozentname'];
+        }
+
+        $hide_jobs = NULL;
+        if (!empty($atts['ignoriere_jobs'])){
+            $hide_jobs = explode('|', $atts['ignoriere_jobs']);
+        }
+        $show_jobs = NULL;
+        if (!empty($atts['zeige_jobs'])){
+            $show_jobs = explode('|', $atts['zeige_jobs']);
+        }
+
+
+        $show = [];
+        if (!empty($atts['show'])){
+            $show = explode(',', trim(strtolower($atts['show'])));
+            if (($key = array_search('zeige_sprungmarken', $show)) !== false) {
+                unset($show[$key]);
+                $show[] = 'sprungmarken';
+            }
+        }
+
+        $hide = [];
+        if (!empty($atts['hide'])){
+            $hide = explode(',', trim(strtolower($atts['hide'])));
+            if (in_array(['sprungmarken', 'zeige_sprungmarken'], $hide)){
+                if (($key = array_search('sprungmarken', $show)) !== false) {
+                    unset($show[$key]);
+                }
+            }
+        }
+
         // merge given attributes with default ones
         $atts_default = array();
         foreach( $this->settings as $k => $v ){
@@ -79,18 +138,78 @@ class Shortcode
             }
         }
         $atts = shortcode_atts( $atts_default, $atts );
-        $data = '';
+
+        if (empty($this->UnivISOrgNr)){
+            return 'no UnivISOrgNr given';
+        }
 
         $univis = new UnivISAPI('https://univis.uni-erlangen.de', $this->UnivISOrgNr);
 
+
+        // atts vom alten Plugin:
+        //
+        // DONE show => sprungmarken, telefon, mail
+        // DONE hide => sprungmarken
+        // ignoriere_jobs z.B. ignoriere_jobs="Webmaster, Postmaster"
+        // zeige_jobs z.B. zeige_jobs="Webmaster, Postmaster"
+        // sem
+        // sprache
+        // orgunit ?
+        // lv-typ = type => [... type="vorl"] => nur Vorlesungen
+        //
+        //
+        //
+        // DONE [univis] => gibt nur Link zu UnivIS aus
+        // DONE [univis number="420100"] => 'mitarbeiter-orga' überschreibt default univisID
+        // DONE [univis task="mitarbeiter-alle"]
+        // DONE [univis task="mitarbeiter-alle" number="420100"]
+        // DONE [univis task="mitarbeiter-orga"]
+        // DONE [univis task="mitarbeiter-orga" number="420100"]
+        // DONE [univis task="mitarbeiter-telefonbuch" show="zeige_sprungmarken"] lowercase
+        //
+        // [univis task="mitarbeiter-telefonbuch" ignoriere_jobs="Webmaster, Postmaster"]
+        // Automatisch werden Personen mit folgenden Zuordnungen ausgeblendet: 
+        // Sicherheitsbeauftragter, 
+        // IT-Sicherheits-Beauftragter, 
+        // Webmaster, 
+        // Postmaster, 
+        // IT-Betreuer
+        // UnivIS-Beauftragte
+        //
+        // DONE [univis task="mitarbeiter-einzeln" name="Mustermann,Max"]
+        // DONE [univis task="mitarbeiter-einzeln" univisid="40858741"]
+        //
+        // DONE [univis task="lehrveranstaltungen-alle"]
+        // DONE [univis task="lehrveranstaltungen-alle" number="420100"]
+        // Bei der Anzeige von Lehrveranstaltungen wird automatisch das Semester angezeigt, das gerade bei UnivIS als aktuelles Semester eingestellt ist.
+        //
+        // [univis task="lehrveranstaltungen-alle" type="vorl"] => nur Vorlesungen
+        // DONE [univis task="lehrveranstaltungen-alle" name="Mustermann,Max"]
+        // [univis task="lehrveranstaltungen-alle" univisid="20333881"] univisid ist die vom Professor
+        // [univis task="lehrveranstaltungen-alle" sem="2016w"]
+        // [univis task="lehrveranstaltungen-alle" lv_import="0"] => importierte Lehrveranstaltungen ausblenden
+        // [univis task="lehrveranstaltungen-alle" sprache="E"]
+        //
+        // DONE [univis task="lehrveranstaltungen-einzeln" lv_id="41105306"]
+        // DONE [univis task="lehrveranstaltungen-alle" lv_id="41105306"]
+        // [univis task="lehrveranstaltungen-alle" lv_id="41105306" sem="2016w"]
+        //
+        // DONE [univis task="publikationen"]
+        // DONE [univis task="publikationen" number="420100"] 
+        //
+
+
+
+        $data = '';
+
         switch($atts['task']){
             case 'mitarbeiter-einzeln': 
-                if (isset($atts['univisid'])){
-                    $data = $univis->getData('personByID', $atts['univisid']);
+                if (!empty($atts['id'])){
+                    $data = $univis->getData('personByID', $atts['id']);
                     if ($data){
                         $atts['name'] = $data[0]['lastname'] . ',' . $data[0]['firstname'];
                     }
-                }elseif(isset($atts['name'])){
+                }elseif(!empty($atts['name'])){
                     $data = $univis->getData('personByName', $atts['name']);
                 }
                 if ($data && !empty($atts['name'])){
@@ -99,32 +218,32 @@ class Shortcode
                 }
                 break;
             case 'mitarbeiter-orga': 
-                $show_location = 0;
                 $data = $univis->getData('personByOrga');
                 break;
             case 'mitarbeiter-telefonbuch': 
-                $show_location = 1;
-                $show_jumpmark = 1;
-                $data = $univis->getData('personByOrgaPhonebook');
+                $data = $univis->getData('personByOrgaPhonebook', NULL, 1, $show_jobs, $hide_jobs);
                 break;
             case 'mitarbeiter-alle': 
                 $data = $univis->getData('personAll');
-                $show_location = 0;
                 break;
             case 'lehrveranstaltungen-einzeln': 
-                if (isset($atts['lv_id'])){
-                    $data = $univis->getData('lectureByID', $atts['lv_id']);
+                if (!empty($atts['id'])){
+                    $data = $univis->getData('lectureByID', $atts['id']);
                     if ($data){
                         $veranstaltung = $data[array_key_first($data)][0];
                     }
                 }
                 break;
             case 'lehrveranstaltungen-alle': 
-                $data = $univis->getData('lectureByDepartment');
+                if (!empty($atts['name'])){
+                    $data = $univis->getData('lectureByName', $atts['name']);
+                }else{
+                    $data = $univis->getData('lectureByDepartment');
+                }
                 break;
             case 'publikationen': 
                 $data = $univis->getData('publicationByDepartment', NULL, 1);
-            break;
+                break;
         }
 
         if ($data){

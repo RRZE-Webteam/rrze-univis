@@ -1,6 +1,6 @@
 <div id="univis-personenindex">
 <p class="groupindex">
-        <?php if ($show_jumpmark) : ?>
+        <?php if (in_array('sprungmarken', $show)) : ?>
         <?php foreach (array_keys($data) as $v) : ?>
         <a href="#<?php echo $v;?>"><?php echo $v;?></a>&nbsp;
         <?php endforeach; ?>
@@ -39,15 +39,13 @@
                         $name['fullname'] = $fullname;
                     endif;
                     $pers['fullname'] = implode(', ', $name);
-                    if ($show_location) :
-                        if (!empty($person['phone'])) : 
-                            $pers['phone_number'] = '<span class="person-info-phone" itemprop="telephone">Tel. ' . $person['phone'] . '</span>';
-                        endif; 
-                        if (!empty($person['email'])) : 
-                            $pers['email'] = '<span class="person-info-email">E-Mail: <a itemprop="email" href="mailto:' . $person['email'] . '">' . $person['email'] . '</a></span>';                        
-                        endif;
+                    if (!empty($person['phone']) && in_array('telefon', $show)) : 
+                        $pers['phone_number'] = '<span class="person-info-phone" itemprop="telephone">Tel. ' . $person['phone'] . '</span>';
+                    endif; 
+                    if (!empty($person['email']) && in_array('mail', $show)) : 
+                        $pers['email'] = '<span class="person-info-email">E-Mail: <a itemprop="email" href="mailto:' . $person['email'] . '">' . $person['email'] . '</a></span>';                        
                     endif;
-                    
+                
                     $out = implode(', ', $pers);
                     ?>
             <span class="person-info" itemprop="name"><?php echo $out;?></span>

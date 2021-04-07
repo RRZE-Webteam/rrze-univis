@@ -120,7 +120,7 @@ function getShortcodeSettings(){
 		'name' => [
 			'default' => '',
 			'field_type' => 'text',
-			'label' => __( 'Nachname,Vorname', 'rrze-univis' ),
+			'label' => __( 'Nachname, Vorname', 'rrze-univis' ),
 			'type' => 'string'
 		],
 		'univisid' => [
@@ -129,41 +129,12 @@ function getShortcodeSettings(){
 			'label' => __( 'UnivIS ID Person', 'rrze-univis' ),
 			'type' => 'number'
 		],
-		'lv_id' => [
+		'id' => [
 			'default' => 0,
 			'field_type' => 'text',
-			'label' => __( 'UnivIS ID Lehrveranstaltung', 'rrze-univis' ),
+			'label' => __( 'UnivIS ID Lehrveranstaltung oder Person', 'rrze-univis' ),
 			'type' => 'number'
 		],
-		// 'Beispiel-Textarea-String' => [
-		// 	'default' => 'ein Beispiel-Wert',
-		// 	'field_type' => 'textarea',
-		// 	'label' => __( 'Beschriftung', 'rrze-univis' ),
-		// 	'type' => 'string',
-		// 	'rows' => 5 // Anzahl der Zeilen 
-		// ],
-		// 'Beispiel-Radiobutton' => [
-		// 	'values' => [
-		// 		'wert1' => __( 'Wert 1', 'rrze-univis' ), // wert1 mit Beschriftung
-		// 		'wert2' => __( 'Wert 2', 'rrze-univis' )
-		// 	],
-		// 	'default' => 'DESC', // vorausgewählter Wert
-		// 	'field_type' => 'radio',
-		// 	'label' => __( 'Order', 'rrze-univis' ), // Beschriftung der Radiobutton-Gruppe
-		// 	'type' => 'string' // Variablentyp des auswählbaren Werts
-		// ],
-		// 'Beispiel-Checkbox' => [
-		// 	'field_type' => 'checkbox',
-		// 	'label' => __( 'Beschriftung', 'rrze-univis' ),
-		// 	'type' => 'boolean',
-		// 	'default'   => true // Vorauswahl: Haken gesetzt
-        // ],
-        // 'Beispiel-Toggle' => [
-        //     'field_type' => 'toggle',
-        //     'label' => __( 'Beschriftung', 'rrze-univis' ),
-        //     'type' => 'boolean',
-        //     'default'   => true // Vorauswahl: ausgewählt
-        // ],
 		'task' => [
 			'values' => [
                 [
@@ -200,29 +171,6 @@ function getShortcodeSettings(){
 			'label' => __( 'Beschriftung', 'rrze-univis' ),
 			'type' => 'string' // Variablentyp des auswählbaren Werts
 		],
-        // 'Beispiel-Multi-Select' => [
-		// 	'values' => [
-        //         [
-        //             'id' => 'wert1',
-        //             'val' =>  __( 'Wert 1', 'rrze-univis' )
-        //         ],
-        //         [
-        //             'id' => 'wert2',
-        //             'val' =>  __( 'Wert 2', 'rrze-univis' )
-        //         ],
-        //         [
-        //             'id' => 'wert3',
-        //             'val' =>  __( 'Wert 3', 'rrze-univis' )
-        //         ],
-		// 	],
-		// 	'default' => ['wert1','wert3'], // vorausgewählte(r) Wert(e): Achtung: array, kein string!
-		// 	'field_type' => 'multi_select',
-		// 	'label' => __( 'Beschrifung', 'rrze-univis' ),
-		// 	'type' => 'array',
-		// 	'items'   => [
-		// 		'type' => 'string' // Variablentyp der auswählbaren Werte
-		// 	]
-        // ]
     ];
 }
 

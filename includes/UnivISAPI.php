@@ -41,7 +41,7 @@ class UnivISAPI {
     }
 
 
-    public function getData($dataType, $ID = NULL, $sort = NULL){
+    public function getData($dataType, $ID = NULL, $sort = NULL, $show = NULL, $hide = NULL){
         $url = $this->getUrl($dataType) . $ID;
         // echo $url;
         // exit;
@@ -51,7 +51,7 @@ class UnivISAPI {
         }
         $data = json_decode( $data, true);
 
-        return $this->mapIt($dataType, $data, $sort);
+        return $this->mapIt($dataType, $data, $sort, $show, $hide);
     }
 
 
@@ -108,7 +108,7 @@ class UnivISAPI {
     }
 
 
-    public function mapIt($dataType, &$data, $sort){
+    public function mapIt($dataType, &$data, $sort, $show, $hide){
         $ret = [];
 
         $map = [
@@ -360,6 +360,8 @@ class UnivISAPI {
                 }
                 break;
             case 'personAll':
+
+                // , $show = NULL, $hide = NULL
                 // add orga details
                 $orga = $this->mapIt('orga', $data, $sort);
                 $orga_positions = $orga[0]['orga_positions'];
@@ -400,6 +402,26 @@ class UnivISAPI {
         if (in_array($dataType, ['personByOrgaPhonebook'])){
             foreach($ret as $nr => $entry){
                 $ret[$nr]['letter'] = strtoupper(substr($entry['lastname'], 0, 1));
+                // show / hide jobs
+                if (!empty($show)){
+                    $bFound = FALSE;
+                    if (isset($entry['work'])){
+                        foreach($show as $work){
+                            $bFound = stripos($entry['work'], $work);
+                        }
+                        if ($bFound !== TRUE){
+                            unset($ret[$nr]);
+                        }
+                    }
+                }
+                if (!empty($hide) && isset($entry['work'])){
+                    foreach($hide as $work){
+                        $bFound = stripos($entry['work'], $work);
+                        if ($bFound !== FALSE){
+                            unset($ret[$nr]);
+                        }
+                    }
+                }
             }
             $ret = $this->groupBy($ret, 'letter');
         }
@@ -420,6 +442,7 @@ class UnivISAPI {
             usort($ret, [$this, 'sortByPositionorder']);            
             $ret = $this->groupBy($ret, 'orga_position');
         }
+
 
         return $ret;
     }

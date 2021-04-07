@@ -43,10 +43,10 @@
                     if (!empty($person['atitle'])) :
                         $pers['atitle'] = '<span itemprop="honorificSuffix"><acronym title="' . $person['atitle'] . '">' . $person['atitle'] . '</acronym></span>';                      
                     endif;
-                    if (!empty($person['phone'])) : 
+                    if (!empty($person['phone']) && in_array('telefon', $show)) : 
                         $pers['phone_number'] = '<span class="person-info-phone" itemprop="telephone">Tel. ' . $person['phone'] . '</span>';
                     endif; 
-                    if (!empty($person['email'])) : 
+                    if (!empty($person['email']) && in_array('mail', $show)) : 
                         $pers['email'] = '<span class="person-info-email">E-Mail: <a itemprop="email" href="mailto:' . $person['email'] . '">' . $person['email'] . '</a></span>';                        
                     endif;
                     $out = implode(', ', $pers);

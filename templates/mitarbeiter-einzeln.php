@@ -30,13 +30,13 @@
                     <li class="person-info-abteilung"><span class="screen-reader-text"><?php _e('Working group', 'rrze-univis');?>: </span><?php echo $person['department']; ?></li>
                 <?php endif;?>
 
-                <?php if (!empty($person['phone'])) : ?>
+                <?php if (!empty($person['phone']) && in_array('telefon', $show)) : ?>
                         <li class="person-info-phone"><span class="screen-reader-text"><?php _e('Phone number', 'rrze-univis');?>: </span><span itemprop="telephone"><?php echo $person['phone'];?></span></li>
                     <?php endif;?>
-                    <?php if (!empty($person['fax'])) : ?>
+                    <?php if (!empty($person['fax']) && in_array('telefon', $show)) : ?>
                         <li class="person-info-fax"><span class="screen-reader-text"><?php _e('Fax number', 'rrze-univis');?>: </span><span itemprop="faxNumber"><?php echo $person['fax'];?></span></li>
                     <?php endif;
-                    if (!empty($person['email'])) : ?>
+                    if (!empty($person['email']) && in_array('mail', $show)) : ?>
                         <li class="person-info-email"><span class="screen-reader-text"><?php _e('Email', 'rrze-univis');?>: </span><a itemprop="email" href="mailto:<?php echo $person['email'];?>"><?php echo $person['email'];?></a></li>
                     <?php endif;
                     if (!empty($person['url'])) : ?>
