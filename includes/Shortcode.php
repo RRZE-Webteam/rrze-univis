@@ -237,6 +237,8 @@ class Shortcode
             case 'lehrveranstaltungen-alle': 
                 if (!empty($atts['name'])){
                     $data = $univis->getData('lectureByName', $atts['name']);
+                }elseif (!empty($atts['id'])){
+                    $data = $univis->getData('lectureByNameID', $atts['id']);
                 }else{
                     $data = $univis->getData('lectureByDepartment');
                 }

@@ -43,8 +43,8 @@ class UnivISAPI {
 
     public function getData($dataType, $ID = NULL, $sort = NULL, $show = NULL, $hide = NULL){
         $url = $this->getUrl($dataType) . $ID;
-        // echo $url;
-        // exit;
+        echo $url;
+        exit;
         $data = file_get_contents($url);
         if ( !$data ){
             UnivIS::log('getData', 'error', "no data returned using $url");
@@ -88,6 +88,9 @@ class UnivISAPI {
                 break;   
             case 'lectureByName':
                 $url .= 'lectures&lecturer=';
+                break;   
+            case 'lectureByNameID':
+                $url .= 'lectures&lecturerid=';
                 break;   
             case 'jobByID':
                 $url .= 'positions&closed=1&id=';
@@ -246,6 +249,7 @@ class UnivISAPI {
         $map['publicationByAuthor'] = $map['publicationByAuthorID'];
         $map['lectureByDepartment'] = $map['lectureByID'];
         $map['lectureByName'] = $map['lectureByID'];
+        $map['lectureByNameID'] = $map['lectureByID'];
         $map['jobAll'] = $map['jobByID'];
         $map['roomByName'] = $map['roomByID'];
 
@@ -312,6 +316,7 @@ class UnivISAPI {
             case 'lectureByID':
             case 'lectureByName':
             case 'lectureByDepartment':
+            case 'lectureByNameID':
                 // add course details
                 $courses = $this->mapIt('courses', $data, $sort);
                 $persons = $this->mapIt('personByID', $data, $sort);
