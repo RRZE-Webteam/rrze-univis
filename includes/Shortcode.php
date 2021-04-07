@@ -71,6 +71,15 @@ class Shortcode
             return $this->UnivISLink;
         }
 
+        // merge given attributes with default ones
+        $atts_default = array();
+        foreach( $this->settings as $k => $v ){
+            if ( $k != 'block' ){
+                $atts_default[$k] = $v['default'];
+            }
+        }
+        $atts = shortcode_atts( $atts_default, $atts );
+
         // normalize given attributes according to rrze-univis version 2
         if (empty($atts['task'])){
             $atts['task'] = 'mitarbeiter-orga';
@@ -80,6 +89,9 @@ class Shortcode
             $this->UnivISOrgNr = (int)$atts['number'];
         }elseif (!empty($atts['task']) && ($atts['task'] == 'lehrveranstaltungen-alle' || $atts['task'] == 'mitarbeiter-einzeln') && !empty($atts['id'])){
             $this->UnivISOrgNr = (int)$atts['id'];
+        }
+        if (empty($this->UnivISOrgNr)){
+            return 'no UnivISOrgNr given';
         }
 
         if (!empty($atts['lv_id'])){
@@ -110,7 +122,6 @@ class Shortcode
             $show_jobs = explode('|', $atts['zeige_jobs']);
         }
 
-
         $show = [];
         if (!empty($atts['show'])){
             $show = explode(',', trim(strtolower($atts['show'])));
@@ -128,19 +139,6 @@ class Shortcode
                     unset($show[$key]);
                 }
             }
-        }
-
-        // merge given attributes with default ones
-        $atts_default = array();
-        foreach( $this->settings as $k => $v ){
-            if ( $k != 'block' ){
-                $atts_default[$k] = $v['default'];
-            }
-        }
-        $atts = shortcode_atts( $atts_default, $atts );
-
-        if (empty($this->UnivISOrgNr)){
-            return 'no UnivISOrgNr given';
         }
 
         $univis = new UnivISAPI('https://univis.uni-erlangen.de', $this->UnivISOrgNr);

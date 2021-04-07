@@ -135,6 +135,30 @@ function getShortcodeSettings(){
 			'label' => __( 'UnivIS ID Lehrveranstaltung oder Person', 'rrze-univis' ),
 			'type' => 'number'
 		],
+		'show' => [
+			'default' => '',
+			'field_type' => 'text',
+			'label' => __( 'anzeigen', 'rrze-univis' ),
+			'type' => 'string'
+		],
+		'hide' => [
+			'default' => '',
+			'field_type' => 'text',
+			'label' => __( 'ausblenden', 'rrze-univis' ),
+			'type' => 'string'
+		],
+		'ignoriere_jobs' => [
+			'default' => 'Sicherheitsbeauftragter|IT-Sicherheits-Beauftragter|Webmaster|Postmaster|IT-Betreuer|UnivIS-Beauftragte',
+			'field_type' => 'text',
+			'label' => __( 'Ignoriere Jobs - einzelne Tätigkeiten durch | voneinander trennen.', 'rrze-univis' ),
+			'type' => 'string'
+		],
+		'zeige_jobs' => [
+			'default' => '',
+			'field_type' => 'text',
+			'label' => __( 'Zeige Jobs', 'rrze-univis' ),
+			'type' => 'string'
+		],
 		'task' => [
 			'values' => [
                 [
