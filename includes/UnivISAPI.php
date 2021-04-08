@@ -43,6 +43,7 @@ class UnivISAPI {
 
     public function getData($dataType, $ID = NULL, $sort = NULL, $show = NULL, $hide = NULL){
         $url = $this->getUrl($dataType) . $ID;
+        // echo "<pre>$dataType<br>";
         // echo $url;
         // exit;
         $data = file_get_contents($url);
@@ -50,6 +51,10 @@ class UnivISAPI {
             UnivIS::log('getData', 'error', "no data returned using $url");
         }
         $data = json_decode( $data, true);
+
+        // echo "<pre>$dataType<br>";
+        // var_dump($data);
+        // exit;
 
         return $this->mapIt($dataType, $data, $sort, $show, $hide);
     }
@@ -111,7 +116,7 @@ class UnivISAPI {
     }
 
 
-    public function mapIt($dataType, &$data, $sort, $show, $hide){
+    public function mapIt($dataType, &$data, $sort = NULL, $show = NULL, $hide = NULL){
         $ret = [];
 
         $map = [
@@ -163,6 +168,8 @@ class UnivISAPI {
                     'keywords' => 'keywords',
                     'maxturnout' => 'maxturnout',
                     'url_description' => 'url_description',
+                    'organizational' => 'organizational',
+                    'summary' => 'summary',
                     'schein' => 'schein',
                     'sws' => 'sws',
                     'ects' => 'ects',
@@ -337,17 +344,23 @@ class UnivISAPI {
                         unset($ret[$e_nr]['courses']);
                         $ret[$e_nr]['courses'][] = ['term' => $entry['courses']];
                     }
+
+                    // echo '<pre>';
+                    // var_dump($entry);
+                    // exit;
                     // add person details
-                    foreach($entry['doz'] as $doz_key){
-                        foreach($persons as $p_nr => $person){
-                            if ($person['key'] == 'Person.' . $doz_key){
-                                unset($person['key']);
-                                $ret[$e_nr]['lecturers'][] = $person;
-                                unset($person[$p_nr]);
+                    if (isset($entry['doz'])){
+                        foreach($entry['doz'] as $doz_key){
+                            foreach($persons as $p_nr => $person){
+                                if ($person['key'] == 'Person.' . $doz_key){
+                                    unset($person['key']);
+                                    $ret[$e_nr]['lecturers'][] = $person;
+                                    unset($person[$p_nr]);
+                                }
                             }
                         }
+                        unset($ret[$e_nr]['doz']);
                     }
-                    unset($ret[$e_nr]['doz']);
                 }
                 // add room details
                 $rooms = $this->mapIt('roomByID', $data, $sort);
@@ -433,7 +446,7 @@ class UnivISAPI {
         }
         
         // group by lecture_type_long
-        if (in_array($dataType, ['lectureByID', 'lectureByName', 'lectureByDepartment'])){
+        if (in_array($dataType, ['lectureByID', 'lectureByNameID', 'lectureByName', 'lectureByDepartment'])){
             $ret = $this->groupBy($ret, 'lecture_type_long');
         }
 
@@ -538,6 +551,50 @@ class UnivISAPI {
         }
         
         return $phone;
+    }
+
+    public function makeHTML($str){
+        // Suche nach eingetragen Mailadressen bzw. URLs
+        $suchstring_0 = '\*\*';   // ** durch * ersetzen
+        $html_0 = '*';
+        $suchstring_1 = '\|\|';  // || durch | ersetzen
+        $html_1 = '|';
+        $suchstring_2 = '\^\^';     // ^^ durch ^ ersetzen
+        $html_2 = '^';
+        $suchstring_3 = '__';  // __ durch _ ersetzen
+        $html_3 = '_';
+
+        $suchstring_4 = '/^- ?(.+)/m';   // - am Anfang der Zeilen: Jeder Listenpunkt wird als vollständige Aufzählung umgesetzt
+        $html_4 = '<ul><li>$1</li></ul>';
+
+        $suchstring_5 = '/\*(.+)\*/';    // *fett*
+        $html_5 = '<b>$1</b>';
+        $suchstring_6 = '/\|(.+)\|/';  // |kursiv|
+        $html_6 = '<i>$1</i>';
+        $suchstring_7 = '/\^(.+)\^/';    // pi^2^
+        $html_7 = '<sup>$1</sup>';
+        $suchstring_8 = '/_(.+)_/';    // H_2_O
+        $html_8 = '<sub>$1</sub>';
+        $suchstring_9 = '/\[(.+?)\]\s?(\S+)/'; // [Linktext] Ziel-URL bzw. -Mailadresse
+        $html_9 = "<a href='$2'>$1</a>";
+        // Umsetzung in HTML-Link
+        for ($i = 0; $i < 4; $i++) {
+            $suchstring = 'suchstring_' . $i;
+            $html = 'html_' . $i;
+            $str = str_replace($$suchstring, $$html, $str);
+        }
+
+        for ($i = 4; $i < 10; $i++) {
+            $suchstring = 'suchstring_' . $i;
+            $html = 'html_' . $i;
+            $str = preg_replace($$suchstring, $$html, $str);
+        }
+        // Leerzeile durch Zeilenumbruch und zwei Leerzeilen durch Absatz
+        $str = str_replace(PHP_EOL, '<br>', $str);
+        $str = str_replace("<br>\r<br>", '<br>', $str);
+        $str = str_replace("\n", "<br/>", $str);        
+
+        return $str;
     }
 
     private function dict($data){
@@ -661,6 +718,7 @@ class UnivISAPI {
             'evaluation' => __('Evaluation', 'rrze-univis'),
             'phone' => '',
             'fax' => '',
+            'organizational' => '',
         ];
 
         $i = 0;
@@ -684,6 +742,10 @@ class UnivISAPI {
                                 $data[$i]['officehours'][$c_nr]['repeat'] = trim(str_replace(array_keys($values), array_values($values), $data[$i]['officehours'][$c_nr]['repeat']));
                             }
                         }
+                    }
+                }elseif ($field == 'organizational'){
+                    if (isset($data[$i][$field])){
+                        $data[$i][$field] = self::makeHTML($data[$i][$field]);
                     }
                 }elseif (isset($data[$i][$field])){
                     if (in_array($field, ['title'])){

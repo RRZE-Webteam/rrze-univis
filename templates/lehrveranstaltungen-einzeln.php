@@ -1,4 +1,3 @@
-<!-- 2DO: check ects_infos, literature, organization -->
 <?php if ($veranstaltung) : ?>
     <h2><?php echo $veranstaltung['name']; ?></h2>
 
@@ -148,7 +147,7 @@
         <?php endif; ?>
     <?php endif; ?>
 
-    <?php if ((!empty($veranstaltung['keywords'])) || (!empty($veranstaltung['maxturnout'])) || (!empty($veranstaltung['url_description']))) : ?>
+    <?php if (!empty($veranstaltung['keywords']) || !empty($veranstaltung['maxturnout']) || !empty($veranstaltung['url_description'])) : ?>
         <h4><?php _e('Additional information', 'rrze-univis');?></h4>
         <?php if (!empty($veranstaltung['keywords'])) : ?>
             <p><?php _e('Keywords', 'rrze-univis');?>: <?php echo $veranstaltung['keywords']; ?></p>
@@ -159,5 +158,6 @@
         <?php if (!empty($veranstaltung['url_description'])) : ?>
             <p>www: <a href="<?php echo $veranstaltung['url_description']; ?>"><?php echo $veranstaltung['url_description']; ?></a></p>
         <?php endif; ?>
-    <?php endif;
-endif;
+    <?php endif; ?>
+
+<?php endif; ?>

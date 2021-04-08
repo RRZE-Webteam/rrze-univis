@@ -71,6 +71,14 @@ class Shortcode
             return $this->UnivISLink;
         }
 
+        // lv_id is not in config (=> id)
+        if (!empty($atts['lv_id'])){
+            $atts['id'] = (int)$atts['lv_id'];
+            if ($atts['task'] == 'lehrveranstaltungen-alle'){
+                $atts['task'] = 'lehrveranstaltungen-einzeln';
+            }
+        }
+
         // merge given attributes with default ones
         $atts_default = array();
         foreach( $this->settings as $k => $v ){
@@ -94,23 +102,16 @@ class Shortcode
             return 'no UnivISOrgNr given';
         }
 
-        if (!empty($atts['lv_id'])){
-            $atts['id'] = (int)$atts['lv_id'];
-            if ($atts['task'] == 'lehrveranstaltungen-alle'){
-                $atts['task'] = 'lehrveranstaltungen-einzeln';
-            }
-        }
-
         if (!empty($atts['dozentid'])){
             $atts['id'] = (int)$atts['dozentid'];
         }
 
-        if (!empty($atts['univisid'])){
-            $atts['id'] = (int)$atts['univisid'];
-        }
-
         if (!empty($atts['dozentname'])){
             $atts['name'] = $atts['dozentname'];
+        }
+        
+        if (!empty($atts['name'])){
+            $atts['name'] = str_replace(' ', '', $atts['name']);
         }
 
         $hide_jobs = NULL;
@@ -227,16 +228,20 @@ class Shortcode
             case 'lehrveranstaltungen-einzeln': 
                 if (!empty($atts['id'])){
                     $data = $univis->getData('lectureByID', $atts['id']);
-                    if ($data){
-                        $veranstaltung = $data[array_key_first($data)][0];
-                    }
+                }elseif (!empty($atts['name'])){
+                    $data = $univis->getData('lectureByName', $atts['name']);
+                }elseif (!empty($atts['univisid'])){
+                    $data = $univis->getData('lectureByNameID', $atts['univisid']);
+                }
+                if ($data){
+                    $veranstaltung = $data[array_key_first($data)][0];
                 }
                 break;
             case 'lehrveranstaltungen-alle': 
                 if (!empty($atts['name'])){
                     $data = $univis->getData('lectureByName', $atts['name']);
-                }elseif (!empty($atts['id'])){
-                    $data = $univis->getData('lectureByNameID', $atts['id']);
+                }elseif (!empty($atts['univisid'])){
+                    $data = $univis->getData('lectureByNameID', $atts['univisid']);
                 }else{
                     $data = $univis->getData('lectureByDepartment');
                 }
@@ -250,7 +255,8 @@ class Shortcode
             // $data = '<pre>' . json_encode($data, JSON_PRETTY_PRINT) . '</pre>';
             // var_dump($data);
             // exit;
-    
+
+            
             $filename = trailingslashit(dirname(__FILE__)) . '../templates/' . $atts['task'] . '.php';
             
             if (is_file($filename)) {
