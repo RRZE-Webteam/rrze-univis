@@ -426,7 +426,6 @@ class UnivISAPI {
     }
 
     public function sortGroupFilter($dataType, &$data, $sort = NULL, $show = NULL, $hide = NULL){
-
         // sort
         if ($sort && in_array($dataType, ['personByID', 'personAll', 'personByOrga', 'personByName', 'personByOrgaPhonebook'])){
             usort($data, [$this, 'sortByLastname']);            
@@ -571,45 +570,29 @@ class UnivISAPI {
     }
 
     public function makeHTML($str){
-        // Suche nach eingetragen Mailadressen bzw. URLs
-        $suchstring_0 = '\*\*';   // ** durch * ersetzen
-        $html_0 = '*';
-        $suchstring_1 = '\|\|';  // || durch | ersetzen
-        $html_1 = '|';
-        $suchstring_2 = '\^\^';     // ^^ durch ^ ersetzen
-        $html_2 = '^';
-        $suchstring_3 = '__';  // __ durch _ ersetzen
-        $html_3 = '_';
+        $aStr = [
+            '\*\*' => '*',
+            '\|\|' => '|',
+            '\^\^' => '^',
+            '__'   => '_', 
+        ];
 
-        $suchstring_4 = '/^- ?(.+)/m';   // - am Anfang der Zeilen: Jeder Listenpunkt wird als vollständige Aufzählung umgesetzt
-        $html_4 = '<ul><li>$1</li></ul>';
-
-        $suchstring_5 = '/\*(.+)\*/';    // *fett*
-        $html_5 = '<b>$1</b>';
-        $suchstring_6 = '/\|(.+)\|/';  // |kursiv|
-        $html_6 = '<i>$1</i>';
-        $suchstring_7 = '/\^(.+)\^/';    // pi^2^
-        $html_7 = '<sup>$1</sup>';
-        $suchstring_8 = '/_(.+)_/';    // H_2_O
-        $html_8 = '<sub>$1</sub>';
-        $suchstring_9 = '/\[(.+?)\]\s?(\S+)/'; // [Linktext] Ziel-URL bzw. -Mailadresse
-        $html_9 = "<a href='$2'>$1</a>";
-        // Umsetzung in HTML-Link
-        for ($i = 0; $i < 4; $i++) {
-            $suchstring = 'suchstring_' . $i;
-            $html = 'html_' . $i;
-            $str = str_replace($$suchstring, $$html, $str);
-        }
-
-        for ($i = 4; $i < 10; $i++) {
-            $suchstring = 'suchstring_' . $i;
-            $html = 'html_' . $i;
-            $str = preg_replace($$suchstring, $$html, $str);
-        }
-        // Leerzeile durch Zeilenumbruch und zwei Leerzeilen durch Absatz
-        $str = str_replace(PHP_EOL, '<br>', $str);
-        $str = str_replace("<br>\r<br>", '<br>', $str);
-        $str = str_replace("\n", "<br/>", $str);        
+        $aReg = [
+            '/^- ?(.+)/m' => '<ul><li>$1</li></ul>', // - am Anfang der Zeilen: Jeder Listenpunkt wird als vollständige Aufzählung umgesetzt
+            '/\*(.+)\*/'  => '<b>$1</b>',  // *fett*
+            '/\|(.+)\|/'  => '<i>$1</i>', // |kursiv|
+            '/\^(.+)\^/'  => '<sup>$1</sup>', // pi^2^
+            '/_(.+)_/'    => '<sub>$1</sub>', // H_2_O
+            '/\[(.+?)\]\s?(\S+)/' => "<a href='$2'>$1</a>", // [Linktext] Ziel-URL bzw. -Mailadresse
+        ];
+        $aBr = [
+            "<br>\r<br>" => '<br>',
+            "\n" => "<br/>",
+            PHP_EOL => '<br>',
+        ];
+        $str = str_replace(array_keys($aStr), array_values($aStr), $str);
+        $str = preg_replace(array_keys($aReg), array_values($aReg), $str);
+        $str = str_replace(array_keys($aBr), array_values($aBr), $str);
 
         return $str;
     }
