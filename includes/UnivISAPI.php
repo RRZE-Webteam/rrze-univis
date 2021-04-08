@@ -43,20 +43,16 @@ class UnivISAPI {
 
     public function getData($dataType, $ID = NULL, $sort = NULL, $show = NULL, $hide = NULL){
         $url = $this->getUrl($dataType) . $ID;
-        // echo "<pre>$dataType<br>";
-        // echo $url;
-        // exit;
         $data = file_get_contents($url);
         if ( !$data ){
             UnivIS::log('getData', 'error', "no data returned using $url");
         }
         $data = json_decode( $data, true);
+        $data = $this->mapIt($dataType, $data);
+        $data = $this->dict($data);
+        $data = $this->sortGroupFilter($dataType, $data, $sort, $show, $hide);
 
-        // echo "<pre>$dataType<br>";
-        // var_dump($data);
-        // exit;
-
-        return $this->mapIt($dataType, $data, $sort, $show, $hide);
+        return $data;
     }
 
 
@@ -116,170 +112,187 @@ class UnivISAPI {
     }
 
 
-    public function mapIt($dataType, &$data, $sort = NULL, $show = NULL, $hide = NULL){
+
+    public function getMap($dataType){
+        switch($dataType){
+            case 'personByID':
+            case 'personByOrga':
+            case 'personByOrgaPhonebook':
+            case 'personByName':
+                $map =  [
+                    'node' => 'Person',
+                    'fields' => [
+                        'person_id' => 'id',
+                        'key' => 'key',
+                        'title' => 'title',
+                        'atitle' => 'atitle',
+                        'firstname' => 'firstname',
+                        'lastname' => 'lastname',
+                        'work' => 'work',
+                        'officehours' => 'officehour',
+                        'department' => 'orgname',
+                        'organization' => ['orgunit', 1], 
+                        'email' => ['location', 'email'],
+                        'phone' => ['location', 'tel'],
+                        'fax' => ['location', 'fax'],
+                        'street' => ['location', 'street'],
+                        'city' => ['location', 'ort'],
+                        'office' => ['location', 'office'],
+                        'url' => ['location', 'url'],
+                    ],
+                ];
+                break;
+            case 'publicationByAuthor':
+            case 'publicationByAuthorID':
+            case 'publicationByDepartment':
+                $map = [
+                    'node' => 'Pub',
+                    'fields' => [
+                        'publication_id' => 'id',
+                        'journal' => 'journal',
+                        'pubtitle' => 'pubtitle',
+                        'year' => 'year',
+                        'author' => 'author',
+                        'publication_type' => 'type',
+                        'hstype' => 'hstype',
+                    ],
+                ];
+                break;
+            case 'lectureByID':
+            case 'lectureByDepartment':
+            case 'lectureByName':
+            case 'lectureByNameID':
+                $map = [
+                    'node' => 'Lecture',
+                    'fields' => [
+                        'lecture_id' => 'id',
+                        'name' => 'name',
+                        'comment' => 'comment',
+                        'leclanguage' => 'leclanguage',
+                        'key' => 'key',
+                        'courses' => 'term',
+                        'course_keys' => 'course', 
+                        'lecture_type' => 'type',
+                        'keywords' => 'keywords',
+                        'maxturnout' => 'maxturnout',
+                        'url_description' => 'url_description',
+                        'organizational' => 'organizational',
+                        'summary' => 'summary',
+                        'schein' => 'schein',
+                        'sws' => 'sws',
+                        'ects' => 'ects',
+                        'ects_cred' => 'ects_cred',
+                        'beginners' => 'beginners',
+                        'gast' => 'gast',
+                        'evaluation' => 'evaluation',
+                        'doz' => 'doz',
+                    ],
+                ];
+                break;
+            case 'courses':
+                $map = [
+                    'node' => 'Lecture',
+                    'fields' => [
+                        'term' => 'term',
+                        'coursename' => 'coursename',
+                        'course_key' => 'key',
+                    ],
+                ];
+                break;
+            case 'jobByID':
+            case 'jobAll':
+                $map = [
+                    'node' => 'Position',
+                    'fields' => [
+                        'job_id' => 'id',
+                        'application_end' => 'enddate',
+                        'application_link' => 'desc6',
+                        'job_intern' => 'intern',
+                        'job_title' => 'title',
+                        'job_start' => 'start',
+                        'job_limitation' => 'type1',
+                        'job_limitation_duration' => 'befristet',
+                        'job_limitation_reason' => 'type3',
+                        'job_salary_from' => 'vonbesold',
+                        'job_salary_to' => 'bisbesold',
+                        'job_qualifications' => 'desc2',
+                        'job_qualifications_nth' => 'desc3',
+                        'job_employmenttype' => 'type2',
+                        'job_workhours' => 'wstunden',
+                        'job_category' => 'group',
+                        'job_description' => 'desc1',
+                        'job_description_introduction' => 'desc5',
+                        'job_experience' => 'desc2',
+                        'job_benefits' => 'desc4',
+                        'person_key' => 'acontact',
+                    ],
+                ];
+                break;
+            case 'roomByID':
+            case 'roomByName':
+                $map = [
+                    'node' => 'Room',
+                    'fields' => [
+                        'room_id' => 'id',
+                        'key' => 'key',
+                        'name' => 'name',
+                        'short' => 'short',
+                        'roomno' => 'roomno',
+                        'buildno' => 'buildno',
+                        'north' => 'north',
+                        'east' => 'east',
+                        'address' => 'address',
+                        'size' => 'size',
+                        'description' => 'description',
+                        'blackboard' => 'tafel',
+                        'flipchart' => 'flip',
+                        'beamer' => 'beam',
+                        'microphone' => 'mic',
+                        'audio' => 'audio',
+                        'overheadprojector' => 'ohead',
+                        'tv' => 'tv',
+                        'internet' => 'inet',
+                    ],
+                ];
+                break;
+            case 'orga':
+                $map = [
+                    'node' => 'Org',
+                    'fields' => [
+                        'orga_positions' => 'job',
+                    ],
+                ];
+                break;
+        }
+
+        return $map;
+    }
+
+    public function mapIt($dataType, &$data){
         $ret = [];
 
-        $map = [
-            'personByID' => [
-                'node' => 'Person',
-                'fields' => [
-                    'person_id' => 'id',
-                    'key' => 'key',
-                    'title' => 'title',
-                    'atitle' => 'atitle',
-                    'firstname' => 'firstname',
-                    'lastname' => 'lastname',
-                    'work' => 'work',
-                    'officehours' => 'officehour',
-                    'department' => 'orgname',
-                    'organization' => ['orgunit', 1], 
-                    'email' => ['location', 'email'],
-                    'phone' => ['location', 'tel'],
-                    'fax' => ['location', 'fax'],
-                    'street' => ['location', 'street'],
-                    'city' => ['location', 'ort'],
-                    'office' => ['location', 'office'],
-                    'url' => ['location', 'url'],
-                ],
-            ],
-            'publicationByAuthorID' => [
-                'node' => 'Pub',
-                'fields' => [
-                    'publication_id' => 'id',
-                    'journal' => 'journal',
-                    'pubtitle' => 'pubtitle',
-                    'year' => 'year',
-                    'author' => 'author',
-                    'publication_type' => 'type',
-                    'hstype' => 'hstype',
-                ],
-            ],
-            'lectureByID' => [
-                'node' => 'Lecture',
-                'fields' => [
-                    'lecture_id' => 'id',
-                    'name' => 'name',
-                    'comment' => 'comment',
-                    'leclanguage' => 'leclanguage',
-                    'main' => '__type',
-                    'courses' => 'term',
-                    'course_keys' => 'course', 
-                    'lecture_type' => 'type',
-                    'keywords' => 'keywords',
-                    'maxturnout' => 'maxturnout',
-                    'url_description' => 'url_description',
-                    'organizational' => 'organizational',
-                    'summary' => 'summary',
-                    'schein' => 'schein',
-                    'sws' => 'sws',
-                    'ects' => 'ects',
-                    'ects_cred' => 'ects_cred',
-                    'beginners' => 'beginners',
-                    'gast' => 'gast',
-                    'evaluation' => 'evaluation',
-                    'doz' => 'doz',
-                ],
-            ],
-            'courses' => [
-                'node' => 'Lecture',
-                'fields' => [
-                    'term' => 'term',
-                    'coursename' => 'coursename',
-                    'course_key' => 'key',
-                ],
-            ],
-            'jobByID' => [
-                'node' => 'Position',
-                'fields' => [
-                    'job_id' => 'id',
-                    'application_end' => 'enddate',
-                    'application_link' => 'desc6',
-                    'job_intern' => 'intern',
-                    'job_title' => 'title',
-                    'job_start' => 'start',
-                    'job_limitation' => 'type1',
-                    'job_limitation_duration' => 'befristet',
-                    'job_limitation_reason' => 'type3',
-                    'job_salary_from' => 'vonbesold',
-                    'job_salary_to' => 'bisbesold',
-                    'job_qualifications' => 'desc2',
-                    'job_qualifications_nth' => 'desc3',
-                    'job_employmenttype' => 'type2',
-                    'job_workhours' => 'wstunden',
-                    'job_category' => 'group',
-                    'job_description' => 'desc1',
-                    'job_description_introduction' => 'desc5',
-                    'job_experience' => 'desc2',
-                    'job_benefits' => 'desc4',
-                    'person_key' => 'acontact',
-                ],
-            ],
-            'roomByID' => [
-                'node' => 'Room',
-                'fields' => [
-                    'room_id' => 'id',
-                    'key' => 'key',
-                    'name' => 'name',
-                    'short' => 'short',
-                    'roomno' => 'roomno',
-                    'buildno' => 'buildno',
-                    'north' => 'north',
-                    'east' => 'east',
-                    'address' => 'address',
-                    'size' => 'size',
-                    'description' => 'description',
-                    'blackboard' => 'tafel',
-                    'flipchart' => 'flip',
-                    'beamer' => 'beam',
-                    'microphone' => 'mic',
-                    'audio' => 'audio',
-                    'overheadprojector' => 'ohead',
-                    'tv' => 'tv',
-                    'internet' => 'inet',
-                ],
-            ],
-            'orga' => [
-                'node' => 'Org',
-                'fields' => [
-                    'orga_positions' => 'job',
-                ],
-            ],
-        ];
+        $map = $this->getMap($dataType);
 
-
-
-        $map['personAll'] = $map['personByID'];
-        $map['personByOrga'] = $map['personByID'];
-        $map['personByOrgaPhonebook'] = $map['personByID'];
-        $map['personByName'] = $map['personByID'];
-        $map['publicationByDepartment'] = $map['publicationByAuthorID'];
-        $map['publicationByAuthor'] = $map['publicationByAuthorID'];
-        $map['lectureByDepartment'] = $map['lectureByID'];
-        $map['lectureByName'] = $map['lectureByID'];
-        $map['lectureByNameID'] = $map['lectureByID'];
-        $map['jobAll'] = $map['jobByID'];
-        $map['roomByName'] = $map['roomByID'];
-
-        if (isset($data[$map[$dataType]['node']])){
-            foreach($data[$map[$dataType]['node']] as $nr => $entry){
-                foreach($map[$dataType]['fields'] as $k => $v){
+        if (isset($data[$map['node']])){
+            foreach($data[$map['node']] as $nr => $entry){
+                foreach($map['fields'] as $k => $v){
                     if (is_array($v)){
                         if (is_int($v[1])){
-                            if (isset($data[$map[$dataType]['node']][$nr][$v[0]][$v[1]])){
-                                $ret[$nr][$k] = $data[$map[$dataType]['node']][$nr][$v[0]][$v[1]];
-                            }elseif(isset($data[$map[$dataType]['node']][$nr][$v[0]][0])){
-                                $ret[$nr][$k] = $data[$map[$dataType]['node']][$nr][$v[0]][0];
+                            if (isset($data[$map['node']][$nr][$v[0]][$v[1]])){
+                                $ret[$nr][$k] = $data[$map['node']][$nr][$v[0]][$v[1]];
+                            }elseif(isset($data[$map['node']][$nr][$v[0]][0])){
+                                $ret[$nr][$k] = $data[$map['node']][$nr][$v[0]][0];
                             }
                         }else{
                             $y = 0;
-                            while(isset($data[$map[$dataType]['node']][$nr][$v[0]][$y][$v[1]])){
-                                $ret[$nr][$k] = $data[$map[$dataType]['node']][$nr][$v[0]][$y][$v[1]];
+                            while(isset($data[$map['node']][$nr][$v[0]][$y][$v[1]])){
+                                $ret[$nr][$k] = $data[$map['node']][$nr][$v[0]][$y][$v[1]];
                                 $y++;
                             }
                         }
                     }else{
-                        if (isset($data[$map[$dataType]['node']][$nr][$v])){
-                            $ret[$nr][$k] = $data[$map[$dataType]['node']][$nr][$v];
+                        if (isset($data[$map['node']][$nr][$v])){
+                            $ret[$nr][$k] = $data[$map['node']][$nr][$v];
                         }
                     }
                 }
@@ -290,7 +303,7 @@ class UnivISAPI {
             case 'jobByID':
             case 'jobAll':
                 // add person details
-                $persons = $this->mapIt('personByID', $data, $sort);
+                $persons = $this->mapIt('personByID', $data);
                 foreach($ret as $e_nr => $entry){
                     foreach($persons as $person){
                         if (isset($entry['person_key']) && $entry['person_key'] == $person['key']){
@@ -306,7 +319,7 @@ class UnivISAPI {
             case 'publicationByAuthor':
             case 'publicationByDepartment':
                 // add person details
-                $persons = $this->mapIt('personByID', $data, $sort);
+                $persons = $this->mapIt('personByID', $data);
                 foreach($ret as $e_nr => $entry){
                     foreach($entry['author'] as $details){
                         foreach($persons as $p_nr => $person){
@@ -325,9 +338,10 @@ class UnivISAPI {
             case 'lectureByDepartment':
             case 'lectureByNameID':
                 // add details
-                $courses = $this->mapIt('courses', $data, $sort);
-                $persons = $this->mapIt('personByID', $data, $sort);
-                $rooms = $this->mapIt('roomByID', $data, $sort);
+                $courses = $this->mapIt('courses', $data);
+                $persons = $this->mapIt('personByID', $data);
+                $rooms = $this->mapIt('roomByID', $data);
+                $delNr = [];
                 foreach($ret as $e_nr => $entry){
                     // add course details
                     if (isset($entry['course_keys'])){
@@ -336,6 +350,12 @@ class UnivISAPI {
                                 if (($course['course_key'] == 'Lecture.' . $course_key) && (isset($course['term']))){
                                     unset($course['course_key']);
                                     $ret[$e_nr]['courses'][] = $course;
+                                    // delete entry of this course
+                                    foreach($ret as $nr => $val){
+                                        if ($val['key'] == 'Lecture.' . $course_key){
+                                            $delNr[] = $nr; 
+                                        }
+                                    }
                                 }
                             }
                         }
@@ -344,10 +364,6 @@ class UnivISAPI {
                         unset($ret[$e_nr]['courses']);
                         $ret[$e_nr]['courses'][] = ['term' => $entry['courses']];
                     }
-
-                    // echo '<pre>';
-                    // var_dump($entry);
-                    // exit;
                     // add person details
                     if (isset($entry['doz'])){
                         foreach($entry['doz'] as $doz_key){
@@ -362,8 +378,11 @@ class UnivISAPI {
                         unset($ret[$e_nr]['doz']);
                     }
                 }
+                foreach($delNr as $nr){
+                    unset($ret[$nr]);
+                }
                 // add room details
-                $rooms = $this->mapIt('roomByID', $data, $sort);
+                $rooms = $this->mapIt('roomByID', $data);
                 foreach($ret as $nr => $entry){
                     if (isset($entry['courses'])){
                         foreach($entry['courses'] as $c_nr => $course){
@@ -379,10 +398,8 @@ class UnivISAPI {
                 }
                 break;
             case 'personAll':
-
-                // , $show = NULL, $hide = NULL
                 // add orga details
-                $orga = $this->mapIt('orga', $data, $sort);
+                $orga = $this->mapIt('orga', $data);
                 $orga_positions = $orga[0]['orga_positions'];
                 foreach($ret as $e_nr => $entry){
                     foreach($orga_positions as $orga_position => $vals){
@@ -405,22 +422,25 @@ class UnivISAPI {
                 break;
             }
 
-        $ret = $this->dict($ret);
+        return $ret;
+    }
+
+    public function sortGroupFilter($dataType, &$data, $sort = NULL, $show = NULL, $hide = NULL){
 
         // sort
         if ($sort && in_array($dataType, ['personByID', 'personAll', 'personByOrga', 'personByName', 'personByOrgaPhonebook'])){
-            usort($ret, [$this, 'sortByLastname']);            
+            usort($data, [$this, 'sortByLastname']);            
         }
 
         // group by department
         if (in_array($dataType, ['personByOrga'])){
-            $ret = $this->groupBy($ret, 'department');
+            $data = $this->groupBy($data, 'department');
         }
 
         // group by lastname's first letter
         if (in_array($dataType, ['personByOrgaPhonebook'])){
-            foreach($ret as $nr => $entry){
-                $ret[$nr]['letter'] = strtoupper(substr($entry['lastname'], 0, 1));
+            foreach($data as $nr => $entry){
+                $data[$nr]['letter'] = strtoupper(substr($entry['lastname'], 0, 1));
                 // show / hide jobs
                 if (!empty($show)){
                     $bFound = FALSE;
@@ -429,7 +449,7 @@ class UnivISAPI {
                             $bFound = stripos($entry['work'], $work);
                         }
                         if ($bFound !== TRUE){
-                            unset($ret[$nr]);
+                            unset($data[$nr]);
                         }
                     }
                 }
@@ -437,34 +457,31 @@ class UnivISAPI {
                     foreach($hide as $work){
                         $bFound = stripos($entry['work'], $work);
                         if ($bFound !== FALSE){
-                            unset($ret[$nr]);
+                            unset($data[$nr]);
                         }
                     }
                 }
             }
-            $ret = $this->groupBy($ret, 'letter');
+            $data = $this->groupBy($data, 'letter');
         }
-        
         // group by lecture_type_long
         if (in_array($dataType, ['lectureByID', 'lectureByNameID', 'lectureByName', 'lectureByDepartment'])){
-            $ret = $this->groupBy($ret, 'lecture_type_long');
+            $data = $this->groupBy($data, 'lecture_type_long');
         }
-
         // sort desc and group by year
         if (in_array($dataType, ['publicationByAuthorID', 'publicationByAuthor', 'publicationByDepartment'])){
-            usort($ret, [$this, 'sortByYear']);            
-            $ret = $this->groupBy($ret, 'year');
+            usort($data, [$this, 'sortByYear']);            
+            $data = $this->groupBy($data, 'year');
         }
-
         // sort orga_position_order and group by orga_position
         if (in_array($dataType, ['personAll'])){
-            usort($ret, [$this, 'sortByPositionorder']);            
-            $ret = $this->groupBy($ret, 'orga_position');
+            usort($data, [$this, 'sortByPositionorder']);            
+            $data = $this->groupBy($data, 'orga_position');
         }
 
-
-        return $ret;
+        return $data;
     }
+
 
     private function groupBy($arr, $key) {
         $ret = [];
@@ -597,7 +614,7 @@ class UnivISAPI {
         return $str;
     }
 
-    private function dict($data){
+    private function dict(&$data){
         $fields = [
             'title' => [
                 "Dr." => __('Doktor', 'rrze-univis'),
@@ -707,6 +724,7 @@ class UnivISAPI {
                 "gebrmust" => __('Gebrauchsmuster', 'rrze-univis'),
             ],
             'leclanguage' => [
+                0 => __('Unterrichtssprache Deutsch', 'rrze-univis'),
                 "D" => __('Unterrichtssprache Deutsch', 'rrze-univis'),
             ],
             'sws' => __(' SWS', 'rrze-univis'),
@@ -721,57 +739,54 @@ class UnivISAPI {
             'organizational' => '',
         ];
 
-        $i = 0;
-
-        foreach($data as $row){
+        foreach($data as $nr => $row){
             foreach($fields as $field => $values){
-                if (isset($data[$i][$field]) && ($field == 'phone' || $field == 'fax')){
-                    $data[$i][$field] = self::correctPhone($data[$i][$field]);
+                if (isset($data[$nr][$field]) && ($field == 'phone' || $field == 'fax')){
+                    $data[$nr][$field] = self::correctPhone($data[$nr][$field]);
                 }elseif ($field == 'repeat'){
-                    if (isset($data[$i]['courses'])){
-                        foreach($data[$i]['courses'] as $c_nr => $course){
+                    if (isset($data[$nr]['courses'])){
+                        foreach($data[$nr]['courses'] as $c_nr => $course){
                             foreach($course['term'] as $m_nr => $meeting){
-                                if (isset($data[$i]['courses'][$c_nr]['term'][$m_nr]['repeat'])){
-                                    $data[$i]['courses'][$c_nr]['term'][$m_nr]['repeat'] = str_replace(array_keys($values), array_values($values), $data[$i]['courses'][$c_nr]['term'][$m_nr]['repeat']);
+                                if (isset($data[$nr]['courses'][$c_nr]['term'][$m_nr]['repeat'])){
+                                    $data[$nr]['courses'][$c_nr]['term'][$m_nr]['repeat'] = str_replace(array_keys($values), array_values($values), $data[$nr]['courses'][$c_nr]['term'][$m_nr]['repeat']);
                                 }
                             }
                         }
-                    }elseif(isset($data[$i]['officehours'])){
-                        foreach($data[$i]['officehours'] as $c_nr => $entry){
-                            if (isset($data[$i]['officehours'][$c_nr]['repeat'])){
-                                $data[$i]['officehours'][$c_nr]['repeat'] = trim(str_replace(array_keys($values), array_values($values), $data[$i]['officehours'][$c_nr]['repeat']));
+                    }elseif(isset($data[$nr]['officehours'])){
+                        foreach($data[$nr]['officehours'] as $c_nr => $entry){
+                            if (isset($data[$nr]['officehours'][$c_nr]['repeat'])){
+                                $data[$nr]['officehours'][$c_nr]['repeat'] = trim(str_replace(array_keys($values), array_values($values), $data[$nr]['officehours'][$c_nr]['repeat']));
                             }
                         }
                     }
                 }elseif ($field == 'organizational'){
-                    if (isset($data[$i][$field])){
-                        $data[$i][$field] = self::makeHTML($data[$i][$field]);
+                    if (isset($data[$nr][$field])){
+                        $data[$nr][$field] = self::makeHTML($data[$nr][$field]);
                     }
-                }elseif (isset($data[$i][$field])){
+                }elseif (isset($data[$nr][$field])){
                     if (in_array($field, ['title'])){
                         // multi replace
-                        $data[$i][$field . '_long'] = str_replace(array_keys($values), array_values($values), $data[$i][$field]);
+                        $data[$nr][$field . '_long'] = str_replace(array_keys($values), array_values($values), $data[$nr][$field]);
                     }else{
                         if (!is_array($values)){
                             if ($field == 'sws'){
-                                $data[$i][$field] .= $values; 
+                                $data[$nr][$field] .= $values; 
                             }elseif($field == 'ects_cred'){
-                                $data[$i][$field] = $values . $data[$i][$field];
+                                $data[$nr][$field] = $values . $data[$nr][$field];
                             }else{
-                                $data[$i][$field] = $values;
+                                $data[$nr][$field] = $values;
                             }
                         }else{
-                            if (isset($values[$row[$field]])){
-                                $data[$i][$field . '_long'] = $values[$row[$field]];
-                            }
-                            if ($field == 'lecture_type'){
-                                $data[$i][$field . '_short'] = trim(substr($values[$row[$field]], 0, strpos($values[$row[$field]], '(')));
+                            if (isset($row[$field]) && isset($values[$row[$field]])){
+                                $data[$nr][$field . '_long'] = $values[$row[$field]];
+                                if ($field == 'lecture_type'){
+                                    $data[$nr][$field . '_short'] = trim(substr($values[$row[$field]], 0, strpos($values[$row[$field]], '(')));
+                                }
                             }
                         }
                     }
                 }
             }
-            $i++;
         }
 
         return $data;

@@ -7,7 +7,6 @@
 	<ul>
         <?php 
             foreach ($veranstaltungen as $veranstaltung) : 
-                if(!empty($veranstaltung['main'])):
                 $url = get_permalink() . 'lv_id/' . $veranstaltung['lecture_id'];
                 ?>
                 <li>
@@ -68,7 +67,6 @@
 
                 </li>
                 <?php 
-                endif;
             endforeach;
         ?>
 	</ul>
