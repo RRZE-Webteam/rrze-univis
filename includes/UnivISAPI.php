@@ -15,13 +15,14 @@ class UnivISAPI {
 
     protected $api;
     protected $orgID;
-    protected $show;
-    protected $hide;
+    protected $atts;
 
 
-    public function __construct($api, $orgID) {
+    public function __construct($api, $orgID, $atts) {
         $this->setAPI($api);
         $this->orgID = $orgID;
+        $this->atts = $atts;
+        $this->atts['sem'] = (!empty($this->atts['sem'])?(self::checkSemester($this->atts['sem'])?$this->atts['sem']:''):'');
     }
 
 
@@ -43,10 +44,11 @@ class UnivISAPI {
     }
 
 
-    public function getData($dataType, $ID = NULL, $sort = NULL, $show = [], $hide = []){
-        $this->show = $show;
-        $this->hide = $hide;
-        $url = $this->getUrl($dataType) . $ID;
+    public function getData($dataType, $univisParam = NULL){
+        $url = $this->getUrl($dataType) . $univisParam;
+        // echo $url;
+        // exit;
+
         $data = file_get_contents($url);
         if (!$data){
             UnivISAPI::log('getData', 'error', "no data returned using $url");
@@ -55,7 +57,7 @@ class UnivISAPI {
         $data = json_decode( $data, true);
         $data = $this->mapIt($dataType, $data);
         $data = $this->dict($data);
-        $data = $this->sortGroup($dataType, $data, $sort);
+        $data = $this->sortGroup($dataType, $data);
 
         return $data;
     }
@@ -71,11 +73,11 @@ class UnivISAPI {
                 $url .= 'persons&fullname=';
                 break;
             case 'personAll':
-                $url .= 'departments&number=' . $this->orgID;
+                $url .= 'departments&number='.$this->orgID;
                 break;
             case 'personByOrga':
             case 'personByOrgaPhonebook':
-                $url .= 'persons&department=' . $this->orgID;
+                $url .= 'persons&department='.$this->orgID;
                 break;
             case 'publicationByAuthorID':
                 $url .= 'publications&authorid=';
@@ -84,25 +86,25 @@ class UnivISAPI {
                 $url .= 'publications&author=';
                 break;  
             case 'publicationByDepartment':
-                $url .= 'publications&department=' . $this->orgID;
+                $url .= 'publications&department='.$this->orgID;
                 break;  
             case 'lectureByID':
-                $url .= 'lectures&id=';
+                $url .= 'lectures'.(!empty($this->atts['lang'])?'&lang='.$this->atts['lang']:'').(!empty($this->atts['imports']) && !$this->atts['imports']?'&noimports=1':'').(!empty($this->atts['type'])?'&type='.$this->atts['type']:'').(!empty($this->atts['sem'])?'&sem='.$this->atts['sem']:'').'&id=';
                 break;              
             case 'lectureByDepartment':
-                $url .= 'lectures&department=' . $this->orgID;
+                $url .= 'lectures'.(!empty($this->atts['lang'])?'&lang='.$this->atts['lang']:'').(!empty($this->atts['imports']) && !$this->atts['imports']?'&noimports=1':'').(!empty($this->atts['type'])?'&type='.$this->atts['type']:'').(!empty($this->atts['sem'])?'&sem='.$this->atts['sem']:'').'&department='.$this->orgID;
                 break;   
             case 'lectureByName':
-                $url .= 'lectures&lecturer=';
+                $url .= 'lectures'.(!empty($this->atts['lang'])?'&lang='.$this->atts['lang']:'').(!empty($this->atts['imports']) && !$this->atts['imports']?'&noimports=1':'').(!empty($this->atts['type'])?'&type='.$this->atts['type']:'').(!empty($this->atts['sem'])?'&sem='.$this->atts['sem']:'').'&lecturer=';
                 break;   
             case 'lectureByNameID':
-                $url .= 'lectures&lecturerid=';
+                $url .= 'lectures'.(!empty($this->atts['lang'])?'&lang='.$this->atts['lang']:'').(!empty($this->atts['imports']) && !$this->atts['imports']?'&noimports=1':'').(!empty($this->atts['type'])?'&type='.$this->atts['type']:'').(!empty($this->atts['sem'])?'&sem='.$this->atts['sem']:'').'&lecturerid=';
                 break;   
             case 'jobByID':
                 $url .= 'positions&closed=1&id=';
                 break;
             case 'jobAll':
-                $url .= 'positions&closed=1&department=' . $this->orgID;
+                $url .= 'positions&closed=1&department='.$this->orgID;
                 break;
             case 'roomByID':
                 $url .= 'rooms&id=';
@@ -117,7 +119,7 @@ class UnivISAPI {
                 $url .= 'departments';
                 break;
             default:
-                UnivISAPI::log('getUrl', 'error', 'unknown dataType ' . $dataType);
+                UnivISAPI::log('getUrl', 'error', 'unknown dataType '.$dataType);
         }
         return $url;
     }
@@ -294,11 +296,11 @@ class UnivISAPI {
 
     public function showPosition($position){
         // show is given => show matches only 
-        if (!empty($this->show) && (strpos($this->show, $position) !== FALSE)){
+        if (!empty($this->atts['zeige_jobs']) && (strpos($this->atts['zeige_jobs'], $position) !== FALSE)){
             return TRUE;
         }
         // hide defined jobs, show all others => config: ignoriere_jobs && shortcode: ignoriere_jobs
-        if (!empty($this->hide) && (strpos($this->hide, $position) !== FALSE)){
+        if (!empty($this->atts['ignoriere_jobs']) && (strpos($this->atts['ignoriere_jobs'], $position) !== FALSE)){
             return FALSE;
         }
         return TRUE;
@@ -471,9 +473,9 @@ class UnivISAPI {
         return $ret;
     }
 
-    public function sortGroup($dataType, &$data, $sort = NULL){
+    public function sortGroup($dataType, &$data){
         // sort
-        if ($sort && in_array($dataType, ['personByID', 'personAll', 'personByOrga', 'personByName', 'personByOrgaPhonebook'])){
+        if (!empty($this->sort) && $this->sort && in_array($dataType, ['personByID', 'personAll', 'personByOrga', 'personByName', 'personByOrgaPhonebook'])){
             usort($data, [$this, 'sortByLastname']);            
         }
 
@@ -535,6 +537,10 @@ class UnivISAPI {
 
     private function sortByPositionorder($a, $b){
         return strnatcmp($a["orga_position_order"], $b["orga_position_order"]);
+    }
+
+    public static function checkSemester($sem){
+        return preg_match('/[12]\d{3}[ws]/', $sem);
     }
 
     public static function correctPhone($phone){

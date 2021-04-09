@@ -141,6 +141,30 @@ function getShortcodeSettings(){
 			'label' => __( 'UnivIS ID Lehrveranstaltung oder Person', 'rrze-univis' ),
 			'type' => 'number'
 		],
+		'lv_import' => [
+			'default' => 1,
+			'field_type' => 'text',
+			'label' => __( 'Importierete Lehrveranstaltungen ausgeben', 'rrze-univis' ),
+			'type' => 'number'
+		],
+		'type' => [
+			'default' => '',
+			'field_type' => 'text',
+			'label' => __( 'Typ. z.B. vorl (=Vorlesung)', 'rrze-univis' ),
+			'type' => 'string'
+		],
+		'sem' => [
+			'default' => '',
+			'field_type' => 'text',
+			'label' => __( 'Semester z.B. 2020w', 'rrze-univis' ),
+			'type' => 'string'
+		],
+		'sprache' => [
+			'default' => '',
+			'field_type' => 'text',
+			'label' => __( 'Sprache', 'rrze-univis' ),
+			'type' => 'string'
+		],
 		'show' => [
 			'default' => '',
 			'field_type' => 'text',

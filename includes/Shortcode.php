@@ -91,62 +91,7 @@ class Shortcode
         $atts = shortcode_atts( $atts_default, $atts );
         $atts = $this->normalize($atts);
 
-        $univis = new UnivISAPI('https://univis.uni-erlangen.de', $this->UnivISOrgNr);
-
-
-        // atts vom alten Plugin:
-        //
-        // DONE show => sprungmarken, telefon, mail
-        // DONE hide => sprungmarken
-        // DONE ignoriere_jobs z.B. ignoriere_jobs="Webmaster, Postmaster"
-        // DONE zeige_jobs z.B. zeige_jobs="Webmaster, Postmaster"
-        // sem
-        // sprache
-        // orgunit ?
-        // lv-typ = type => [... type="vorl"] => nur Vorlesungen
-        //
-        //
-        //
-        // DONE [univis] => gibt nur Link zu UnivIS aus
-        // DONE [univis number="420100"] => 'mitarbeiter-orga' überschreibt default univisID
-        // DONE [univis task="mitarbeiter-alle"]
-        // DONE [univis task="mitarbeiter-alle" number="420100"]
-        // DONE [univis task="mitarbeiter-orga"]
-        // DONE [univis task="mitarbeiter-orga" number="420100"]
-        // DONE [univis task="mitarbeiter-telefonbuch" show="zeige_sprungmarken"] lowercase
-        //
-        // [univis task="mitarbeiter-telefonbuch" ignoriere_jobs="Webmaster, Postmaster"]
-        // Automatisch werden Personen mit folgenden Zuordnungen ausgeblendet: 
-        // Sicherheitsbeauftragter, 
-        // IT-Sicherheits-Beauftragter, 
-        // Webmaster, 
-        // Postmaster, 
-        // IT-Betreuer
-        // UnivIS-Beauftragte
-        //
-        // DONE [univis task="mitarbeiter-einzeln" name="Mustermann,Max"]
-        // DONE [univis task="mitarbeiter-einzeln" univisid="40858741"]
-        //
-        // DONE [univis task="lehrveranstaltungen-alle"]
-        // DONE [univis task="lehrveranstaltungen-alle" number="420100"]
-        // Bei der Anzeige von Lehrveranstaltungen wird automatisch das Semester angezeigt, das gerade bei UnivIS als aktuelles Semester eingestellt ist.
-        //
-        // [univis task="lehrveranstaltungen-alle" type="vorl"] => nur Vorlesungen
-        // DONE [univis task="lehrveranstaltungen-alle" name="Mustermann,Max"]
-        // DONE [univis task="lehrveranstaltungen-alle" univisid="20333881"] univisid ist die vom Professor
-        // [univis task="lehrveranstaltungen-alle" sem="2016w"]
-        // [univis task="lehrveranstaltungen-alle" lv_import="0"] => importierte Lehrveranstaltungen ausblenden
-        // [univis task="lehrveranstaltungen-alle" sprache="E"]
-        //
-        // DONE [univis task="lehrveranstaltungen-einzeln" lv_id="41105306"]
-        // DONE [univis task="lehrveranstaltungen-alle" lv_id="41105306"]
-        // [univis task="lehrveranstaltungen-alle" lv_id="41105306" sem="2016w"]
-        //
-        // DONE [univis task="publikationen"]
-        // DONE [univis task="publikationen" number="420100"] 
-        //
-
-
+        $univis = new UnivISAPI('https://univis.uni-erlangen.de', $this->UnivISOrgNr, $atts);
 
         $data = '';
 
@@ -175,7 +120,7 @@ class Shortcode
                 $data = $univis->getData('personByOrga');
                 break;
             case 'mitarbeiter-telefonbuch': 
-                $data = $univis->getData('personByOrgaPhonebook', NULL, 1, $atts['zeige_jobs'], $atts['ignoriere_jobs']);
+                $data = $univis->getData('personByOrgaPhonebook');
                 break;
             case 'mitarbeiter-alle': 
                 if (!in_array('telefon', $this->hide) && !in_array('telefon', $this->show)){
@@ -205,7 +150,7 @@ class Shortcode
                 }
                 break;
             case 'publikationen': 
-                $data = $univis->getData('publicationByDepartment', NULL, 1);
+                $data = $univis->getData('publicationByDepartment');
                 break;
         }
 

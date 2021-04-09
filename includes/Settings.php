@@ -869,8 +869,8 @@ class Settings
             if ($name){
                 $options = get_option( 'rrze-univis' );
                 $univisOrgID = (!empty($options['basic_UnivISOrgNr']) ? $options['basic_UnivISOrgNr'] : 0);
-                $univis = new UnivISAPI('https://univis.uni-erlangen.de', $univisOrgID);
-                $data = $univis->getData('departmentByName', $name, 1);
+                $univis = new UnivISAPI('https://univis.uni-erlangen.de', $univisOrgID, NULL);
+                $data = $univis->getData('departmentByName', $name);
                 
                 echo '<div id="result">';
                 if (!$data){
@@ -878,7 +878,9 @@ class Settings
                 }else{
                     echo '<table class="wp-list-table widefat striped"><thead><tr><td><b><i>Univ</i>IS</b> OrgNr.</td><td>Name</td></tr></thead>';
                     foreach($data as $entry){
-                        echo '<tr><td>' . $entry['orgnr'] . '</td><td>' . $entry['name'] . '</td></tr>';
+                        if (isset($entry['orgnr'])){
+                            echo '<tr><td>' . $entry['orgnr'] . '</td><td>' . $entry['name'] . '</td></tr>';
+                        }
                     }
                     echo '</table>';
                 }
