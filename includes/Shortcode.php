@@ -11,7 +11,6 @@ use function RRZE\UnivIS\Config\getShortcodeSettings;
  */
 class Shortcode
 {
-
     /**
      * Der vollständige Pfad- und Dateiname der Plugin-Datei.
      * @var string
@@ -28,7 +27,7 @@ class Shortcode
      */
     private $settings = '';
 
-    /**
+    /** 
      * Variablen Werte zuweisen.
      * @param string $pluginFile Pfad- und Dateiname der Plugin-Datei
      */

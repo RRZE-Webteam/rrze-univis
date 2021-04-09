@@ -117,6 +117,42 @@ function getShortcodeSettings(){
 			'category' => 'widgets',
             'icon' => 'admin-users',
 		],
+		'task' => [
+			'values' => [
+                [
+                    'id' => '',
+                    'val' =>  __( 'Bitte wählen Sie', 'rrze-univis' )
+                ],
+                [
+                    'id' => 'mitarbeiter-einzeln',
+                    'val' =>  __( 'Mitarbeiter Einzeln', 'rrze-univis' )
+                ],
+                [
+                    'id' => 'mitarbeiter-alle',
+                    'val' =>  __( 'Mitarbeiter Alle', 'rrze-univis' )
+                ],
+                [
+                    'id' => 'mitarbeiter-telefonbuch',
+                    'val' =>  __( 'Mitarbeiter Telefonbuch', 'rrze-univis' )
+                ],
+                [
+                    'id' => 'mitarbeiter-orga',
+                    'val' =>  __( 'Mitarbeiter Organisation', 'rrze-univis' )
+                ],
+                [
+                    'id' => 'lehrveranstaltungen-einzeln',
+                    'val' =>  __( 'Lehrveranstaltungen Einzeln', 'rrze-univis' )
+                ],
+                [
+                    'id' => 'lehrveranstaltungen-alle',
+                    'val' =>  __( 'Lehrveranstaltungen Alle', 'rrze-univis' )
+                ],
+			],
+			'default' => 'wert1', // vorausgewählter Wert: Achtung: string, kein array!
+			'field_type' => 'select',
+			'label' => __( 'Bitte wählen Sie', 'rrze-univis' ),
+			'type' => 'string' // Variablentyp des auswählbaren Werts
+		],
 		'name' => [
 			'default' => '',
 			'field_type' => 'text',
@@ -188,42 +224,6 @@ function getShortcodeSettings(){
 			'field_type' => 'text',
 			'label' => __( 'Zeige Jobs', 'rrze-univis' ),
 			'type' => 'string'
-		],
-		'task' => [
-			'values' => [
-                [
-                    'id' => '',
-                    'val' =>  __( 'Bitte wählen Sie', 'rrze-univis' )
-                ],
-                [
-                    'id' => 'mitarbeiter-einzeln',
-                    'val' =>  __( 'Mitarbeiter Einzeln', 'rrze-univis' )
-                ],
-                [
-                    'id' => 'mitarbeiter-alle',
-                    'val' =>  __( 'Mitarbeiter Alle', 'rrze-univis' )
-                ],
-                [
-                    'id' => 'mitarbeiter-telefonbuch',
-                    'val' =>  __( 'Mitarbeiter Telefonbuch', 'rrze-univis' )
-                ],
-                [
-                    'id' => 'mitarbeiter-orga',
-                    'val' =>  __( 'Mitarbeiter Organisation', 'rrze-univis' )
-                ],
-                [
-                    'id' => 'lehrveranstaltungen-einzeln',
-                    'val' =>  __( 'Lehrveranstaltungen Einzeln', 'rrze-univis' )
-                ],
-                [
-                    'id' => 'lehrveranstaltungen-alle',
-                    'val' =>  __( 'Lehrveranstaltungen Alle', 'rrze-univis' )
-                ],
-			],
-			'default' => 'wert1', // vorausgewählter Wert: Achtung: string, kein array!
-			'field_type' => 'select',
-			'label' => __( 'Beschriftung', 'rrze-univis' ),
-			'type' => 'string' // Variablentyp des auswählbaren Werts
 		],
     ];
 }
