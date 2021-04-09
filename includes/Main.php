@@ -36,6 +36,7 @@ class Main {
         $settings = new Settings($this->pluginFile);
         $settings->onLoaded();
 
+
         // Shortcode-Klasse wird instanziiert.
         $shortcode = new Shortcode($this->pluginFile, $settings);
         $shortcode->onLoaded();

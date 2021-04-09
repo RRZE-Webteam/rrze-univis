@@ -48,8 +48,9 @@ class UnivISAPI {
         $this->hide = $hide;
         $url = $this->getUrl($dataType) . $ID;
         $data = file_get_contents($url);
-        if ( !$data ){
-            UnivIS::log('getData', 'error', "no data returned using $url");
+        if (!$data){
+            UnivISAPI::log('getData', 'error', "no data returned using $url");
+            return FALSE;
         }
         $data = json_decode( $data, true);
         $data = $this->mapIt($dataType, $data);
@@ -59,6 +60,15 @@ class UnivISAPI {
         return $data;
     }
 
+    public function getDepartments($name = NULL){
+        if ($name){
+            $data = $this->getData('departmentByName', $name, 1);
+        }else{
+            $data = $this->getData('departmentAll', NULL, 1);
+        }
+
+        return $data;
+    }
 
     private function getUrl($dataType){
         $url = $this->api;
@@ -109,8 +119,14 @@ class UnivISAPI {
             case 'roomByName':
                 $url .= 'rooms&name=';
                 break;
+            case 'departmentByName':
+                $url .= 'departments&name=';
+                break;
+            case 'departmentAll':
+                $url .= 'departments';
+                break;
             default:
-                UnivIS::log('getUrl', 'error', 'unknown dataType ' . $dataType);
+                UnivISAPI::log('getUrl', 'error', 'unknown dataType ' . $dataType);
         }
         return $url;
     }
@@ -118,6 +134,8 @@ class UnivISAPI {
 
 
     public function getMap($dataType){
+        $map = [];
+
         switch($dataType){
             case 'personByID':
             case 'personByOrga':
@@ -268,6 +286,16 @@ class UnivISAPI {
                     ],
                 ];
                 break;
+            case 'departmentByName':
+            case 'departmentAll':
+                $map = [
+                    'node' => 'Org',
+                    'fields' => [
+                        'orgnr' => 'orgnr',
+                        'name' => 'name',
+                    ],
+                ];
+                break;
         }
 
         return $map;
@@ -286,9 +314,13 @@ class UnivISAPI {
     }
 
     public function mapIt($dataType, &$data){
-        $ret = [];
-
         $map = $this->getMap($dataType);
+
+        if (empty($map)){
+            return $data;
+        }
+
+        $ret = [];
         $show = TRUE;
 
         if (isset($data[$map['node']])){
@@ -481,6 +513,11 @@ class UnivISAPI {
             $data = $this->groupBy($data, 'orga_position');
         }
 
+        // sort by name
+        if (in_array($dataType, ['departmentByName', 'departmentAll'])){
+            usort($data, [$this, 'sortByName']);            
+        }
+
         return $data;
     }
 
@@ -495,6 +532,10 @@ class UnivISAPI {
 
     private function sortByLastname($a, $b){
         return strcasecmp($a["lastname"], $b["lastname"]);
+    }
+
+    private function sortByName($a, $b){
+        return strcasecmp($a["name"], $b["name"]);
     }
 
     private function sortByYear($a, $b){

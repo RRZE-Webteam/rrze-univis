@@ -55,7 +55,7 @@ function getSections()
     return [
         [
             'id'    => 'basic',
-            'title' => __('Basic Settings', 'rrze-univis')
+            'title' => __('UnivIS Settings', 'rrze-univis')
         ],
     ];
 }
@@ -88,7 +88,7 @@ function getFields()
             ],
             [
                 'name'              => 'UnivISOrgNr',
-                'label'             => __('UnivISOrgNr', 'rrze-univis'),
+                'label'             => __('<b><i>Univ</i>IS</b> OrgNr.', 'rrze-univis'),
                 'desc'              => __('', 'rrze-univis'),
                 'placeholder'       => '',
                 'min'               => 0,

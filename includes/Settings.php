@@ -298,6 +298,7 @@ class Settings
             </div>
         <?php
         }
+        $this->utility_page();
     }
 
     /**
@@ -832,5 +833,52 @@ class Settings
         $html .= $this->getFieldDescription($args);
 
         echo $html;
+    }
+
+
+    /*
+     * Die Ausgabe der Werkzeuge Seite.
+     * @return void
+     * 
+     */
+    public function utility_page() {
+        ?>
+        <div class="wrap">
+            <h2><?php echo __('Suche nach UnivIS-OrgNr.', 'rrze-univis'); ?></h2>
+            <form method="post">
+            <input type="hidden" name="action" value="search_orgid">
+                <table class="form-table" role="presentation" class="striped">
+                    <tbody>
+                        <tr>
+                            <th scope="row"><?php echo __('Organisationseinheit', 'rrze-univis'); ?></th>
+                            <td><input type="text" name="department_name" id="department_name" value=""></td>
+                        </tr>
+                        <tr>
+                            <td colspan="2"><input type="submit" name="submit" id="submit" class="button button-primary" value="<?php echo __('Suchen', 'rrze-univis'); ?>"></td>
+                        </tr>
+                    </tbody>
+                </table>            
+            </form>
+        </div>
+        <?php
+
+
+        if (isset($_POST["action"]) && $_POST["action"] == 'search_orgid' ){
+            echo '<div id="result">';
+            $options = get_option( 'rrze-univis' );
+            $univisOrgID = (!empty($options['basic_UnivISOrgNr']) ? $options['basic_UnivISOrgNr'] : 0);
+            $univis = new UnivISAPI('https://univis.uni-erlangen.de', $univisOrgID);
+            $result = $univis->getDepartments($_POST["department_name"]);
+            if (!$result){
+                echo 'Keine passenden Datensätze gefunden.';
+            }else{
+                echo '<table class="wp-list-table widefat striped"><thead><tr><td><b><i>Univ</i>IS</b> OrgNr.</td><td>Name</td></tr></thead>';
+                foreach($result as $entry){
+                    echo '<tr><td>' . $entry['orgnr'] . '</td><td>' . $entry['name'] . '</td></tr>';
+                }
+                echo '</table>';
+             }
+             echo '</div>';
+        }
     }
 }
