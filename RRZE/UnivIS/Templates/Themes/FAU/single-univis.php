@@ -5,8 +5,8 @@ get_template_part('template-parts/hero', 'small'); ?>
         <div class="container">
             <div class="row">
                <div <?php post_class( 'entry-content' ); ?>>
-                    <main id="droppoint">
-			<h1 id="droppoint" class="mobiletitle"><?php the_title(); ?></h1>
+                    <main>
+			<h1 class="mobiletitle"><?php the_title(); ?></h1>
 			<?php echo $data; ?>
 			<nav class="navigation">
                             <div class="nav-previous"><a href="<?php echo get_permalink();?>"><span class="meta-nav">&laquo;</span> <?php _e('Back to overview', 'rrze-univis'); ?></a></div>
