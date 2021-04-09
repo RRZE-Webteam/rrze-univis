@@ -19,8 +19,8 @@ class Shortcode
     protected $pluginFile;
     protected $UnivISOrgNr;
     protected $UnivISLink;
-    protected $this->show;
-    protected $this->hide;
+    protected $show;
+    protected $hide;
 
     /**
      * Settings-Objekt
