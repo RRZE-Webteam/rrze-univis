@@ -843,8 +843,9 @@ class Settings
      */
     public function utility_page() {
         ?>
+        <br><br>
         <div class="wrap">
-            <h2><?php echo __('Suche nach UnivIS-OrgNr.', 'rrze-univis'); ?></h2>
+            <h3><?php echo __('Suche nach UnivIS-OrgNr.', 'rrze-univis'); ?></h3>
             <form method="post">
             <input type="hidden" name="action" value="search_orgid">
                 <table class="form-table" role="presentation" class="striped">
@@ -864,21 +865,25 @@ class Settings
 
 
         if (isset($_POST["action"]) && $_POST["action"] == 'search_orgid' ){
-            echo '<div id="result">';
-            $options = get_option( 'rrze-univis' );
-            $univisOrgID = (!empty($options['basic_UnivISOrgNr']) ? $options['basic_UnivISOrgNr'] : 0);
-            $univis = new UnivISAPI('https://univis.uni-erlangen.de', $univisOrgID);
-            $result = $univis->getDepartments($_POST["department_name"]);
-            if (!$result){
-                echo 'Keine passenden Datensätze gefunden.';
-            }else{
-                echo '<table class="wp-list-table widefat striped"><thead><tr><td><b><i>Univ</i>IS</b> OrgNr.</td><td>Name</td></tr></thead>';
-                foreach($result as $entry){
-                    echo '<tr><td>' . $entry['orgnr'] . '</td><td>' . $entry['name'] . '</td></tr>';
+            $name = filter_input(INPUT_POST, 'department_name', FILTER_SANITIZE_STRING);
+            if ($name){
+                $options = get_option( 'rrze-univis' );
+                $univisOrgID = (!empty($options['basic_UnivISOrgNr']) ? $options['basic_UnivISOrgNr'] : 0);
+                $univis = new UnivISAPI('https://univis.uni-erlangen.de', $univisOrgID);
+                $data = $univis->getData('departmentByName', $name, 1);
+                
+                echo '<div id="result">';
+                if (!$data){
+                    echo 'Keine passenden Datensätze gefunden.';
+                }else{
+                    echo '<table class="wp-list-table widefat striped"><thead><tr><td><b><i>Univ</i>IS</b> OrgNr.</td><td>Name</td></tr></thead>';
+                    foreach($data as $entry){
+                        echo '<tr><td>' . $entry['orgnr'] . '</td><td>' . $entry['name'] . '</td></tr>';
+                    }
+                    echo '</table>';
                 }
-                echo '</table>';
-             }
-             echo '</div>';
+                echo '</div>';
+            }
         }
     }
 }

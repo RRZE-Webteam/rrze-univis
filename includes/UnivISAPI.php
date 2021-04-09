@@ -43,7 +43,7 @@ class UnivISAPI {
     }
 
 
-    public function getData($dataType, $ID = NULL, $sort = NULL, $show = NULL, $hide = NULL){
+    public function getData($dataType, $ID = NULL, $sort = NULL, $show = [], $hide = []){
         $this->show = $show;
         $this->hide = $hide;
         $url = $this->getUrl($dataType) . $ID;
@@ -60,15 +60,6 @@ class UnivISAPI {
         return $data;
     }
 
-    public function getDepartments($name = NULL){
-        if ($name){
-            $data = $this->getData('departmentByName', $name, 1);
-        }else{
-            $data = $this->getData('departmentAll', NULL, 1);
-        }
-
-        return $data;
-    }
 
     private function getUrl($dataType){
         $url = $this->api;
@@ -494,7 +485,7 @@ class UnivISAPI {
         // group by lastname's first letter
         if ($dataType == 'personByOrgaPhonebook'){
             foreach($data as $nr => $entry){
-                $data[$nr]['letter'] = strtoupper(substr($entry['lastname'], 0, 1));
+                $data[$nr]['letter'] = mb_substr($entry['lastname'], 0, 1);
             }
             $data = $this->groupBy($data, 'letter');
         }
