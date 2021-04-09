@@ -22,7 +22,7 @@ class UnivISAPI {
         $this->setAPI($api);
         $this->orgID = $orgID;
         $this->atts = $atts;
-        $this->atts['sem'] = (!empty($this->atts['sem'])?(self::checkSemester($this->atts['sem'])?$this->atts['sem']:''):'');
+        $this->atts['sem'] = (!empty($this->atts['sem']) && self::checkSemester($this->atts['sem'])?$this->atts['sem']:'');
     }
 
 
