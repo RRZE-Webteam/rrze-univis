@@ -37,6 +37,8 @@ class Shortcode
         $this->pluginFile = $pluginFile;
         $this->settings = getShortcodeSettings();
         add_action( 'admin_enqueue_scripts', [$this, 'enqueueGutenberg'] );
+        add_action( 'init',  [$this, 'initGutenberg'] );
+
         $options = get_option( 'rrze-univis' );
         $this->UnivISOrgNr = (!empty($options['basic_UnivISOrgNr']) ? $options['basic_UnivISOrgNr'] : 0);
         $this->UnivISLink = sprintf('<a href="%1$s">%2$s</a>', (!empty($options['basic_univis_url']) ? $options['basic_univis_url'] : __('URL zu UnivIS fehlt', 'rrze-univis')), (!empty($options['basic_univis_linktxt']) ? $options['basic_univis_linktxt'] : __('Text zum UnivIS Link fehlt', 'rrze-univis')));
