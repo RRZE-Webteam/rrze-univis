@@ -874,7 +874,7 @@ class Settings
                 
                 echo '<div id="result">';
                 if (!$data){
-                    echo 'Keine passenden Datensätze gefunden.';
+                    echo __('Keine passenden Datensätze gefunden.', 'rrze-univis');
                 }else{
                     echo '<table class="wp-list-table widefat striped"><thead><tr><td><b><i>Univ</i>IS</b> OrgNr.</td><td>Name</td></tr></thead>';
                     foreach($data as $entry){

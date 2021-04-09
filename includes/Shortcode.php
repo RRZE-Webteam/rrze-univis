@@ -168,7 +168,7 @@ class Shortcode
                 return str_replace("\n", " ", ob_get_clean());
             }
         }else{
-            echo 'no data found';
+            return __('Keine passenden Datensätze gefunden.', 'rrze-univis');
         }
 
         // wp_enqueue_style('rrze-univis-shortcode');
