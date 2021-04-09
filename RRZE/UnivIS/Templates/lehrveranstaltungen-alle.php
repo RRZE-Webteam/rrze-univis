@@ -1,9 +1,7 @@
 <?php if ($daten['veranstaltungen']) :
     foreach ($daten['veranstaltungen'] as $veranstaltung) : 
         if($this->optionen['lv_type'] == 1) : ?>
-	<h2>
-            <?php echo $veranstaltung['title']; ?>
-        </h2>
+	<h2><?php echo $veranstaltung['title']; ?></h2>
         <?php endif; ?>
 	<ul>
         <?php if (!empty($veranstaltung['data'])) : 

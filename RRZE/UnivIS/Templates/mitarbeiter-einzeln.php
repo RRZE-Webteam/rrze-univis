@@ -86,9 +86,9 @@
                 <?php //
                 endif; ?>
            		 <?php if (array_key_exists('officehours', $person) && array_key_exists('officehour', $person['officehours'][0])) :
-					echo '<br><li class="person-info-office"><span itemprop="hoursAvailable" itemtype="http://schema.org/ContactPoint"><span class="screen-reader-text">' ;
-					echo _e('Office hours', 'rrze-univis') . ': </span> <span><b>'; 
-					echo _e('Office hours', 'rrze-univis') .':</b><br>' ;
+					echo '<br><li class="person-info-office"><span itemprop="hoursAvailable" itemtype="http://schema.org/ContactPoint">';
+					echo '<span><strong>'; 
+					echo _e('Office hours', 'rrze-univis') .':</strong><br>' ;
 					 foreach ($person['officehours'][0]['officehour'] as $officehour){
 					 
 						if (!empty($officehour['repeatstring'])) { 

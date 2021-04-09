@@ -10,7 +10,7 @@ GITHub-Repo: https://github.com/RRZE-Webteam/rrze-univis
 ## Autor 
 RRZE-Webteam , http://www.rrze.fau.de
 
-## Copryright
+## Copyright
 
 GNU General Public License (GPL) Version 2 
 

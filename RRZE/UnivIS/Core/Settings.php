@@ -73,17 +73,17 @@ class Settings
     public function utility_page() {
         ?>
         <div class="wrap">
-            <h2><?php echo __('Suche nach UnivIS-OrgNr.', 'rrze-univis'); ?></h2>
+            <h2><?php echo __('Search for UnivIS-OrgNr.', 'rrze-univis'); ?></h2>
             <form method="post">
             <input type="hidden" name="action" value="search_orgid">
                 <table class="form-table" role="presentation" class="striped">
                     <tbody>
                         <tr>
-                            <th scope="row"><?php echo __('Organisationseinheit', 'rrze-univis'); ?></th>
+                            <th scope="row"><?php echo __('Org Unit', 'rrze-univis'); ?></th>
                             <td><input type="text" name="department_name" id="department_name" value=""></td>
                         </tr>
                         <tr>
-                            <td colspan="2"><input type="submit" name="submit" id="submit" class="button button-primary" value="<?php echo __('Suchen', 'rrze-univis'); ?>"></td>
+                            <td colspan="2"><input type="submit" name="submit" id="submit" class="button button-primary" value="<?php echo __('Search', 'rrze-univis'); ?>"></td>
                         </tr>
                     </tbody>
                 </table>            
@@ -101,7 +101,7 @@ class Settings
                 $json = file_get_contents( $api );
                 $result = utf8_encode( $json );
                  if ( strpos( $result, 'keine passenden Daten' ) > 0 ){
-                    echo 'Keine passenden Datensätze gefunden.';
+                    echo __('No entrys found.','rrze-univis');
                  } else {
                     preg_match('/(<table>.*<\/table>)/', $result, $matches );
                     $table = str_replace( '<table>', '<table class="wp-list-table widefat striped">', $matches[0] );
