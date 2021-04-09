@@ -15,6 +15,8 @@ class UnivISAPI {
 
     protected $api;
     protected $orgID;
+    protected $show;
+    protected $hide;
 
 
     public function __construct($api, $orgID) {
@@ -42,6 +44,8 @@ class UnivISAPI {
 
 
     public function getData($dataType, $ID = NULL, $sort = NULL, $show = NULL, $hide = NULL){
+        $this->show = $show;
+        $this->hide = $hide;
         $url = $this->getUrl($dataType) . $ID;
         $data = file_get_contents($url);
         if ( !$data ){
@@ -50,7 +54,7 @@ class UnivISAPI {
         $data = json_decode( $data, true);
         $data = $this->mapIt($dataType, $data);
         $data = $this->dict($data);
-        $data = $this->sortGroupFilter($dataType, $data, $sort, $show, $hide);
+        $data = $this->sortGroup($dataType, $data, $sort);
 
         return $data;
     }
@@ -119,6 +123,7 @@ class UnivISAPI {
             case 'personByOrga':
             case 'personByOrgaPhonebook':
             case 'personByName':
+            case 'personAll':
                 $map =  [
                     'node' => 'Person',
                     'fields' => [
@@ -268,10 +273,23 @@ class UnivISAPI {
         return $map;
     }
 
+    public function showPosition($position){
+        // show is given => show matches only 
+        if (!empty($this->show) && (strpos($this->show, $position) !== FALSE)){
+            return TRUE;
+        }
+        // hide defined jobs, show all others => config: ignoriere_jobs && shortcode: ignoriere_jobs
+        if (!empty($this->hide) && (strpos($this->hide, $position) !== FALSE)){
+            return FALSE;
+        }
+        return TRUE;
+    }
+
     public function mapIt($dataType, &$data){
         $ret = [];
 
         $map = $this->getMap($dataType);
+        $show = TRUE;
 
         if (isset($data[$map['node']])){
             foreach($data[$map['node']] as $nr => $entry){
@@ -412,8 +430,13 @@ class UnivISAPI {
                                     }else{
                                         $cnt = $e_nr;
                                     }
-                                    $ret[$cnt]['orga_position'] = $vals['description'];
-                                    $ret[$cnt]['orga_position_order'] = $vals['joborder'];
+                                    $show = $this->showPosition($vals['description']);
+                                    if (!$show){
+                                        unset($ret[$cnt]);
+                                    }else{
+                                        $ret[$cnt]['orga_position'] = $vals['description'];
+                                        $ret[$cnt]['orga_position_order'] = $vals['joborder'];
+                                    }
                                 }
                             }
                         }
@@ -425,41 +448,21 @@ class UnivISAPI {
         return $ret;
     }
 
-    public function sortGroupFilter($dataType, &$data, $sort = NULL, $show = NULL, $hide = NULL){
+    public function sortGroup($dataType, &$data, $sort = NULL){
         // sort
         if ($sort && in_array($dataType, ['personByID', 'personAll', 'personByOrga', 'personByName', 'personByOrgaPhonebook'])){
             usort($data, [$this, 'sortByLastname']);            
         }
 
         // group by department
-        if (in_array($dataType, ['personByOrga'])){
+        if ($dataType == 'personByOrga'){
             $data = $this->groupBy($data, 'department');
         }
 
         // group by lastname's first letter
-        if (in_array($dataType, ['personByOrgaPhonebook'])){
+        if ($dataType == 'personByOrgaPhonebook'){
             foreach($data as $nr => $entry){
                 $data[$nr]['letter'] = strtoupper(substr($entry['lastname'], 0, 1));
-                // show / hide jobs
-                if (!empty($show)){
-                    $bFound = FALSE;
-                    if (isset($entry['work'])){
-                        foreach($show as $work){
-                            $bFound = stripos($entry['work'], $work);
-                        }
-                        if ($bFound !== TRUE){
-                            unset($data[$nr]);
-                        }
-                    }
-                }
-                if (!empty($hide) && isset($entry['work'])){
-                    foreach($hide as $work){
-                        $bFound = stripos($entry['work'], $work);
-                        if ($bFound !== FALSE){
-                            unset($data[$nr]);
-                        }
-                    }
-                }
             }
             $data = $this->groupBy($data, 'letter');
         }
@@ -473,7 +476,7 @@ class UnivISAPI {
             $data = $this->groupBy($data, 'year');
         }
         // sort orga_position_order and group by orga_position
-        if (in_array($dataType, ['personAll'])){
+        if ($dataType == 'personAll'){
             usort($data, [$this, 'sortByPositionorder']);            
             $data = $this->groupBy($data, 'orga_position');
         }

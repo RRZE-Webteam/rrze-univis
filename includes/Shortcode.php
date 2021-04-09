@@ -19,6 +19,8 @@ class Shortcode
     protected $pluginFile;
     protected $UnivISOrgNr;
     protected $UnivISLink;
+    protected $this->show;
+    protected $this->hide;
 
     /**
      * Settings-Objekt
@@ -87,60 +89,7 @@ class Shortcode
             }
         }
         $atts = shortcode_atts( $atts_default, $atts );
-
-        // normalize given attributes according to rrze-univis version 2
-        if (empty($atts['task'])){
-            $atts['task'] = 'mitarbeiter-orga';
-        }
-
-        if (!empty($atts['number'])){
-            $this->UnivISOrgNr = (int)$atts['number'];
-        }elseif (!empty($atts['task']) && ($atts['task'] == 'lehrveranstaltungen-alle' || $atts['task'] == 'mitarbeiter-einzeln') && !empty($atts['id'])){
-            $this->UnivISOrgNr = (int)$atts['id'];
-        }
-        if (empty($this->UnivISOrgNr)){
-            return 'no UnivISOrgNr given';
-        }
-
-        if (!empty($atts['dozentid'])){
-            $atts['id'] = (int)$atts['dozentid'];
-        }
-
-        if (!empty($atts['dozentname'])){
-            $atts['name'] = $atts['dozentname'];
-        }
-        
-        if (!empty($atts['name'])){
-            $atts['name'] = str_replace(' ', '', $atts['name']);
-        }
-
-        $hide_jobs = NULL;
-        if (!empty($atts['ignoriere_jobs'])){
-            $hide_jobs = explode('|', $atts['ignoriere_jobs']);
-        }
-        $show_jobs = NULL;
-        if (!empty($atts['zeige_jobs'])){
-            $show_jobs = explode('|', $atts['zeige_jobs']);
-        }
-
-        $show = [];
-        if (!empty($atts['show'])){
-            $show = explode(',', trim(strtolower($atts['show'])));
-            if (($key = array_search('zeige_sprungmarken', $show)) !== false) {
-                unset($show[$key]);
-                $show[] = 'sprungmarken';
-            }
-        }
-
-        $hide = [];
-        if (!empty($atts['hide'])){
-            $hide = explode(',', trim(strtolower($atts['hide'])));
-            if (in_array(['sprungmarken', 'zeige_sprungmarken'], $hide)){
-                if (($key = array_search('sprungmarken', $show)) !== false) {
-                    unset($show[$key]);
-                }
-            }
-        }
+        $atts = $this->normalize($atts);
 
         $univis = new UnivISAPI('https://univis.uni-erlangen.de', $this->UnivISOrgNr);
 
@@ -149,8 +98,8 @@ class Shortcode
         //
         // DONE show => sprungmarken, telefon, mail
         // DONE hide => sprungmarken
-        // ignoriere_jobs z.B. ignoriere_jobs="Webmaster, Postmaster"
-        // zeige_jobs z.B. zeige_jobs="Webmaster, Postmaster"
+        // DONE ignoriere_jobs z.B. ignoriere_jobs="Webmaster, Postmaster"
+        // DONE zeige_jobs z.B. zeige_jobs="Webmaster, Postmaster"
         // sem
         // sprache
         // orgunit ?
@@ -184,7 +133,7 @@ class Shortcode
         //
         // [univis task="lehrveranstaltungen-alle" type="vorl"] => nur Vorlesungen
         // DONE [univis task="lehrveranstaltungen-alle" name="Mustermann,Max"]
-        // [univis task="lehrveranstaltungen-alle" univisid="20333881"] univisid ist die vom Professor
+        // DONE [univis task="lehrveranstaltungen-alle" univisid="20333881"] univisid ist die vom Professor
         // [univis task="lehrveranstaltungen-alle" sem="2016w"]
         // [univis task="lehrveranstaltungen-alle" lv_import="0"] => importierte Lehrveranstaltungen ausblenden
         // [univis task="lehrveranstaltungen-alle" sprache="E"]
@@ -203,8 +152,14 @@ class Shortcode
 
         switch($atts['task']){
             case 'mitarbeiter-einzeln': 
-                if (!empty($atts['id'])){
-                    $data = $univis->getData('personByID', $atts['id']);
+                if (!in_array('telefon', $this->hide) && !in_array('telefon', $this->show)){
+                    $this->show[] = 'telefon';
+                }
+                if (!in_array('mail', $this->hide) && !in_array('mail', $this->show)){
+                    $this->show[] = 'mail';
+                }
+                if (!empty($atts['univisid'])){
+                    $data = $univis->getData('personByID', $atts['univisid']);
                     if ($data){
                         $atts['name'] = $data[0]['lastname'] . ',' . $data[0]['firstname'];
                     }
@@ -220,10 +175,13 @@ class Shortcode
                 $data = $univis->getData('personByOrga');
                 break;
             case 'mitarbeiter-telefonbuch': 
-                $data = $univis->getData('personByOrgaPhonebook', NULL, 1, $show_jobs, $hide_jobs);
+                $data = $univis->getData('personByOrgaPhonebook', NULL, 1, $atts['zeige_jobs'], $atts['ignoriere_jobs']);
                 break;
             case 'mitarbeiter-alle': 
-                $data = $univis->getData('personAll');
+                if (!in_array('telefon', $this->hide) && !in_array('telefon', $this->show)){
+                    $this->show[] = 'telefon';
+                }
+                $data = $univis->getData('personAll', NULL, 1, $atts['zeige_jobs'], $atts['ignoriere_jobs']);
                 break;
             case 'lehrveranstaltungen-einzeln': 
                 if (!empty($atts['id'])){
@@ -255,7 +213,6 @@ class Shortcode
             // $data = '<pre>' . json_encode($data, JSON_PRETTY_PRINT) . '</pre>';
             // var_dump($data);
             // exit;
-
             
             $filename = trailingslashit(dirname(__FILE__)) . '../templates/' . $atts['task'] . '.php';
             
@@ -270,6 +227,38 @@ class Shortcode
 
         // wp_enqueue_style('rrze-univis-shortcode');
         // wp_enqueue_script('rrze-univis-shortcode');
+    }
+
+    public function normalize($atts){
+        // normalize given attributes according to rrze-univis version 2
+        if (empty($atts['task'])){
+            $atts['task'] = 'mitarbeiter-orga';
+        }
+        if (!empty($atts['number'])){
+            $this->UnivISOrgNr = (int)$atts['number'];
+        }elseif (!empty($atts['task']) && ($atts['task'] == 'lehrveranstaltungen-alle' || $atts['task'] == 'mitarbeiter-einzeln') && !empty($atts['id'])){
+            $this->UnivISOrgNr = (int)$atts['id'];
+        }
+        if (empty($this->UnivISOrgNr)){
+            return 'no UnivISOrgNr given';
+        }
+        if (!empty($atts['dozentid'])){
+            $atts['id'] = (int)$atts['dozentid'];
+        }
+        if (!empty($atts['dozentname'])){
+            $atts['name'] = $atts['dozentname'];
+        }
+        if (!empty($atts['name'])){
+            $atts['name'] = str_replace(' ', '', $atts['name']);
+        }
+        if (!empty($atts['show'])){
+            $this->show = array_map('trim', explode(',', strtolower($atts['show'])));
+        }
+        if (!empty($atts['hide'])){
+            $this->hide = array_map('trim', explode(',', strtolower($atts['hide'])));
+        }
+
+        return $atts;
     }
 
     public function isGutenberg(){

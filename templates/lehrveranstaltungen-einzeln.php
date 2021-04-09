@@ -1,6 +1,5 @@
 <?php if ($veranstaltung) : ?>
     <h2><?php echo $veranstaltung['name']; ?></h2>
-
     <?php if (!empty($veranstaltung['lecturers'])) : ?>
         <h3><?php _e('Lecturers', 'rrze-univis');?></h3>
         <ul>

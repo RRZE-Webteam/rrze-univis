@@ -123,6 +123,12 @@ function getShortcodeSettings(){
 			'label' => __( 'Nachname, Vorname', 'rrze-univis' ),
 			'type' => 'string'
 		],
+		'number' => [
+			'default' => 0,
+			'field_type' => 'text',
+			'label' => __( 'UnivIS OrgID', 'rrze-univis' ),
+			'type' => 'number'
+		],
 		'univisid' => [
 			'default' => 0,
 			'field_type' => 'text',
