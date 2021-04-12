@@ -58,7 +58,6 @@ class Shortcode
      */
     public function enqueueScripts(){
         wp_register_style('rrze-univis-shortcode', plugins_url('assets/css/shortcode.css', plugin_basename($this->pluginFile)));
-        wp_register_script('rrze-univis-shortcode', plugins_url('assets/js/shortcode.js', plugin_basename($this->pluginFile)));
     }
 
 
