@@ -478,7 +478,6 @@ class UnivISAPI {
         if (!empty($this->sort) && $this->sort && in_array($dataType, ['personByID', 'personAll', 'personByOrga', 'personByName', 'personByOrgaPhonebook'])){
             usort($data, [$this, 'sortByLastname']);            
         }
-
         // group by department
         if ($dataType == 'personByOrga'){
             $data = $this->groupBy($data, 'department');

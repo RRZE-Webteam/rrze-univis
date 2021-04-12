@@ -110,121 +110,202 @@ function getFields()
 
 function getShortcodeSettings(){
 	return [
-		'block' => [
-            'blocktype' => 'rrze-univis/univis',
-			'blockname' => 'univis',
-			'title' => 'RRZE-UnivIS',
-			'category' => 'widgets',
-            'icon' => 'admin-users',
-		],
-		'task' => [
-			'values' => [
-                [
-                    'id' => '',
-                    'val' =>  __( 'Bitte wählen Sie', 'rrze-univis' )
+        'mitarbeiter' => [
+            'block' => [
+                'blocktype' => 'rrze-univis/univismitarbeiter',
+                'blockname' => 'univismitarbeiter',
+                'title' => 'RRZE-UnivIS Mitarbeiter',
+                'category' => 'widgets',
+                'icon' => 'admin-users',
+            ],
+            'task' => [
+                'values' => [
+                    [
+                        'id' => '',
+                        'val' =>  __( 'Bitte wählen Sie', 'rrze-univis' )
+                    ],
+                    [
+                        'id' => 'mitarbeiter-einzeln',
+                        'val' =>  __( 'Mitarbeiter Einzeln', 'rrze-univis' )
+                    ],
+                    [
+                        'id' => 'mitarbeiter-alle',
+                        'val' =>  __( 'Mitarbeiter Alle', 'rrze-univis' )
+                    ],
+                    [
+                        'id' => 'mitarbeiter-telefonbuch',
+                        'val' =>  __( 'Mitarbeiter Telefonbuch', 'rrze-univis' )
+                    ],
+                    [
+                        'id' => 'mitarbeiter-orga',
+                        'val' =>  __( 'Mitarbeiter Organisation', 'rrze-univis' )
+                    ],
                 ],
-                [
-                    'id' => 'mitarbeiter-einzeln',
-                    'val' =>  __( 'Mitarbeiter Einzeln', 'rrze-univis' )
+                'default' => '',
+                'field_type' => 'select',
+                'label' => __( 'Bitte wählen Sie', 'rrze-univis' ),
+                'type' => 'string'
+            ],
+            'name' => [
+                'default' => '',
+                'field_type' => 'text',
+                'label' => __( 'Nachname, Vorname', 'rrze-univis' ),
+                'type' => 'string'
+            ],
+            'univisid' => [
+                'default' => 0,
+                'field_type' => 'text',
+                'label' => __( 'UnivIS ID Person', 'rrze-univis' ),
+                'type' => 'number'
+            ],
+            'show' => [
+                'default' => '',
+                'field_type' => 'text',
+                'label' => __( 'anzeigen', 'rrze-univis' ),
+                'type' => 'string'
+            ],
+            'hide' => [
+                'default' => '',
+                'field_type' => 'text',
+                'label' => __( 'ausblenden', 'rrze-univis' ),
+                'type' => 'string'
+            ],
+            'ignoriere_jobs' => [
+                'default' => 'Sicherheitsbeauftragter|IT-Sicherheits-Beauftragter|Webmaster|Postmaster|IT-Betreuer|UnivIS-Beauftragte',
+                'field_type' => 'text',
+                'label' => __( 'Ignoriere Jobs - einzelne Tätigkeiten durch | voneinander trennen.', 'rrze-univis' ),
+                'type' => 'string'
+            ],
+            'zeige_jobs' => [
+                'default' => '',
+                'field_type' => 'text',
+                'label' => __( 'Zeige nur diese Jobs', 'rrze-univis' ),
+                'type' => 'string'
+            ],
+            'number' => [
+                'default' => 0,
+                'field_type' => 'text',
+                'label' => __( 'UnivIS OrgID', 'rrze-univis' ),
+                'type' => 'number'
+            ],
+        ],
+        'lehrveranstaltungen' => [
+            'block' => [
+                'blocktype' => 'rrze-univis/univislehrveranstaltungen',
+                'blockname' => 'univislehrveranstaltungen',
+                'title' => 'RRZE-UnivIS Lehrveranstaltungen',
+                'category' => 'widgets',
+                'icon' => 'admin-users',
+            ],
+            'task' => [
+                'values' => [
+                    [
+                        'id' => '',
+                        'val' =>  __( 'Bitte wählen Sie', 'rrze-univis' )
+                    ],
+                    [
+                        'id' => 'lehrveranstaltungen-einzeln',
+                        'val' =>  __( 'Lehrveranstaltungen Einzeln', 'rrze-univis' )
+                    ],
+                    [
+                        'id' => 'lehrveranstaltungen-alle',
+                        'val' =>  __( 'Lehrveranstaltungen Alle', 'rrze-univis' )
+                    ],
                 ],
-                [
-                    'id' => 'mitarbeiter-alle',
-                    'val' =>  __( 'Mitarbeiter Alle', 'rrze-univis' )
+                'default' => '',
+                'field_type' => 'select',
+                'label' => __( 'Bitte wählen Sie', 'rrze-univis' ),
+                'type' => 'string'
+            ],
+            'id' => [
+                'default' => 0,
+                'field_type' => 'text',
+                'label' => __( 'UnivIS ID Lehrveranstaltung', 'rrze-univis' ),
+                'type' => 'number'
+            ],
+            'name' => [
+                'default' => '',
+                'field_type' => 'text',
+                'label' => __( 'Nachname, Vorname', 'rrze-univis' ),
+                'type' => 'string'
+            ],
+            'univisid' => [
+                'default' => 0,
+                'field_type' => 'text',
+                'label' => __( 'UnivIS ID Person', 'rrze-univis' ),
+                'type' => 'number'
+            ],
+            'lv_import' => [
+                'field_type' => 'toggle',
+                'label' => __( 'Importierte Lehrveranstaltungen ausgeben', 'rrze-univis' ),
+                'type' => 'boolean',
+                'default' => TRUE,
+                'checked'   => TRUE
+            ],
+            'type' => [
+                'default' => '',
+                'field_type' => 'text',
+                'label' => __( 'Typ. z.B. vorl (=Vorlesung)', 'rrze-univis' ),
+                'type' => 'string'
+            ],
+            'sem' => [
+                'default' => '',
+                'field_type' => 'text',
+                'label' => __( 'Semester z.B. 2020w', 'rrze-univis' ),
+                'type' => 'string'
+            ],
+            'sprache' => [
+                'default' => '',
+                'field_type' => 'text',
+                'label' => __( 'Sprache', 'rrze-univis' ),
+                'type' => 'string'
+            ],
+            'number' => [
+                'default' => 0,
+                'field_type' => 'text',
+                'label' => __( 'UnivIS OrgID', 'rrze-univis' ),
+                'type' => 'number'
+            ],
+        ],
+        'publikationen' => [
+            'block' => [
+                'blocktype' => 'rrze-univis/univispublikationen',
+                'blockname' => 'univispublikationen',
+                'title' => 'RRZE-UnivIS Publikationen',
+                'category' => 'widgets',
+                'icon' => 'admin-users',
+            ],
+            'task' => [
+                'values' => [
+                    [
+                        'id' => 'publikationen',
+                        'val' =>  __( 'Publikationen', 'rrze-univis' )
+                    ],
                 ],
-                [
-                    'id' => 'mitarbeiter-telefonbuch',
-                    'val' =>  __( 'Mitarbeiter Telefonbuch', 'rrze-univis' )
-                ],
-                [
-                    'id' => 'mitarbeiter-orga',
-                    'val' =>  __( 'Mitarbeiter Organisation', 'rrze-univis' )
-                ],
-                [
-                    'id' => 'lehrveranstaltungen-einzeln',
-                    'val' =>  __( 'Lehrveranstaltungen Einzeln', 'rrze-univis' )
-                ],
-                [
-                    'id' => 'lehrveranstaltungen-alle',
-                    'val' =>  __( 'Lehrveranstaltungen Alle', 'rrze-univis' )
-                ],
-			],
-			'default' => 'wert1', // vorausgewählter Wert: Achtung: string, kein array!
-			'field_type' => 'select',
-			'label' => __( 'Bitte wählen Sie', 'rrze-univis' ),
-			'type' => 'string' // Variablentyp des auswählbaren Werts
-		],
-		'name' => [
-			'default' => '',
-			'field_type' => 'text',
-			'label' => __( 'Nachname, Vorname', 'rrze-univis' ),
-			'type' => 'string'
-		],
-		'number' => [
-			'default' => 0,
-			'field_type' => 'text',
-			'label' => __( 'UnivIS OrgID', 'rrze-univis' ),
-			'type' => 'number'
-		],
-		'univisid' => [
-			'default' => 0,
-			'field_type' => 'text',
-			'label' => __( 'UnivIS ID Person', 'rrze-univis' ),
-			'type' => 'number'
-		],
-		'id' => [
-			'default' => 0,
-			'field_type' => 'text',
-			'label' => __( 'UnivIS ID Lehrveranstaltung oder Person', 'rrze-univis' ),
-			'type' => 'number'
-		],
-		'lv_import' => [
-			'default' => 1,
-			'field_type' => 'text',
-			'label' => __( 'Importierete Lehrveranstaltungen ausgeben', 'rrze-univis' ),
-			'type' => 'number'
-		],
-		'type' => [
-			'default' => '',
-			'field_type' => 'text',
-			'label' => __( 'Typ. z.B. vorl (=Vorlesung)', 'rrze-univis' ),
-			'type' => 'string'
-		],
-		'sem' => [
-			'default' => '',
-			'field_type' => 'text',
-			'label' => __( 'Semester z.B. 2020w', 'rrze-univis' ),
-			'type' => 'string'
-		],
-		'sprache' => [
-			'default' => '',
-			'field_type' => 'text',
-			'label' => __( 'Sprache', 'rrze-univis' ),
-			'type' => 'string'
-		],
-		'show' => [
-			'default' => '',
-			'field_type' => 'text',
-			'label' => __( 'anzeigen', 'rrze-univis' ),
-			'type' => 'string'
-		],
-		'hide' => [
-			'default' => '',
-			'field_type' => 'text',
-			'label' => __( 'ausblenden', 'rrze-univis' ),
-			'type' => 'string'
-		],
-		'ignoriere_jobs' => [
-			'default' => 'Sicherheitsbeauftragter|IT-Sicherheits-Beauftragter|Webmaster|Postmaster|IT-Betreuer|UnivIS-Beauftragte',
-			'field_type' => 'text',
-			'label' => __( 'Ignoriere Jobs - einzelne Tätigkeiten durch | voneinander trennen.', 'rrze-univis' ),
-			'type' => 'string'
-		],
-		'zeige_jobs' => [
-			'default' => '',
-			'field_type' => 'text',
-			'label' => __( 'Zeige Jobs', 'rrze-univis' ),
-			'type' => 'string'
-		],
+                'default' => 'publikationen',
+                'field_type' => 'select',
+                'label' => __( 'Bitte wählen Sie', 'rrze-univis' ),
+                'type' => 'string'
+            ],
+            'name' => [
+                'default' => '',
+                'field_type' => 'text',
+                'label' => __( 'Nachname, Vorname', 'rrze-univis' ),
+                'type' => 'string'
+            ],
+            'univisid' => [
+                'default' => 0,
+                'field_type' => 'text',
+                'label' => __( 'UnivIS ID Person', 'rrze-univis' ),
+                'type' => 'number'
+            ],
+            'number' => [
+                'default' => 0,
+                'field_type' => 'text',
+                'label' => __( 'UnivIS OrgID', 'rrze-univis' ),
+                'type' => 'number'
+            ],
+        ]
     ];
 }
 
