@@ -136,7 +136,7 @@ class Shortcode
                 $data = $univis->getData('personByOrga');
                 break;
             case 'mitarbeiter-telefonbuch': 
-                $data = $univis->getData('personByOrgaPhonebook');
+                $data = $univis->getData('personByOrgaPhonebook', NULL, 1);
                 break;
             case 'mitarbeiter-alle': 
                 if (!in_array('telefon', $this->hide) && !in_array('telefon', $this->show)){
@@ -218,6 +218,12 @@ class Shortcode
         if (!empty($atts['name'])){
             $atts['name'] = str_replace(' ', '', $atts['name']);
         }
+        if (empty($atts['show'])){
+            $atts['show'] = '';
+        }
+        if (empty($atts['hide'])){
+            $atts['hide'] = '';
+        }
         if (isset($atts['show_phone'])){
             if ($atts['show_phone']){
                 $atts['show'] .= ',telefon';
@@ -230,6 +236,13 @@ class Shortcode
                 $atts['show'] .= ',mail';
             }else{
                 $atts['hide'] .= ',mail';
+            }
+        }
+        if (isset($atts['show_jumpmarks'])){
+            if ($atts['show_jumpmarks']){
+                $atts['show'] .= ',sprungmarken';
+            }else{
+                $atts['hide'] .= ',sprungmarken';
             }
         }
         if (!empty($atts['show'])){
@@ -393,6 +406,12 @@ class Shortcode
                 $settings['show_mail']['type'] = 'boolean';
                 $settings['show_mail']['default'] = TRUE;
                 $settings['show_mail']['checked'] = TRUE;
+
+                $settings['show_jumpmarks']['field_type'] = 'toggle';
+                $settings['show_jumpmarks']['label'] = __( 'Sprungmarken anzeigen', 'rrze-univis' );
+                $settings['show_jumpmarks']['type'] = 'boolean';
+                $settings['show_jumpmarks']['default'] = TRUE;
+                $settings['show_jumpmarks']['checked'] = TRUE;
             }
 
             $this->settings[$task] = $settings;

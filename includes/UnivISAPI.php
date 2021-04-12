@@ -475,9 +475,10 @@ class UnivISAPI {
 
     public function sortGroup($dataType, &$data){
         // sort
-        if (!empty($this->sort) && $this->sort && in_array($dataType, ['personByID', 'personAll', 'personByOrga', 'personByName', 'personByOrgaPhonebook'])){
+        if (in_array($dataType, ['personByID', 'personByOrga', 'personByName', 'personByOrgaPhonebook'])){
             usort($data, [$this, 'sortByLastname']);            
         }
+
         // group by department
         if ($dataType == 'personByOrga'){
             $data = $this->groupBy($data, 'department');
@@ -503,8 +504,11 @@ class UnivISAPI {
         if ($dataType == 'personAll'){
             usort($data, [$this, 'sortByPositionorder']);            
             $data = $this->groupBy($data, 'orga_position');
+            foreach($data as $position => $members){
+                usort($members, [$this, 'sortByLastname']);            
+                $data[$position] = $members;
+            }
         }
-
         // sort by name
         if (in_array($dataType, ['departmentByName', 'departmentAll'])){
             usort($data, [$this, 'sortByName']);            
