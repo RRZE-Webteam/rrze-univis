@@ -9,8 +9,7 @@ use function RRZE\UnivIS\Config\getShortcodeSettings;
 /**
  * Shortcode
  */
-class Shortcode
-{
+class Shortcode{
     /**
      * Der vollständige Pfad- und Dateiname der Plugin-Datei.
      * @var string
@@ -40,7 +39,7 @@ class Shortcode
 
         $options = get_option( 'rrze-univis' );
         $this->UnivISOrgNr = (!empty($options['basic_UnivISOrgNr']) ? $options['basic_UnivISOrgNr'] : 0);
-        $this->UnivISURL = (!empty($options['basic_univis_url']) ? $options['basic_univis_url'] : __('URL zu UnivIS fehlt', 'rrze-univis'));
+        $this->UnivISURL = (!empty($options['basic_univis_url']) ? $options['basic_univis_url'] : '');
         $this->UnivISLink = sprintf('<a href="%1$s">%2$s</a>', $this->UnivISURL, (!empty($options['basic_univis_linktxt']) ? $options['basic_univis_linktxt'] : __('Text zum UnivIS Link fehlt', 'rrze-univis')));
     }
 
@@ -106,9 +105,8 @@ class Shortcode
         $atts = shortcode_atts( $atts_default, $atts );
         $atts = $this->normalize($atts);
 
-        $univis = new UnivISAPI($this->UnivISURL, $this->UnivISOrgNr, $atts);
-
         $data = '';
+        $univis = new UnivISAPI($this->UnivISURL, $this->UnivISOrgNr, $atts);
 
         switch($atts['task']){
             case 'mitarbeiter-einzeln': 
@@ -420,7 +418,7 @@ class Shortcode
 
 
     public function initGutenberg() {
-        if (! $this->isGutenberg()){
+        if (! $this->isGutenberg() || empty($this->UnivISURL)){
             return;
         }
 
@@ -440,6 +438,7 @@ class Shortcode
                 ),
                 NULL
             );
+            $settings['test'] = 'testit';
             wp_localize_script( $editor_script, $settings['block']['blockname'] . 'Config', $settings );
 
             // register block
@@ -471,5 +470,4 @@ class Shortcode
             NULL
         );
     }
-
 }
