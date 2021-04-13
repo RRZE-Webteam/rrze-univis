@@ -34,13 +34,12 @@ class Shortcode{
     public function __construct($pluginFile, $settings){
         $this->pluginFile = $pluginFile;
         $this->settings = getShortcodeSettings();
-        add_action( 'admin_enqueue_scripts', [$this, 'enqueueGutenberg'] );
-        add_action( 'init',  [$this, 'initGutenberg'] );
-
         $options = get_option( 'rrze-univis' );
         $this->UnivISOrgNr = (!empty($options['basic_UnivISOrgNr']) ? $options['basic_UnivISOrgNr'] : 0);
         $this->UnivISURL = (!empty($options['basic_univis_url']) ? $options['basic_univis_url'] : '');
         $this->UnivISLink = sprintf('<a href="%1$s">%2$s</a>', $this->UnivISURL, (!empty($options['basic_univis_linktxt']) ? $options['basic_univis_linktxt'] : __('Text zum UnivIS Link fehlt', 'rrze-univis')));
+        add_action( 'admin_enqueue_scripts', [$this, 'enqueueGutenberg'] );
+        add_action( 'init',  [$this, 'initGutenberg'] );
     }
 
     /**
@@ -56,7 +55,7 @@ class Shortcode{
      * Enqueue der Skripte.
      */
     public function enqueueScripts(){
-        wp_register_style('rrze-univis-shortcode', plugins_url('assets/css/shortcode.css', plugin_basename($this->pluginFile)));
+        // wp_register_style('rrze-univis-shortcode', plugins_url('assets/css/shortcode.css', plugin_basename($this->pluginFile)));
     }
 
 
@@ -68,6 +67,8 @@ class Shortcode{
     public function shortcodeOutput( $atts ) {
         if (empty($atts)){
             return $this->UnivISLink;
+        }elseif(empty($this->UnivISOrgNr)){
+            return __('UnivIS-OrgNr. muss entweder in wp-admin/options-general.php?page=rrze-univis gesetzt oder im Shortcode übergeben werden.', 'rrze-univis');
         }
 
         // lv_id is not in config (=> id)
@@ -133,13 +134,13 @@ class Shortcode{
                 $data = $univis->getData('personByOrga');
                 break;
             case 'mitarbeiter-telefonbuch': 
-                $data = $univis->getData('personByOrgaPhonebook', NULL, 1);
+                $data = $univis->getData('personByOrgaPhonebook');
                 break;
             case 'mitarbeiter-alle': 
                 if (!in_array('telefon', $this->hide) && !in_array('telefon', $this->show)){
                     $this->show[] = 'telefon';
                 }
-                $data = $univis->getData('personAll', NULL, 1, $atts['zeige_jobs'], $atts['ignoriere_jobs']);
+                $data = $univis->getData('personAll', NULL);
                 break;
             case 'lehrveranstaltungen-einzeln': 
                 if (!empty($atts['id'])){
@@ -188,9 +189,6 @@ class Shortcode{
         }else{
             return __('Keine passenden Datensätze gefunden.', 'rrze-univis');
         }
-
-        // wp_enqueue_style('rrze-univis-shortcode');
-        // wp_enqueue_script('rrze-univis-shortcode');
     }
 
     public function normalize($atts){
@@ -261,6 +259,27 @@ class Shortcode{
         return true;        
     }
 
+    private function makeDropdown($label, $all = NULL){
+        return [
+            'label' => $label,
+            'field_type' => 'select',
+            'default' => '',
+            'type' => 'string',
+            'items' => ['type' => 'text'],
+            'values' => [['id' => '', 'val' => (empty($all)?__( '-- Alle --', 'rrze-univis' ):$all)]],
+        ];
+    }
+
+    private function makeToggle($label){
+        return [
+            'label' => $label,
+            'field_type' => 'toggle',
+            'default' => TRUE,
+            'checked' => TRUE,
+            'type' => 'boolean',
+        ];
+    }
+
     public function fillGutenbergOptions() {
         $univis = new UnivISAPI($this->UnivISURL, $this->UnivISOrgNr, NULL);
 
@@ -283,14 +302,7 @@ class Shortcode{
                     }
                 }
                 asort($aPersons);            
-                $settings['univisid']['label'] = __('Person', 'rrze-univis');
-                $settings['univisid']['field_type'] = 'select';
-                $settings['univisid']['default'] = '';
-                $settings['univisid']['type'] = 'string';
-                $settings['univisid']['items'] = array( 'type' => 'text' );
-                $settings['univisid']['values'] = array();
-                $settings['univisid']['values'][] = ['id' => '', 'val' => __( '-- Alle --', 'rrze-univis' )];
-
+                $settings['univisid'] = $this->makeDropdown(__('Person', 'rrze-univis'));
                 foreach($aPersons as $id => $name){
                     $settings['univisid']['values'][] = [
                         'id' => $id,
@@ -309,7 +321,7 @@ class Shortcode{
                 foreach($data as $type => $lecs){
                     foreach($lecs as $lecture){
                         $aLectureTypes[$lecture['lecture_type']] = $type;
-                        if ($lecture['leclanguage']){
+                        if (!empty($lecture['leclanguage'])){
                             $parts = explode(' ', $lecture['leclanguage_long']);
                             $aLectureLanguages[$lecture['leclanguage']] = $parts[1];
                         }
@@ -317,13 +329,7 @@ class Shortcode{
                     }
                 }
                 asort($aLectures);            
-                $settings['id']['label'] = __('Lehrveranstaltung', 'rrze-univis');
-                $settings['id']['field_type'] = 'select';
-                $settings['id']['default'] = '';
-                $settings['id']['type'] = 'string';
-                $settings['id']['items'] = array( 'type' => 'text' );
-                $settings['id']['values'] = array();
-                $settings['id']['values'][] = ['id' => '', 'val' => __( '-- Alle --', 'rrze-univis' )];
+                $settings['id'] = $this->makeDropdown(__('Lehrveranstaltung', 'rrze-univis'));
 
                 foreach($aLectures as $id => $name){
                     $settings['id']['values'][] = [
@@ -333,13 +339,7 @@ class Shortcode{
                 }
 
                 asort($aLectureTypes);            
-                $settings['type']['label'] = __('Typ', 'rrze-univis');
-                $settings['type']['field_type'] = 'select';
-                $settings['type']['default'] = '';
-                $settings['type']['type'] = 'string';
-                $settings['type']['items'] = array( 'type' => 'text' );
-                $settings['type']['values'] = array();
-                $settings['type']['values'][] = ['id' => '', 'val' => __( '-- Alle --', 'rrze-univis' )];
+                $settings['type'] = $this->makeDropdown(__('Typ', 'rrze-univis'));
 
                 foreach($aLectureTypes as $id => $name){
                     $settings['type']['values'][] = [
@@ -349,12 +349,7 @@ class Shortcode{
                 }
 
                 asort($aLectureLanguages);            
-                $settings['sprache']['field_type'] = 'select';
-                $settings['sprache']['default'] = '';
-                $settings['sprache']['type'] = 'string';
-                $settings['sprache']['items'] = array( 'type' => 'text' );
-                $settings['sprache']['values'] = array();
-                $settings['sprache']['values'][] = ['id' => '', 'val' => __( '-- Alle --', 'rrze-univis' )];
+                $settings['sprache'] = $this->makeDropdown(__('Sprache', 'rrze-univis'));
 
                 foreach($aLectureLanguages as $id => $name){
                     $settings['sprache']['values'][] = [
@@ -365,13 +360,7 @@ class Shortcode{
 
                 // Semester
                 if (isset($settings['sem'])){
-                    $settings['sem']['field_type'] = 'select';
-                    $settings['sem']['default'] = '';
-                    $settings['sem']['type'] = 'string';
-                    $settings['sem']['items'] = array( 'type' => 'text' );
-                    $settings['sem']['values'] = array();
-                    $settings['sem']['label'] = __('Semester', 'rrze-univis');
-                    $settings['sem']['values'][] = ['id' => '', 'val' => __( '-- Aktuelles Semester --', 'rrze-univis' )];
+                    $settings['sem'] = $this->makeDropdown(__('Sprache', 'rrze-univis'), __( '-- Aktuelles Semester --', 'rrze-univis' ));
                     $lastYear = date("Y") - 1;
 
                     for ($i = $lastYear; $i > 2000; $i--){
@@ -391,24 +380,9 @@ class Shortcode{
             if (isset($settings['show'])){
                 unset($settings['show']);
                 unset($settings['hide']);
-
-                $settings['show_phone']['field_type'] = 'toggle';
-                $settings['show_phone']['label'] = __( 'Telefonnummern anzeigen', 'rrze-univis' );
-                $settings['show_phone']['type'] = 'boolean';
-                $settings['show_phone']['default'] = TRUE;
-                $settings['show_phone']['checked'] = TRUE;
-
-                $settings['show_mail']['field_type'] = 'toggle';
-                $settings['show_mail']['label'] = __( 'eMail Adresse anzeigen', 'rrze-univis' );
-                $settings['show_mail']['type'] = 'boolean';
-                $settings['show_mail']['default'] = TRUE;
-                $settings['show_mail']['checked'] = TRUE;
-
-                $settings['show_jumpmarks']['field_type'] = 'toggle';
-                $settings['show_jumpmarks']['label'] = __( 'Sprungmarken anzeigen', 'rrze-univis' );
-                $settings['show_jumpmarks']['type'] = 'boolean';
-                $settings['show_jumpmarks']['default'] = TRUE;
-                $settings['show_jumpmarks']['checked'] = TRUE;
+                $settings['show_phone'] = $this->makeToggle(__( 'Telefonnummern anzeigen', 'rrze-univis' ));
+                $settings['show_mail'] = $this->makeToggle(__( 'eMail anzeigen', 'rrze-univis' ));
+                $settings['show_jumpmarks'] = $this->makeToggle(__( 'Sprungmarken anzeigen', 'rrze-univis' ));
             }
 
             $this->settings[$task] = $settings;
@@ -418,7 +392,7 @@ class Shortcode{
 
 
     public function initGutenberg() {
-        if (! $this->isGutenberg() || empty($this->UnivISURL)){
+        if (! $this->isGutenberg() || empty($this->UnivISURL) || empty($this->UnivISOrgNr)){
             return;
         }
 

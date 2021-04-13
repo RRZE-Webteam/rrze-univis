@@ -868,12 +868,19 @@ class Settings
             $name = filter_input(INPUT_POST, 'department_name', FILTER_SANITIZE_STRING);
             if ($name){
                 $options = get_option( 'rrze-univis' );
+                $data = 0;
+                $UnivISURL = (!empty($options['basic_univis_url']) ? $options['basic_univis_url'] : '');
                 $univisOrgID = (!empty($options['basic_UnivISOrgNr']) ? $options['basic_UnivISOrgNr'] : 0);
-                $univis = new UnivISAPI('https://univis.uni-erlangen.de', $univisOrgID, NULL);
-                $data = $univis->getData('departmentByName', $name);
-                
+
+                if ($UnivISURL && $univisOrgID){
+                    $univis = new UnivISAPI($UnivISURL, $univisOrgID, NULL);
+                    $data = $univis->getData('departmentByName', $name);
+                }
+            
                 echo '<div id="result">';
-                if (!$data){
+                if (!$UnivISURL){
+                    echo __('Link zu UnivIS fehlt.', 'rrze-univis');
+                }elseif (!$data){
                     echo __('Keine passenden Datensätze gefunden.', 'rrze-univis');
                 }else{
                     echo '<table class="wp-list-table widefat striped"><thead><tr><td><b><i>Univ</i>IS</b> OrgNr.</td><td>Name</td></tr></thead>';

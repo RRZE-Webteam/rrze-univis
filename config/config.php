@@ -195,7 +195,7 @@ function getShortcodeSettings(){
                 'blockname' => 'univislehrveranstaltungen',
                 'title' => 'RRZE-UnivIS Lehrveranstaltungen',
                 'category' => 'widgets',
-                'icon' => 'admin-users',
+                'icon' => 'bank',
             ],
             'task' => [
                 'values' => [
@@ -273,7 +273,7 @@ function getShortcodeSettings(){
                 'blockname' => 'univispublikationen',
                 'title' => 'RRZE-UnivIS Publikationen',
                 'category' => 'widgets',
-                'icon' => 'admin-users',
+                'icon' => 'megaphone',
             ],
             'task' => [
                 'values' => [
