@@ -102,6 +102,8 @@ class Settings
         add_action('admin_init', [$this, 'adminInit']);
         add_action('admin_menu', [$this, 'adminMenu']);
         add_action('admin_enqueue_scripts', [$this, 'adminEnqueueScripts']);
+        add_action('wp_ajax_GetDepartments', [$this, 'ajaxGetDepartments']);
+        add_action('wp_ajax_nopriv_GetDepartments', [$this, 'ajaxGetDepartments']);
     }
 
     protected function setMenu()
@@ -298,7 +300,7 @@ class Settings
             </div>
         <?php
         }
-        $this->utility_page();
+        $this->getUnivISSearchPage();
     }
 
     /**
@@ -442,6 +444,19 @@ class Settings
     {
         wp_register_script('wp-color-picker-settings', plugins_url('assets/js/wp-color-picker.js', plugin_basename($this->pluginFile)));
         wp_register_script('wp-media-settings', plugins_url('assets/js/wp-media.js', plugin_basename($this->pluginFile)));
+
+        wp_enqueue_script(
+			'rrze-unvis-ajax',
+			plugins_url('src/js/univis.js', plugin_basename($this->pluginFile)),
+			['jquery'],
+			NULL
+        );    
+
+        wp_localize_script('rrze-unvis-ajax', 'univis_ajax', [
+            'ajax_url' => admin_url('admin-ajax.php'),
+            'nonce' => wp_create_nonce( 'univis-ajax-nonce' ),
+        ]);
+
     }
 
     /**
@@ -836,17 +851,50 @@ class Settings
     }
 
 
-    /*
-     * Die Ausgabe der Werkzeuge Seite.
-     * @return void
-     * 
-     */
-    public function utility_page() {
+    public function getDepartments($name){
+        $data = FALSE;
+        $ret = '';
+
+        if ($name){
+            $options = get_option( 'rrze-univis' );
+            $data = 0;
+            $UnivISURL = (!empty($options['basic_univis_url']) ? $options['basic_univis_url'] : '');
+            $univisOrgID = (!empty($options['basic_UnivISOrgNr']) ? $options['basic_UnivISOrgNr'] : 0);
+
+            if ($UnivISURL){
+                $univis = new UnivISAPI($UnivISURL, $univisOrgID, NULL);
+                $data = $univis->getData('departmentByName', $name);
+            }elseif (!$UnivISURL){
+                $ret =  __('Link zu UnivIS fehlt.', 'rrze-univis');
+            }
+        }
+
+        if ($data){
+            $ret = '<table class="wp-list-table widefat striped"><thead><tr><td><b><i>Univ</i>IS</b> OrgNr.</td><td>Name</td></tr></thead>';
+            foreach($data as $entry){
+                if (isset($entry['orgnr'])){
+                    $ret .= '<tr><td>' . $entry['orgnr'] . '</td><td>' . $entry['name'] . '</td></tr>';
+                }
+            }
+            $ret .= '</table>';
+        }
+
+        return $ret;
+    }
+
+    public function ajaxGetDepartments() {
+        check_ajax_referer( 'univis-ajax-nonce', 'nonce'  );
+        $name = filter_input(INPUT_POST, 'data', FILTER_SANITIZE_STRING);
+        $response = $this->getDepartments($name);
+        wp_send_json($response);
+    }
+
+    public function getUnivISSearchPage() {
         ?>
         <br><br>
         <div class="wrap">
             <h3><?php echo __('Suche nach UnivIS-OrgNr.', 'rrze-univis'); ?></h3>
-            <form method="post">
+            <form method="post" id="search-univis">
             <input type="hidden" name="action" value="search_orgid">
                 <table class="form-table" role="presentation" class="striped">
                     <tbody>
@@ -855,44 +903,14 @@ class Settings
                             <td><input type="text" name="department_name" id="department_name" value=""></td>
                         </tr>
                         <tr>
-                            <td colspan="2"><input type="submit" name="submit" id="submit" class="button button-primary" value="<?php echo __('Suchen', 'rrze-univis'); ?>"></td>
+                            <td colspan="2"><input type="button" id="search" class="button button-primary" value="<?php echo __('Suchen', 'rrze-univis'); ?>"></td>
                         </tr>
                     </tbody>
                 </table>            
             </form>
         </div>
+        <div id="univis-search-result"></div>
+        <div id="loading"><i class="fa fa-refresh fa-spin fa-4x"></i></div>
         <?php
-
-
-        if (isset($_POST["action"]) && $_POST["action"] == 'search_orgid' ){
-            $name = filter_input(INPUT_POST, 'department_name', FILTER_SANITIZE_STRING);
-            if ($name){
-                $options = get_option( 'rrze-univis' );
-                $data = 0;
-                $UnivISURL = (!empty($options['basic_univis_url']) ? $options['basic_univis_url'] : '');
-                $univisOrgID = (!empty($options['basic_UnivISOrgNr']) ? $options['basic_UnivISOrgNr'] : 0);
-
-                if ($UnivISURL && $univisOrgID){
-                    $univis = new UnivISAPI($UnivISURL, $univisOrgID, NULL);
-                    $data = $univis->getData('departmentByName', $name);
-                }
-            
-                echo '<div id="result">';
-                if (!$UnivISURL){
-                    echo __('Link zu UnivIS fehlt.', 'rrze-univis');
-                }elseif (!$data){
-                    echo __('Keine passenden Datensätze gefunden.', 'rrze-univis');
-                }else{
-                    echo '<table class="wp-list-table widefat striped"><thead><tr><td><b><i>Univ</i>IS</b> OrgNr.</td><td>Name</td></tr></thead>';
-                    foreach($data as $entry){
-                        if (isset($entry['orgnr'])){
-                            echo '<tr><td>' . $entry['orgnr'] . '</td><td>' . $entry['name'] . '</td></tr>';
-                        }
-                    }
-                    echo '</table>';
-                }
-                echo '</div>';
-            }
-        }
     }
 }
