@@ -10,11 +10,11 @@ jQuery(document).ready(function($){
             $loading.hide();
         });
 
-        $('#search').click(getData);
+        $('#searchDepartment').click(getDepartment);
 });
 
 
-function getData() {
+function getDepartment() {
     var depName = jQuery('#department_name').val();
 
     jQuery.post(univis_ajax.ajax_url, { //POST request

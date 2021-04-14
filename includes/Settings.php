@@ -903,7 +903,7 @@ class Settings
                             <td><input type="text" name="department_name" id="department_name" value=""></td>
                         </tr>
                         <tr>
-                            <td colspan="2"><input type="button" id="search" class="button button-primary" value="<?php echo __('Suchen', 'rrze-univis'); ?>"></td>
+                            <td colspan="2"><input type="button" id="searchDepartment" class="button button-primary" value="<?php echo __('Suchen', 'rrze-univis'); ?>"></td>
                         </tr>
                     </tbody>
                 </table>            
