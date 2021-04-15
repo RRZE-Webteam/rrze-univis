@@ -102,8 +102,8 @@ class Settings
         add_action('admin_init', [$this, 'adminInit']);
         add_action('admin_menu', [$this, 'adminMenu']);
         add_action('admin_enqueue_scripts', [$this, 'adminEnqueueScripts']);
-        add_action('wp_ajax_GetDepartments', [$this, 'ajaxGetDepartments']);
-        add_action('wp_ajax_nopriv_GetDepartments', [$this, 'ajaxGetDepartments']);
+        add_action('wp_ajax_GetUnivISData', [$this, 'ajaxGetUnivISData']);
+        add_action('wp_ajax_nopriv_GetUnivISData', [$this, 'ajaxGetUnivISData']);
     }
 
     protected function setMenu()
@@ -851,11 +851,11 @@ class Settings
     }
 
 
-    public function getDepartments($name){
+    public function getUnivISDataHTML($keyword, $dataType){
         $data = FALSE;
         $ret = '';
 
-        if ($name){
+        if ($keyword){
             $options = get_option( 'rrze-univis' );
             $data = 0;
             $UnivISURL = (!empty($options['basic_univis_url']) ? $options['basic_univis_url'] : '');
@@ -863,18 +863,39 @@ class Settings
 
             if ($UnivISURL){
                 $univis = new UnivISAPI($UnivISURL, $univisOrgID, NULL);
-                $data = $univis->getData('departmentByName', $name);
+                $data = $univis->getData($dataType, $keyword);
             }elseif (!$UnivISURL){
                 $ret =  __('Link zu UnivIS fehlt.', 'rrze-univis');
             }
         }
 
         if ($data){
-            $ret = '<table class="wp-list-table widefat striped"><thead><tr><td><b><i>Univ</i>IS</b> OrgNr.</td><td>Name</td></tr></thead>';
-            foreach($data as $entry){
-                if (isset($entry['orgnr'])){
-                    $ret .= '<tr><td>' . $entry['orgnr'] . '</td><td>' . $entry['name'] . '</td></tr>';
-                }
+            $ret = '<table class="wp-list-table widefat striped"><thead><tr><td><b><i>Univ</i>IS</b> ID</td><td>Name</td></tr></thead>';
+            switch ($dataType){
+                case 'departmentByName':
+                    foreach($data as $entry){
+                        if (isset($entry['orgnr'])){
+                            $ret .= '<tr><td>' . $entry['orgnr'] . '</td><td>' . $entry['name'] . '</td></tr>';
+                        }
+                    }
+                    break;
+                case 'personByName':
+                    foreach($data as $entry){
+                        if (isset($entry['person_id'])){
+                            $ret .= '<tr><td>' . $entry['person_id'] . '</td><td>' . $entry['lastname'] . ', ' . $entry['firstname'] . '</td></tr>';
+                        }
+                    }
+                    break;
+                case 'lectureByName':
+                    foreach($data as $entry){
+                        if (isset($entry['lecture_id'])){
+                            $ret .= '<tr><td>' . $entry['lecture_id'] . '</td><td>' . $entry['name'] . '</td></tr>';
+                        }
+                    }
+                    break;
+                default:
+                $ret .= '<tr><td colspan="2">unknown dataType</td></tr>';
+                    break;
             }
             $ret .= '</table>';
         }
@@ -882,10 +903,10 @@ class Settings
         return $ret;
     }
 
-    public function ajaxGetDepartments() {
+    public function ajaxGetUnivISData() {
         check_ajax_referer( 'univis-ajax-nonce', 'nonce'  );
-        $name = filter_input(INPUT_POST, 'data', FILTER_SANITIZE_STRING);
-        $response = $this->getDepartments($name);
+        $inputs = filter_input(INPUT_POST, 'data', FILTER_SANITIZE_STRING, FILTER_REQUIRE_ARRAY);
+        $response = $this->getUnivISDataHTML($inputs['keyword'], $inputs['dataType']);
         wp_send_json($response);
     }
 
@@ -893,14 +914,24 @@ class Settings
         ?>
         <br><br>
         <div class="wrap">
-            <h3><?php echo __('Suche nach UnivIS-OrgNr.', 'rrze-univis'); ?></h3>
+            <h3><?php echo __('Suche nach UnivIS IDs', 'rrze-univis'); ?></h3>
             <form method="post" id="search-univis">
-            <input type="hidden" name="action" value="search_orgid">
+                <input type="hidden" name="action" value="search_orgid">
                 <table class="form-table" role="presentation" class="striped">
                     <tbody>
+                    <tr>
+                            <th scope="row"><?php echo __('Suchbegriff', 'rrze-univis'); ?></th>
+                            <td><input type="text" name="keyword" id="keyword" value=""></td>
+                        </tr>
                         <tr>
-                            <th scope="row"><?php echo __('Organisationseinheit', 'rrze-univis'); ?></th>
-                            <td><input type="text" name="department_name" id="department_name" value=""></td>
+                            <th scope="row"><?php echo __('Art', 'rrze-univis'); ?></th>
+                            <td>
+                                <select name="dataType" id="dataType" class="cmb2_select" required="required">
+                                    <option value="departmentByName"><?php echo __('Org Nr.', 'rrze-univis'); ?></option>
+                                    <option value="personByName"><?php echo __('ID der Person', 'rrze-univis'); ?></option>
+                                    <option value="lectureByName"><?php echo __('ID der Lehrveranstaltung', 'rrze-univis'); ?></option>
+                                </select>                        
+                            </td>
                         </tr>
                         <tr>
                             <td colspan="2"><input type="button" id="searchDepartment" class="button button-primary" value="<?php echo __('Suchen', 'rrze-univis'); ?>"></td>

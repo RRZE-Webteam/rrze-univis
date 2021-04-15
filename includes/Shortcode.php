@@ -127,7 +127,7 @@ class Shortcode{
                 }
                 if ($data && !empty($atts['name'])){
                     $person = $data[0];
-                    $person['lectures'] = $univis->getData('lectureByName', $atts['name']);
+                    $person['lectures'] = $univis->getData('lectureByLecturer', $atts['name']);
                 }
                 break;
             case 'mitarbeiter-orga': 
@@ -146,9 +146,9 @@ class Shortcode{
                 if (!empty($atts['id'])){
                     $data = $univis->getData('lectureByID', $atts['id']);
                 }elseif (!empty($atts['name'])){
-                    $data = $univis->getData('lectureByName', $atts['name']);
+                    $data = $univis->getData('lectureByLecturer', $atts['name']);
                 }elseif (!empty($atts['univisid'])){
-                    $data = $univis->getData('lectureByNameID', $atts['univisid']);
+                    $data = $univis->getData('lectureByLecturerID', $atts['univisid']);
                 }
                 if ($data){
                     $veranstaltung = $data[array_key_first($data)][0];
@@ -156,9 +156,9 @@ class Shortcode{
                 break;
             case 'lehrveranstaltungen-alle': 
                 if (!empty($atts['name'])){
-                    $data = $univis->getData('lectureByName', $atts['name']);
+                    $data = $univis->getData('lectureByLecturer', $atts['name']);
                 }elseif (!empty($atts['univisid'])){
-                    $data = $univis->getData('lectureByNameID', $atts['univisid']);
+                    $data = $univis->getData('lectureByLecturerID', $atts['univisid']);
                 }else{
                     $data = $univis->getData('lectureByDepartment');
                 }

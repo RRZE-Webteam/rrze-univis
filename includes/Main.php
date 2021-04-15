@@ -65,71 +65,17 @@ class Main {
 
     public function fillMetabox() {
         ?>
-        <div class="inside">
             <div class="tagsdiv" id="univis">
             	<div class="jaxtag">
             		<div class="ajaxtag hide-if-no-js">
                         <form method="post">
-                            <input type="hidden" name="action" value="univis_search">
-                            <input type="text" name="unvis_keyword" id="department_name" value="">
-                            <input type="button" class="button tagadd" value="Suchen">
+                            <input type="hidden" name="action" value="search_univis">
+                            <input type="text" name="unvis_keyword" id="keyword" value="" class="newtag form-input-tip ui-autocomplete-input">
+                            <input type="button" class="button tagadd" value="Search">
                         </form>
             	    </div>
                 </div>
-        <?php
-        if (isset($_POST["action"]) && $_POST["action"] == 'univis_search' ){
-            $name = filter_input(INPUT_POST, 'unvis_keyword', FILTER_SANITIZE_STRING);
-            if ($name){
-                $options = get_option( 'rrze-univis' );
-                $data = 0;
-                $UnivISURL = (!empty($options['basic_univis_url']) ? $options['basic_univis_url'] : '');
-                $univisOrgID = (!empty($options['basic_UnivISOrgNr']) ? $options['basic_UnivISOrgNr'] : 0);
-
-                if ($UnivISURL && $univisOrgID){
-                    $univis = new UnivISAPI($UnivISURL, $univisOrgID, NULL);
-                    $data = $univis->getData('departmentByName', $name);
-                }
-            
-                echo '<div id="result">';
-                if (!$UnivISURL){
-                    echo __('Link zu UnivIS fehlt.', 'rrze-univis');
-                }elseif (!$data){
-                    echo __('Keine passenden Datensätze gefunden.', 'rrze-univis');
-                }else{
-                    echo '<table class="wp-list-table widefat striped"><thead><tr><td><b><i>Univ</i>IS</b> OrgNr.</td><td>Name</td></tr></thead>';
-                    foreach($data as $entry){
-                        if (isset($entry['orgnr'])){
-                            echo '<tr><td>' . $entry['orgnr'] . '</td><td>' . $entry['name'] . '</td></tr>';
-                        }
-                    }
-                    echo '</table>';
-                }
-                echo '</div>';
-            }
-        }
-    ?>
-
             </div>
-        </div>
-
-        <!-- <div class="tagsdiv">
-            <div class="jaxtag">
-            <form method="post">
-            <input type="hidden" name="action" value="univis_search">
-                <table class="form-table" role="presentation" class="striped">
-                    <tbody>
-                        <tr>
-                            <th scope="row"><?php echo __('Organisationseinheit', 'rrze-univis'); ?></th>
-                            <td><input type="text" name="department_name" id="department_name" value=""></td>
-                        </tr>
-                        <tr>
-                            <td colspan="2"><input type="submit" name="submit" id="submit" class="button button-primary" value="<?php echo __('Suchen', 'rrze-univis'); ?>"></td>
-                        </tr>
-                    </tbody>
-                </table>            
-            </form>
-            </div>
-        </div> -->
         <?php
 
 

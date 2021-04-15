@@ -91,12 +91,15 @@ class UnivISAPI {
             case 'lectureByDepartment':
                 $url .= 'lectures'.(!empty($this->atts['lang'])?'&lang='.$this->atts['lang']:'').(!empty($this->atts['imports']) && !$this->atts['imports']?'&noimports=1':'').(!empty($this->atts['type'])?'&type='.$this->atts['type']:'').(!empty($this->atts['sem'])?'&sem='.$this->atts['sem']:'').'&department='.$this->orgID;
                 break;   
-            case 'lectureByName':
+            case 'lectureByLecturer':
                 $url .= 'lectures'.(!empty($this->atts['lang'])?'&lang='.$this->atts['lang']:'').(!empty($this->atts['imports']) && !$this->atts['imports']?'&noimports=1':'').(!empty($this->atts['type'])?'&type='.$this->atts['type']:'').(!empty($this->atts['sem'])?'&sem='.$this->atts['sem']:'').'&lecturer=';
                 break;   
-            case 'lectureByNameID':
+            case 'lectureByLecturerID':
                 $url .= 'lectures'.(!empty($this->atts['lang'])?'&lang='.$this->atts['lang']:'').(!empty($this->atts['imports']) && !$this->atts['imports']?'&noimports=1':'').(!empty($this->atts['type'])?'&type='.$this->atts['type']:'').(!empty($this->atts['sem'])?'&sem='.$this->atts['sem']:'').'&lecturerid=';
                 break;   
+            case 'lectureByName':
+                $url .= 'lectures&name=';
+                break;
             case 'jobByID':
                 $url .= 'positions&closed=1&id=';
                 break;
@@ -173,8 +176,9 @@ class UnivISAPI {
                 break;
             case 'lectureByID':
             case 'lectureByDepartment':
+            case 'lectureByLecturer':
+            case 'lectureByLecturerID':
             case 'lectureByName':
-            case 'lectureByNameID':
                 $map = [
                     'node' => 'Lecture',
                     'fields' => [
@@ -374,9 +378,9 @@ class UnivISAPI {
                 }
                 break;                        
             case 'lectureByID':
-            case 'lectureByName':
+            case 'lectureByLecturer':
             case 'lectureByDepartment':
-            case 'lectureByNameID':
+            case 'lectureByLecturerID':
                 // add details
                 $courses = $this->mapIt('courses', $data);
                 $persons = $this->mapIt('personByID', $data);
@@ -489,7 +493,7 @@ class UnivISAPI {
             $data = $this->groupBy($data, 'letter');
         }
         // group by lecture_type_long
-        if (in_array($dataType, ['lectureByID', 'lectureByNameID', 'lectureByName', 'lectureByDepartment'])){
+        if (in_array($dataType, ['lectureByID', 'lectureByLecturerID', 'lectureByLecturer', 'lectureByDepartment'])){
             $data = $this->groupBy($data, 'lecture_type_long');
         }
         // sort desc and group by year
