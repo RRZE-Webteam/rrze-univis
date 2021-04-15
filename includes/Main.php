@@ -33,13 +33,12 @@ class Main {
         add_action('wp_enqueue_scripts', [$this, 'enqueueScripts']);
         add_action('add_meta_boxes', [$this, 'addMetaboxes']);
 
+        $functions = new Functions($this->pluginFile);
+        $functions->onLoaded();
 
-        // Settings-Klasse wird instanziiert.
         $settings = new Settings($this->pluginFile);
         $settings->onLoaded();
 
-
-        // Shortcode-Klasse wird instanziiert.
         $shortcode = new Shortcode($this->pluginFile, $settings);
         $shortcode->onLoaded();
 
@@ -65,17 +64,25 @@ class Main {
 
     public function fillMetabox() {
         ?>
+            <form method="post">
             <div class="tagsdiv" id="univis">
             	<div class="jaxtag">
             		<div class="ajaxtag hide-if-no-js">
-                        <form method="post">
-                            <input type="hidden" name="action" value="search_univis">
-                            <input type="text" name="unvis_keyword" id="keyword" value="" class="newtag form-input-tip ui-autocomplete-input">
-                            <input type="button" class="button tagadd" value="Search">
-                        </form>
+                            <select name="dataType" id="dataType" class="cmb2_select" required="required">
+                                <option value="departmentByName"><?php echo __('Org Nr.', 'rrze-univis'); ?></option>
+                                <option value="personByName"><?php echo __('ID der Person', 'rrze-univis'); ?></option>
+                                <option value="lectureByName"><?php echo __('ID der Lehrveranstaltung', 'rrze-univis'); ?></option>
+                            </select>     
+                    </div>
+                    <div class="ajaxtag hide-if-no-js">
+                            <input type="text" name="keyword" id="keyword" value="" class="">
+                            <input type="button" class="button tagadd" id="searchUnivisID" value="Search">
             	    </div>
+                    <div id="univis-search-result" class="ajaxtag hide-if-no-js"></div>
+                    <!-- <div id="loading"><i class="fa fa-refresh fa-spin fa-4x"></i></div> -->
                 </div>
             </div>
+            </form>
         <?php
 
 
