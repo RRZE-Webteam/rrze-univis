@@ -259,15 +259,24 @@ class Shortcode{
         return true;        
     }
 
-    private function makeDropdown($label, $all = NULL){
-        return [
+    private function makeDropdown($label, $aData, $all = NULL){
+        $ret = [
             'label' => $label,
             'field_type' => 'select',
             'default' => '',
             'type' => 'string',
             'items' => ['type' => 'text'],
-            'values' => [['id' => '', 'val' => (empty($all)?__( '-- Alle --', 'rrze-univis' ):$all)]],
+            'values' => [['id' => '', 'val' => (empty($all)?__( '-- Alle --', 'rrze-univis' ):$all)]]
         ];
+
+        foreach($aData as $id => $name){
+            $ret['values'][] = [
+                'id' => $id,
+                'val' => htmlspecialchars(str_replace('"', "", str_replace("'", "", $name)), ENT_QUOTES, 'UTF-8')
+            ];
+        }
+
+        return $ret;
     }
 
     private function makeToggle($label){
@@ -302,13 +311,7 @@ class Shortcode{
                     }
                 }
                 asort($aPersons);            
-                $settings['univisid'] = $this->makeDropdown(__('Person', 'rrze-univis'));
-                foreach($aPersons as $id => $name){
-                    $settings['univisid']['values'][] = [
-                        'id' => $id,
-                        'val' => $name
-                    ];
-                }
+                $settings['univisid'] = $this->makeDropdown(__('Person', 'rrze-univis'), $aPersons);
             }
 
             // Lehrveranstaltungen
@@ -328,48 +331,26 @@ class Shortcode{
                         $aLectures[$lecture['lecture_id']] = $lecture['name'];
                     }
                 }
+                
                 asort($aLectures);            
-                $settings['id'] = $this->makeDropdown(__('Lehrveranstaltung', 'rrze-univis'));
-
-                foreach($aLectures as $id => $name){
-                    $settings['id']['values'][] = [
-                        'id' => $id,
-                        'val' => $name
-                    ];
-                }
+                $settings['id'] = $this->makeDropdown(__('Lehrveranstaltung', 'rrze-univis'), $aLectures);
 
                 asort($aLectureTypes);            
-                $settings['type'] = $this->makeDropdown(__('Typ', 'rrze-univis'));
-
-                foreach($aLectureTypes as $id => $name){
-                    $settings['type']['values'][] = [
-                        'id' => $id,
-                        'val' => $name
-                    ];
-                }
+                $settings['type'] = $this->makeDropdown(__('Typ', 'rrze-univis'), $aLectureTypes);
 
                 asort($aLectureLanguages);            
-                $settings['sprache'] = $this->makeDropdown(__('Sprache', 'rrze-univis'));
-
-                foreach($aLectureLanguages as $id => $name){
-                    $settings['sprache']['values'][] = [
-                        'id' => $id,
-                        'val' => $name
-                    ];
-                }
+                $settings['sprache'] = $this->makeDropdown(__('Sprache', 'rrze-univis'), $aLectureLanguages);
 
                 // Semester
                 if (isset($settings['sem'])){
-                    $settings['sem'] = $this->makeDropdown(__('Sprache', 'rrze-univis'), __( '-- Aktuelles Semester --', 'rrze-univis' ));
-                    $lastYear = date("Y") - 1;
-
-                    for ($i = $lastYear; $i > 2000; $i--){
+                    $settings['sem'] = $this->makeDropdown(__('Semester', 'rrze-univis'), [], __( '-- Aktuelles Semester --', 'rrze-univis' ));
+                    for ($i = date("Y"); $i > 1971; $i--){
                         $settings['sem']['values'][] = [
-                            'id' => $id . 's',
+                            'id' => $i . 's',
                             'val' => $i . ' ' . __( 'SS', 'rrze-univis' )
                         ];
                         $settings['sem']['values'][] = [
-                            'id' => $id . 'w',
+                            'id' => $i . 'w',
                             'val' => $i . ' ' . __( 'WS', 'rrze-univis' )
                         ];
                     }
@@ -415,7 +396,6 @@ class Shortcode{
                 ),
                 NULL
             );
-            $settings['test'] = 'testit';
             wp_localize_script( $editor_script, $settings['block']['blockname'] . 'Config', $settings );
 
             // register block
