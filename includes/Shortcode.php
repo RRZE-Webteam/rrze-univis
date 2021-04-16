@@ -18,6 +18,7 @@ class Shortcode{
     protected $UnivISOrgNr;
     protected $UnivISURL;
     protected $UnivISLink;
+    protected $options;
     protected $show = [];
     protected $hide = [];
 
@@ -34,10 +35,10 @@ class Shortcode{
     public function __construct($pluginFile, $settings){
         $this->pluginFile = $pluginFile;
         $this->settings = getShortcodeSettings();
-        $options = get_option( 'rrze-univis' );
-        $this->UnivISOrgNr = (!empty($options['basic_UnivISOrgNr']) ? $options['basic_UnivISOrgNr'] : 0);
-        $this->UnivISURL = (!empty($options['basic_univis_url']) ? $options['basic_univis_url'] : '');
-        $this->UnivISLink = sprintf('<a href="%1$s">%2$s</a>', $this->UnivISURL, (!empty($options['basic_univis_linktxt']) ? $options['basic_univis_linktxt'] : __('Text zum UnivIS Link fehlt', 'rrze-univis')));
+        $this->options = get_option( 'rrze-univis' );
+        $this->UnivISOrgNr = (!empty($this->options['basic_UnivISOrgNr']) ? $this->options['basic_UnivISOrgNr'] : 0);
+        $this->UnivISURL = (!empty($this->options['basic_univis_url']) ? $this->options['basic_univis_url'] : '');
+        $this->UnivISLink = sprintf('<a href="%1$s">%2$s</a>', $this->UnivISURL, (!empty($this->options['basic_univis_linktxt']) ? $this->options['basic_univis_linktxt'] : __('Text zum UnivIS Link fehlt', 'rrze-univis')));
         add_action( 'admin_enqueue_scripts', [$this, 'enqueueGutenberg'] );
         add_action( 'init',  [$this, 'initGutenberg'] );
     }
@@ -344,15 +345,11 @@ class Shortcode{
                 // Semester
                 if (isset($settings['sem'])){
                     $settings['sem'] = $this->makeDropdown(__('Semester', 'rrze-univis'), [], __( '-- Aktuelles Semester --', 'rrze-univis' ));
-                    for ($i = date("Y"); $i > 1971; $i--){
-                        $settings['sem']['values'][] = [
-                            'id' => $i . 's',
-                            'val' => $i . ' ' . __( 'SS', 'rrze-univis' )
-                        ];
-                        $settings['sem']['values'][] = [
-                            'id' => $i . 'w',
-                            'val' => $i . ' ' . __( 'WS', 'rrze-univis' )
-                        ];
+
+                    $minYear = (!empty($this->options['basic_semesterMin']) ? $this->options['basic_semesterMin'] : 1971);
+                    for ($i = date("Y"); $i >= $minYear; $i--){
+                        $settings['sem']['values'][] = ['id' => $i . 's', 'val' => $i . ' ' . __( 'SS', 'rrze-univis' )];
+                        $settings['sem']['values'][] = ['id' => $i . 'w', 'val' => $i . ' ' . __( 'WS', 'rrze-univis' )];
                     }
                 }
             }

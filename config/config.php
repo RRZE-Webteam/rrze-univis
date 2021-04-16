@@ -95,9 +95,21 @@ function getFields()
                 'max'               => 99999999999,
                 'step'              => '1',
                 'type'              => 'number',
-                'default'           => 'Title',
+                'default'           => '',
                 'sanitize_callback' => 'floatval'
             ],
+            [
+                'name'              => 'semesterMin',
+                'label'             => __('Lehrveranstaltungen bis zum Sommersemester finden', 'rrze-univis'),
+                'desc'              => __('', 'rrze-univis'),
+                'placeholder'       => '',
+                'min'               => 0,
+                'max'               => 99999999999,
+                'step'              => '1',
+                'type'              => 'number',
+                'default'           => '1971',
+                'sanitize_callback' => 'floatval'
+            ],            
         ],
     ];
 }
