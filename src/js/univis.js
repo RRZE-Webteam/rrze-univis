@@ -4,7 +4,6 @@ jQuery(document).ready(function($){
     $('#searchUnivisID').click(getUnivISData);
 });
 
-
 function getUnivISData() {
     var keyword = jQuery('#keyword').val();
     var dataType = jQuery('#dataType').val();
@@ -21,4 +20,3 @@ function getUnivISData() {
         jQuery('div#univis-search-result').html(result);
     });
 }
-

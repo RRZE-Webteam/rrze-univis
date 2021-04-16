@@ -836,8 +836,6 @@ class Settings
         echo $html;
     }
 
-
-
     public function getUnivISSearchPage() {
         ?>
         <br><br>
@@ -846,29 +844,30 @@ class Settings
             <form method="post" id="search-univis">
                 <table class="form-table" role="presentation" class="striped">
                     <tbody>
-                    <tr>
-                            <th scope="row"><?php echo __('Suchbegriff', 'rrze-univis'); ?></th>
-                            <td><input type="text" name="keyword" id="keyword" value=""></td>
-                        </tr>
                         <tr>
-                            <th scope="row"><?php echo __('Art', 'rrze-univis'); ?></th>
+                            <th scope="row"><?php echo __('Bereich', 'rrze-univis'); ?></th>
                             <td>
                                 <select name="dataType" id="dataType" class="cmb2_select" required="required">
-                                    <option value="departmentByName"><?php echo __('Org Nr.', 'rrze-univis'); ?></option>
-                                    <option value="personByName"><?php echo __('ID der Person', 'rrze-univis'); ?></option>
-                                    <option value="lectureByName"><?php echo __('ID der Lehrveranstaltung', 'rrze-univis'); ?></option>
+                                    <option value="departmentByName"><?php echo __('Organisation', 'rrze-univis'); ?></option>
+                                    <option value="personByName"><?php echo __('Person', 'rrze-univis'); ?></option>
+                                    <option value="lectureByName"><?php echo __('Lehrveranstaltung', 'rrze-univis'); ?></option>
                                 </select>                        
                             </td>
                         </tr>
                         <tr>
-                            <td colspan="2"><input type="button" id="searchUnivisID" class="button button-primary" value="<?php echo __('Suchen', 'rrze-univis'); ?>"></td>
+                            <th scope="row"><?php echo __('Suchbegriff', 'rrze-univis'); ?></th>
+                            <td><input type="text" name="keyword" id="keyword" value=""></td>
+                        </tr>
+                        <tr>
+                            <td><input type="button" id="searchUnivisID" class="button button-primary" value="<?php echo __('Suchen', 'rrze-univis'); ?>"></td>
+                            <td><div id="loading"><i class="fa fa-refresh fa-spin fa-2x aligncenter"></i></div></td>
                         </tr>
                     </tbody>
                 </table>            
             </form>
         </div>
         <div id="univis-search-result"></div>
-        <div id="loading"><i class="fa fa-refresh fa-spin fa-4x"></i></div>
+        
         <?php
     }
 }

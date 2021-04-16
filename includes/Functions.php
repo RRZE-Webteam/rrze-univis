@@ -37,7 +37,7 @@ class Functions {
 
     public function getUnivISDataHTML($keyword, $dataType){
         $data = FALSE;
-        $ret = '';
+        $ret = __('Keine passenden Einträge gefunden.', 'rrze-univis');
 
         if ($keyword){
             $options = get_option( 'rrze-univis' );
@@ -54,26 +54,26 @@ class Functions {
         }
 
         if ($data){
-            $ret = '<table class="wp-list-table widefat striped"><thead><tr><td><b><i>Univ</i>IS</b> ID</td><td>Name</td></tr></thead>';
+            $ret = '<table class="wp-list-table striped"><thead><tr><td><b><i>Univ</i>IS</b> ID</td><td><strong>Name</strong></td></tr></thead>';
             switch ($dataType){
                 case 'departmentByName':
                     foreach($data as $entry){
                         if (isset($entry['orgnr'])){
-                            $ret .= '<tr><td>' . $entry['orgnr'] . '</td><td>' . $entry['name'] . '</td></tr>';
+                            $ret .= '<tr><td>' . $entry['orgnr'] . '</td><td style="word-wrap: break-word;">' . $entry['name'] . '</td></tr>';
                         }
                     }
                     break;
                 case 'personByName':
                     foreach($data as $entry){
                         if (isset($entry['person_id'])){
-                            $ret .= '<tr><td>' . $entry['person_id'] . '</td><td>' . $entry['lastname'] . ', ' . $entry['firstname'] . '</td></tr>';
+                            $ret .= '<tr><td>' . $entry['person_id'] . '</td><td style="word-wrap: break-word;">' . $entry['lastname'] . ', ' . $entry['firstname'] . '</td></tr>';
                         }
                     }
                     break;
                 case 'lectureByName':
                     foreach($data as $entry){
                         if (isset($entry['lecture_id'])){
-                            $ret .= '<tr><td>' . $entry['lecture_id'] . '</td><td>' . $entry['name'] . '</td></tr>';
+                            $ret .= '<tr><td>' . $entry['lecture_id'] . '</td><td style="word-wrap: break-word;">' . $entry['name'] . '</td></tr>';
                         }
                     }
                     break;

@@ -66,25 +66,25 @@ class Main {
         ?>
             <form method="post">
             <div class="tagsdiv" id="univis">
-            	<div class="jaxtag">
-            		<div class="ajaxtag hide-if-no-js">
-                            <select name="dataType" id="dataType" class="cmb2_select" required="required">
-                                <option value="departmentByName"><?php echo __('Org Nr.', 'rrze-univis'); ?></option>
-                                <option value="personByName"><?php echo __('ID der Person', 'rrze-univis'); ?></option>
-                                <option value="lectureByName"><?php echo __('ID der Lehrveranstaltung', 'rrze-univis'); ?></option>
-                            </select>     
+                <div class="jaxtag">
+                    <div class="ajaxtag hide-if-no-js">
+                        <select name="dataType" id="dataType" class="large-text" required="required">
+                            <option value="departmentByName"><?php echo __('Organisation', 'rrze-univis'); ?></option>
+                            <option value="personByName"><?php echo __('Person', 'rrze-univis'); ?></option>
+                            <option value="lectureByName"><?php echo __('Lehrveranstaltung', 'rrze-univis'); ?></option>
+                        </select>     
                     </div>
                     <div class="ajaxtag hide-if-no-js">
                             <input type="text" name="keyword" id="keyword" value="" class="">
                             <input type="button" class="button tagadd" id="searchUnivisID" value="Search">
             	    </div>
-                    <div id="univis-search-result" class="ajaxtag hide-if-no-js"></div>
-                    <!-- <div id="loading"><i class="fa fa-refresh fa-spin fa-4x"></i></div> -->
+                    <div class="ajaxtag hide-if-no-js">
+                        <div id="univis-search-result"></div>
+                        <div id="loading"><i class="fa fa-refresh fa-spin fa-2x"></i></div>
+            	    </div>
                 </div>
             </div>
             </form>
         <?php
-
-
     }
 }
