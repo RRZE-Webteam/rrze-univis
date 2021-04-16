@@ -385,6 +385,9 @@ class Shortcode{
                 $settings['show_jumpmarks'] = $this->makeToggle(__( 'Sprungmarken anzeigen', 'rrze-univis' ));
             }
 
+            // 2DO: we need document ready() or equal on React built elements to use onChange of UnivIS Org Nr. to refill dropdowns 
+            unset($settings['number']);
+
             $this->settings[$task] = $settings;
         }
         return $this->settings;
@@ -402,7 +405,7 @@ class Shortcode{
         foreach($this->settings as $task => $settings){
             // register js-script to inject php config to call gutenberg lib
             $editor_script = $settings['block']['blockname'] . '-block';        
-            $js = '../assets/js/' . $editor_script . '.js';
+            $js = '../src/js/' . $editor_script . '.js';
 
             wp_register_script(
                 $editor_script,

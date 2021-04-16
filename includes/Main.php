@@ -30,7 +30,7 @@ class Main {
      * Es wird ausgeführt, sobald die Klasse instanziiert wird.
      */
     public function onLoaded() {
-        add_action('wp_enqueue_scripts', [$this, 'enqueueScripts']);
+        add_action('admin_enqueue_scripts', [$this, 'enqueueAdminScripts']);
         add_action('add_meta_boxes', [$this, 'addMetaboxes']);
 
         $functions = new Functions($this->pluginFile);
@@ -49,8 +49,9 @@ class Main {
     /**
      * Enqueue der globale Skripte.
      */
-    public function enqueueScripts() {
-        wp_register_style('rrze-univis', plugins_url('assets/css/plugin.css', plugin_basename($this->pluginFile)));
+    public function enqueueAdminScripts() {
+        wp_register_style('rrze-univis', plugins_url('assets/css/rrze-univis.css', plugin_basename($this->pluginFile)));
+        wp_enqueue_style( 'rrze-univis' );
     }
 
     public function loadWidget() {
@@ -64,27 +65,27 @@ class Main {
 
     public function fillMetabox() {
         ?>
-            <form method="post">
             <div class="tagsdiv" id="univis">
                 <div class="jaxtag">
+                    <form method="post">
                     <div class="ajaxtag hide-if-no-js">
-                        <select name="dataType" id="dataType" class="large-text" required="required">
+                        <select name="dataType" id="dataType" class="univisSelect" required="required">
                             <option value="departmentByName"><?php echo __('Organisation', 'rrze-univis'); ?></option>
                             <option value="personByName"><?php echo __('Person', 'rrze-univis'); ?></option>
                             <option value="lectureByName"><?php echo __('Lehrveranstaltung', 'rrze-univis'); ?></option>
                         </select>     
                     </div>
                     <div class="ajaxtag hide-if-no-js">
-                            <input type="text" name="keyword" id="keyword" value="" class="">
-                            <input type="button" class="button tagadd" id="searchUnivisID" value="Search">
+                        <input type="text" name="keyword" id="keyword" value="">
+                        <input type="button" class="button tagadd" id="searchUnivisID" value="Search">
             	    </div>
                     <div class="ajaxtag hide-if-no-js">
                         <div id="univis-search-result"></div>
-                        <div id="loading"><i class="fa fa-refresh fa-spin fa-2x"></i></div>
+                        <div id="loading" class="loading"><i class="fa fa-refresh fa-spin fa-2x"></i></div>
             	    </div>
+                    </form>
                 </div>
             </div>
-            </form>
         <?php
     }
 }

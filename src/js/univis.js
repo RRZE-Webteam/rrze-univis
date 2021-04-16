@@ -1,22 +1,36 @@
 "use strict";
 
 jQuery(document).ready(function($){
-    $('#searchUnivisID').click(getUnivISData);
-});
+    var $loading = $('div#loading').hide();
+
+    $(document)
+      .ajaxStart(function () {
+            $loading.show();
+      })
+    .ajaxStop(function () {
+         $loading.hide();
+     });
+
+     $('#searchUnivisID').click(getUnivISData);
+    });
 
 function getUnivISData() {
-    var keyword = jQuery('#keyword').val();
-    var dataType = jQuery('#dataType').val();
-    var $loading = jQuery('#loading');
-    $loading.show();
-    jQuery('div#univis-search-result').html('');
+    var $dataType = jQuery('#dataType').val();
+    var $keyword = jQuery('input#keyword');
+    var $keywordVal = $keyword.val();
+    var $resultTab = jQuery('div#univis-search-result');
 
-    jQuery.post(univis_ajax.ajax_url, { 
-        _ajax_nonce: univis_ajax.nonce,
-        action: 'GetUnivISData',
-        data: {'keyword':keyword, 'dataType':dataType},               
-    }, function(result) {
-        $loading.hide();
-        jQuery('div#univis-search-result').html(result);
-    });
+    if ($keywordVal){
+        $resultTab.html('');
+        $keyword.val('');
+    
+        jQuery.post(univis_ajax.ajax_url, { 
+            _ajax_nonce: univis_ajax.nonce,
+            action: 'GetUnivISData',
+            data: {'keyword':$keywordVal, 'dataType':$dataType},               
+        }, function(result) {
+            $resultTab.html(result);
+            jQuery('div#loading').hide();
+        });
+    }
 }
