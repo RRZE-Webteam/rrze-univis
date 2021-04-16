@@ -6,3 +6,8 @@
 .univisSelect{
     width: -webkit-fill-available !important;    
 }
+
+.univisTab{
+    width: -webkit-fill-available !important;    
+    margin: 0;
+}

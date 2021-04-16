@@ -54,7 +54,7 @@ class Functions {
         }
 
         if ($data){
-            $ret = '<table class="wp-list-table striped"><thead><tr><td><b><i>Univ</i>IS</b> ID</td><td><strong>Name</strong></td></tr></thead>';
+            $ret = '<table class="wp-list-table widefat striped"><thead><tr><td><b><i>Univ</i>IS</b> ID</td><td><strong>Name</strong></td></tr></thead>';
             switch ($dataType){
                 case 'departmentByName':
                     foreach($data as $entry){

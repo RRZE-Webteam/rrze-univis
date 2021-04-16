@@ -133,10 +133,6 @@ function getShortcodeSettings(){
             'task' => [
                 'values' => [
                     [
-                        'id' => '',
-                        'val' =>  __( 'Bitte wählen Sie', 'rrze-univis' )
-                    ],
-                    [
                         'id' => 'mitarbeiter-einzeln',
                         'val' =>  __( 'Mitarbeiter Einzeln', 'rrze-univis' )
                     ],
@@ -153,7 +149,7 @@ function getShortcodeSettings(){
                         'val' =>  __( 'Mitarbeiter Organisation', 'rrze-univis' )
                     ],
                 ],
-                'default' => '',
+                'default' => 'mitarbeiter-alle',
                 'field_type' => 'select',
                 'label' => __( 'Bitte wählen Sie', 'rrze-univis' ),
                 'type' => 'string'
@@ -212,10 +208,6 @@ function getShortcodeSettings(){
             'task' => [
                 'values' => [
                     [
-                        'id' => '',
-                        'val' =>  __( 'Bitte wählen Sie', 'rrze-univis' )
-                    ],
-                    [
                         'id' => 'lehrveranstaltungen-einzeln',
                         'val' =>  __( 'Lehrveranstaltungen Einzeln', 'rrze-univis' )
                     ],
@@ -224,7 +216,7 @@ function getShortcodeSettings(){
                         'val' =>  __( 'Lehrveranstaltungen Alle', 'rrze-univis' )
                     ],
                 ],
-                'default' => '',
+                'default' => 'lehrveranstaltungen-alle',
                 'field_type' => 'select',
                 'label' => __( 'Bitte wählen Sie', 'rrze-univis' ),
                 'type' => 'string'
