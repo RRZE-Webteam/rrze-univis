@@ -46,15 +46,17 @@ class UnivISWidget extends \WP_Widget {
         return $output;
     }
 
-    public function getInputHTML($name, $val = ''){
-        return "<input type='text' id='{$this->get_field_id($name)}' name='{$this->get_field_name($name)}' class='widefat' value='" . (!empty($val) ? $val : '') . "'>";
+    public function getInputHTML($name, $label, $val = ''){
+        return "<input type='text' id='{$this->get_field_id($name)}' name='{$this->get_field_name($name)}' placeholder=' . $label . ' class='widefat' value='" . (!empty($val) ? $val : '') . "'>";
     }
 
               
     // Widget Backend 
     public function form( $instance ) {
+        echo '<br \>';
         echo $this->getSelectHTML('task', $instance['task']);
-        echo $this->getInputHTML('univisid', $instance['univisid']);
+        echo $this->getInputHTML('univisid', $instance['univisid'], 'UnivIS ID');
+        echo '<br \>&nbsp;';
     }
           
     // Updating widget replacing old instances with new
