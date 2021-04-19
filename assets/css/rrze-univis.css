@@ -8,6 +8,7 @@
 }
 
 .univisTab{
+    word-wrap: break-word !important;
     width: -webkit-fill-available !important;    
     margin: 0;
 }
