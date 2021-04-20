@@ -93,32 +93,31 @@ Einstellungen › UnivIS
 ```
 [univis task="publikationen" since="2017"]
 ```
-
 - Zeigt alle Lehrveranstaltungen der Person mit dieser ID. Der Dozent muss dabei der Organisationseinheit angehören, die in Einstellungen - UnivIS eingegeben wurde.
 ```
 [univis task="lehrveranstaltungen-alle" dozentid="21555666"]
+```
+- Zeigt alle Lehrveranstaltungen zu einem bestimmten Typ in gewünschter Reihenfolge. Beispiel: Vorlesungen, dann Übungen, aber keine Tutorials oder andere Lehrveranstaltungen:
+```
+[univis task="lehrveranstaltungen-alle" order="vorl,ueb"]
 ```
 - Zeigt alle Lehrveranstaltungen der Person mit dem Namen Max Mustermann. Der Dozent muss dabei der Organisationseinheit angehören, die in Einstellungen - UnivIS eingegeben wurde. Der Name des Dozenten muss in der Form Nachname,Vorname ohne Leerzeichen angegeben werden.
 ```
 [univis task="lehrveranstaltungen-alle" dozentname="Mustermann,Max"]
 ```
 - Zeigt alle Lehrveranstaltungen an:
-
 Im aktuellen Semester
 ```
 [univis task="lehrveranstaltungen-alle"]
 ```
-
 Im nächsten Semester
 ```
 [univis task="lehrveranstaltungen-alle" sem="1"]
 ```
-
 Im vergangenen Semester
 ```
 [univis task="lehrveranstaltungen-alle" sem="-1"]
 ```
-
 Im Sommersemester 2017
 ```
 [univis task="lehrveranstaltungen-alle" sem="2017s"]
@@ -127,9 +126,6 @@ Im Sommersemester 2017
 #### Hinweise
 
 - Der Shortcode-Parameter number kann weggelassen werden, wenn in der Einstellungsseite des Plugins (Einstellungen - UnivIS) eine UnivISOrgNr vergeben wird. 
-
 - Bei der Anzeige von Lehrveranstaltungen wird automatisch das Semester angezeigt, dass bei UnivIS als aktuelles Semester eingestellt ist. 
-
 - Formatierungen von UnivIS werden in HTML übersetzt (fett, kursiv, hochgestellt, tiefgestellt, automatische Links, mehrzeilig)
-
 - Die UnivIS-ID einer Lehrveranstaltung, Organisation oder Person finden Sie über die Suche unter "Settings" oder in der Metabox beim Erstellen eines Posts oder einer Page.
