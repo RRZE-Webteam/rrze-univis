@@ -17,8 +17,9 @@ GNU General Public License (GPL) Version 3
 
 ## Zweck 
 
-Shortcode [univis] zum Einbindung von UnivIS-Daten in WordPress-Seiten.
-
+- Shortcode [univis] zum Einbindung von UnivIS-Daten in WordPress-Seiten.
+- Gutenberg-Blöcke "RRZE-UnivIS Mitarbeiter", "RRZE-UnivIS Lehrveranstaltungen" und "RRZE-UnivIS Publikationen"
+- Widget "RRZE UnivIS"
 
 ## Dokumentation
 
