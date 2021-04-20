@@ -6,6 +6,8 @@ defined('ABSPATH') || exit;
 
 use RRZE\UnivIS\Settings;
 use RRZE\UnivIS\Shortcode;
+use RRZE\UnivIS\TinyMCEButtons;
+
 
 
 /**
@@ -24,6 +26,8 @@ class Main {
      */
     public function __construct($pluginFile) {
         $this->pluginFile = $pluginFile;
+
+        new TinyMCEButtons();
     }
 
     /**

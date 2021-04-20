@@ -222,7 +222,7 @@ function getShortcodeSettings(){
                 'type' => 'string'
             ],
             'id' => [
-                'default' => 0,
+                'default' => NULL,
                 'field_type' => 'text',
                 'label' => __( 'UnivIS ID Lehrveranstaltung', 'rrze-univis' ),
                 'type' => 'number'
@@ -234,7 +234,7 @@ function getShortcodeSettings(){
                 'type' => 'string'
             ],
             'univisid' => [
-                'default' => 0,
+                'default' => NULL,
                 'field_type' => 'text',
                 'label' => __( 'UnivIS ID Person', 'rrze-univis' ),
                 'type' => 'number'

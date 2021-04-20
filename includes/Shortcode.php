@@ -438,4 +438,22 @@ class Shortcode{
             NULL
         );
     }
+
+    public function generateTinyMCE(){
+
+        $str = '';
+        foreach($this->settings as $task => $fields){
+            $str = '[' . $task . ']';
+            foreach($fields as $name => $field){
+                if (isset($field['field_type']) && $field['field_type'] == 'text' || $field['field_type'] == 'select'){
+                    $str .= ' ' . $name . '=\'' . $field['default'] . '\'';
+                }
+            }
+        }
+        $str = json_encode($str);
+
+        if ($str){
+            wp_localize_script( 'tinymce', 'SHORTCODE', $str );
+        }
+    }
 }
