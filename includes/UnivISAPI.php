@@ -514,7 +514,6 @@ class UnivISAPI {
                         }
                     }
                 }
-                $sortedData = array_merge($sortedData, $data);
                 $data = $sortedData;
             }
         }
