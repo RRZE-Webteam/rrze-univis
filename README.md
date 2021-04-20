@@ -12,7 +12,7 @@ RRZE-Webteam , http://www.rrze.fau.de
 
 ## Copryright
 
-GNU General Public License (GPL) Version 2 
+GNU General Public License (GPL) Version 3 
 
 
 ## Zweck 
@@ -39,12 +39,12 @@ Einstellungen › UnivIS
 ```
 [univis]
 ```
-- Bindet die Mitarbeiterübersicht der Organisationseinheit mit der UnivISOrgNr 1005681200 ein, besonders geeignet für wissenschaftliche Einrichtungen (optional mit Telefonnummern und/oder E-Mail-Adressen, optional nach Nachnamen sortiert (standardmässig wird sortiert))
+- Bindet die Mitarbeiterübersicht der Organisationseinheit mit der UnivISOrgNr 1005681200 ein, besonders geeignet für wissenschaftliche Einrichtungen (optional mit Telefonnummern und/oder E-Mail-Adressen, optional nach Nachnamen sortiert (standardmässig wird nach Nachnamen sortiert))
 ```
 [univis number="1005681200"]
 [univis number="1005681200" task="mitarbeiter-alle"]
 [univis number="1005681200" task="mitarbeiter-alle" show="telefon, mail"]
-[univis number="1005681200" task="mitarbeiter-alle" sortByLastname="0"]
+[univis number="1005681200" task="mitarbeiter-alle"]
 ```    
 - Bindet die Mitarbeiterübersicht der Organisationseinheit mit der UnivISOrgNr 1005681200 ein, besonders geeignet für nicht-wissenschaftliche Einrichtungen (optional ohne Telefonnummern oder mit Mailadressen)
 ```
@@ -64,7 +64,7 @@ Einstellungen › UnivIS
 - Bindet sämtliche UnivIS-Publikationen der Organisationseinheit mit der UnivISOrgNr 1005681200 ein
 ```
 [univis number="1005681200" task="publikationen"]
-```
+
 
 ##### Ausblenden importierter Lehrveranstaltungen möglich
 
@@ -87,6 +87,11 @@ Einstellungen › UnivIS
 ```
 [univis task="lehrveranstaltungen-einzeln" id="21101522"]
 ```
+- Publikationen, eingeschränkt nach Erscheinungsjahr:
+```
+[univis task="publikationen" since="2017"]
+```
+
 - Zeigt alle Lehrveranstaltungen der Person mit dieser ID. Der Dozent muss dabei der Organisationseinheit angehören, die in Einstellungen - UnivIS eingegeben wurde
 ```
 [univis task="lehrveranstaltungen-alle" dozentid="21555666"]
@@ -99,5 +104,11 @@ Einstellungen › UnivIS
 #### Hinweise
 
 - Der Shortcode-Parameter number kann weggelassen werden, wenn in der Einstellungsseite des Plugins (Einstellungen - UnivIS) eine UnivISOrgNr vergeben wird. Dann muss aber zwingend der Parameter task vergeben werden (default-Wert für task ist mitarbeiter-alle)
-- Bei der Anzeige von Lehrveranstaltungen wird automatisch das Semester angezeigt, dass gerade bei UnivIS als aktuelles Semester eingestellt ist
+- Bei der Anzeige von Lehrveranstaltungen wird automatisch das Semester angezeigt, dass gerade bei UnivIS als aktuelles Semester eingestellt ist. Soll das nächste Semester angezeigt werden: 
+```
+[univis number="1005681200" task="lehrveranstaltungen-alle" sem="1"]
+```
+
 - Umsetzung der automatischen Formatierungen in mehrzeiligen Textfeldern wie in UnivIS (fett, kursiv, hochgestellt, tiefgestellt, automatische Links)
+
+- Die UnivIS-ID einer Lehrveranstaltung, Organisation oder Person finden Sie über die Suche unter "Settings" oder in der Metabox beim Erstellen eines Posts oder einer Page.
