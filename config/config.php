@@ -309,6 +309,12 @@ function getShortcodeSettings(){
                 'label' => __( 'UnivIS ID Person', 'rrze-univis' ),
                 'type' => 'number'
             ],
+            'since' => [
+                'default' => 0,
+                'field_type' => 'text',
+                'label' => __( 'Ab dem angegebenen Erscheinungsjahr anzeigen. Z.B. 2017', 'rrze-univis' ),
+                'type' => 'number'
+            ],
             'number' => [
                 'default' => 0,
                 'field_type' => 'text',

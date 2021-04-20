@@ -499,6 +499,7 @@ class UnivISAPI {
         // group by lecture_type_long
         if (in_array($dataType, ['lectureByID', 'lectureByLecturerID', 'lectureByLecturer', 'lectureByDepartment'])){
             $data = $this->groupBy($data, 'lecture_type_long');
+            // sort by attribute "sort"
             if (!empty($this->atts['sort'])){
                 $aSort = explode(',', trim($this->atts['sort']));
                 $sortedData = [];
@@ -521,6 +522,17 @@ class UnivISAPI {
         // sort desc and group by year
         if (in_array($dataType, ['publicationByAuthorID', 'publicationByAuthor', 'publicationByDepartment'])){
             usort($data, [$this, 'sortByYear']);            
+
+            // filter by attribute "since"
+            if (!empty($this->atts['since'])){
+                $since = (int)$this->atts['since'];
+                foreach($data as $key => $entry){
+                    if ($entry["year"] < $since){
+                        unset($data[$key]);
+                    }
+                }
+            }
+
             $data = $this->groupBy($data, 'year');
         }
         // sort orga_position_order and group by orga_position
