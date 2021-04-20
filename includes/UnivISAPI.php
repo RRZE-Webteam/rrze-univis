@@ -499,14 +499,14 @@ class UnivISAPI {
         // group by lecture_type_long
         if (in_array($dataType, ['lectureByID', 'lectureByLecturerID', 'lectureByLecturer', 'lectureByDepartment'])){
             $data = $this->groupBy($data, 'lecture_type_long');
-            // sort by attribute "sort"
-            if (!empty($this->atts['sort'])){
-                $aSort = explode(',', trim($this->atts['sort']));
+            // sort by attribute "order"
+            if (!empty($this->atts['order'])){
+                $aOrder = explode(',', trim($this->atts['order']));
                 $sortedData = [];
-                foreach($aSort as $sort){
+                foreach($aOrder as $order){
                     foreach($data as $lecture_type_long => $lectures){
                         foreach($lectures as $lecture){
-                            if ($lecture['lecture_type'] == $sort){
+                            if ($lecture['lecture_type'] == $order){
                                 $sortedData[$lecture_type_long] = $data[$lecture_type_long];
                                 unset($data[$lecture_type_long]);
                                 break 1;

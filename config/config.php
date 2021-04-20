@@ -252,7 +252,7 @@ function getShortcodeSettings(){
                 'label' => __( 'Typ. z.B. vorl (=Vorlesung)', 'rrze-univis' ),
                 'type' => 'string'
             ],
-            'sort' => [
+            'order' => [
                 'default' => '',
                 'field_type' => 'text',
                 'label' => __( 'Sortierung nach Typ z.B. "vorl,ueb"', 'rrze-univis' ),
