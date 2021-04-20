@@ -247,6 +247,14 @@ class Shortcode{
         if (!empty($atts['hide'])){
             $this->hide = array_map('trim', explode(',', strtolower($atts['hide'])));
         }
+        if (!empty($atts['sem'])){
+            if (is_int($atts['sem'])){
+                $year = date("Y") + $atts['sem'];
+                $thisSeason = (in_array(date('n'), [10,11,12,1]) ? 'w' : 's');
+                $season = ($thisSeason = 's' ? 'w' : 's');
+                $atts['sem'] = $year . $season;
+            }
+        }
 
         return $atts;
     }
@@ -345,6 +353,12 @@ class Shortcode{
                 // Semester
                 if (isset($settings['sem'])){
                     $settings['sem'] = $this->makeDropdown(__('Semester', 'rrze-univis'), [], __( '-- Aktuelles Semester --', 'rrze-univis' ));
+                    $thisSeason = (in_array(date('n'), [10,11,12,1]) ? 'w' : 's');
+                    $season = ($thisSeason = 's' ? 'w' : 's');
+                    $nextYear = date("Y") + 1;
+                    $settings['sem']['values'][] = ['id' => $nextYear.$season, 'val' => $nextYear.$season];
+                    $lastYear = $nextYear - 2;
+                    $settings['sem']['values'][] = ['id' => $lastYear.$season, 'val' => $lastYear.$season];
 
                     $minYear = (!empty($this->options['basic_semesterMin']) ? $this->options['basic_semesterMin'] : 1971);
                     for ($i = date("Y"); $i >= $minYear; $i--){
