@@ -1,4 +1,5 @@
 <?php if ($data) :
+    $lang = get_locale();
     foreach ($data as $typ => $veranstaltungen) : 
         ?>
 	<h2>
@@ -10,7 +11,13 @@
                 $url = get_permalink() . 'lv_id/' . $veranstaltung['lecture_id'];
                 ?>
                 <li>
-                    <h3><a href="<?php echo $url; ?>"><?php echo $veranstaltung['name']; ?></a></h3>
+                    <h3><a href="<?php echo $url; ?>"><?php 
+                    if ($lang != 'de_DE' && !empty($veranstaltung['ects_name'])){
+                        echo $veranstaltung['ects_name']; 
+                    }else{
+                        echo $veranstaltung['name'];
+                    }
+                    ?></a></h3>
                     <?php 
                     if (!empty($veranstaltung['comment'])) : ?>
                         <p><?php echo $veranstaltung['comment']; ?></p>

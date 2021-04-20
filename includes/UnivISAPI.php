@@ -46,6 +46,7 @@ class UnivISAPI {
 
     public function getData($dataType, $univisParam = NULL){
         $url = $this->getUrl($dataType) . $univisParam;
+        // echo $url . '<br>';
         $data = file_get_contents($url);
         if (!$data){
             UnivISAPI::log('getData', 'error', "no data returned using $url");
@@ -184,6 +185,7 @@ class UnivISAPI {
                     'fields' => [
                         'lecture_id' => 'id',
                         'name' => 'name',
+                        'ects_name' => 'ects_name',
                         'comment' => 'comment',
                         'leclanguage' => 'leclanguage',
                         'key' => 'key',
@@ -444,24 +446,26 @@ class UnivISAPI {
             case 'personAll':
                 // add orga details
                 $orga = $this->mapIt('orga', $data);
-                $orga_positions = $orga[0]['orga_positions'];
-                foreach($ret as $e_nr => $entry){
-                    foreach($orga_positions as $orga_position => $vals){
-                        if (isset($vals['per'])){
-                            foreach($vals['per'] as $person_key){
-                                if (isset($entry['key']) && $entry['key'] == 'Person.' . $person_key){
-                                    if (isset($ret[$e_nr]['orga_position'])){
-                                        $cnt = count($ret);
-                                        $ret[$cnt] = $ret[$e_nr];
-                                    }else{
-                                        $cnt = $e_nr;
-                                    }
-                                    $show = $this->showPosition($vals['description']);
-                                    if (!$show){
-                                        unset($ret[$cnt]);
-                                    }else{
-                                        $ret[$cnt]['orga_position'] = $vals['description'];
-                                        $ret[$cnt]['orga_position_order'] = $vals['joborder'];
+                if (!empty($orga[0]['orga_positions'])){
+                    $orga_positions = $orga[0]['orga_positions'];
+                    foreach($ret as $e_nr => $entry){
+                        foreach($orga_positions as $orga_position => $vals){
+                            if (isset($vals['per'])){
+                                foreach($vals['per'] as $person_key){
+                                    if (isset($entry['key']) && $entry['key'] == 'Person.' . $person_key){
+                                        if (isset($ret[$e_nr]['orga_position'])){
+                                            $cnt = count($ret);
+                                            $ret[$cnt] = $ret[$e_nr];
+                                        }else{
+                                            $cnt = $e_nr;
+                                        }
+                                        $show = $this->showPosition($vals['description']);
+                                        if (!$show){
+                                            unset($ret[$cnt]);
+                                        }else{
+                                            $ret[$cnt]['orga_position'] = $vals['description'];
+                                            $ret[$cnt]['orga_position_order'] = $vals['joborder'];
+                                        }
                                     }
                                 }
                             }

@@ -325,7 +325,7 @@ class Shortcode{
                 foreach($data as $type => $lecs){
                     foreach($lecs as $lecture){
                         $aLectureTypes[$lecture['lecture_type']] = $type;
-                        if (!empty($lecture['leclanguage'])){
+                        if (!empty($lecture['leclanguage_long'])){
                             $parts = explode(' ', $lecture['leclanguage_long']);
                             $aLectureLanguages[$lecture['leclanguage']] = $parts[1];
                         }

@@ -1,5 +1,13 @@
-<?php if ($veranstaltung) : ?>
-    <h2><?php echo $veranstaltung['name']; ?></h2>
+<?php if ($veranstaltung) : 
+    $lang = get_locale();
+    ?>
+    <h2><?php 
+    if ($lang != 'de_DE' && !empty($veranstaltung['ects_name'])){
+        echo $veranstaltung['ects_name']; 
+    }else{
+        echo $veranstaltung['name'];
+    }
+    ?></h2>
     <?php if (!empty($veranstaltung['lecturers'])) : ?>
         <h3><?php _e('Lecturers', 'rrze-univis');?></h3>
         <ul>

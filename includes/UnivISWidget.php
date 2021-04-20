@@ -54,8 +54,8 @@ class UnivISWidget extends \WP_Widget {
     // Widget Backend 
     public function form( $instance ) {
         echo '<br \>';
-        echo $this->getSelectHTML('task', $instance['task']);
-        echo $this->getInputHTML('univisid', $instance['univisid'], 'UnivIS ID');
+        echo $this->getSelectHTML('task', !empty($instance['task']) ? $instance['task'] : NULL );
+        echo $this->getInputHTML('univisid', !empty($instance['univisid']) ? $instance['univisid'] : NULL, 'UnivIS ID');
         echo '<br \>&nbsp;';
     }
           
