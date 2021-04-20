@@ -17,7 +17,7 @@ class TinyMCEButtons {
     }
 
     public function addButtons($pluginArray) {
-        $pluginArray['rrzeunivisshortcodes'] = plugins_url('../src/js/tinymce-shortcodes.js', plugin_basename(__FILE__));
+        $pluginArray['rrzeunivisshortcodes'] = plugins_url('../js/tinymce-shortcodes.js', plugin_basename(__FILE__));
         return $pluginArray;
     }
 }

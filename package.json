@@ -1,0 +1,45 @@
+{
+  "name": "rrze-univis",
+  "version": "3.1.24",
+  "description": "Einbindung von Daten aus UnivIS",
+  "main": "rrze-univis.php",
+  "textdomain": "rrze-univis",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/RRZE-Webteam/rrze-univis",
+    "issues": "https://github.com/RRZE-Webteam/rrze-univis/issues",
+    "clone": "git+https://github.com/RRZE-Webteam/rrze-univis.git"
+  },
+  "browserslist": [
+    "last 3 years",
+    "ie 11"
+  ],
+  "supports": {
+    "email": "webmaster@fau.de",
+    "docs": "https://www.wordpress.rrze.fau.de/plugins/fau-und-rrze-plugins/rrze-univis/"
+  },
+  "author": {
+    "name": "RRZE-Webteam <webmaster@fau.de>",
+    "url": "https://www.wordpress.rrze.fau.de/person/webmaster"
+  },
+  "license": "GNU General Public License v3",
+  "devDependencies": {
+    "@babel/core": "^7.10.5",
+    "@babel/preset-env": "^7.10.4",
+    "autoprefixer": "^9.8.5",
+    "gulp": "^4.0.2",
+    "gulp-babel": "^8.0.0",
+    "gulp-bump": "^3.2.0",
+    "gulp-clean-css": "^4.3.0",
+    "gulp-csso": "^3.0.1",
+    "gulp-postcss": "^8.0.0",
+    "gulp-sass": "^4.1.0",
+    "gulp-touch-cmd": "0.0.1",
+    "gulp-uglify": "^3.0.2",
+    "gulp-wp-pot": "^2.4.3",
+    "semver": "^6.3.0"
+  }
+}

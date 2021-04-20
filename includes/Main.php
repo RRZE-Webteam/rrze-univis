@@ -52,11 +52,8 @@ class Main {
         apply_filters('gutenberg_use_widgets_block_editor', get_theme_support( 'widgets-block-editor' ));
     }
 
-    /**
-     * Enqueue der globale Skripte.
-     */
     public function enqueueAdminScripts() {
-        wp_register_style('rrze-univis', plugins_url('assets/css/rrze-univis.css', plugin_basename($this->pluginFile)));
+        wp_register_style('rrze-univis', plugins_url('css/rrze-univis.css', plugin_basename($this->pluginFile)));
         wp_enqueue_style( 'rrze-univis' );
     }
 

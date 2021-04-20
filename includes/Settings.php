@@ -436,13 +436,9 @@ class Settings
         $this->currentTab = array_key_exists('current-tab', $_GET) && in_array($_GET['current-tab'], $this->allTabs) ? $_GET['current-tab'] : $this->defaultTab;
     }
 
-    /**
-     * Enqueue Skripte und Style
-     * @return void
-     */
     public function adminEnqueueScripts(){
-        wp_register_script('wp-color-picker-settings', plugins_url('assets/js/wp-color-picker.js', plugin_basename($this->pluginFile)));
-        wp_register_script('wp-media-settings', plugins_url('assets/js/wp-media.js', plugin_basename($this->pluginFile)));
+        wp_register_script('wp-color-picker-settings', plugins_url('js/wp-color-picker.js', plugin_basename($this->pluginFile)));
+        wp_register_script('wp-media-settings', plugins_url('js/wp-media.js', plugin_basename($this->pluginFile)));
     }
 
     /**

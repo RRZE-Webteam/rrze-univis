@@ -22,7 +22,7 @@ class Functions {
     public function adminEnqueueScripts(){
         wp_enqueue_script(
 			'rrze-unvis-ajax',
-			plugins_url('src/js/univis.js', plugin_basename($this->pluginFile)),
+			plugins_url('js/univis.js', plugin_basename($this->pluginFile)),
 			['jquery'],
 			NULL
         );    

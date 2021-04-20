@@ -52,11 +52,8 @@ class Shortcode{
         add_shortcode('univis', [$this, 'shortcodeOutput'], 10, 2);
     }
 
-    /**
-     * Enqueue der Skripte.
-     */
     public function enqueueScripts(){
-        // wp_register_style('rrze-univis-shortcode', plugins_url('assets/css/shortcode.css', plugin_basename($this->pluginFile)));
+        // wp_register_style('rrze-univis-shortcode', plugins_url('css/shortcode.css', plugin_basename($this->pluginFile)));
     }
 
 
@@ -397,7 +394,7 @@ class Shortcode{
         foreach($this->settings as $task => $settings){
             // register js-script to inject php config to call gutenberg lib
             $editor_script = $settings['block']['blockname'] . '-block';        
-            $js = '../src/js/' . $editor_script . '.js';
+            $js = '../js/' . $editor_script . '.js';
 
             wp_register_script(
                 $editor_script,
@@ -427,7 +424,7 @@ class Shortcode{
         // include gutenberg lib
         wp_enqueue_script(
             'RRZE-Gutenberg',
-            plugins_url( '../assets/js/gutenberg.js', __FILE__ ),
+            plugins_url( '../js/gutenberg.js', __FILE__ ),
             array(
                 'wp-blocks',
                 'wp-i18n',

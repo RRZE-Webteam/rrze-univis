@@ -3,12 +3,12 @@
 /**
  * Plugin Name:     RRZE UnivIS
  * Plugin URI:      https://github.com/RRZE-Webteam/rrze-univis
- * Description:     Einbindung von Daten aus UnivIS für den Geschäftsverteilungsplan.
- * Version:         3.1.23
+ * Description:     Einbindung von Daten aus UnivIS
+ * Version:         3.1.24
  * Author:          RRZE-Webteam
  * Author URI:      https://blogs.fau.de/webworking/
- * License:         GNU General Public License v2
- * License URI:     http://www.gnu.org/licenses/gpl-2.0.html
+ * License:         GNU General Public License v3
+ * License URI:     http://www.gnu.org/licenses/gpl-3.0.html
  * Domain Path:     /languages
  * Text Domain:     rrze-univis
  */
