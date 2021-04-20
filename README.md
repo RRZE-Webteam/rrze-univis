@@ -64,6 +64,7 @@ Einstellungen › UnivIS
 - Bindet sämtliche UnivIS-Publikationen der Organisationseinheit mit der UnivISOrgNr 1005681200 ein
 ```
 [univis number="1005681200" task="publikationen"]
+```
 
 
 ##### Ausblenden importierter Lehrveranstaltungen möglich
