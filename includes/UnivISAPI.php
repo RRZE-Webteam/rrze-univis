@@ -499,7 +499,25 @@ class UnivISAPI {
         // group by lecture_type_long
         if (in_array($dataType, ['lectureByID', 'lectureByLecturerID', 'lectureByLecturer', 'lectureByDepartment'])){
             $data = $this->groupBy($data, 'lecture_type_long');
+            if (!empty($this->atts['sort'])){
+                $aSort = explode(',', trim($this->atts['sort']));
+                $sortedData = [];
+                foreach($aSort as $sort){
+                    foreach($data as $lecture_type_long => $lectures){
+                        foreach($lectures as $lecture){
+                            if ($lecture['lecture_type'] == $sort){
+                                $sortedData[$lecture_type_long] = $data[$lecture_type_long];
+                                unset($data[$lecture_type_long]);
+                                break 1;
+                            }
+                        }
+                    }
+                }
+                $sortedData = array_merge($sortedData, $data);
+                $data = $sortedData;
+            }
         }
+
         // sort desc and group by year
         if (in_array($dataType, ['publicationByAuthorID', 'publicationByAuthor', 'publicationByDepartment'])){
             usort($data, [$this, 'sortByYear']);            
