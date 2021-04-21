@@ -91,7 +91,7 @@
                             'location' => (!empty($term['room']) ? $term['room'] : NULL),
                             'url' => get_site_url(),
                             ];
-                        
+
                         $t['ics'] = '<a href="' . plugin_dir_url(__FILE__ ) .'../ics.php?' . http_build_query($props) . '">' . __('ICS') . '</a>';
                     }
                     $term_formatted = implode(' ', $t);
