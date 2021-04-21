@@ -276,6 +276,18 @@ function getShortcodeSettings(){
                 'label' => __( 'UnivIS OrgID', 'rrze-univis' ),
                 'type' => 'number'
             ],
+            'show' => [
+                'default' => '',
+                'field_type' => 'text',
+                'label' => __( 'anzeigen', 'rrze-univis' ),
+                'type' => 'string'
+            ],
+            'hide' => [
+                'default' => '',
+                'field_type' => 'text',
+                'label' => __( 'ausblenden', 'rrze-univis' ),
+                'type' => 'string'
+            ],
         ],
         'publikationen' => [
             'block' => [

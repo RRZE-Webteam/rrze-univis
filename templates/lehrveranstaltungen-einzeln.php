@@ -3,10 +3,11 @@
     ?>
     <h2><?php 
     if ($lang != 'de_DE' && !empty($veranstaltung['ects_name'])){
-        echo $veranstaltung['ects_name']; 
+        $veranstaltung['title'] = $veranstaltung['ects_name']; 
     }else{
-        echo $veranstaltung['name'];
+        $veranstaltung['title'] = $veranstaltung['name'];
     }
+    echo $veranstaltung['title'];
     ?></h2>
     <?php if (!empty($veranstaltung['lecturers'])) : ?>
         <h3><?php _e('Lecturers', 'rrze-univis');?></h3>
@@ -82,6 +83,17 @@
                     if (!empty($course['coursename'])) :
                         $t['coursename'] = '(' . __('Course', 'rrze-univis') . ' ' . $course['coursename'] . ')';
                     endif;
+                    if (in_array('ics', $this->show)){
+                        $props = [
+                            'summary' => $veranstaltung['title'],
+                            'dtstart' => (!empty($term['startdate']) ? $term['startdate'] : NULL),
+                            'dtend' => (!empty($term['enddate']) ? $term['enddate'] : NULL),
+                            'location' => (!empty($term['room']) ? $term['room'] : NULL),
+                            'url' => get_site_url(),
+                            ];
+                        
+                        $t['ics'] = '<a href="' . plugin_dir_url(__FILE__ ) .'../ics.php?' . http_build_query($props) . '">' . __('ICS') . '</a>';
+                    }
                     $term_formatted = implode(' ', $t);
                     ?>
                     <li><?php echo $term_formatted; ?></li>
