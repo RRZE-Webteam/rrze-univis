@@ -1,3 +1,4 @@
+<?php if ($data) : ?>
 <div id="univis-personenindex">
     <?php foreach ($data as $department => $persons) : ?>
     <h2><a name="<?php echo $department;?>"><?php echo $department;?></a></h2>
@@ -40,14 +41,16 @@
             if (!empty($person['atitle'])) :
                 $pers['atitle'] = '<span itemprop="honorificSuffix"><acronym title="' . $person['atitle'] . '">' . $person['atitle'] . '</acronym></span>';                      
             endif;
-            if (!empty($person['phone']) && in_array('telefon', $this->show) && !in_array('telefon', $this->hide)) : 
-
-                $pers['phone_number'] = '<span class="person-info-phone" itemprop="telephone">Tel. ' . $person['phone'] . '</span>';
-            endif; 
-            if (!empty($person['email']) && in_array('mail', $this->show) && !in_array('mail', $this->hide)) : 
-                $pers['email'] = '<span class="person-info-email">E-Mail: <a itemprop="email" href="mailto:' . $person['email'] . '">' . $person['email'] . '</a></span>';                        
-            endif;
-        
+            if (!empty($person['locations'])){
+                foreach($person['locations'] as $location){
+                    if (!empty($location['tel']) && in_array('telefon', $this->show) && !in_array('telefon', $this->hide)){
+                        $pers[] = '<span class="person-info-phone" itemprop="telephone">Tel. ' . $location['tel'] . '</span>';
+                    }
+                    if (!empty($location['email']) && in_array('mail', $this->show) && !in_array('mail', $this->hide)){
+                        $pers[] = '<span class="person-info-email">E-Mail: <a itemprop="email" href="mailto:' . $location['email'] . '">' . $location['email'] . '</a></span>';                        
+                    } 
+                } 
+            } 
             $out = implode(', ', $pers);
         ?>
             <span class="person-info" itemprop="name"><?php echo $out;?></span>
@@ -56,3 +59,4 @@
     </ul>
     <?php endforeach; ?>
 </div>
+<?php endif; ?>

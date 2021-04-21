@@ -103,7 +103,6 @@ class Shortcode{
         }
         $atts = shortcode_atts( $atts_default, $atts );
         $atts = $this->normalize($atts);
-
         $data = '';
         $univis = new UnivISAPI($this->UnivISURL, $this->UnivISOrgNr, $atts);
 
@@ -171,6 +170,8 @@ class Shortcode{
                 }
                 break;
         }
+
+
 
         if ($data){
             // $data = '<pre>' . json_encode($data, JSON_PRETTY_PRINT) . '</pre>';
@@ -295,10 +296,10 @@ class Shortcode{
         ];
     }
 
-    public function fillGutenbergOptions() {
+    public function fillGutenbergOptions($aSettings) {
         $univis = new UnivISAPI($this->UnivISURL, $this->UnivISOrgNr, NULL);
 
-        foreach($this->settings as $task => $settings){
+        foreach($aSettings as $task => $settings){
             $settings['number']['default'] = $this->UnivISOrgNr;
 
             // Mitarbeiter
@@ -377,9 +378,9 @@ class Shortcode{
             // 2DO: we need document ready() or equal on React built elements to use onChange of UnivIS Org Nr. to refill dropdowns 
             unset($settings['number']);
 
-            $this->settings[$task] = $settings;
+            $aSettings[$task] = $settings;
         }
-        return $this->settings;
+        return $aSettings;
     }
 
 
@@ -389,9 +390,9 @@ class Shortcode{
         }
 
         // get prefills for dropdowns
-        $this->settings = $this->fillGutenbergOptions();
+        $aSettings = $this->fillGutenbergOptions($this->settings);
 
-        foreach($this->settings as $task => $settings){
+        foreach($aSettings as $task => $settings){
             // register js-script to inject php config to call gutenberg lib
             $editor_script = $settings['block']['blockname'] . '-block';        
             $js = '../js/' . $editor_script . '.js';

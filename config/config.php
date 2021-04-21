@@ -153,7 +153,7 @@ function getShortcodeSettings(){
                 'field_type' => 'select',
                 'label' => __( 'Bitte wählen Sie', 'rrze-univis' ),
                 'type' => 'string'
-            ],
+            ],            
             'name' => [
                 'default' => '',
                 'field_type' => 'text',
