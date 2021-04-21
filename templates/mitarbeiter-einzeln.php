@@ -44,62 +44,69 @@
                                 echo '<li class="person-info-fax"><span class="screen-reader-text">' . __('Fax number', 'rrze-univis') . ': </span><span itemprop="faxNumber">' . $location['fax'] . '</span></li>';
                             }
                         }
-                        // phone
+                        // email
                         foreach($person['locations'] as $location){
                             if (!empty($location['email']) && in_array('mail', $this->show) && !in_array('mail', $this->hide)){
                                 echo '<li class="person-info-email"><span class="screen-reader-text">' . __('Email', 'rrze-univis') . ': </span><span itemprop="email">' . $location['email'] . '</span></li>';
                             }
                         }
-                    }
-                    if (!empty($person['url'])) : ?>
-                        <li class="person-info-www"><span class="screen-reader-text"><?php _e('Website', 'rrze-univis');?>: </span><a itemprop="url" href="<?php echo $person['url'];?>"><?php echo $person['url'];?></a></li>
-                    <?php endif;
-                    if (!empty($person['street']) || !empty($person['city']) || !empty($person['office'])) : ?>
-                    <li class="person-info-address"><span class="screen-reader-text"><?php _e('Address', 'rrze-univis');?>: <br></span>
-                        <?php if (!empty($person['street']) || !empty($person['city'])) : ?>
-                        <?php if (!empty($person['street'])) : ?>
-                        <div itemprop="address" itemscope="" itemtype="http://schema.org/PostalAddress"><span class="person-info-street" itemprop="streetAddress"><?php echo $person['street'];?></span><br>
-                        <?php endif;
-                        if (!empty($person['city'])) : ?>
-                            <span itemprop="addressLocality"><?php echo $person['city'];?></span></div>
-                        <?php endif;
-                        endif;
-                        if (!empty($person['office'])) : ?>
-                            <div class="person-info-room" itemprop="workLocation" itemscope="" itemtype="http://schema.org/Person"><?php echo __('Room', 'rrze-univis') . ' ' .  $person['office'];?></div>
-                        <?php endif;
-                        endif;?>
-                    </li>
+                        // address
+                        foreach($person['locations'] as $location){
+                            if (!empty($location['url']) && ((in_array('url', $this->show) && !in_array('url', $this->hide)) || ((in_array('address', $this->show) && !in_array('address', $this->hide) && !in_array('url', $this->hide))))){
+                                echo '<li class="person-info-www"><span class="screen-reader-text">' . __('Website', 'rrze-univis') . ': </span><a itemprop="url" href="' . $location['url'] . '">' . $location['url'] . '</a></li>';
+                            }
+                            if (in_array('address', $this->show) && !in_array('address', $this->hide) && (!empty($location['street']) || !empty($location['city']) || !empty($location['office']))){
+                                if (!empty($location['street']) || !empty($location['city'])){
+                                    echo '<li class="person-info-address"><span class="screen-reader-text">' . __('Address', 'rrze-univis') . ': <br></span>';
+                                    if (!empty($location['street'])){
+                                        echo '<div itemprop="address" itemscope="" itemtype="http://schema.org/PostalAddress"><span class="person-info-street" itemprop="streetAddress">' . $location['street'] . '</span><br>';
+                                    }
+                                    if (!empty($location['city'])){
+                                        echo '<span itemprop="addressLocality">' . $location['city'] . '</span>';
+                                        
+                                    }
+                                    echo '</div>';
+                                }
+                                if (!empty($location['office'])){
+                                    echo '<div class="person-info-room" itemprop="workLocation" itemscope="" itemtype="http://schema.org/Person">' . __('Room', 'rrze-univis') . ' ' .  $location['office'] . '</div>';
+                                }
+                                if (!empty($location['street']) || !empty($location['city'])){
+                                    echo '</li>';
+                                }
+                            }
+                        }
 
-           		 <?php if (!empty($person['officehours'])) :
-					echo '<li class="person-info-office"><span itemprop="hoursAvailable" itemtype="http://schema.org/ContactPoint"><span class="screen-reader-text">' ;
-					echo _e('Office hours', 'rrze-univis') . ': </span> <span><b>'; 
-					echo _e('Office hours', 'rrze-univis') .':</b><br>' ;
-					 foreach ($person['officehours'] as $officehour){
-					 
-						if (!empty($officehour['repeat'])) { 
-							 echo $officehour['repeat'] . " ";
-						}
-						if (!empty($officehour['starttime'])) { 
-							 echo $officehour['starttime'];
-						}
-					    if (!empty($officehour['endtime'])) { 
-							echo " ";
-							echo _e('to', 'rrze-univis') . " " . $officehour['endtime'];
-						}
-						if (!empty($officehour['office'])) { 
-							  echo ", " ; 
-							  echo  _e('Room', 'rrze-univis') . " " . $officehour['office'];
-							}
-						if (!empty($officehour['comment'])) { 
-							if (!empty($officehour['repeat']) || !empty($officehour['starttime']) ) {
-								echo ", " ;
-							}
-							  echo $officehour['comment'];
-							}
-							echo "<br>";
-					 }
-					 echo " </span></li>"; 
-                endif; ?> 
+                   		if (!empty($person['officehours'])){
+        					echo '<li class="person-info-office"><span itemprop="hoursAvailable" itemtype="http://schema.org/ContactPoint"><span class="screen-reader-text">' ;
+        					echo _e('Office hours', 'rrze-univis') . ': </span> <span><b>'; 
+        					echo _e('Office hours', 'rrze-univis') .':</b><br>' ;
+        					foreach ($person['officehours'] as $officehour){
+        					 
+        						if (!empty($officehour['repeat'])) { 
+        							 echo $officehour['repeat'] . " ";
+        						}
+        						if (!empty($officehour['starttime'])) { 
+        							 echo $officehour['starttime'];
+        						}
+        					    if (!empty($officehour['endtime'])) { 
+        							echo " ";
+        							echo _e('to', 'rrze-univis') . " " . $officehour['endtime'];
+        						}
+        						if (!empty($officehour['office'])) { 
+        							  echo ", " ; 
+        							  echo  _e('Room', 'rrze-univis') . " " . $officehour['office'];
+        							}
+        						if (!empty($officehour['comment'])) { 
+        							if (!empty($officehour['repeat']) || !empty($officehour['starttime']) ) {
+        								echo ", " ;
+        							}
+        							  echo $officehour['comment'];
+        							}
+        							echo "<br>";
+        					}
+        					echo " </span></li>"; 
+                        }
+                    } ?> 
             </ul>
         </div>
     </div>

@@ -20,39 +20,39 @@
             $out = '';
             ?>
         <li>
-                <?php 
-                    if (!empty($person['lastname'])) :
-                        $p['lastname'] = '<span itemprop="familyName">' . $person['lastname'] . '</span>, ';
-                    endif;
-                    if (!empty($person['firstname'])) :
-                        $p['firstname'] = '<span itemprop="givenName">' . $person['firstname'] . '</span>';
-                    endif;
-                    if(!empty($p)) :
-                        $n = implode(' ', $p);
-                        if (!empty($person['person_id'])) :
-                            $url = get_permalink() . 'univisid/' . $person['person_id'];
-                            $fullname .= '<a class="url" href="' . $url . '" itemprop="name">';
-                        endif; 
-                        $fullname .= $n;
-                        if (!empty($person['person_id'])) :
-                            $fullname .= '</a>';
-                        endif;  
-                        $name['fullname'] = $fullname;
-                    endif;
-                    $pers['fullname'] = implode(', ', $name);
-                    if (!empty($person['locations'])){
-                        foreach($person['locations'] as $location){
-                            if (!empty($location['tel']) && in_array('telefon', $this->show) && !in_array('telefon', $this->hide)){
-                                $pers[] = '<span class="person-info-phone" itemprop="telephone">Tel. ' . $location['tel'] . '</span>';
-                            }
-                            if (!empty($location['email']) && in_array('mail', $this->show) && !in_array('mail', $this->hide)){
-                                $pers[] = '<span class="person-info-email">E-Mail: <a itemprop="email" href="mailto:' . $location['email'] . '">' . $location['email'] . '</a></span>';                        
-                            } 
-                        } 
+        <?php 
+            if (!empty($person['lastname'])) :
+                $p['lastname'] = '<span itemprop="familyName">' . $person['lastname'] . '</span>, ';
+            endif;
+            if (!empty($person['firstname'])) :
+                $p['firstname'] = '<span itemprop="givenName">' . $person['firstname'] . '</span>';
+            endif;
+            if(!empty($p)) :
+                $n = implode(' ', $p);
+                if (!empty($person['person_id'])) :
+                    $url = get_permalink() . 'univisid/' . $person['person_id'];
+                    $fullname .= '<a class="url" href="' . $url . '" itemprop="name">';
+                endif; 
+                $fullname .= $n;
+                if (!empty($person['person_id'])) :
+                    $fullname .= '</a>';
+                endif;  
+                $name['fullname'] = $fullname;
+            endif;
+            $pers['fullname'] = implode(', ', $name);
+            if (!empty($person['locations'])){
+                foreach($person['locations'] as $location){
+                    if (!empty($location['tel']) && in_array('telefon', $this->show) && !in_array('telefon', $this->hide)){
+                        $pers[] = '<span class="person-info-phone" itemprop="telephone">Tel. ' . $location['tel'] . '</span>';
+                    }
+                    if (!empty($location['email']) && in_array('mail', $this->show) && !in_array('mail', $this->hide)){
+                        $pers[] = '<span class="person-info-email">E-Mail: <a itemprop="email" href="mailto:' . $location['email'] . '">' . $location['email'] . '</a></span>';                        
                     } 
-                    $out = implode(', ', $pers);
-                    ?>
-            <span class="person-info" itemprop="name"><?php echo $out;?></span>
+                } 
+            } 
+            $out = implode(', ', $pers);
+        ?>
+        <span class="person-info" itemprop="name"><?php echo $out;?></span>
         </li>
         <?php endforeach; ?>
     </ul>
