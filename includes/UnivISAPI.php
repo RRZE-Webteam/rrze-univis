@@ -47,6 +47,7 @@ class UnivISAPI {
     public function getData($dataType, $univisParam = NULL){
         $url = $this->getUrl($dataType) . $univisParam;
         // echo $url . '<br>';
+        // exit;
         $data = file_get_contents($url);
         if (!$data){
             UnivISAPI::log('getData', 'error', "no data returned using $url");

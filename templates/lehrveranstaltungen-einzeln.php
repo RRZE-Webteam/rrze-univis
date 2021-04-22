@@ -83,12 +83,17 @@
                     if (!empty($course['coursename'])) :
                         $t['coursename'] = '(' . __('Course', 'rrze-univis') . ' ' . $course['coursename'] . ')';
                     endif;
+                    // ICS
                     if (in_array('ics', $this->show)){
                         $props = [
                             'summary' => $veranstaltung['title'],
-                            'dtstart' => (!empty($term['startdate']) ? $term['startdate'] : NULL),
-                            'dtend' => (!empty($term['enddate']) ? $term['enddate'] : NULL),
+                            'startdate' => (!empty($term['startdate']) ? $term['startdate'] : NULL),
+                            'enddate' => (!empty($term['enddate']) ? $term['enddate'] : NULL),
+                            'starttime' => (!empty($term['starttime']) ? $term['starttime'] : NULL),
+                            'endtime' => (!empty($term['endtime']) ? $term['endtime'] : NULL),
+                            'repeat' => (!empty($term['repeat']) ? $term['repeat'] : NULL),
                             'location' => (!empty($term['room']) ? $term['room'] : NULL),
+                            'description' => (!empty($veranstaltung['comment']) ? $veranstaltung['comment'] : NULL),
                             'url' => get_site_url(),
                             ];
 
@@ -103,7 +108,6 @@
             <li><?php _e('Time and place on appointment', 'rrze-univis'); ?></li>
         <?php endif; ?>
     </ul>
-
 
     <?php if (array_key_exists('studs', $veranstaltung) && array_key_exists('stud', $veranstaltung['studs'][0])) : ?>
     <h4><?php _e('Fields of study', 'rrze-univis');?></h4>

@@ -6,26 +6,37 @@ include_once(dirname(__FILE__) . '/includes/ICS.php');
 
 header('Content-Type: text/calendar; charset=utf-8');
 
-// https://www.nickless.test.rrze.fau.de/wp-16/wp-content/plugins/rrze-univis/ics.php?summary=V-V6+Funktionelle+Anatomie+des+Bewegungsapparates&url=https%3A%2F%2Fwww.nickless.test.rrze.fau.de%2Fwp-16
+$input = filter_input_array(INPUT_GET, FILTER_SANITIZE_STRING);
 
-$summary = filter_input(INPUT_GET, 'summary', FILTER_SANITIZE_STRING);
-$url = filter_input(INPUT_GET, 'url', FILTER_SANITIZE_STRING);
-$start = filter_input(INPUT_GET, 'start', FILTER_SANITIZE_STRING);
-$end = filter_input(INPUT_GET, 'end', FILTER_SANITIZE_STRING);
-$repeat = filter_input(INPUT_GET, 'repeat', FILTER_SANITIZE_STRING);
-$location = filter_input(INPUT_GET, 'location', FILTER_SANITIZE_STRING);
+$aFreq = [
+    'woche' => 'WEEKLY',
+    'monat' => 'MONTHLY',
+    'jahr' => 'YEARLY',
+    'zweite' => 'INTERVAL=2',
+    'dritte' => 'INTERVAL=3',
+];
 
+$aDay = [
+    'mo' => 'MO',
+    'di' => 'TU',
+    'mi' => 'WE',
+    'do' => 'TH',
+    'fr' => 'FR',
+    'sa' => 'SA',
+    'so' => 'SU',
+];
 
-$props = [
-    'summary' => (!empty($summary) ? $summary : NULL),
-    'dtstart' => $dtstart,
-    'dtend' => $dtend,
-    'location' => 'this is my home',
-    'location' => (!empty($location) ? $location : NULL),
-    'url' => get_site_url(),
-    ];
-
-if (!empty($props['summary'])){
-    $ics = new ICS($props);
-    echo $ics->to_string();
+if (!empty($input['repeat'])) {
+    $input['freq'] = implode(';', array_intersect($aFreq, str_replace(array_keys($aFreq), array_values($aFreq), explode(' ', strtolower($input['repeat'])))));
+    $input['repeat'] = implode(';', array_intersect($aDay, str_replace(array_keys($aDay), array_values($aDay), preg_split('/(\,| )/', strtolower($input['repeat'])))));
 }
+
+$input['dtstart'] = (empty($input['dtstart']) ? date() : $input['dtstart'] );
+$input['dtend'] = (empty($input['dtend']) ? date() : $input['dtend'] );
+
+// echo '<pre>';
+// var_dump($input);
+// exit;
+
+$ics = new ICS($input);
+echo $ics->to_string();

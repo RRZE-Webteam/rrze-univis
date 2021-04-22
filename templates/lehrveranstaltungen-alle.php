@@ -13,10 +13,11 @@
                 <li>
                     <h3><a href="<?php echo $url; ?>"><?php 
                     if ($lang != 'de_DE' && !empty($veranstaltung['ects_name'])){
-                        echo $veranstaltung['ects_name']; 
+                        $veranstaltung['title'] = $veranstaltung['ects_name']; 
                     }else{
-                        echo $veranstaltung['name'];
+                        $veranstaltung['title'] = $veranstaltung['name'];
                     }
+                    echo $veranstaltung['title'];
                     ?></a></h3>
                     <?php 
                     if (!empty($veranstaltung['comment'])) : ?>
@@ -61,6 +62,29 @@
                                     if (!empty($course['coursename'])) :
                                         $t['coursename'] = '(' . __('Course', 'rrze-univis') . ' ' . $course['coursename'] . ')';
                                     endif;
+                                    // ICS
+                                    if (in_array('ics', $this->show)){
+                                        $props = [
+                                            'categories' => $typ, 
+                                            'summary' => $veranstaltung['title'],
+                                            'startdate' => (!empty($term['startdate']) ? $term['startdate'] : NULL),
+                                            'enddate' => (!empty($term['enddate']) ? $term['enddate'] : NULL),
+                                            'starttime' => (!empty($term['starttime']) ? $term['starttime'] : NULL),
+                                            'endtime' => (!empty($term['endtime']) ? $term['endtime'] : NULL),
+                                            'repeat' => (!empty($term['repeat']) ? $term['repeat'] : NULL),
+                                            'location' => (!empty($t['room']) ? $t['room'] : NULL),
+                                            'description' => (!empty($veranstaltung['comment']) ? $veranstaltung['comment'] : NULL),
+                                            'url' => get_site_url(),
+                                        ];
+                                        // if ($veranstaltung['title'] == 'Practical course high-performance analog and converter design'){
+                                        //     echo '<pre>';
+                                        //     var_dump($props);
+                                        //     exit;
+                                        // }
+                    
+                                        $t['ics'] = '<a href="' . plugin_dir_url(__FILE__ ) .'../ics.php?' . http_build_query($props) . '">' . __('ICS') . '</a>';
+                                    }
+
                                     $term_formatted = implode(' ', $t);
                                     ?>    
                                     <li><?php echo $term_formatted; ?></li>
