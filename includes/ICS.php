@@ -4,10 +4,11 @@ namespace RRZE\UnivIS;
 
 class ICS {
     const DT_FORMAT = 'Ymd\THis';
+    const VTIMEZONE = 'Europe/Berlin';
 
-    protected $properties = array();
-    private $available_properties = array(
-        'description',
+    protected $props = array();
+    private $availableProps = array(
+        'summary',
         'starttime',
         'endtime',
         'startdate',
@@ -18,9 +19,8 @@ class ICS {
         'repeat', 
         'rrule',
         'location',
-        'summary',
+        'description',
         'url',
-        'categories',
     );
 
     public function __construct($props){
@@ -33,58 +33,71 @@ class ICS {
                 $this->set($k, $v);
             }
         } else {
-            if (in_array($key, $this->available_properties)) {
-                $this->properties[strtoupper($key)] = $this->sanitize_val($val, $key);
+            if (in_array($key, $this->availableProps)) {
+                $this->props[strtoupper($key)] = $this->sanitizeVal($val, $key);
             }
         }
     }
 
-    public function to_string(){
-        $rows = $this->build_props();
+    public function toString(){
+        $rows = $this->buildProps();
         return implode("\r\n", $rows);
     }
 
-    private function build_props(){
-        // Build ICS properties - add header
-
-        // CATEGORIES:U.S. Presidents,Civil War People
-        // LOCATION:Hodgenville\, Kentucky
-        // GEO:37.5739497;-85.7399606
-        // DESCRIPTION:Born February 12\, 1809\nSixteenth President (1861-1865)\n\n\n
-        //  \nhttp://AmericanHistoryCalendar.com
-        // URL:http://americanhistorycalendar.com/peoplecalendar/1,328-abraham-lincol
-        //  n
-        $ics_props = [
+    private function buildProps(){
+        // ICS Header
+        $icsProps = [
             'BEGIN:VCALENDAR',
             'VERSION:2.0',
             'PRODID:-//FAU//Webteam v1.0',
-            'BEGIN:VEVENT',
             'CALSCALE:GREGORIAN',
-            'TZID:Europe/Berlin',
+            'BEGIN:VTIMEZONE',
+            'TZID:' . self::VTIMEZONE,
+            'TZURL:http://tzurl.org/zoneinfo-outlook/Europe/Berlin',
+            'X-LIC-LOCATION:Europe/Berlin',
+            'BEGIN:DAYLIGHT',
+            'TZOFFSETFROM:+0100',
+            'TZOFFSETTO:+0200',
+            'TZNAME:CEST',
+            'DTSTART:19700329T020000',
+            'RRULE:FREQ=YEARLY;BYMONTH=3;BYDAY=-1SU',
+            'END:DAYLIGHT',
+            'BEGIN:STANDARD',
+            'TZOFFSETFROM:+0200',
+            'TZOFFSETTO:+0100',
+            'TZNAME:CET',
+            'DTSTART:19701025T030000',
+            'RRULE:FREQ=YEARLY;BYMONTH=10;BYDAY=-1SU',
+            'END:STANDARD',
+            'END:VTIMEZONE',
+            'BEGIN:VEVENT',
+            'DTSTAMP:' . $this->formatTimestamp(''),
+            'UID:' . uniqid() . '@fau.de',
         ];
 
-        $this->properties['DTSTART'] = (!empty($this->properties['STARTDATE']) ? $this->properties['STARTDATE'] : $this->properties['DTSTART']);
-        $this->properties['DTEND'] = (!empty($this->properties['ENDDATE']) ? $this->properties['ENDDATE'] : $this->properties['DTSTART']);
+        $this->props['DESCRIPTION'] .= (!empty($this->props['DESCRIPTION']) ? '\n\n' : '') . 'Information: ' . $this->props['URL'];
+        $this->props['DTSTART'] = (!empty($this->props['STARTDATE']) ? $this->props['STARTDATE'] : $this->props['DTSTART']);
+        $this->props['DTEND'] = (!empty($this->props['ENDDATE']) ? $this->props['ENDDATE'] : $this->props['DTSTART']);
+        $this->props['STARTTIME'] = (!empty($this->props['STARTTIME']) ? $this->props['STARTTIME'] : '00:00');
+        $this->props['ENDTIME'] = (!empty($this->props['ENDTIME']) ? $this->props['ENDTIME'] : '00:00');
 
-        if (empty($this->properties['STARTDATE']) && empty($this->properties['REPEAT'])){
-            $this->properties['REPEAT'] = 'MO,TU,WE,TH,FR';
+        if (empty($this->props['STARTDATE']) && empty($this->props['REPEAT'])){
+            $this->props['REPEAT'] = 'MO,TU,WE,TH,FR';
+            $this->props['FREQ'] = 'WEEKLY;INTERVAL=1';
         }
 
-        $repeatEnd = '';
         $start = '';
-        if (!empty($this->properties['REPEAT'])) {
-            if ($this->properties['DTSTART'] == $this->properties['DTEND']) {
+        $bRule = FALSE;
+        if (!empty($this->props['REPEAT'])) {
+            if (empty($this->props['ENDDATE'])) {
                 // repeat for 1 year
-                $repeatEnd = date(self::DT_FORMAT, strtotime('1 month', strtotime($this->properties['DTSTART'])));
+                $this->props['ENDDATE'] = $this->formatTimestamp('1 month');
             }
 
-
-            $this->properties['STARTTIME'] = (!empty($this->properties['STARTTIME']) ? $this->properties['STARTTIME'] : '00:00');
-            $this->properties['ENDTIME'] = (!empty($this->properties['ENDTIME']) ? $this->properties['ENDTIME'] : '00:00');
-            $tsStart = strtotime($this->properties['DTSTART']);
+            $tsStart = strtotime($this->props['DTSTART']);
             $start = date('Ymd', $tsStart);
             $day = date('Ymd', $start);
-            $allowedDays = explode(',', $this->properties['REPEAT']);
+            $allowedDays = explode(',', $this->props['REPEAT']);
             if (!in_array($day, $allowedDays)){
                 // move to next possible date
                 $dic = [
@@ -100,81 +113,79 @@ class ICS {
                     $nextPossibleDay = strtotime('next ' . $long);
                     if (in_array($short, $allowedDays) && $nextPossibleDay > $tsStart){
                         $start = date('Ymd', $nextPossibleDay);
+                        break 1;
                     }
                 }
             }
-            $repeatEnd = ($repeatEnd ? $repeatEnd : $this->properties['DTEND']);
-            $this->properties['RRULE'] = 'FREQ=' . (!empty($this->properties['FREQ']) ? $this->properties['FREQ'] : 'WEEKLY') . ';UNTIL=' . $repeatEnd . ';WKST=MO;BYDAY=' . $this->properties['REPEAT'];
-
+            $bRule = TRUE;
         }
-        $start = (!empty($start) ? $start : $this->properties['STARTDATE']);
-        $this->properties['DTSTART'] = date(self::DT_FORMAT, strtotime(date('Ymd', strtotime($start)) . date('Hi', strtotime($this->properties['STARTTIME']))));
-        $this->properties['DTEND'] = date(self::DT_FORMAT, strtotime(date('Ymd', strtotime($this->properties['DTEND'])) . date('Hi', strtotime($this->properties['ENDTIME']))));
-        $this->properties['DTEND'] = ($repeatEnd > $this->properties['DTEND'] ? $repeatEnd : $this->properties['DTEND']);
-    
-        unset($this->properties['REPEAT']);
-        unset($this->properties['FREQ']);
-        unset($this->properties['STARTTIME']);
-        unset($this->properties['ENDTIME']);
-        unset($this->properties['STARTDATE']);
-        unset($this->properties['ENDDATE']);
+
+        $start = (!empty($start) ? $start : $this->props['STARTDATE']);
+        $this->props['DTSTART'] = date(self::DT_FORMAT, strtotime(date('Ymd', strtotime($start)) . date('Hi', strtotime($this->props['STARTTIME']))));
+        $this->props['DTEND'] = date(self::DT_FORMAT, strtotime(date('Ymd', strtotime($this->props['DTSTART'])) . date('Hi', strtotime($this->props['ENDTIME']))));
+        $this->props['ENDDATE'] = date(self::DT_FORMAT, strtotime(date('Ymd', strtotime($this->props['ENDDATE'])) . date('Hi', strtotime($this->props['ENDTIME']))));
+
+        if ($bRule){
+            $this->props['RRULE'] = 'FREQ=' . $this->props['FREQ'] . ';UNTIL=' . $this->props['ENDDATE'] . ';WKST=MO;BYDAY=' . $this->props['REPEAT'];
+        }
+
+        // delete everything ICS does not understand
+        unset($this->props['REPEAT']);
+        unset($this->props['FREQ']);
+        unset($this->props['STARTTIME']);
+        unset($this->props['ENDTIME']);
+        unset($this->props['STARTDATE']);
+        unset($this->props['ENDDATE']);
+        unset($this->props['URL']); // allthough URL is defined in https://www.kanzaki.com/docs/ical/url.html an error occurs using iCal, therefore it is added to DESCRIPTION
 
         $props = array();
-        foreach ($this->properties as $k => $v) {
+        foreach ($this->props as $k => $v) {
             $props[strtoupper($k . ($k === 'URL' ? ';VALUE=URI' : ''))] = $v;
         }
 
-        $props['DTSTAMP'] = $this->format_timestamp('now');
-        $props['UID'] = uniqid();
-
         foreach ($props as $k => $v) {
             if (in_array($k, ['DTSTART', 'DTEND'])){
-                $ics_props[] = $k . ';TZID=Europe/Berlin:' . $v;
-                
+                $icsProps[] = $k . ';TZID=' . self::VTIMEZONE . ':' . $v;
             }else{
-                $ics_props[] = "$k:$v";
+                $icsProps[] = "$k:$v";
             }
         }
 
-        $ics_props[] = 'END:VEVENT';
-        $ics_props[] = 'END:VCALENDAR';
+        // ICS Footer
+        $icsProps[] = 'END:VEVENT';
+        $icsProps[] = 'END:VCALENDAR';
 
-        // echo '<pre>';
-        // var_dump($ics_props);
-        // exit;
-
-        return $ics_props;
+        return $icsProps;
     }
 
-    private function sanitize_val($val, $key = false){
+    private function sanitizeVal($val, $key = false){
         switch ($key) {
             case 'dtend':
-                case 'dtstart':
-                case 'dtstamp':
-                    case 'startdate':
-                        case 'enddate':
-                                $val = $this->format_timestamp($val);
+            case 'dtstart':
+            case 'startdate':
+            case 'enddate':
+                $val = $this->formatTimestamp($val); // hier fehlt wohl noch die Uhrzeit
                 break;
             case 'repeat':
             case 'freq':
-                // do not escape
+                // do not beautifyString
                 break;    
             default:
-                $val = $this->escape_string($val);
+                $val = $this->beautifyString($val);
         }
 
         return $val;
     }
 
-    private function format_timestamp($timestamp){
+    private function formatTimestamp($timestamp){
         $dt = new \DateTime($timestamp);
         return $dt->format(self::DT_FORMAT);
     }
 
-    private function escape_string($str){
+    private function beautifyString($str){
         $aReplace = [
             ';' => '.\n\n',
-            '. ' => '.\n',
+            // '. ' => '.\n',
 
         ];
         // $str = preg_replace('/([\,])/', '\\\$1', $str);

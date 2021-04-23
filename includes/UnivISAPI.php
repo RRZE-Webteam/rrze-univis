@@ -151,13 +151,6 @@ class UnivISAPI {
                         'department' => 'orgname',
                         'organization' => ['orgunit', 1], 
                         'locations' => 'location',
-                        // 'email' => ['location', 'email'],
-                        // 'phone' => ['location', 'tel'],
-                        // 'fax' => ['location', 'fax'],
-                        // 'street' => ['location', 'street'],
-                        // 'city' => ['location', 'ort'],
-                        // 'office' => ['location', 'office'],
-                        // 'url' => ['location', 'url'],
                     ],
                 ];
                 break;

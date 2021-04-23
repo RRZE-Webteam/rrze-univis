@@ -94,8 +94,9 @@
                             'repeat' => (!empty($term['repeat']) ? $term['repeat'] : NULL),
                             'location' => (!empty($term['room']) ? $term['room'] : NULL),
                             'description' => (!empty($veranstaltung['comment']) ? $veranstaltung['comment'] : NULL),
-                            'url' => get_site_url(),
-                            ];
+                            'url' => get_permalink(),
+                            'filename' => sanitize_file_name($veranstaltung['lecture_type_long']),
+                        ];
 
                         $t['ics'] = '<a href="' . plugin_dir_url(__FILE__ ) .'../ics.php?' . http_build_query($props) . '">' . __('ICS') . '</a>';
                     }
