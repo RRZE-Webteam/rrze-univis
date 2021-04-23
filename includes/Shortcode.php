@@ -48,12 +48,13 @@ class Shortcode{
      * @return void
      */
     public function onLoaded(){
-        // add_action('wp_enqueue_scripts', [$this, 'enqueueScripts']);
+        add_action('wp_enqueue_scripts', [$this, 'enqueueScripts']);
         add_shortcode('univis', [$this, 'shortcodeOutput'], 10, 2);
     }
 
     public function enqueueScripts(){
-        // wp_register_style('rrze-univis-shortcode', plugins_url('css/shortcode.css', plugin_basename($this->pluginFile)));
+        wp_register_style('rrze-univis', plugins_url('css/rrze-univis.css', plugin_basename($this->pluginFile)));
+        wp_enqueue_style( 'rrze-univis' );
     }
 
 
