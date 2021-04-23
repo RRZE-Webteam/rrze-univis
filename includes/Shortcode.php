@@ -48,7 +48,7 @@ class Shortcode{
      * @return void
      */
     public function onLoaded(){
-        add_action('wp_enqueue_scripts', [$this, 'enqueueScripts']);
+        // add_action('wp_enqueue_scripts', [$this, 'enqueueScripts']);
         add_shortcode('univis', [$this, 'shortcodeOutput'], 10, 2);
     }
 
@@ -239,6 +239,13 @@ class Shortcode{
                 $atts['hide'] .= ',sprungmarken';
             }
         }
+        if (isset($atts['ics'])){
+            if ($atts['ics']){
+                $atts['show'] .= ',ics';
+            }else{
+                $atts['hide'] .= ',ics';
+            }
+        }
         if (!empty($atts['show'])){
             $this->show = array_map('trim', explode(',', strtolower($atts['show'])));
         }
@@ -385,12 +392,12 @@ class Shortcode{
 
 
     public function initGutenberg() {
-        if (! $this->isGutenberg() || empty($this->UnivISURL) || empty($this->UnivISOrgNr)){
-            return;
-        }
-
-        // get prefills for dropdowns
-        $aSettings = $this->fillGutenbergOptions($this->settings);
+        // if (! $this->isGutenberg() || empty($this->UnivISURL) || empty($this->UnivISOrgNr)){
+        //     return;
+        // }
+        // // get prefills for dropdowns
+        // $aSettings = $this->fillGutenbergOptions($this->settings);
+        $aSettings = $this->settings;
 
         foreach($aSettings as $task => $settings){
             // register js-script to inject php config to call gutenberg lib
@@ -405,8 +412,9 @@ class Shortcode{
                 ),
                 NULL
             );
-            wp_localize_script( $editor_script, $settings['block']['blockname'] . 'Config', $settings );
 
+            wp_localize_script( $editor_script, $settings['block']['blockname'] . 'Config', $settings );
+    
             // register block
             register_block_type( $settings['block']['blocktype'], array(
                 'editor_script' => $editor_script,
@@ -437,21 +445,21 @@ class Shortcode{
         );
     }
 
-    public function generateTinyMCE(){
+    // public function generateTinyMCE(){
 
-        $str = '';
-        foreach($this->settings as $task => $fields){
-            $str = '[' . $task . ']';
-            foreach($fields as $name => $field){
-                if (isset($field['field_type']) && $field['field_type'] == 'text' || $field['field_type'] == 'select'){
-                    $str .= ' ' . $name . '=\'' . $field['default'] . '\'';
-                }
-            }
-        }
-        $str = json_encode($str);
+    //     $str = '';
+    //     foreach($this->settings as $task => $fields){
+    //         $str = '[' . $task . ']';
+    //         foreach($fields as $name => $field){
+    //             if (isset($field['field_type']) && $field['field_type'] == 'text' || $field['field_type'] == 'select'){
+    //                 $str .= ' ' . $name . '=\'' . $field['default'] . '\'';
+    //             }
+    //         }
+    //     }
+    //     $str = json_encode($str);
 
-        if ($str){
-            wp_localize_script( 'tinymce', 'SHORTCODE', $str );
-        }
-    }
+    //     if ($str){
+    //         wp_localize_script( 'tinymce', 'SHORTCODE', $str );
+    //     }
+    // }
 }

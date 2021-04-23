@@ -288,6 +288,13 @@ function getShortcodeSettings(){
                 'label' => __( 'ausblenden', 'rrze-univis' ),
                 'type' => 'string'
             ],
+            'ics' => [
+                'field_type' => 'toggle',
+                'label' => __( 'ICS anbieten', 'rrze-univis' ),
+                'type' => 'boolean',
+                'default' => TRUE,
+                'checked'   => TRUE
+            ],
         ],
         'publikationen' => [
             'block' => [

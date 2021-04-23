@@ -23,7 +23,6 @@ function createBlock(blockConfig) {
 					val = parseInt( val );
 				}
 				setAtts( {[this]: val} );
-                // console.log('BK EDIT changeField val='.val);
 			}	
 		
 			function clean(obj) {
