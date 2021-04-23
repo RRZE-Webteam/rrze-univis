@@ -1,5 +1,5 @@
 <?php if ($person) : ?>
-	<div class="person" class="person liste-person" itemscope itemtype="http://schema.org/Person">
+	<div class="person rrze-univis" class="person liste-person" itemscope itemtype="http://schema.org/Person">
         <div class="page">
             <?php
             if (!empty($person['title'])) :

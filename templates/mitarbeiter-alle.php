@@ -1,5 +1,5 @@
 <?php if ($data) : ?>
-<div id="univis-personenindex">
+<div id="univis-personenindex" class="rrze-univis">
     <?php foreach ($data as $position => $persons) : ?>
     <h4><?php echo $position; ?></h4>
     <ul class="person liste-person" itemscope itemtype="http://schema.org/Person">

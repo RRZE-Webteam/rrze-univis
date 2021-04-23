@@ -1,5 +1,5 @@
 <?php if ($data) : ?>
-<div id="univis-personenindex">
+<div id="univis-personenindex" class="rrze-univis">
 <p class="groupindex">
         <?php if (in_array('sprungmarken', $this->show) && !in_array('sprungmarken', $this->hide)) : ?>
         <?php foreach (array_keys($data) as $v) : ?>

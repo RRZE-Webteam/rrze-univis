@@ -1,6 +1,6 @@
 {
   "name": "rrze-univis",
-  "version": "3.1.33",
+  "version": "3.1.35",
   "description": "Einbindung von Daten aus UnivIS",
   "main": "rrze-univis.php",
   "textdomain": "rrze-univis",
