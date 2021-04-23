@@ -1,3 +1,4 @@
+<div class="rrze-univis">
 <?php if ($data) :
     $lang = get_locale();
     foreach ($data as $typ => $veranstaltungen) : 
@@ -100,3 +101,5 @@
     endforeach;
                 
 endif;
+?>
+</div>
