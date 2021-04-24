@@ -247,6 +247,13 @@ class Shortcode{
                 $atts['hide'] .= ',ics';
             }
         }
+        if (isset($atts['call'])){
+            if ($atts['call']){
+                $atts['show'] .= ',call';
+            }else{
+                $atts['hide'] .= ',call';
+            }
+        }
         if (!empty($atts['show'])){
             $this->show = array_map('trim', explode(',', strtolower($atts['show'])));
         }
@@ -393,12 +400,11 @@ class Shortcode{
 
 
     public function initGutenberg() {
-        // if (! $this->isGutenberg() || empty($this->UnivISURL) || empty($this->UnivISOrgNr)){
-        //     return;
-        // }
-        // // get prefills for dropdowns
-        // $aSettings = $this->fillGutenbergOptions($this->settings);
-        $aSettings = $this->settings;
+        if (! $this->isGutenberg() || empty($this->UnivISURL) || empty($this->UnivISOrgNr)){
+            return;
+        }
+        // get prefills for dropdowns
+        $aSettings = $this->fillGutenbergOptions($this->settings);
 
         foreach($aSettings as $task => $settings){
             // register js-script to inject php config to call gutenberg lib

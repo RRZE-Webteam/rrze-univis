@@ -190,6 +190,13 @@ function getShortcodeSettings(){
                 'label' => __( 'Zeige nur diese Jobs', 'rrze-univis' ),
                 'type' => 'string'
             ],
+            'call' => [
+                'field_type' => 'toggle',
+                'label' => __( 'Telefonnummern wählbar machen', 'rrze-univis' ),
+                'type' => 'boolean',
+                'default' => TRUE,
+                'checked'   => TRUE
+            ],
             'number' => [
                 'default' => 0,
                 'field_type' => 'text',

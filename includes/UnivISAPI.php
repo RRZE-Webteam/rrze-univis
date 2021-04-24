@@ -638,8 +638,12 @@ class UnivISAPI {
                 }
             }
         }
-        
         return $phone;
+    }
+
+    public function getInt($str){
+        preg_match_all('/\d+/', $str, $matches);
+        return implode('', $matches[0]);
     }
 
     public function makeHTML($str){
@@ -790,15 +794,27 @@ class UnivISAPI {
             'beginners' => __('für Anfänger geeignet', 'rrze-univis'),
             'gast' => __('für Gasthörer zugelassen', 'rrze-univis'),
             'evaluation' => __('Evaluation', 'rrze-univis'),
-            'phone' => '',
-            'fax' => '',
+            'locations' => '',
             'organizational' => '',
         ];
 
         foreach($data as $nr => $row){
             foreach($fields as $field => $values){
-                if (isset($data[$nr][$field]) && ($field == 'phone' || $field == 'fax')){
-                    $data[$nr][$field] = self::correctPhone($data[$nr][$field]);
+                // if (isset($data[$nr][$field]) && ($field == 'phone' || $field == 'fax')){
+                if (isset($data[$nr][$field]) && ($field == 'locations')){
+                    foreach($data[$nr]['locations'] as $l_nr => $location){
+                        if (!empty($location['tel'])) {
+                            $data[$nr]['locations'][$l_nr]['tel'] = self::correctPhone($data[$nr]['locations'][$l_nr]['tel']);
+                            $data[$nr]['locations'][$l_nr]['tel_call'] = '+' . self::getInt($data[$nr]['locations'][$l_nr]['tel']);
+                        }
+                        if (!empty($location['fax'])) {
+                            $data[$nr]['locations'][$l_nr]['fax'] = self::correctPhone($data[$nr]['locations'][$l_nr]['fax']);
+                        }
+                        if (!empty($location['mobile'])) {
+                            $data[$nr]['locations'][$l_nr]['mobile'] = self::correctPhone($data[$nr]['locations'][$l_nr]['mobile']);
+                            $data[$nr]['locations'][$l_nr]['mobile_call'] = '+' . self::getInt($data[$nr]['locations'][$l_nr]['mobile']);
+                        }
+                    }
                 }elseif ($field == 'repeat'){
                     if (isset($data[$nr]['courses'])){
                         foreach($data[$nr]['courses'] as $c_nr => $course){
