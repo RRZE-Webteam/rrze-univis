@@ -21,6 +21,10 @@ class Shortcode{
     protected $options;
     protected $show = [];
     protected $hide = [];
+    protected $atts;
+    protected $univis;
+    const TRANSIENT_PREFIX = 'rrze_univis_cache_';    
+    const TRANSIENT_EXPIRATION = DAY_IN_SECONDS;    
 
     /**
      * Settings-Objekt
@@ -102,10 +106,11 @@ class Shortcode{
                 $atts_default[$k] = $v['default'];
             }
         }
-        $atts = shortcode_atts( $atts_default, $atts );
-        $atts = $this->normalize($atts);
+        // $atts = shortcode_atts( $atts_default, $atts );
+        // $atts = $this->normalize($atts);
+        $this->atts = $this->normalize(shortcode_atts($atts_default, $atts));
         $data = '';
-        $univis = new UnivISAPI($this->UnivISURL, $this->UnivISOrgNr, $atts);
+        $this->univis = new UnivISAPI($this->UnivISURL, $this->UnivISOrgNr, $this->atts);
 
         switch($atts['task']){
             case 'mitarbeiter-einzeln': 
@@ -116,37 +121,37 @@ class Shortcode{
                     $this->show[] = 'mail';
                 }
                 if (!empty($atts['univisid'])){
-                    $data = $univis->getData('personByID', $atts['univisid']);
+                    $data = $this->getData('personByID', $atts['univisid']);
                     if ($data){
                         $atts['name'] = $data[0]['lastname'] . ',' . $data[0]['firstname'];
                     }
                 }elseif(!empty($atts['name'])){
-                    $data = $univis->getData('personByName', $atts['name']);
+                    $data = $this->getData('personByName', $atts['name']);
                 }
                 if ($data && !empty($atts['name'])){
                     $person = $data[0];
-                    $person['lectures'] = $univis->getData('lectureByLecturer', $atts['name']);
+                    $person['lectures'] = $this->getData('lectureByLecturer', $atts['name']);
                 }
                 break;
             case 'mitarbeiter-orga': 
-                $data = $univis->getData('personByOrga');
+                $data = $this->getData('personByOrga');
                 break;
             case 'mitarbeiter-telefonbuch': 
-                $data = $univis->getData('personByOrgaPhonebook');
+                $data = $this->getData('personByOrgaPhonebook');
                 break;
             case 'mitarbeiter-alle': 
                 if (!in_array('telefon', $this->hide) && !in_array('telefon', $this->show)){
                     $this->show[] = 'telefon';
                 }
-                $data = $univis->getData('personAll', NULL);
+                $data = $this->getData('personAll', NULL);
                 break;
             case 'lehrveranstaltungen-einzeln': 
                 if (!empty($atts['id'])){
-                    $data = $univis->getData('lectureByID', $atts['id']);
+                    $data = $this->getData('lectureByID', $atts['id']);
                 }elseif (!empty($atts['name'])){
-                    $data = $univis->getData('lectureByLecturer', $atts['name']);
+                    $data = $this->getData('lectureByLecturer', $atts['name']);
                 }elseif (!empty($atts['univisid'])){
-                    $data = $univis->getData('lectureByLecturerID', $atts['univisid']);
+                    $data = $this->getData('lectureByLecturerID', $atts['univisid']);
                 }
                 if ($data){
                     $veranstaltung = $data[array_key_first($data)][0];
@@ -154,20 +159,20 @@ class Shortcode{
                 break;
             case 'lehrveranstaltungen-alle': 
                 if (!empty($atts['name'])){
-                    $data = $univis->getData('lectureByLecturer', $atts['name']);
+                    $data = $this->getData('lectureByLecturer', $atts['name']);
                 }elseif (!empty($atts['univisid'])){
-                    $data = $univis->getData('lectureByLecturerID', $atts['univisid']);
+                    $data = $this->getData('lectureByLecturerID', $atts['univisid']);
                 }else{
-                    $data = $univis->getData('lectureByDepartment');
+                    $data = $this->getData('lectureByDepartment');
                 }
                 break;
             case 'publikationen': 
                 if (!empty($atts['name'])){
-                    $data = $univis->getData('publicationByAuthor', $atts['name']);
+                    $data = $this->getData('publicationByAuthor', $atts['name']);
                 }elseif (!empty($atts['univisid'])){
-                    $data = $univis->getData('publicationByAuthorID', $atts['univisid']);
+                    $data = $this->getData('publicationByAuthorID', $atts['univisid']);
                 }else{
-                    $data = $univis->getData('publicationByDepartment');
+                    $data = $this->getData('publicationByDepartment');
                 }
                 break;
         }
@@ -312,7 +317,7 @@ class Shortcode{
     }
 
     public function fillGutenbergOptions($aSettings) {
-        $univis = new UnivISAPI($this->UnivISURL, $this->UnivISOrgNr, NULL);
+        $this->univis = new UnivISAPI($this->UnivISURL, $this->UnivISOrgNr, NULL);
 
         foreach($aSettings as $task => $settings){
             $settings['number']['default'] = $this->UnivISOrgNr;
@@ -326,7 +331,7 @@ class Shortcode{
                 $aPersons = [];
                 $zeige_jobs = (isset($settings['zeige_jobs'])?$settings['zeige_jobs']:NULL);
                 $ignoriere_jobs = (isset($settings['ignoriere_jobs'])?$settings['ignoriere_jobs']:NULL);
-                $data = $univis->getData('personAll', NULL, 1, $zeige_jobs, $ignoriere_jobs);
+                $data = $this->getData('personAll', NULL, 1, $zeige_jobs, $ignoriere_jobs);
                 foreach($data as $position => $persons){
                     foreach($persons as $person){
                         $aPersons[$person['person_id']] = $person['lastname'] . ', ' . $person['firstname'];
@@ -341,7 +346,7 @@ class Shortcode{
                 $aLectures = [];
                 $aLectureTypes = [];
                 $aLectureLanguages = [];
-                $data = $univis->getData('lectureByDepartment');
+                $data = $this->getData('lectureByDepartment');
 
                 foreach($data as $type => $lecs){
                     foreach($lecs as $lecture){
@@ -450,6 +455,17 @@ class Shortcode{
             ),
             NULL
         );
+    }
+
+    public function getData($dataType, $univisParam = NULL){
+        $data = get_transient(self::TRANSIENT_PREFIX . $dataType . $univisParam);
+        if ($data){
+            return $data;
+        }else{
+            $data = $this->univis->getData($dataType, $univisParam);
+            set_transient(self::TRANSIENT_PREFIX . $dataType . $univisParam, $data, self::TRANSIENT_EXPIRATION);
+            return $data;
+        }
     }
 
     // public function generateTinyMCE(){

@@ -9,7 +9,6 @@ use RRZE\UnivIS\Shortcode;
 use RRZE\UnivIS\TinyMCEButtons;
 
 
-
 /**
  * Hauptklasse (Main)
  */

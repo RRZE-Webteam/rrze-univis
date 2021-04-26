@@ -78,7 +78,7 @@
                                             'filename' => sanitize_file_name($typ),
                                         ];
                     
-                                        $t['ics'] = '<span class="lecture-info-ics" itemprop="ics"><a href="' . plugin_dir_url(__FILE__ ) .'../ics.php?' . http_build_query($props) . '">' . __('ICS') . '</a></span>';
+                                        $t['ics'] = '<span class="lecture-info-ics" itemprop="ics"><a href="' . plugin_dir_url(__FILE__ ) .'../ics.php?' . http_build_query($props) . '">.ics</a></span>';
                                     }
 
                                     $term_formatted = implode(' ', $t);

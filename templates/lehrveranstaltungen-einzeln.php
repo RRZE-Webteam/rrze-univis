@@ -1,3 +1,4 @@
+<div class="rrze-univis">
 <?php if ($veranstaltung) : 
     $lang = get_locale();
     ?>
@@ -92,13 +93,13 @@
                             'starttime' => (!empty($term['starttime']) ? $term['starttime'] : NULL),
                             'endtime' => (!empty($term['endtime']) ? $term['endtime'] : NULL),
                             'repeat' => (!empty($term['repeat']) ? $term['repeat'] : NULL),
-                            'location' => (!empty($term['room']) ? $term['room'] : NULL),
+                            'location' => (!empty($t['room']) ? $t['room'] : NULL),
                             'description' => (!empty($veranstaltung['comment']) ? $veranstaltung['comment'] : NULL),
                             'url' => get_permalink(),
                             'filename' => sanitize_file_name($veranstaltung['lecture_type_long']),
                         ];
-
-                        $t['ics'] = '<a href="' . plugin_dir_url(__FILE__ ) .'../ics.php?' . http_build_query($props) . '">' . __('ICS') . '</a>';
+    
+                        $t['ics'] = '<span class="lecture-info-ics" itemprop="ics"><a href="' . plugin_dir_url(__FILE__ ) .'../ics.php?' . http_build_query($props) . '">.ics</a></span>';
                     }
                     $term_formatted = implode(' ', $t);
                     ?>
@@ -185,3 +186,4 @@
     <?php endif; ?>
 
 <?php endif; ?>
+</div>
