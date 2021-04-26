@@ -1,6 +1,12 @@
 <div class="rrze-univis">
 <?php if ($data) :
     $lang = get_locale();
+    $options = get_option('rrze-univis');
+    $ssstart = (!empty($options['basic_ssStart']) ? $options['basic_ssStart'] : 0);
+    $ssend = (!empty($options['basic_ssEnd']) ? $options['basic_ssEnd'] : 0);
+    $wsstart = (!empty($options['basic_wsStart']) ? $options['basic_wsStart'] : 0);
+    $wsend = (!empty($options['basic_wsEnd']) ? $options['basic_wsEnd'] : 0);
+
     foreach ($data as $typ => $veranstaltungen) : 
         ?>
 	<h2>
@@ -76,6 +82,10 @@
                                             'description' => (!empty($veranstaltung['comment']) ? $veranstaltung['comment'] : NULL),
                                             'url' => get_permalink(),
                                             'filename' => sanitize_file_name($typ),
+                                            'ssstart' => $ssstart,
+                                            'ssend' => $ssend,
+                                            'wsstart' => $wsstart,
+                                            'wsend' => $wsend,
                                         ];
                     
                                         $t['ics'] = '<span class="lecture-info-ics" itemprop="ics"><a href="' . plugin_dir_url(__FILE__ ) .'../ics.php?' . http_build_query($props) . '">.ics</a></span>';

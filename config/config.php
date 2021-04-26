@@ -100,7 +100,7 @@ function getFields()
             ],
             [
                 'name'              => 'semesterMin',
-                'label'             => __('Lehrveranstaltungen bis zum Sommersemester finden', 'rrze-univis'),
+                'label'             => __('Finde Lehrveranstaltungen bis zum Sommersemester', 'rrze-univis'),
                 'desc'              => __('', 'rrze-univis'),
                 'placeholder'       => '',
                 'min'               => 0,
@@ -109,6 +109,42 @@ function getFields()
                 'type'              => 'number',
                 'default'           => '1971',
                 'sanitize_callback' => 'floatval'
+            ],            
+            [
+                'name'              => 'wsStart',
+                'label'             => __('Beginn der Vorlesungszeit in diesem Wintersemester', 'rrze-univis'),
+                'desc'              => __('', 'rrze-univis'),
+                'placeholder'       => '',
+                'type'              => 'date',
+                'default'           => date("Y") - 1 . '-11-02',
+                'sanitize_callback' => 'date'
+            ],            
+            [
+                'name'              => 'wsEnd',
+                'label'             => __('Ende der Vorlesungszeit in diesem Wintersemester', 'rrze-univis'),
+                'desc'              => __('', 'rrze-univis'),
+                'placeholder'       => '',
+                'type'              => 'date',
+                'default'           => date("Y") . '-02-12',
+                'sanitize_callback' => 'date'
+            ],            
+            [
+                'name'              => 'ssStart',
+                'label'             => __('Beginn der Vorlesungszeit in diesem Sommersemester', 'rrze-univis'),
+                'desc'              => __('', 'rrze-univis'),
+                'placeholder'       => '',
+                'type'              => 'date',
+                'default'           => date("Y") . '-04-12',
+                'sanitize_callback' => 'date'
+            ],            
+            [
+                'name'              => 'ssEnd',
+                'label'             => __('Ende der Vorlesungszeit in diesem Sommersemester', 'rrze-univis'),
+                'desc'              => __('', 'rrze-univis'),
+                'placeholder'       => '',
+                'type'              => 'date',
+                'default'           => date("Y") . '-07-16',
+                'sanitize_callback' => 'date'
             ],            
         ],
     ];

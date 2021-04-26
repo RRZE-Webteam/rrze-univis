@@ -832,6 +832,33 @@ class Settings
         echo $html;
     }
 
+
+    /**
+     * Zeigt ein Textfeld mit Datepicker für ein Einstellungsfeld an.
+     * @param array   $args Argumente des Einstellungsfelds
+     */
+    public function callbackDate($args)
+    {
+        $value = esc_attr($this->getOption($args['section'], $args['id'], $args['default']));
+        $size = isset($args['size']) && !is_null($args['size']) ? $args['size'] : 'regular';
+        $type = 'date';
+        $placeholder = empty($args['placeholder']) ? '' : ' placeholder="' . $args['placeholder'] . '"';
+
+        $html = sprintf(
+            '<input type="%1$s" class="%2$s-text" id="%4$s-%5$s" name="%3$s[%4$s_%5$s]" value="%6$s"%7$s>',
+            $type,
+            $size,
+            $this->optionName,
+            $args['section'],
+            $args['id'],
+            $value,
+            $placeholder
+        );
+        $html .= $this->getFieldDescription($args);
+
+        echo $html;
+    }
+
     public function getUnivISSearchPage() {
         ?>
         <br><br>

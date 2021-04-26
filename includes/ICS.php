@@ -21,6 +21,10 @@ class ICS {
         'location',
         'description',
         'url',
+        'ssstart',
+        'ssend',
+        'wsstart',
+        'wsend',
     );
 
     public function __construct($props){
@@ -89,11 +93,6 @@ class ICS {
         $start = '';
         $bRule = FALSE;
         if (!empty($this->props['REPEAT'])) {
-            if (empty($this->props['ENDDATE'])) {
-                // repeat for 1 year
-                $this->props['ENDDATE'] = $this->formatTimestamp('1 month');
-            }
-
             $tsStart = strtotime($this->props['DTSTART']);
             $start = date('Ymd', $tsStart);
             $day = date('Ymd', $start);
@@ -117,6 +116,17 @@ class ICS {
                     }
                 }
             }
+
+            if (empty($this->props['ENDDATE'])) {
+                // find enddate: either in winters' or summers' semester or if between +1 month 
+                if ($start >= $this->props['SSSTART']) {
+                    $this->props['ENDDATE'] = $this->formatTimestamp($this->props['SSEND']);
+                } elseif ($start <= $this->props['WSEND']) {
+                    $this->props['ENDDATE'] = $this->formatTimestamp($this->props['WSEND']);
+                } else {
+                    $this->props['ENDDATE'] = $this->formatTimestamp('1 month');
+                }
+            }
             $bRule = TRUE;
         }
 
@@ -137,6 +147,10 @@ class ICS {
         unset($this->props['STARTDATE']);
         unset($this->props['ENDDATE']);
         unset($this->props['URL']); // allthough URL is defined in https://www.kanzaki.com/docs/ical/url.html an error occurs using iCal, therefore it is added to DESCRIPTION
+        unset($this->props['SSSTART']);
+        unset($this->props['SSEND']);
+        unset($this->props['WSSTART']);
+        unset($this->props['WSEND']);
 
         $props = array();
         foreach ($this->props as $k => $v) {
