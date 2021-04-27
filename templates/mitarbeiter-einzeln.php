@@ -36,9 +36,9 @@
                         foreach($person['locations'] as $location){
                             if (!empty($location['tel']) && in_array('telefon', $this->show) && !in_array('telefon', $this->hide)){
                                 if (in_array('call', $this->show) && !in_array('call', $this->hide)) {
-                                    echo '<li class="person-info-phone"><span class="screen-reader-text">' . __('Phone number', 'rrze-univis') . ': </span><span itemprop="telephone"><a href="tel:' . $location['tel_call'] . '"> ' . $location['tel'] . '</a></span></li>';
+                                    echo '<li><span class="screen-reader-text">' . __('Phone number', 'rrze-univis') . ': </span><span itemprop="telephone"><a href="tel:' . $location['tel_call'] . '"> ' . $location['tel'] . '</a></span></li>';
                                 } else {
-                                    echo '<li class="person-info-phone"><span class="screen-reader-text">' . __('Phone number', 'rrze-univis') . ': </span><span itemprop="telephone">' . $location['tel'] . '</span></li>';
+                                    echo '<li><span class="screen-reader-text">' . __('Phone number', 'rrze-univis') . ': </span><span itemprop="telephone">' . $location['tel'] . '</span></li>';
                                 }
                             }
                         }
@@ -46,32 +46,32 @@
                         foreach($person['locations'] as $location){
                             if (!empty($location['mobile']) && in_array('mobile', $this->show) && !in_array('mobile', $this->hide)) {
                                 if (in_array('call', $this->show) && !in_array('call', $this->hide)) {
-                                    echo '<li class="person-info-mobile mobilePhone"><span class="screen-reader-text">' . __('Mobile number', 'rrze-univis') . ': </span><span class="mobile" itemprop="telephone"><a href="tel:' . $location['mobile_call'] . '"> ' . $location['mobile'] . '</a></span></li>';
+                                    echo '<li><span class="screen-reader-text">' . __('Mobile number', 'rrze-univis') . ': </span><span class="mobile" itemprop="telephone"><a href="tel:' . $location['mobile_call'] . '"> ' . $location['mobile'] . '</a></span></li>';
                                 } else {
-                                    echo '<li class="person-info-mobile mobilePhone"><span class="screen-reader-text">' . __('Mobile number', 'rrze-univis') . ': </span><span class="mobile" itemprop="telephone">' . $location['mobile'] . '</span></li>';
+                                    echo '<li><span class="screen-reader-text">' . __('Mobile number', 'rrze-univis') . ': </span><span class="mobile" itemprop="telephone">' . $location['mobile'] . '</span></li>';
                                 }
                             }
                         }
                         // fax
                         foreach($person['locations'] as $location){
                             if (!empty($location['fax']) && in_array('fax', $this->show) && !in_array('fax', $this->hide)){
-                                echo '<li class="person-info-fax"><span class="screen-reader-text">' . __('Fax number', 'rrze-univis') . ': </span><span itemprop="faxNumber">' . $location['fax'] . '</span></li>';
+                                echo '<li><span class="screen-reader-text">' . __('Fax number', 'rrze-univis') . ': </span><span itemprop="faxNumber">' . $location['fax'] . '</span></li>';
                             }
                         }
                         // email
                         foreach($person['locations'] as $location){
                             if (!empty($location['email']) && in_array('mail', $this->show) && !in_array('mail', $this->hide)){
-                                echo '<li class="person-info-email"><span class="screen-reader-text">' . __('Email', 'rrze-univis') . ': </span><span itemprop="email">' . $location['email'] . '</span></li>';
+                                echo '<li><span class="screen-reader-text">' . __('Email', 'rrze-univis') . ': </span><span itemprop="email">' . $location['email'] . '</span></li>';
                             }
                         }
                         // address
                         foreach($person['locations'] as $location){
                             if (!empty($location['url']) && ((in_array('url', $this->show) && !in_array('url', $this->hide)) || ((in_array('address', $this->show) && !in_array('address', $this->hide) && !in_array('url', $this->hide))))){
-                                echo '<li class="person-info-www"><span class="screen-reader-text">' . __('Website', 'rrze-univis') . ': </span><a itemprop="url" href="' . $location['url'] . '">' . $location['url'] . '</a></li>';
+                                echo '<li><span class="screen-reader-text">' . __('Website', 'rrze-univis') . ': </span><a itemprop="url" href="' . $location['url'] . '">' . $location['url'] . '</a></li>';
                             }
                             if (in_array('address', $this->show) && !in_array('address', $this->hide) && (!empty($location['street']) || !empty($location['ort']) || !empty($location['office']))){
                                 if (!empty($location['street']) || !empty($location['ort'])){
-                                    echo '<li class="person-info-address"><span class="screen-reader-text">' . __('Address', 'rrze-univis') . ': <br></span>';
+                                    echo '<li><span class="screen-reader-text">' . __('Address', 'rrze-univis') . ': <br></span>';
                                     if (!empty($location['street'])){
                                         echo '<div itemprop="address" itemscope="" itemtype="http://schema.org/PostalAddress"><span class="person-info-street" itemprop="streetAddress">' . $location['street'] . '</span><br>';
                                     }
@@ -82,7 +82,7 @@
                                     echo '</div>';
                                 }
                                 if (!empty($location['office'])){
-                                    echo '<div class="person-info-room" itemprop="workLocation" itemscope="" itemtype="http://schema.org/Person">' . __('Room', 'rrze-univis') . ' ' .  $location['office'] . '</div>';
+                                    echo '<div itemprop="workLocation" itemscope="" itemtype="http://schema.org/Person">' . __('Room', 'rrze-univis') . ' ' .  $location['office'] . '</div>';
                                 }
                                 if (!empty($location['street']) || !empty($location['ort'])){
                                     echo '</li>';
@@ -91,7 +91,7 @@
                         }
 
                    		if (!empty($person['officehours'])){
-        					echo '<li class="person-info-office"><span itemprop="hoursAvailable" itemtype="http://schema.org/ContactPoint"><span class="screen-reader-text">' ;
+        					echo '<li><span itemprop="hoursAvailable" itemtype="http://schema.org/ContactPoint"><span class="screen-reader-text">' ;
         					echo _e('Office hours', 'rrze-univis') . ': </span> <span><b>'; 
         					echo _e('Office hours', 'rrze-univis') .':</b><br>' ;
         					foreach ($person['officehours'] as $officehour){
@@ -134,9 +134,10 @@
                         <li>
                             <h3><?php echo $lec_type; ?></h3>
                             <ul>
-                            <?php foreach ($lectures as $lecture) : ?>
-                                <li><a href="lv_id/<?php echo $lecture['lecture_id']; ?>"><?php echo $lecture['name']; ?></a></li>
-                            <?php endforeach; ?>
+                            <?php foreach ($lectures as $lecture){
+                                echo '<li><a href="' . get_permalink() . 'lv_id/' . $lecture['lecture_id'] . '">' . $lecture['name'] . '</a></li>'; 
+                            }
+                            ?>
                             </ul>
                         </li>
                     </ul>

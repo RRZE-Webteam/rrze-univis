@@ -7,6 +7,8 @@ defined('ABSPATH') || exit;
 use RRZE\UnivIS\Settings;
 use RRZE\UnivIS\Shortcode;
 use RRZE\UnivIS\TinyMCEButtons;
+use function RRZE\UnivIS\Config\getConstants;
+
 
 
 /**
@@ -19,22 +21,15 @@ class Main {
      */
     protected $pluginFile;
 
-    /**
-     * Variablen Werte zuweisen.
-     * @param string $pluginFile Pfad- und Dateiname der Plugin-Datei
-     */
+    public $controller;
+
     public function __construct($pluginFile) {
         $this->pluginFile = $pluginFile;
-
-        new TinyMCEButtons();
-
         add_action('init', 'RRZE\UnivIS\add_endpoint');
-        add_action('template_redirect', [$this, 'endpoint_template_redirect']);
+        add_action('template_redirect', [$this, 'getSingleEntry']);
+        new TinyMCEButtons();
     }
 
-    /**
-     * Es wird ausgeführt, sobald die Klasse instanziiert wird.
-     */
     public function onLoaded() {
         // add_action('admin_enqueue_scripts', [$this, 'enqueueAdminScripts']);
         add_action('add_meta_boxes', [$this, 'addMetaboxes']);
@@ -53,11 +48,6 @@ class Main {
         add_theme_support( 'widgets-block-editor' );
         apply_filters('gutenberg_use_widgets_block_editor', get_theme_support( 'widgets-block-editor' ));
     }
-
-    // public function enqueueAdminScripts() {
-    //     wp_register_style('rrze-univis', plugins_url('css/rrze-univis.css', plugin_basename($this->pluginFile)));
-    //     wp_enqueue_style( 'rrze-univis' );
-    // }
 
     public function loadWidget() {
         $myWidget = new UnivISWidget();
@@ -94,63 +84,34 @@ class Main {
         <?php
     }
 
-    public function endpoint_template_redirect()
-    {
+    public function getSingleEntry(){
         global $wp_query;
 
-        if (isset($wp_query->query_vars['univisid'])) {
-            $slug = $wp_query->query_vars['univisid'];
-            $key = 'univisid';
-            $task = 'mitarbeiter-einzeln';
-        } elseif (isset($wp_query->query_vars['lv_id'])) {
-            $slug = $wp_query->query_vars['lv_id'];
-            $key = 'lv_id';
-            $task = 'lehrveranstaltungen-einzeln';
+        if (isset($wp_query->query_vars['lv_id'])) {
+            $data = do_shortcode('[univis task="lehrveranstaltungen-einzeln" lv_id="' . $wp_query->query_vars['lv_id'] . '" ]');
+        } elseif (isset($wp_query->query_vars['univisid'])) {
+            $data = do_shortcode('[univis task="mitarbeiter-einzeln" univisid="' . $wp_query->query_vars['univisid'] . '" ]');
         } else {
             return;
         }
 
-        if (!empty($slug)) {
-            $slug = $key . '=' . $slug;
-            $slugs = explode('&', $slug);
-            $atts = [];
-
-            foreach ($slugs as $k => $v) {
-                $arr = explode('=', $v);
-                $atts[$arr[0]] = $arr[1];
-            }
-
-            $this->controller->init($task, $atts);
-            $data = $this->controller->ladeHTML();
-        } else {
-            $data = null;
-        }
-
-        $template = $this->locate_template();
-
-        $this->load_template($template, $data);
+        include plugin_dir_path($this->pluginFile) . 'templates/single-univis.php';
         exit;
     }
 
-    protected function locate_template()
-    {
-        $current_theme = wp_get_theme();
-        $default_template = plugin_dir_path($this->plugin_file) . 'RRZE/UnivIS/Templates/single-univis.php';
-        $template = '';
 
-        foreach ($this->allowed_stylesheets as $theme => $style) {
-            if (in_array(strtolower($current_theme->stylesheet), array_map('strtolower', $style))) {
-                $template = plugin_dir_path($this->plugin_file) . "RRZE/UnivIS/Templates/Themes/$theme/single-univis.php";
-                break;
-            }
+    public static function getThemeGroup() {
+        $constants = getConstants();
+        $ret = '';
+        $active_theme = wp_get_theme();
+        $active_theme = $active_theme->get( 'Name' );
+
+        if (in_array($active_theme, $constants['fauthemes'])) {
+            $ret = 'fauthemes';
+        }elseif (in_array($active_theme, $constants['rrzethemes'])) {
+            $ret = 'rrzethemes';
         }
-
-        return !empty($template) && file_exists($template) ? $template : $default_template;
-    }
-
-    protected function load_template($template, $data = array())
-    {
-        include $template;
+        return $ret;   
     }
 
 }
