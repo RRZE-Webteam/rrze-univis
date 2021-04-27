@@ -334,7 +334,7 @@ class Shortcode{
                 $data = $this->getData('personAll', NULL, 1, $zeige_jobs, $ignoriere_jobs);
                 foreach($data as $position => $persons){
                     foreach($persons as $person){
-                        $aPersons[$person['person_id']] = $person['lastname'] . ', ' . $person['firstname'];
+                        $aPersons[$person['person_id']] = $person['lastname'] . (!empty($person['firstname']) ? ', ' . $person['firstname'] : '');
                     }
                 }
                 asort($aPersons);            
@@ -458,14 +458,14 @@ class Shortcode{
     }
 
     public function getData($dataType, $univisParam = NULL){
-        $data = get_transient(self::TRANSIENT_PREFIX . $dataType . $univisParam);
-        if ($data){
-            return $data;
-        }else{
+        // $data = get_transient(self::TRANSIENT_PREFIX . $dataType . $univisParam);
+        // if ($data){
+        //     return $data;
+        // }else{
             $data = $this->univis->getData($dataType, $univisParam);
-            set_transient(self::TRANSIENT_PREFIX . $dataType . $univisParam, $data, self::TRANSIENT_EXPIRATION);
+            // set_transient(self::TRANSIENT_PREFIX . $dataType . $univisParam, $data, self::TRANSIENT_EXPIRATION);
             return $data;
-        }
+        // }
     }
 
     // public function generateTinyMCE(){
