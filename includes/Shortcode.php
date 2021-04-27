@@ -329,9 +329,7 @@ class Shortcode{
                     unset($settings['id']);
                 }
                 $aPersons = [];
-                $zeige_jobs = (isset($settings['zeige_jobs'])?$settings['zeige_jobs']:NULL);
-                $ignoriere_jobs = (isset($settings['ignoriere_jobs'])?$settings['ignoriere_jobs']:NULL);
-                $data = $this->getData('personAll', NULL, 1, $zeige_jobs, $ignoriere_jobs);
+                $data = $this->getData('personAll');
                 foreach($data as $position => $persons){
                     foreach($persons as $person){
                         $aPersons[$person['person_id']] = $person['lastname'] . (!empty($person['firstname']) ? ', ' . $person['firstname'] : '');
@@ -458,14 +456,14 @@ class Shortcode{
     }
 
     public function getData($dataType, $univisParam = NULL){
-        // $data = get_transient(self::TRANSIENT_PREFIX . $dataType . $univisParam);
-        // if ($data){
-        //     return $data;
-        // }else{
-            $data = $this->univis->getData($dataType, $univisParam);
-            // set_transient(self::TRANSIENT_PREFIX . $dataType . $univisParam, $data, self::TRANSIENT_EXPIRATION);
+        $data = get_transient(self::TRANSIENT_PREFIX . $dataType . $this->UnivISOrgNr . $univisParam);
+        if ($data){
             return $data;
-        // }
+        }else{
+            $data = $this->univis->getData($dataType, $univisParam);
+            set_transient(self::TRANSIENT_PREFIX . $dataType . $this->UnivISOrgNr . $univisParam, $data, self::TRANSIENT_EXPIRATION);
+            return $data;
+        }
     }
 
     // public function generateTinyMCE(){
