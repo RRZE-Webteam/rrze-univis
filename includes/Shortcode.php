@@ -82,6 +82,10 @@ class Shortcode{
             }
         }
 
+        if (empty($atts['task'])){
+            $atts['task'] = 'mitarbeiter-alle';
+        }
+
         // get settings
         switch($atts['task']){
             case 'mitarbeiter-einzeln': 

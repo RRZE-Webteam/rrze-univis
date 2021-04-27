@@ -27,6 +27,9 @@ class Main {
         $this->pluginFile = $pluginFile;
 
         new TinyMCEButtons();
+
+        add_action('init', 'RRZE\UnivIS\add_endpoint');
+        add_action('template_redirect', [$this, 'endpoint_template_redirect']);
     }
 
     /**
@@ -90,4 +93,64 @@ class Main {
             </div>
         <?php
     }
+
+    public function endpoint_template_redirect()
+    {
+        global $wp_query;
+
+        if (isset($wp_query->query_vars['univisid'])) {
+            $slug = $wp_query->query_vars['univisid'];
+            $key = 'univisid';
+            $task = 'mitarbeiter-einzeln';
+        } elseif (isset($wp_query->query_vars['lv_id'])) {
+            $slug = $wp_query->query_vars['lv_id'];
+            $key = 'lv_id';
+            $task = 'lehrveranstaltungen-einzeln';
+        } else {
+            return;
+        }
+
+        if (!empty($slug)) {
+            $slug = $key . '=' . $slug;
+            $slugs = explode('&', $slug);
+            $atts = [];
+
+            foreach ($slugs as $k => $v) {
+                $arr = explode('=', $v);
+                $atts[$arr[0]] = $arr[1];
+            }
+
+            $this->controller->init($task, $atts);
+            $data = $this->controller->ladeHTML();
+        } else {
+            $data = null;
+        }
+
+        $template = $this->locate_template();
+
+        $this->load_template($template, $data);
+        exit;
+    }
+
+    protected function locate_template()
+    {
+        $current_theme = wp_get_theme();
+        $default_template = plugin_dir_path($this->plugin_file) . 'RRZE/UnivIS/Templates/single-univis.php';
+        $template = '';
+
+        foreach ($this->allowed_stylesheets as $theme => $style) {
+            if (in_array(strtolower($current_theme->stylesheet), array_map('strtolower', $style))) {
+                $template = plugin_dir_path($this->plugin_file) . "RRZE/UnivIS/Templates/Themes/$theme/single-univis.php";
+                break;
+            }
+        }
+
+        return !empty($template) && file_exists($template) ? $template : $default_template;
+    }
+
+    protected function load_template($template, $data = array())
+    {
+        include $template;
+    }
+
 }

@@ -4,7 +4,7 @@
  * Plugin Name:     RRZE UnivIS
  * Plugin URI:      https://github.com/RRZE-Webteam/rrze-univis
  * Description:     Einbindung von Daten aus UnivIS
- * Version:         3.2.3
+ * Version:         3.2.4
  * Author:          RRZE-Webteam
  * Author URI:      https://blogs.fau.de/webworking/
  * License:         GNU General Public License v3
@@ -88,9 +88,15 @@ function activation()
         wp_die($error);
     }
 
-    // Ab hier können die Funktionen hinzugefügt werden,
-    // die bei der Aktivierung des Plugins aufgerufen werden müssen.
-    // Bspw. wp_schedule_event, flush_rewrite_rules, etc.
+    // Endpoint hinzufügen
+    add_endpoint(true);
+    flush_rewrite_rules();
+}
+
+function add_endpoint()
+{
+    add_rewrite_endpoint('univisid', EP_PERMALINK | EP_PAGES);
+    add_rewrite_endpoint('lv_id', EP_PERMALINK | EP_PAGES);
 }
 
 /**

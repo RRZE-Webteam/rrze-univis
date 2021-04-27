@@ -100,14 +100,14 @@ function getFields()
             ],
             [
                 'name'              => 'semesterMin',
-                'label'             => __('Finde Lehrveranstaltungen bis zum Sommersemester', 'rrze-univis'),
+                'label'             => __('Finde Lehrveranstaltungen ab dem Sommersemester', 'rrze-univis'),
                 'desc'              => __('', 'rrze-univis'),
                 'placeholder'       => '',
                 'min'               => 0,
                 'max'               => 99999999999,
                 'step'              => '1',
                 'type'              => 'number',
-                'default'           => '1971',
+                'default'           => date("Y") - 1,
                 'sanitize_callback' => 'floatval'
             ],            
             [
