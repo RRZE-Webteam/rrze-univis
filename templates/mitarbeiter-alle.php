@@ -43,7 +43,7 @@
                 foreach($person['locations'] as $location){
                     if (!empty($location['tel']) && in_array('telefon', $this->show) && !in_array('telefon', $this->hide)){
                         if (in_array('call', $this->show) && !in_array('call', $this->hide)) {
-                            $pers[] = '<span class="screen-reader-text">' . __('Phone number', 'rrze-univis') . ': </span><span itemprop="telephone"><a href="tel:' . $location['tel_call'] . '"> ' . $location['tel'] . '</a></span>';
+                            $pers[] = '<span class="screen-reader-text">' . __('Phone number', 'rrze-univis') . ': </span><span itemprop="telephone"><a href="tel:' . $location['tel_call'] . '"> ' . $location['tel'] . '</a> TEST</span>';
                         } else {
                             $pers[] = '<span class="screen-reader-text">' . __('Phone number', 'rrze-univis') . ': </span><span itemprop="telephone">' . $location['tel'] . '</span>';
                         }
@@ -78,18 +78,16 @@
                     }
                     if (in_array('address', $this->show) && !in_array('address', $this->hide) && (!empty($location['street']) || !empty($location['ort']) || !empty($location['office']))){
                         if (!empty($location['street']) || !empty($location['ort'])){
-                            $pers[] = '<span class="screen-reader-text">' . __('Address', 'rrze-univis') . ': <br></span>';
                             if (!empty($location['street'])){
-                                $pers[] = '<div itemprop="address" itemscope="" itemtype="http://schema.org/PostalAddress"><span class="person-info-street" itemprop="streetAddress">' . $location['street'] . '</span><br>';
+                                $pers[] = '<span class="person-info-street" itemprop="streetAddress">' . $location['street'] . '</span>';
                             }
                             if (!empty($location['ort'])){
                                 $pers[] = '<span itemprop="addressLocality">' . $location['ort'] . '</span>';
                                 
                             }
-                            $pers[] = '</div>';
                         }
                         if (!empty($location['office'])){
-                            $pers[] = '<div class="person-info-room" itemprop="workLocation" itemscope="" itemtype="http://schema.org/Person">' . __('Room', 'rrze-univis') . ' ' .  $location['office'] . '</div>';
+                            $pers[] =  __('Room', 'rrze-univis') . ' ' .  $location['office'];
                         }
                     }
                 }

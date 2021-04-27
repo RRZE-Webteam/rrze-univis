@@ -230,8 +230,8 @@ function getShortcodeSettings(){
                 'field_type' => 'toggle',
                 'label' => __( 'Telefonnummern wählbar machen', 'rrze-univis' ),
                 'type' => 'boolean',
-                'default' => TRUE,
-                'checked'   => TRUE
+                'default' => FALSE,
+                'checked'   => FALSE
             ],
             'number' => [
                 'default' => 0,
