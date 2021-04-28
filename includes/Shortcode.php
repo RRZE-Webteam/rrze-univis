@@ -455,13 +455,13 @@ class Shortcode{
     }
 
     public function getData($dataType, $univisParam = NULL){
-        // $data = get_transient(self::TRANSIENT_PREFIX . $dataType . $this->UnivISOrgNr . $univisParam);
-        // if ($data){
-        //     return $data;
-        // }else{
-            $data = $this->univis->getData($dataType, $univisParam);
-            // set_transient(self::TRANSIENT_PREFIX . $dataType . $this->UnivISOrgNr . $univisParam, $data, self::TRANSIENT_EXPIRATION);
+        $data = get_transient(self::TRANSIENT_PREFIX . $dataType . $this->UnivISOrgNr . $univisParam);
+        if ($data){
             return $data;
-        // }
+        }else{
+            $data = $this->univis->getData($dataType, $univisParam);
+            set_transient(self::TRANSIENT_PREFIX . $dataType . $this->UnivISOrgNr . $univisParam, $data, self::TRANSIENT_EXPIRATION);
+            return $data;
+        }
     }
 }
