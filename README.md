@@ -32,7 +32,7 @@ https://www.wordpress.rrze.fau.de/plugins/fau-und-rrze-plugins/rrze-univis/
 
 #### WP-Einstellungsmenü
 
-Einstellungen › UnivIS
+Einstellungen › RRZE-UnivIS
 
 #### Verwendung des Shortcodes [univis]
 
@@ -40,11 +40,11 @@ Einstellungen › UnivIS
 ```
 [univis]
 ```
-- Bindet die Mitarbeiterübersicht ein - besonders geeignet für wissenschaftliche Einrichtungen (Telefonnummern und E-Mail-Adressen können ein- und ausgeblendet werden.)
+- Bindet die Mitarbeiterübersicht ein - besonders geeignet für wissenschaftliche Einrichtungen (Telefonnummern, Mobilnummern, E-Mail-Adressen und Postadressen können ein- und ausgeblendet werden.)
 ```
 [univis number="123456789"]
 [univis task="mitarbeiter-alle"]
-[univis task="mitarbeiter-alle" show="telefon, mail"]
+[univis task="mitarbeiter-alle" show="telefon, mail, address, mobile"]
 [univis task="mitarbeiter-alle"]
 ```    
 - Bindet die Mitarbeiterübersicht ein - besonders geeignet für nicht-wissenschaftliche Einrichtungen (Telefonnummern und E-Mail-Adressen können ein- und ausgeblendet werden.)
