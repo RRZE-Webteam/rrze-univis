@@ -150,6 +150,18 @@ sprungmarken,
 ics, 
 telefon, 
 mobile, 
+fax,
+url,
+address, 
+call
+
+- hide:
+sprungmarken, 
+ics, 
+telefon, 
+mobile, 
+fax,
+url,
 address, 
 call
 
@@ -163,6 +175,10 @@ call
 - since
 
 - lv_import
+
+- zeige_jobs
+
+- ignoriere_jobs
 
 #### Hinweise
 
