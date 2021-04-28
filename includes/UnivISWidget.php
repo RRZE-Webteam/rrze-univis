@@ -8,8 +8,15 @@ require_once ABSPATH.'wp-includes/class-wp-widget.php';
 
 
 class UnivISWidget extends \WP_Widget {
-  
-    public function __construct() {
+
+    protected $pluginFile;
+    protected $settings;
+
+    public function __construct($pluginFile, $settings) {
+
+        $this->pluginFile = $pluginFile;
+        $this->settings = $settings;
+
         parent::__construct(
             'univis_widget', 
             __('UnivIS Widget', 'rrze-univis'), 
@@ -26,8 +33,13 @@ class UnivISWidget extends \WP_Widget {
         $atts = '';
         $atts .= (!empty($instance['show'])?' show=' . $instance['show'] : '');
         $atts .= (!empty($instance['hide'])?' hide=' . $instance['hide'] : '');
+        $field = ($instance['task'] == 'lehrveranstaltungen-einzeln' ? 'lv_id' : 'univisid');
+
+        $shortcode = new Shortcode($this->pluginFile, $this->settings);
+        $shortcode->onLoaded();
+
         echo $args['before_widget'];
-        echo do_shortcode('[univis task="'. $instance['task'] . '" ' . 'univisid=' . $instance['univisid'] . $atts . ']');
+        echo do_shortcode('[univis task="'. $instance['task'] . '" ' . $field . '=' . $instance['univisid'] . $atts . ']');
         echo $args['after_widget'];
     }
 
@@ -35,7 +47,6 @@ class UnivISWidget extends \WP_Widget {
         $aOptions = [
             'lehrveranstaltungen-einzeln' => __('Lehrveranstaltung', 'rrze-univis'),
             'mitarbeiter-einzeln' => __('Person', 'rrze-univis'),
-            'publikationen' => __('Publikation', 'rrze-univis')
         ];
         $output = "<select id='{$this->get_field_id($name)}' name='{$this->get_field_name($name)}' class='widefat'>";
         foreach($aOptions as $ID => $txt){
@@ -55,7 +66,7 @@ class UnivISWidget extends \WP_Widget {
     public function form( $instance ) {
         echo '<br \>';
         echo $this->getSelectHTML('task', !empty($instance['task']) ? $instance['task'] : NULL );
-        echo $this->getInputHTML('univisid', !empty($instance['univisid']) ? $instance['univisid'] : NULL, 'UnivIS ID');
+        echo $this->getInputHTML('univisid', 'UnivIS ID', !empty($instance['univisid']) ? $instance['univisid'] : NULL);
         echo '<br \>&nbsp;';
     }
           
@@ -63,7 +74,7 @@ class UnivISWidget extends \WP_Widget {
     public function update( $new_instance, $old_instance ) {
         $instance = [];
         $instance['task'] = (!empty($new_instance['task']) ? $new_instance['task'] : '');
-        $instance['univisid'] = (!empty($new_instance['univisid']) ? $new_instance['univisid'] : '');
+        $instance['univisid'] = (!empty($new_instance['univisid']) ? $new_instance['univisid'] : 'test');
         $instance['show'] = (!empty($new_instance['show']) ? $new_instance['show'] : '');
         $instance['hide'] = (!empty($new_instance['hide']) ? $new_instance['hide'] : '');
         return $instance;
