@@ -137,6 +137,8 @@ publikationen,
 
 - univisid
 
+- number
+
 - id
 
 - name
