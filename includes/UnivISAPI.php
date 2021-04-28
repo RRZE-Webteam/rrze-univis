@@ -45,9 +45,7 @@ class UnivISAPI {
 
 
     public function getData($dataType, $univisParam = NULL){
-        $url = $this->getUrl($dataType) . $univisParam;
-        // echo $url . '<br>';
-        // exit;
+        $url = $this->getUrl($dataType) . urlencode($univisParam);
         $data = file_get_contents($url);
         if (!$data){
             UnivISAPI::log('getData', 'error', "no data returned using $url");
@@ -496,12 +494,12 @@ class UnivISAPI {
             $data = $this->groupBy($data, 'lecture_type_long');
             // sort by attribute "order"
             if (!empty($this->atts['order'])){
-                $aOrder = explode(',', trim($this->atts['order']));
+                $aOrder = explode(',', $this->atts['order']);
                 $sortedData = [];
                 foreach($aOrder as $order){
                     foreach($data as $lecture_type_long => $lectures){
                         foreach($lectures as $lecture){
-                            if ($lecture['lecture_type'] == $order){
+                            if ($lecture['lecture_type'] == trim($order)){
                                 $sortedData[$lecture_type_long] = $data[$lecture_type_long];
                                 unset($data[$lecture_type_long]);
                                 break 1;

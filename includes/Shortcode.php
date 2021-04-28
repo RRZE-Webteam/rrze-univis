@@ -110,8 +110,6 @@ class Shortcode{
                 $atts_default[$k] = $v['default'];
             }
         }
-        // $atts = shortcode_atts( $atts_default, $atts );
-        // $atts = $this->normalize($atts);
         $this->atts = $this->normalize(shortcode_atts($atts_default, $atts));
         $data = '';
         $this->univis = new UnivISAPI($this->UnivISURL, $this->UnivISOrgNr, $this->atts);
@@ -125,16 +123,16 @@ class Shortcode{
                     $this->show[] = 'mail';
                 }
                 if (!empty($atts['univisid'])){
-                    $data = $this->getData('personByID', $atts['univisid']);
+                    $data = $this->getData('personByID', $this->atts['univisid']);
                     if ($data){
-                        $atts['name'] = $data[0]['lastname'] . ',' . $data[0]['firstname'];
+                        $this->atts['name'] = $data[0]['lastname'] . ',' . $data[0]['firstname'];
                     }
-                }elseif(!empty($atts['name'])){
-                    $data = $this->getData('personByName', $atts['name']);
+                }elseif(!empty($this->atts['name'])){
+                        $data = $this->getData('personByName', $this->atts['name']);
                 }
-                if ($data && !empty($atts['name'])){
+                if ($data && !empty($this->atts['name'])){
                     $person = $data[0];
-                    $person['lectures'] = $this->getData('lectureByLecturer', $atts['name']);
+                    $person['lectures'] = $this->getData('lectureByLecturer', $this->atts['name']);
                 }
                 break;
             case 'mitarbeiter-orga': 
@@ -150,31 +148,31 @@ class Shortcode{
                 $data = $this->getData('personAll', NULL);
                 break;
             case 'lehrveranstaltungen-einzeln': 
-                if (!empty($atts['id'])){
-                    $data = $this->getData('lectureByID', $atts['id']);
-                }elseif (!empty($atts['name'])){
-                    $data = $this->getData('lectureByLecturer', $atts['name']);
-                }elseif (!empty($atts['univisid'])){
-                    $data = $this->getData('lectureByLecturerID', $atts['univisid']);
+                if (!empty($this->atts['id'])){
+                    $data = $this->getData('lectureByID', $this->atts['id']);
+                }elseif (!empty($this->atts['name'])){
+                    $data = $this->getData('lectureByLecturer', $this->atts['name']);
+                }elseif (!empty($this->atts['univisid'])){
+                    $data = $this->getData('lectureByLecturerID', $this->atts['univisid']);
                 }
                 if ($data){
                     $veranstaltung = $data[array_key_first($data)][0];
                 }
                 break;
             case 'lehrveranstaltungen-alle': 
-                if (!empty($atts['name'])){
-                    $data = $this->getData('lectureByLecturer', $atts['name']);
-                }elseif (!empty($atts['univisid'])){
-                    $data = $this->getData('lectureByLecturerID', $atts['univisid']);
+                if (!empty($this->atts['name'])){
+                    $data = $this->getData('lectureByLecturer', $this->atts['name']);
+                }elseif (!empty($this->atts['univisid'])){
+                    $data = $this->getData('lectureByLecturerID', $this->atts['univisid']);
                 }else{
                     $data = $this->getData('lectureByDepartment');
                 }
                 break;
             case 'publikationen': 
                 if (!empty($atts['name'])){
-                    $data = $this->getData('publicationByAuthor', $atts['name']);
-                }elseif (!empty($atts['univisid'])){
-                    $data = $this->getData('publicationByAuthorID', $atts['univisid']);
+                    $data = $this->getData('publicationByAuthor', $this->atts['name']);
+                }elseif (!empty($this->atts['univisid'])){
+                    $data = $this->getData('publicationByAuthorID', $this->atts['univisid']);
                 }else{
                     $data = $this->getData('publicationByDepartment');
                 }
@@ -188,7 +186,7 @@ class Shortcode{
             // var_dump($data);
             // exit;
             
-            $filename = trailingslashit(dirname(__FILE__)) . '../templates/' . $atts['task'] . '.php';
+            $filename = trailingslashit(dirname(__FILE__)) . '../templates/' . $this->atts['task'] . '.php';
             
             if (is_file($filename)) {
                 ob_start();
@@ -203,7 +201,7 @@ class Shortcode{
     public function normalize($atts){
         // normalize given attributes according to rrze-univis version 2
         if (empty($atts['task'])){
-            $atts['task'] = 'mitarbeiter-orga';
+            $atts['task'] = 'mitarbeiter-alle';
         }
         if (!empty($atts['number'])){
             $this->UnivISOrgNr = (int)$atts['number'];
@@ -218,9 +216,6 @@ class Shortcode{
         }
         if (!empty($atts['dozentname'])){
             $atts['name'] = $atts['dozentname'];
-        }
-        if (!empty($atts['name'])){
-            $atts['name'] = str_replace(' ', '', $atts['name']);
         }
         if (empty($atts['show'])){
             $atts['show'] = '';
@@ -460,13 +455,13 @@ class Shortcode{
     }
 
     public function getData($dataType, $univisParam = NULL){
-        $data = get_transient(self::TRANSIENT_PREFIX . $dataType . $this->UnivISOrgNr . $univisParam);
-        if ($data){
-            return $data;
-        }else{
+        // $data = get_transient(self::TRANSIENT_PREFIX . $dataType . $this->UnivISOrgNr . $univisParam);
+        // if ($data){
+        //     return $data;
+        // }else{
             $data = $this->univis->getData($dataType, $univisParam);
-            set_transient(self::TRANSIENT_PREFIX . $dataType . $this->UnivISOrgNr . $univisParam, $data, self::TRANSIENT_EXPIRATION);
+            // set_transient(self::TRANSIENT_PREFIX . $dataType . $this->UnivISOrgNr . $univisParam, $data, self::TRANSIENT_EXPIRATION);
             return $data;
-        }
+        // }
     }
 }
