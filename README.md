@@ -40,11 +40,11 @@ Einstellungen › RRZE-UnivIS
 ```
 [univis]
 ```
-- Bindet die Mitarbeiterübersicht ein - besonders geeignet für wissenschaftliche Einrichtungen (Telefonnummern, Mobilnummern, E-Mail-Adressen und Postadressen können ein- und ausgeblendet werden.)
+- Bindet die Mitarbeiterübersicht ein - besonders geeignet für wissenschaftliche Einrichtungen (Telefonnummern, Mobilnummern, E-Mail-Adressen und Postadressen können ein- und ausgeblendet werden. Mit "call" können Telefonnummern auf mobilen Geräten direkt gewählt werden.)
 ```
 [univis number="123456789"]
 [univis task="mitarbeiter-alle"]
-[univis task="mitarbeiter-alle" show="telefon, mail, address, mobile"]
+[univis task="mitarbeiter-alle" show="telefon, mail, address, mobile, all"]
 [univis task="mitarbeiter-alle"]
 ```    
 - Bindet die Mitarbeiterübersicht ein - besonders geeignet für nicht-wissenschaftliche Einrichtungen (Telefonnummern und E-Mail-Adressen können ein- und ausgeblendet werden.)
@@ -86,7 +86,7 @@ Einstellungen › RRZE-UnivIS
 [univis task="mitarbeiter-einzeln" firstname="Max" lastname="Mustermann"]
 [univis task="mitarbeiter-einzeln" name="Mustermann,Max"]
 ```
-- Zeigt die Daten zur Lehrveranstaltung mit dieser ID. Die Lehrveranstaltung muss dabei der Organisationseinheit zugeordnet sein, die in Einstellungen - UnivIS eingegeben wurde und aus dem aktuellen Semester stammen
+- Zeigt die Daten zur Lehrveranstaltung mit dieser ID. Die Lehrveranstaltung muss dabei der Organisationseinheit zugeordnet sein, die in Einstellungen - RRZE-UnivIS eingegeben wurde und aus dem aktuellen Semester stammen
 ```
 [univis task="lehrveranstaltungen-einzeln" id="123456789"]
 ```
@@ -119,10 +119,50 @@ Im vergangenen Semester
 ```
 [univis task="lehrveranstaltungen-alle" sem="-1"]
 ```
-Im Sommersemester 2017
+Im Sommersemester 2021
 ```
-[univis task="lehrveranstaltungen-alle" sem="2017s"]
+[univis task="lehrveranstaltungen-alle" sem="2021s"]
 ```
+
+##### Alle Attribute und deren Werte
+
+- task:
+mitarbeiter-alle
+mitarbeiter-einzeln
+mitarbeiter-orga
+mitarbeiter-telefonbuch
+lehrveranstaltungen-alle
+lehrveranstaltungen-einzeln
+publikationen
+
+- univisid
+
+- id
+
+- name
+
+- dozentename
+
+- lv_id
+
+- show
+sprungmarken
+ics
+telefon
+mobile
+address
+call
+
+- sem
+-1
+1
+2021s
+
+- order
+
+- since
+
+- lv_import
 
 #### Hinweise
 
