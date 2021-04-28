@@ -44,7 +44,7 @@ Einstellungen › RRZE-UnivIS
 ```
 [univis number="123456789"]
 [univis task="mitarbeiter-alle"]
-[univis task="mitarbeiter-alle" show="telefon, mail, address, mobile, all"]
+[univis task="mitarbeiter-alle" show="telefon, mail, address, mobile, call"]
 [univis task="mitarbeiter-alle"]
 ```    
 - Bindet die Mitarbeiterübersicht ein - besonders geeignet für nicht-wissenschaftliche Einrichtungen (Telefonnummern und E-Mail-Adressen können ein- und ausgeblendet werden.)
