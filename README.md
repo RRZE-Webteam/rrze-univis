@@ -145,7 +145,7 @@ publikationen,
 
 - lv_id
 
-- show
+- show:
 sprungmarken, 
 ics, 
 telefon, 
@@ -153,7 +153,7 @@ mobile,
 address, 
 call
 
-- sem
+- sem:
 -1, 
 1, 
 2021s
