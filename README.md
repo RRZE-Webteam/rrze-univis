@@ -42,7 +42,7 @@ Einstellungen › UnivIS
 ```
 - Bindet die Mitarbeiterübersicht ein - besonders geeignet für wissenschaftliche Einrichtungen (Telefonnummern und E-Mail-Adressen können ein- und ausgeblendet werden.)
 ```
-[univis number="1005681200"]
+[univis number="123456789"]
 [univis task="mitarbeiter-alle"]
 [univis task="mitarbeiter-alle" show="telefon, mail"]
 [univis task="mitarbeiter-alle"]
@@ -53,14 +53,14 @@ Einstellungen › UnivIS
 [univis task="mitarbeiter-orga" hide="telefon"]
 [univis task="mitarbeiter-orga" show="mail"]
 ```
-- Bindet die Mitarbeiterübersicht der Organisationseinheit mit der UnivISOrgNr 1005681200 im Telefonbuchformat ein (alphabetische Sortierung, optional mit Telefonnummern, E-Mail-Adressen, Sprungmarken)
+- Bindet die Mitarbeiterübersicht der Organisationseinheit mit der UnivISOrgNr 123456789 im Telefonbuchformat ein (alphabetische Sortierung, optional mit Telefonnummern, E-Mail-Adressen, Sprungmarken)
 ```
-[univis number="1005681200" task="mitarbeiter-telefonbuch"]
-[univis number="1005681200" task="mitarbeiter-telefonbuch" show="telefon, mail, sprungmarken"]
+[univis number="123456789" task="mitarbeiter-telefonbuch"]
+[univis number="123456789" task="mitarbeiter-telefonbuch" show="telefon, mail, sprungmarken"]
 ```
-- Bindet sämtliche Lehrveranstaltungen der Organisationseinheit mit der UnivISOrgNr 1005681200 ein
+- Bindet sämtliche Lehrveranstaltungen der Organisationseinheit mit der UnivISOrgNr 123456789 ein
 ```
-[univis number="1005681200" task="lehrveranstaltungen-alle"]
+[univis number="123456789" task="lehrveranstaltungen-alle"]
 ```
 - Bindet sämtliche UnivIS-Publikationen der eingestellten Organisationseinheit ein
 ```
@@ -72,14 +72,14 @@ Einstellungen › UnivIS
 
 - Blendet alle importierten Lehrveranstaltungen aus, um doppelte Ausgaben zu vermeiden
 ```
-[univis task="lehrveranstaltungen-alle" id="49680223" lv_import="0"]
+[univis task="lehrveranstaltungen-alle" lv_import="0"]
 ```
 
 ##### Filterung nach Lehrveranstaltungstyp möglich
 
-- Gibt alle Vorlesungen der Org-Nr. 21101522 aus. Bei type müssen die Kürzel wie im Vorlesungsverzeichnis angegeben werden (vorl, ueb, tut, ...)
+- Gibt alle Vorlesungen der Org-Nr. 123456789 aus. Zu den Terminen werden .ics Dateien angeboten, um diese in den eigenen Kalender einzutragen. Bei type müssen die Kürzel wie im Vorlesungsverzeichnis angegeben werden (vorl, ueb, tut, ...)
 ```
-[univis task="lehrveranstaltungen-alle" id="21101522" type="vorl"]
+[univis task="lehrveranstaltungen-alle" id="123456789" type="vorl" show="ics"]
 ```
 - Bindet die Daten der einen Person ein. Die Person muss dabei der Organisationseinheit angehören, die in Einstellungen - UnivIS eingegeben wurde
 ```
@@ -88,7 +88,7 @@ Einstellungen › UnivIS
 ```
 - Zeigt die Daten zur Lehrveranstaltung mit dieser ID. Die Lehrveranstaltung muss dabei der Organisationseinheit zugeordnet sein, die in Einstellungen - UnivIS eingegeben wurde und aus dem aktuellen Semester stammen
 ```
-[univis task="lehrveranstaltungen-einzeln" id="21101522"]
+[univis task="lehrveranstaltungen-einzeln" id="123456789"]
 ```
 - Publikationen, eingeschränkt nach Erscheinungsjahr:
 ```
@@ -96,7 +96,7 @@ Einstellungen › UnivIS
 ```
 - Zeigt alle Lehrveranstaltungen der Person mit dieser ID. Der Dozent muss dabei der Organisationseinheit angehören, die in Einstellungen - UnivIS eingegeben wurde.
 ```
-[univis task="lehrveranstaltungen-alle" dozentid="21555666"]
+[univis task="lehrveranstaltungen-alle" dozentid="123456789"]
 ```
 - Zeigt alle Lehrveranstaltungen zu einem bestimmten Typ in gewünschter Reihenfolge. Beispiel: Vorlesungen, dann Übungen, aber keine Tutorials oder andere Lehrveranstaltungen:
 ```
