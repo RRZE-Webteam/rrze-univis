@@ -20,8 +20,8 @@ class Main {
      * @var string
      */
     protected $pluginFile;
+    protected $widget;
 
-    public $controller;
 
     public function __construct($pluginFile) {
         $this->pluginFile = $pluginFile;
@@ -40,18 +40,20 @@ class Main {
         $settings = new Settings($this->pluginFile);
         $settings->onLoaded();
 
+        $this->settings = $settings;
+
         $shortcode = new Shortcode($this->pluginFile, $settings);
         $shortcode->onLoaded();
 
         // Widget
-        // add_action( 'widgets_init', [$this, 'loadWidget'] );    
+        $this->widget = new UnivISWidget($this->pluginFile, $settings);
+        add_action( 'widgets_init', [$this, 'loadWidget'] );    
         add_theme_support( 'widgets-block-editor' );
         apply_filters('gutenberg_use_widgets_block_editor', get_theme_support( 'widgets-block-editor' ));
     }
 
     public function loadWidget() {
-        $myWidget = new UnivISWidget();
-        register_widget($myWidget);
+        register_widget($this->widget);
     }
 
     public function addMetaboxes(){
