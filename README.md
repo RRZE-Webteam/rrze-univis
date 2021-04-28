@@ -127,13 +127,13 @@ Im Sommersemester 2021
 ##### Alle Attribute und deren Werte
 
 - task:
-mitarbeiter-alle
-mitarbeiter-einzeln
-mitarbeiter-orga
-mitarbeiter-telefonbuch
-lehrveranstaltungen-alle
-lehrveranstaltungen-einzeln
-publikationen
+mitarbeiter-alle, 
+mitarbeiter-einzeln, 
+mitarbeiter-orga, 
+mitarbeiter-telefonbuch, 
+lehrveranstaltungen-alle, 
+lehrveranstaltungen-einzeln, 
+publikationen, 
 
 - univisid
 
@@ -146,16 +146,16 @@ publikationen
 - lv_id
 
 - show
-sprungmarken
-ics
-telefon
-mobile
-address
+sprungmarken, 
+ics, 
+telefon, 
+mobile, 
+address, 
 call
 
 - sem
--1
-1
+-1, 
+1, 
 2021s
 
 - order
