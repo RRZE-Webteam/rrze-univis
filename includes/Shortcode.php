@@ -70,8 +70,8 @@ class Shortcode{
     public function shortcodeOutput( $atts ) {
         if (empty($atts)){
             return $this->UnivISLink;
-        }elseif(empty($this->UnivISOrgNr)){
-            return __('UnivIS-OrgNr. muss entweder in wp-admin/options-general.php?page=rrze-univis gesetzt oder im Shortcode übergeben werden.', 'rrze-univis');
+        // }elseif(empty($this->UnivISOrgNr)){
+        //     return __('UnivIS-OrgNr. muss entweder in wp-admin/options-general.php?page=rrze-univis gesetzt oder im Shortcode übergeben werden.', 'rrze-univis');
         }
 
         // lv_id is not in config (=> id)
