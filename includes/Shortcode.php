@@ -111,10 +111,11 @@ class Shortcode{
             }
         }
         $this->atts = $this->normalize(shortcode_atts($atts_default, $atts));
+
         $data = '';
         $this->univis = new UnivISAPI($this->UnivISURL, $this->UnivISOrgNr, $this->atts);
 
-        switch($atts['task']){
+        switch($this->atts['task']){
             case 'mitarbeiter-einzeln': 
                 if (!in_array('telefon', $this->hide) && !in_array('telefon', $this->show)){
                     $this->show[] = 'telefon';
@@ -455,12 +456,13 @@ class Shortcode{
     }
 
     public function getData($dataType, $univisParam = NULL){
-        $data = get_transient(self::TRANSIENT_PREFIX . $dataType . $this->UnivISOrgNr . $univisParam);
+        $sAtts = (!empty($this->atts) && is_array($this->atts) ? implode('-', $this->atts) : '');
+        $data = get_transient(self::TRANSIENT_PREFIX . $dataType . $sAtts . $this->UnivISOrgNr . $univisParam);
         if ($data){
             return $data;
         }else{
             $data = $this->univis->getData($dataType, $univisParam);
-            set_transient(self::TRANSIENT_PREFIX . $dataType . $this->UnivISOrgNr . $univisParam, $data, self::TRANSIENT_EXPIRATION);
+            set_transient(self::TRANSIENT_PREFIX . $dataType . $sAtts . $this->UnivISOrgNr . $univisParam, $data, self::TRANSIENT_EXPIRATION);
             return $data;
         }
     }
