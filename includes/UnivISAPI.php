@@ -548,7 +548,9 @@ class UnivISAPI {
     private function groupBy($arr, $key) {
         $ret = [];
         foreach($arr as $val) {
-            $ret[$val[$key]][] = $val;
+            if (!empty($val[$key])){
+                $ret[$val[$key]][] = $val;
+            }
         }
         return $ret;
     }
