@@ -84,15 +84,15 @@ class Settings
         $this->pluginFile = $pluginFile;
         $this->settingsPrefix = dirname(plugin_basename($this->pluginFile)) . '-';
 
-        // einmalig alte Parameter holen
-        $oldOptions = get_option( '_rrze_univis' );
-        if (!empty($oldOptions)){
-            foreach($oldOptions as $k => $v){
-                $oldOptions['basic_' . $k] =  $v;
-            }
-            update_option('rrze-univis', $oldOptions);
-            update_option('_rrze_univis', NULL);
-        }
+        // // einmalig alte Parameter holen
+        // $oldOptions = get_option( '_rrze_univis' );
+        // if (!empty($oldOptions)){
+        //     foreach($oldOptions as $k => $v){
+        //         $oldOptions['basic_' . $k] =  $v;
+        //     }
+        //     update_option('rrze-univis', $oldOptions);
+        //     update_option('_rrze_univis', NULL);
+        // }
     }
 
     /**
