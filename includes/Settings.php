@@ -79,20 +79,20 @@ class Settings
      * Variablen Werte zuweisen.
      * @param string $pluginFile [description]
      */
-    public function __construct($pluginFile)
-    {
+    public function __construct($pluginFile){
         $this->pluginFile = $pluginFile;
         $this->settingsPrefix = dirname(plugin_basename($this->pluginFile)) . '-';
 
-        // // einmalig alte Parameter holen
-        // $oldOptions = get_option( '_rrze_univis' );
-        // if (!empty($oldOptions)){
-        //     foreach($oldOptions as $k => $v){
-        //         $oldOptions['basic_' . $k] =  $v;
-        //     }
-        //     update_option('rrze-univis', $oldOptions);
-        //     update_option('_rrze_univis', NULL);
-        // }
+        // einmalig alte Parameter holen
+        $oldOptions = get_option( '_rrze_univis' );
+        $updated = get_option('univis-updated');
+        if (!empty($oldOptions) && empty($updated)){
+            foreach($oldOptions as $k => $v){
+                $oldOptions['basic_' . $k] =  $v;
+            }
+            update_option('rrze-univis', $oldOptions);
+            update_option('univis-updated', 1);
+        }
     }
 
     /**
