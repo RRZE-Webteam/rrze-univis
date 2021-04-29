@@ -736,6 +736,11 @@ class UnivISAPI {
                 "gsz" => __('Gremiensitzung (GSZ)', 'rrze-univis'),
                 "ppu" => __('Propädeutische Übung (PPU)', 'rrze-univis'),
                 "his" => __('Sprachhistorisches Seminar (HIS)', 'rrze-univis'),
+                "bsem" => __('Begleitseminar (BSEM)', 'rrze-univis'),
+                "kol" => __('Kolleg (KOL)', 'rrze-univis'),
+                "mhs" => __('MS (HS, PO 2020) (MHS)', 'rrze-univis'),
+                "pgmas" => __('PG Masterseminar (PGMAS)', 'rrze-univis'),
+                "pms" => __('PS (MS, PO 2020) (PMS)', 'rrze-univis'),
             ],
             'repeat' => [
                 "w1" => "",
