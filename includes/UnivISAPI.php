@@ -55,7 +55,6 @@ class UnivISAPI {
         $data = $this->mapIt($dataType, $data);
         $data = $this->dict($data);
         $data = $this->sortGroup($dataType, $data);
-
         return $data;
     }
 

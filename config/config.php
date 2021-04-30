@@ -119,12 +119,9 @@ function getFields()
                 'label'             => __('<b><i>Univ</i>IS</b> OrgNr.', 'rrze-univis'),
                 'desc'              => __('', 'rrze-univis'),
                 'placeholder'       => '',
-                'min'               => 0,
-                'max'               => 99999999999,
-                'step'              => '1',
-                'type'              => 'number',
+                'type'              => 'text',
                 'default'           => '',
-                'sanitize_callback' => 'floatval'
+                'sanitize_callback' => 'sanitize_text_field'
             ],
             [
                 'name'              => 'semesterMin',
@@ -225,10 +222,10 @@ function getShortcodeSettings(){
                 'type' => 'string'
             ],
             'univisid' => [
-                'default' => 0,
+                'default' => '',
                 'field_type' => 'text',
                 'label' => __( 'UnivIS ID Person', 'rrze-univis' ),
-                'type' => 'number'
+                'type' => 'string'
             ],
             'show' => [
                 'default' => '',
@@ -262,10 +259,10 @@ function getShortcodeSettings(){
                 'checked'   => FALSE
             ],
             'number' => [
-                'default' => 0,
+                'default' => '',
                 'field_type' => 'text',
                 'label' => __( 'UnivIS OrgID', 'rrze-univis' ),
-                'type' => 'number'
+                'type' => 'string'
             ],
         ],
         'lehrveranstaltungen' => [
@@ -293,10 +290,10 @@ function getShortcodeSettings(){
                 'type' => 'string'
             ],
             'id' => [
-                'default' => NULL,
+                'default' => '',
                 'field_type' => 'text',
                 'label' => __( 'UnivIS ID Lehrveranstaltung', 'rrze-univis' ),
-                'type' => 'number'
+                'type' => 'string'
             ],
             'name' => [
                 'default' => '',
@@ -305,10 +302,10 @@ function getShortcodeSettings(){
                 'type' => 'string'
             ],
             'univisid' => [
-                'default' => NULL,
+                'default' => '',
                 'field_type' => 'text',
                 'label' => __( 'UnivIS ID Person', 'rrze-univis' ),
-                'type' => 'number'
+                'type' => 'string'
             ],
             'lv_import' => [
                 'field_type' => 'toggle',
@@ -342,10 +339,10 @@ function getShortcodeSettings(){
                 'type' => 'string'
             ],
             'number' => [
-                'default' => 0,
+                'default' => '',
                 'field_type' => 'text',
                 'label' => __( 'UnivIS OrgID', 'rrze-univis' ),
-                'type' => 'number'
+                'type' => 'string'
             ],
             'show' => [
                 'default' => '',
@@ -394,10 +391,10 @@ function getShortcodeSettings(){
                 'type' => 'string'
             ],
             'univisid' => [
-                'default' => 0,
+                'default' => '',
                 'field_type' => 'text',
                 'label' => __( 'UnivIS ID Person', 'rrze-univis' ),
-                'type' => 'number'
+                'type' => 'string'
             ],
             'since' => [
                 'default' => 0,
@@ -406,10 +403,10 @@ function getShortcodeSettings(){
                 'type' => 'number'
             ],
             'number' => [
-                'default' => 0,
+                'default' => '',
                 'field_type' => 'text',
                 'label' => __( 'UnivIS OrgID', 'rrze-univis' ),
-                'type' => 'number'
+                'type' => 'string'
             ],
         ]
     ];
