@@ -27,9 +27,6 @@ class UnivISWidget extends \WP_Widget {
 
     // Creating widget front-end
     public function widget( $args, $instance ) {
-        // echo 'these are the args:';
-        // var_dump($args);
-        // exit;
         $atts = '';
         $atts .= (!empty($instance['show'])?' show=' . $instance['show'] : '');
         $atts .= (!empty($instance['hide'])?' hide=' . $instance['hide'] : '');

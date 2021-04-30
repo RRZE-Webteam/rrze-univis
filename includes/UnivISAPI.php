@@ -16,13 +16,18 @@ class UnivISAPI {
     protected $api;
     protected $orgID;
     protected $atts;
+    protected $showJobs;
+    protected $hideJobs;
+    protected $sem;
 
 
     public function __construct($api, $orgID, $atts) {
         $this->setAPI($api);
         $this->orgID = $orgID;
         $this->atts = $atts;
-        $this->atts['sem'] = (!empty($this->atts['sem']) && self::checkSemester($this->atts['sem']) ? $this->atts['sem'] : '');
+        $this->sem = (!empty($this->atts['sem']) && self::checkSemester($this->atts['sem']) ? $this->atts['sem'] : '');
+        $this->showJobs = (!empty($this->atts['zeige_jobs']) ? explode('|', $this->atts['zeige_jobs']) : []);
+        $this->hideJobs = (!empty($this->atts['ignoriere_jobs']) ? explode('|', $this->atts['ignoriere_jobs']) : []);
     }
 
 
@@ -85,16 +90,16 @@ class UnivISAPI {
                 $url .= 'publications&department='.$this->orgID;
                 break;  
             case 'lectureByID':
-                $url .= 'lectures'.(!empty($this->atts['lang'])?'&lang='.$this->atts['lang']:'').(!empty($this->atts['lv_import']) && !$this->atts['lv_import']?'&noimports=1':'').(!empty($this->atts['type'])?'&type='.$this->atts['type']:'').(!empty($this->atts['sem'])?'&sem='.$this->atts['sem']:'').'&id=';
+                $url .= 'lectures'.(!empty($this->atts['lang'])?'&lang='.$this->atts['lang']:'').(!empty($this->atts['lv_import']) && !$this->atts['lv_import']?'&noimports=1':'').(!empty($this->atts['type'])?'&type='.$this->atts['type']:'').(!empty($this->sem)?'&sem='.$this->sem:'').'&id=';
                 break;              
             case 'lectureByDepartment':
-                $url .= 'lectures'.(!empty($this->atts['lang'])?'&lang='.$this->atts['lang']:'').(!empty($this->atts['lv_import']) && !$this->atts['lv_import']?'&noimports=1':'').(!empty($this->atts['type'])?'&type='.$this->atts['type']:'').(!empty($this->atts['sem'])?'&sem='.$this->atts['sem']:'').'&department='.$this->orgID;
+                $url .= 'lectures'.(!empty($this->atts['lang'])?'&lang='.$this->atts['lang']:'').(!empty($this->atts['lv_import']) && !$this->atts['lv_import']?'&noimports=1':'').(!empty($this->atts['type'])?'&type='.$this->atts['type']:'').(!empty($this->sem)?'&sem='.$this->sem:'').'&department='.$this->orgID;
                 break;   
             case 'lectureByLecturer':
-                $url .= 'lectures'.(!empty($this->atts['lang'])?'&lang='.$this->atts['lang']:'').(!empty($this->atts['lv_import']) && !$this->atts['lv_import']?'&noimports=1':'').(!empty($this->atts['type'])?'&type='.$this->atts['type']:'').(!empty($this->atts['sem'])?'&sem='.$this->atts['sem']:'').'&lecturer=';
+                $url .= 'lectures'.(!empty($this->atts['lang'])?'&lang='.$this->atts['lang']:'').(!empty($this->atts['lv_import']) && !$this->atts['lv_import']?'&noimports=1':'').(!empty($this->atts['type'])?'&type='.$this->atts['type']:'').(!empty($this->sem)?'&sem='.$this->sem:'').'&lecturer=';
                 break;   
             case 'lectureByLecturerID':
-                $url .= 'lectures'.(!empty($this->atts['lang'])?'&lang='.$this->atts['lang']:'').(!empty($this->atts['lv_import']) && !$this->atts['lv_import']?'&noimports=1':'').(!empty($this->atts['type'])?'&type='.$this->atts['type']:'').(!empty($this->atts['sem'])?'&sem='.$this->atts['sem']:'').'&lecturerid=';
+                $url .= 'lectures'.(!empty($this->atts['lang'])?'&lang='.$this->atts['lang']:'').(!empty($this->atts['lv_import']) && !$this->atts['lv_import']?'&noimports=1':'').(!empty($this->atts['type'])?'&type='.$this->atts['type']:'').(!empty($this->sem)?'&sem='.$this->sem:'').'&lecturerid=';
                 break;   
             case 'lectureByName':
                 $url .= 'lectures&name=';
@@ -291,11 +296,11 @@ class UnivISAPI {
 
     public function showPosition($position){
         // show is given => show matches only 
-        if (!empty($this->atts['zeige_jobs']) && (strpos($this->atts['zeige_jobs'], $position) !== FALSE)){
-            return TRUE;
+        if (!empty($this->showJobs) && !in_array($position, $this->showJobs)){
+            return FALSE;
         }
         // hide defined jobs, show all others => config: ignoriere_jobs && shortcode: ignoriere_jobs
-        if (!empty($this->atts['ignoriere_jobs']) && (strpos($this->atts['ignoriere_jobs'], $position) !== FALSE)){
+        if (!empty($this->hideJobs) && in_array($position, $this->hideJobs)){
             return FALSE;
         }
         return TRUE;
@@ -445,19 +450,8 @@ class UnivISAPI {
                             if (isset($vals['per'])){
                                 foreach($vals['per'] as $person_key){
                                     if (isset($entry['key']) && $entry['key'] == 'Person.' . $person_key){
-                                        if (isset($ret[$e_nr]['orga_position'])){
-                                            $cnt = count($ret);
-                                            $ret[$cnt] = $ret[$e_nr];
-                                        }else{
-                                            $cnt = $e_nr;
-                                        }
-                                        $show = $this->showPosition($vals['description']);
-                                        if (!$show){
-                                            unset($ret[$cnt]);
-                                        }else{
-                                            $ret[$cnt]['orga_position'] = $vals['description'];
-                                            $ret[$cnt]['orga_position_order'] = $vals['joborder'];
-                                        }
+                                        $ret[$e_nr]['orga_position'] = $vals['description'];
+                                        $ret[$e_nr]['orga_position_order'] = $vals['joborder'];
                                     }
                                 }
                             }
@@ -531,8 +525,13 @@ class UnivISAPI {
             usort($data, [$this, 'sortByPositionorder']);            
             $data = $this->groupBy($data, 'orga_position');
             foreach($data as $position => $members){
-                usort($members, [$this, 'sortByLastname']);            
-                $data[$position] = $members;
+                $show = $this->showPosition($position);
+                if (!$show) {
+                    unset($data[$position]);
+                }else{
+                    usort($members, [$this, 'sortByLastname']);
+                    $data[$position] = $members;
+                }
             }
         }
         // sort by name

@@ -113,6 +113,10 @@ class Shortcode{
 
         $this->atts = $this->normalize(shortcode_atts($atts_default, $atts));
 
+        if (empty($this->UnivISOrgNr)){
+            return;
+        }
+
         $data = '';
         $this->univis = new UnivISAPI($this->UnivISURL, $this->UnivISOrgNr, $this->atts);
 
@@ -200,9 +204,6 @@ class Shortcode{
 
     public function normalize($atts){
         // normalize given attributes according to rrze-univis version 2
-        if (empty($atts['task'])){
-            $atts['task'] = 'mitarbeiter-alle';
-        }
         if (!empty($atts['number'])){
             $this->UnivISOrgNr = $atts['number'];
         }elseif (!empty($atts['task']) && ($atts['task'] == 'lehrveranstaltungen-alle' || $atts['task'] == 'mitarbeiter-einzeln') && !empty($atts['id'])){
