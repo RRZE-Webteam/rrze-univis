@@ -76,7 +76,7 @@ class Shortcode{
 
         // lv_id is not in config (=> id)
         if (!empty($atts['lv_id'])){
-            $atts['id'] = (int)$atts['lv_id'];
+            $atts['id'] = $atts['lv_id'];
             if ($atts['task'] == 'lehrveranstaltungen-alle'){
                 $atts['task'] = 'lehrveranstaltungen-einzeln';
             }
@@ -110,6 +110,7 @@ class Shortcode{
                 $atts_default[$k] = $v['default'];
             }
         }
+
         $this->atts = $this->normalize(shortcode_atts($atts_default, $atts));
 
         $data = '';
@@ -180,8 +181,6 @@ class Shortcode{
                 break;
         }
 
-
-
         if ($data){
             // $data = '<pre>' . json_encode($data, JSON_PRETTY_PRINT) . '</pre>';
             // var_dump($data);
@@ -205,15 +204,15 @@ class Shortcode{
             $atts['task'] = 'mitarbeiter-alle';
         }
         if (!empty($atts['number'])){
-            $this->UnivISOrgNr = (int)$atts['number'];
+            $this->UnivISOrgNr = $atts['number'];
         }elseif (!empty($atts['task']) && ($atts['task'] == 'lehrveranstaltungen-alle' || $atts['task'] == 'mitarbeiter-einzeln') && !empty($atts['id'])){
-            $this->UnivISOrgNr = (int)$atts['id'];
+            $this->UnivISOrgNr = $atts['id'];
         }
         if (empty($this->UnivISOrgNr)){
             return 'no UnivISOrgNr given';
         }
         if (!empty($atts['dozentid'])){
-            $atts['id'] = (int)$atts['dozentid'];
+            $atts['id'] = $atts['dozentid'];
         }
         if (!empty($atts['dozentname'])){
             $atts['name'] = $atts['dozentname'];
