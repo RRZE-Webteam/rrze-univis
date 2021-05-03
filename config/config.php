@@ -264,6 +264,12 @@ function getShortcodeSettings(){
                 'label' => __( 'UnivIS OrgID', 'rrze-univis' ),
                 'type' => 'string'
             ],
+            'hstart' => [
+                'default' => 2,
+                'field_type' => 'number',
+                'label' => __( 'Überschriftenebene der ersten Überschrift', 'fau-person' ),
+                'type' => 'integer' 
+            ],
         ],
         'lehrveranstaltungen' => [
             'block' => [
@@ -363,6 +369,12 @@ function getShortcodeSettings(){
                 'default' => TRUE,
                 'checked'   => TRUE
             ],
+            'hstart' => [
+                'default' => 2,
+                'field_type' => 'number',
+                'label' => __( 'Überschriftenebene der ersten Überschrift', 'fau-person' ),
+                'type' => 'integer' 
+            ],
         ],
         'publikationen' => [
             'block' => [
@@ -407,6 +419,12 @@ function getShortcodeSettings(){
                 'field_type' => 'text',
                 'label' => __( 'UnivIS OrgID', 'rrze-univis' ),
                 'type' => 'string'
+            ],
+            'hstart' => [
+                'default' => 2,
+                'field_type' => 'number',
+                'label' => __( 'Überschriftenebene der ersten Überschrift', 'fau-person' ),
+                'type' => 'integer' 
             ],
         ]
     ];

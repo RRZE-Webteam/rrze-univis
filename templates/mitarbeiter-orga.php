@@ -1,7 +1,15 @@
-<?php if ($data) : ?>
+<?php if ($data) : 
+    
+    
+    // echo '<pre>';
+    // var_dump($data);
+    // exit;
+
+    ?>
 <div id="univis-personenindex" class="rrze-univis">
-    <?php foreach ($data as $department => $persons) : ?>
-    <h2><a name="<?php echo $department;?>"><?php echo $department;?></a></h2>
+    <?php foreach ($data as $department => $persons) : 
+        echo '<h' . $this->atts['hstart'] . '><a name="' . $department . '">' . $department . '</a></h' . $this->atts['hstart'] . '>';
+    ?>
     <ul class="person liste-person" itemscope itemtype="http://schema.org/Person">
         <?php 
         foreach ($persons as $person) :

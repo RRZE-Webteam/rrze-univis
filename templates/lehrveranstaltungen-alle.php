@@ -8,31 +8,28 @@
     $wsend = (!empty($options['basic_wsEnd']) ? $options['basic_wsEnd'] : 0);
 
     foreach ($data as $typ => $veranstaltungen) : 
-        ?>
-	<h2>
-            <?php echo $typ; ?>
-        </h2>
+        echo '<h' . $this->atts['hstart'] . '>' . $typ . '</h' . $this->atts['hstart'] . '>';
+?>
 	<ul>
         <?php 
             foreach ($veranstaltungen as $veranstaltung) : 
                 $url = get_permalink() . 'lv_id/' . $veranstaltung['lecture_id'];
                 ?>
                 <li>
-                    <h3><a href="<?php echo $url; ?>"><?php 
-                    if ($lang != 'de_DE' && !empty($veranstaltung['ects_name'])){
-                        $veranstaltung['title'] = $veranstaltung['ects_name']; 
-                    }else{
-                        $veranstaltung['title'] = $veranstaltung['name'];
-                    }
-                    echo $veranstaltung['title'];
-                    ?></a></h3>
-                    <?php 
-                    if (!empty($veranstaltung['comment'])) : ?>
-                        <p><?php echo $veranstaltung['comment']; ?></p>
-                    <?php
-                    endif; 
-                    ?>
-                    <ul>
+                <?php 
+                echo '<h' . ($this->atts['hstart'] + 1) . '><a href="' . $url . '">'; 
+                if ($lang != 'de_DE' && !empty($veranstaltung['ects_name'])){
+                    $veranstaltung['title'] = $veranstaltung['ects_name']; 
+                }else{
+                    $veranstaltung['title'] = $veranstaltung['name'];
+                }
+                echo $veranstaltung['title'];
+                echo '</a></h' . ($this->atts['hstart'] + 1) . '>'; 
+                if (!empty($veranstaltung['comment'])){
+                    echo '<p>' . $veranstaltung['comment'] . '</p>';
+                }
+                ?>
+                <ul>
                         <?php
                         if (isset($veranstaltung['courses'])) :
                             foreach ($veranstaltung['courses'] as $course):
@@ -70,7 +67,7 @@
                                         $t['coursename'] = '(' . __('Course', 'rrze-univis') . ' ' . $course['coursename'] . ')';
                                     endif;
                                     // ICS
-                                    if (in_array('ics', $this->show)){
+                                    if (in_array('ics', $this->show) && !in_array('ics', $this->hide)){
                                         $props = [
                                             'summary' => $veranstaltung['title'],
                                             'startdate' => (!empty($term['startdate']) ? $term['startdate'] : NULL),

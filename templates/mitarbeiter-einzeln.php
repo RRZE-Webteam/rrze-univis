@@ -17,8 +17,9 @@
             if (!empty($person['atitle'])) :
                 $name['atitle'] = '<span class="honorific-suffix" itemprop="honorificSuffix"><acronym title="' . (!empty($person['atitle_long']) ? $person['atitle_long'] : $person['atitle']) . '">' . $person['atitle'] . '</span>';
             endif;
-            $fullname = implode(' ', $name); ?>
-            <h2><span itemprop="name"><?php echo $fullname;?></span></h2>
+            $fullname = implode(' ', $name); 
+            echo '<h' . $this->atts['hstart'] . '><span itemprop="name">' . $fullname . '</span></h' . $this->atts['hstart'] . '>';
+            ?>
             <ul class="person-info">
                 <?php if (!empty($person['work'])) : ?>
                     <li class="person-info-position"><span class="screen-reader-text"><?php _e('Job title', 'rrze-univis');?>: </span><strong><span itemprop="jobTitle"><?php echo $person['work']; ?></span></strong></li>
@@ -126,13 +127,14 @@
     </div>
     <?php if (!empty($person['lectures'])) : ?>
         <div>
-            <h3 class="active">Lehrveranstaltungen</h3>
-            <?php foreach ($person['lectures'] as $lec_type => $lectures) :
+        <?php
+            echo '<h' . ($this->atts['hstart'] + 1) . ' class="active">' . __('Lehrveranstaltungen', 'rrze-univis') . '</h' . ($this->atts['hstart'] + 1) . '>';
+            foreach ($person['lectures'] as $lec_type => $lectures) :
                 ?>
                 <div>
                     <ul>
                         <li>
-                            <h3><?php echo $lec_type; ?></h3>
+                            <?php echo '<h' . ($this->atts['hstart'] + 2) . $lec_type . '</h' . ($this->atts['hstart'] + 2) . '>'; ?>
                             <ul>
                             <?php foreach ($lectures as $lecture){
                                 echo '<li><a href="' . get_permalink() . 'lv_id/' . $lecture['lecture_id'] . '">' . $lecture['name'] . '</a></li>'; 
