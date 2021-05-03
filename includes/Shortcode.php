@@ -160,6 +160,8 @@ class Shortcode{
                     $data = $this->getData('lectureByLecturer', $this->atts['name']);
                 }elseif (!empty($this->atts['univisid'])){
                     $data = $this->getData('lectureByLecturerID', $this->atts['univisid']);
+                }elseif (!empty($this->atts['id'])){
+                    $data = $this->getData('lectureByLecturerID', $this->atts['id']);
                 }
                 if ($data){
                     $veranstaltung = $data[array_key_first($data)][0];
@@ -170,6 +172,8 @@ class Shortcode{
                     $data = $this->getData('lectureByLecturer', $this->atts['name']);
                 }elseif (!empty($this->atts['univisid'])){
                     $data = $this->getData('lectureByLecturerID', $this->atts['univisid']);
+                }elseif (!empty($this->atts['id'])){
+                    $data = $this->getData('lectureByLecturerID', $this->atts['id']);
                 }else{
                     $data = $this->getData('lectureByDepartment');
                 }

@@ -313,6 +313,12 @@ function getShortcodeSettings(){
                 'label' => __( 'UnivIS ID Person', 'rrze-univis' ),
                 'type' => 'string'
             ],
+            'dozentid' => [
+                'default' => '',
+                'field_type' => 'text',
+                'label' => __( 'UnivIS ID Person', 'rrze-univis' ),
+                'type' => 'string'
+            ],
             'lv_import' => [
                 'field_type' => 'toggle',
                 'label' => __( 'Importierte Lehrveranstaltungen ausgeben', 'rrze-univis' ),
