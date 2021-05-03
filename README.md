@@ -182,6 +182,8 @@ call
 
 - ignoriere_jobs
 
+- hstart
+
 #### Hinweise
 
 - Der Shortcode-Parameter number kann weggelassen werden, wenn in der Einstellungsseite des Plugins (Einstellungen - UnivIS) eine UnivISOrgNr vergeben wird. 
