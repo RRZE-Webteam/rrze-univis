@@ -1,7 +1,9 @@
 <?php if ($data) : ?>
 <div id="univis-personenindex" class="rrze-univis">
-    <?php foreach ($data as $position => $persons) : ?>
-    <h4><?php echo $position; ?></h4>
+    <?php 
+    foreach ($data as $position => $persons) : 
+        echo '<h' . $this->atts['hstart'] . '>' . $position . '</h' . $this->atts['hstart'] . '>';
+    ?>
     <ul class="person liste-person" itemscope itemtype="http://schema.org/Person">
         <?php foreach ($persons as $person) : 
             $name = $p = $pers = [];

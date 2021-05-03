@@ -1,8 +1,6 @@
 <?php if ($data) :
     foreach ($data as $year => $entries) : ?>
-        <h2>
-        <?php echo $year ?>
-        </h2>  
+    <?php echo '<h' . $this->atts['hstart'] . '>' . $year . '</h' . $this->atts['hstart'] . '>'; ?>
         <ul>
             <?php foreach ($entries as $entry) : ?>
                 <li style="margin-bottom: 10px;">  

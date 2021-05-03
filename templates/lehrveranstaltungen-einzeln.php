@@ -6,17 +6,18 @@
     $ssend = (!empty($options['basic_ssEnd']) ? $options['basic_ssEnd'] : 0);
     $wsstart = (!empty($options['basic_wsStart']) ? $options['basic_wsStart'] : 0);
     $wsend = (!empty($options['basic_wsEnd']) ? $options['basic_wsEnd'] : 0);
-    ?>
-    <h2><?php 
+
+    echo '<h' . $this->atts['hstart'] . '>';
     if ($lang != 'de_DE' && !empty($veranstaltung['ects_name'])){
         $veranstaltung['title'] = $veranstaltung['ects_name']; 
     }else{
         $veranstaltung['title'] = $veranstaltung['name'];
     }
     echo $veranstaltung['title'];
-    ?></h2>
-    <?php if (!empty($veranstaltung['lecturers'])) : ?>
-        <h3><?php _e('Lecturers', 'rrze-univis');?></h3>
+    echo '</h' . $this->atts['hstart'] . '>';
+    if (!empty($veranstaltung['lecturers'])) : 
+        echo '<h' . ($this->atts['hstart'] + 1) . '>' . __('Lecturers', 'rrze-univis') . '</h' . ($this->atts['hstart'] + 1) . '>';
+    ?>
         <ul>
         <?php
         foreach ($veranstaltung['lecturers'] as $doz) :
@@ -40,18 +41,18 @@
             <?php
         endforeach; ?>
         </ul>
-    <?php endif; ?>
+    <?php endif; 
 
-    <h3><?php _e('Details', 'rrze-univis');?></h3>
+    echo '<h' . ($this->atts['hstart'] + 1) . '>' . __('Details', 'rrze-univis') . '</h' . ($this->atts['hstart'] + 1) . '>';
 
-    <?php if (!empty($veranstaltung['angaben'])): ?>
+    if (!empty($veranstaltung['angaben'])): ?>
         <p><?php echo $veranstaltung['angaben']; ?></p>
-    <?php endif; ?>
+    <?php endif; 
 
-    <h4><?php _e('Time and place', 'rrze-univis');?>:</h4>
-            <?php if (array_key_exists('comment', $veranstaltung)) : ?>
-            <p><?php echo $veranstaltung['comment']; ?></p>
-            <?php endif; ?>
+    echo '<h' . ($this->atts['hstart'] + 2) . '>' . __('Time and place', 'rrze-univis') . '</h' . ($this->atts['hstart'] + 2) . '>';
+    if (array_key_exists('comment', $veranstaltung)) : ?>
+        <p><?php echo $veranstaltung['comment']; ?></p>
+    <?php endif; ?>
     <ul>
         <?php if (isset($veranstaltung['courses'])) :
             foreach ($veranstaltung['courses'] as $course):
@@ -116,12 +117,13 @@
             <?php endforeach;
             endforeach;
         else : ?>
-            <li><?php _e('Time and place on appointment', 'rrze-univis'); ?></li>
+            <li><?php __('Time and place on appointment', 'rrze-univis'); ?></li>
         <?php endif; ?>
     </ul>
 
-    <?php if (array_key_exists('studs', $veranstaltung) && array_key_exists('stud', $veranstaltung['studs'][0])) : ?>
-    <h4><?php _e('Fields of study', 'rrze-univis');?></h4>
+    <?php if (array_key_exists('studs', $veranstaltung) && array_key_exists('stud', $veranstaltung['studs'][0])) : 
+        echo '<h' . ($this->atts['hstart'] + 2) . '>' . __('Fields of study', 'rrze-univis') . '</h' . ($this->atts['hstart'] + 2) . '>';
+    ?>
     <ul>
         <?php
         foreach ($veranstaltung['studs'][0]['stud'] as $stud) :
@@ -144,55 +146,53 @@
 
 
     <?php if (!empty($veranstaltung['organizational'])) : ?>
-        <h4><?php _e('Prerequisites / Organizational information', 'rrze-univis');?></h4>
+        <h4><?php __('Prerequisites / Organizational information', 'rrze-univis');?></h4>
         <p><?php echo $veranstaltung['organizational']; ?></p>
         <?php endif;
     ?>
 
 
-    <?php if (!empty($veranstaltung['summary'])) : ?>
-        <h4><?php _e('Content', 'rrze-univis');?></h4>
-        <p><?php echo $veranstaltung['summary']; ?></p>
-    <?php endif; ?>
+    <?php 
+    if (!empty($veranstaltung['summary'])){
+        echo '<h' . ($this->atts['hstart'] + 2) . '>' . __('Content', 'rrze-univis') . '</h' . ($this->atts['hstart'] + 2) . '>';
+        echo '<p>' . $veranstaltung['summary'] . '</p>';
+    }
 
+    if (!empty($veranstaltung['literature'])){
+        echo '<h' . ($this->atts['hstart'] + 2) . '>' . __('Recommended Literature', 'rrze-univis') . '</h' . ($this->atts['hstart'] + 2) . '>';
+        echo '<p>' . $veranstaltung['literature'] . '</p>';
+    }
+    if (!empty($veranstaltung['ects_infos'])){
+        echo '<h' . ($this->atts['hstart'] + 2) . '>' . __('ECTS information', 'rrze-univis') . '</h' . ($this->atts['hstart'] + 2) . '>';
+        if (!empty($veranstaltung['ects_name'])){
+            echo '<h' . ($this->atts['hstart'] + 3) . '>' . __('Title', 'rrze-univis') . '</h' . ($this->atts['hstart'] + 3) . '>';
+            echo '<p>' . $veranstaltung['ects_name'] . '</p>';
+        }
+        if (!empty($veranstaltung['ects_cred'])){
+            echo '<h' . ($this->atts['hstart'] + 3) . '>' . __('Credits', 'rrze-univis') . '</h' . ($this->atts['hstart'] + 3) . '>';
+            echo '<p>' . $veranstaltung['ects_cred'] . '</p>';
+        }
+        if (!empty($veranstaltung['ects_summary'])){
+            echo '<h' . ($this->atts['hstart'] + 3) . '>' . __('Content', 'rrze-univis') . '</h' . ($this->atts['hstart'] + 3) . '>';
+            echo '<p>' . $veranstaltung['ects_summary'] . '</p>';
+        }
+        if (!empty($veranstaltung['ects_literature'])){
+            echo '<h' . ($this->atts['hstart'] + 3) . '>' . __('Literature', 'rrze-univis') . '</h' . ($this->atts['hstart'] + 3) . '>';
+            echo '<p>' . $veranstaltung['ects_literature'] . '</p>';
+        }
+    }
 
-    <?php if (!empty($veranstaltung['literature'])) : ?>
-        <h4><?php _e('Recommended Literature', 'rrze-univis');?></h4>
-        <p><?php echo $veranstaltung['literature']; ?></p>
-    <?php endif; ?>
-
-    <?php if (!empty($veranstaltung['ects_infos'])) : ?>
-        <h4><?php _e('ECTS information', 'rrze-univis');?></h4>
-        <?php if (!empty($veranstaltung['ects_name'])) : ?>
-            <h5><?php _e('Title', 'rrze-univis');?></h5>
-            <p><?php echo $veranstaltung['ects_name']; ?></p>
-        <?php endif; ?>
-        <?php if (!empty($veranstaltung['ects_cred'])) : ?>
-            <h5><?php _e('Credits', 'rrze-univis');?></h5>
-            <p><?php echo $veranstaltung['ects_cred']; ?></p>
-        <?php endif; ?>
-        <?php if (!empty($veranstaltung['ects_summary'])) : ?>
-            <h5><?php _e('Content', 'rrze-univis');?>:</h5>
-            <p><?php echo $veranstaltung['ects_summary']; ?></p>
-        <?php endif; ?>
-        <?php if (!empty($veranstaltung['ects_literature'])) : ?>
-            <h5><?php _e('Literature', 'rrze-univis');?>:</h5>
-            <p><?php echo $veranstaltung['ects_literature']; ?></p>
-        <?php endif; ?>
-    <?php endif; ?>
-
-    <?php if (!empty($veranstaltung['keywords']) || !empty($veranstaltung['maxturnout']) || !empty($veranstaltung['url_description'])) : ?>
-        <h4><?php _e('Additional information', 'rrze-univis');?></h4>
-        <?php if (!empty($veranstaltung['keywords'])) : ?>
-            <p><?php _e('Keywords', 'rrze-univis');?>: <?php echo $veranstaltung['keywords']; ?></p>
-        <?php endif; ?>
-        <?php if (!empty($veranstaltung['maxturnout'])) : ?>
-            <p><?php _e('Expected participants', 'rrze-univis');?>: <?php echo $veranstaltung['maxturnout']; ?></p>
-        <?php endif; ?>
-        <?php if (!empty($veranstaltung['url_description'])) : ?>
-            <p>www: <a href="<?php echo $veranstaltung['url_description']; ?>"><?php echo $veranstaltung['url_description']; ?></a></p>
-        <?php endif; ?>
-    <?php endif; ?>
-
-<?php endif; ?>
+    if (!empty($veranstaltung['keywords']) || !empty($veranstaltung['maxturnout']) || !empty($veranstaltung['url_description'])){
+        echo '<h' . ($this->atts['hstart'] + 2) . '>' . __('Additional information', 'rrze-univis') . '</h' . ($this->atts['hstart'] + 2) . '>';
+        if (!empty($veranstaltung['keywords'])){
+            echo '<p>' . __('Keywords', 'rrze-univis') .': ' . $veranstaltung['keywords'] . '</p>';
+        }
+        if (!empty($veranstaltung['maxturnout'])){
+            echo '<p>' . __('Expected participants', 'rrze-univis') .': ' . $veranstaltung['maxturnout'] . '</p>';
+        }
+        if (!empty($veranstaltung['url_description'])){
+            echo '<p>www: <a href="' . $veranstaltung['url_description'] . '>' . $veranstaltung['url_description'] . '</a></p>';
+        }
+    }
+endif; ?>
 </div>
