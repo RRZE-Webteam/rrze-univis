@@ -67,7 +67,7 @@
                                         $t['coursename'] = '(' . __('Course', 'rrze-univis') . ' ' . $course['coursename'] . ')';
                                     endif;
                                     // ICS
-                                    if (in_array('ics', $this->show)){
+                                    if (in_array('ics', $this->show) && !in_array('ics', $this->hide)){
                                         $props = [
                                             'summary' => $veranstaltung['title'],
                                             'startdate' => (!empty($term['startdate']) ? $term['startdate'] : NULL),
