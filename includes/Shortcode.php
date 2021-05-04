@@ -23,6 +23,7 @@ class Shortcode{
     protected $hide = [];
     protected $atts;
     protected $univis;
+    protected $noCache = FALSE;
     const TRANSIENT_PREFIX = 'rrze_univis_cache_';    
     const TRANSIENT_EXPIRATION = DAY_IN_SECONDS;    
 
@@ -72,6 +73,10 @@ class Shortcode{
 
         if (empty($atts)){
             return $this->UnivISLink;
+        }
+
+        if (!empty($atts['nocache'])){
+            $this->noCache = TRUE;
         }
 
         // lv_id is not in config (=> id)
@@ -461,6 +466,11 @@ class Shortcode{
 
     public function getData($dataType, $univisParam = NULL){
         $sAtts = (!empty($this->atts) && is_array($this->atts) ? implode('-', $this->atts) : '');
+        if ($this->noCache){
+            $data = $this->univis->getData($dataType, $univisParam);
+            set_transient(self::TRANSIENT_PREFIX . $dataType . $sAtts . $this->UnivISOrgNr . $univisParam, $data, self::TRANSIENT_EXPIRATION);
+            return $data;
+        }
         $data = get_transient(self::TRANSIENT_PREFIX . $dataType . $sAtts . $this->UnivISOrgNr . $univisParam);
         if ($data){
             return $data;

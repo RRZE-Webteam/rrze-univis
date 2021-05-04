@@ -383,7 +383,6 @@ class UnivISAPI {
                 // add details
                 $courses = $this->mapIt('courses', $data);
                 $persons = $this->mapIt('personByID', $data);
-                $rooms = $this->mapIt('roomByID', $data);
                 $delNr = [];
                 foreach($ret as $e_nr => $entry){
                     // add course details
@@ -432,7 +431,7 @@ class UnivISAPI {
                             foreach($course['term'] as $t_nr => $term){
                                 foreach($rooms as $room){
                                     if (isset($term['room']) && $term['room'] == $room['key']){
-                                        $ret[$nr]['courses'][$c_nr]['term'][$t_nr]['room'] = $room['short'];
+                                        $ret[$nr]['courses'][$c_nr]['term'][$t_nr]['room'] = $room;
                                     }
                                 }
                             }
@@ -460,10 +459,12 @@ class UnivISAPI {
                 }
                 break;
             }
-
+        
         return $ret;
     }
 
+    
+    
     public function sortGroup($dataType, &$data){
         // sort
         if (in_array($dataType, ['personByID', 'personByOrga', 'personByName', 'personByOrgaPhonebook'])){
@@ -660,6 +661,7 @@ class UnivISAPI {
             '/_(.+)_/'    => '<sub>$1</sub>', // H_2_O
             '/\[(.+?)\]\s?(\S+)/' => "<a href='$2'>$1</a>", // [Linktext] Ziel-URL bzw. -Mailadresse
             '/([^">]+)(mailto:)([^")\s>]+)/mi' => '$1<a href="mailto:$3">$3</a>', // find mailto:email@address.tld but not <a href="mailto:email@address.tld">mailto:email@address.tld</a>
+            '/\s(\S*@+\S*)\s/m' => " <a href='mailto:$1'>$1</a> ",  // plain email-address          
         ];
         $aBr = [
             "<br>\r<br>" => '<br>',
@@ -804,7 +806,6 @@ class UnivISAPI {
 
         foreach($data as $nr => $row){
             foreach($fields as $field => $values){
-                // if (isset($data[$nr][$field]) && ($field == 'phone' || $field == 'fax')){
                 if (isset($data[$nr][$field]) && ($field == 'locations')){
                     foreach($data[$nr]['locations'] as $l_nr => $location){
                         if (!empty($location['tel'])) {
@@ -837,7 +838,9 @@ class UnivISAPI {
                     }
                 }elseif ($field == 'organizational'){
                     if (isset($data[$nr][$field])){
+                        // echo $nr . ' ' . $field . '<br>';
                         $data[$nr][$field] = self::makeHTML($data[$nr][$field]);
+                        // echo $data[$nr][$field] . '<br><br>';
                     }
                 }elseif (isset($data[$nr][$field])){
                     if (in_array($field, ['title'])){
@@ -864,7 +867,6 @@ class UnivISAPI {
                 }
             }
         }
-
         return $data;
     }
 
