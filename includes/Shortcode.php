@@ -46,6 +46,7 @@ class Shortcode{
         $this->UnivISLink = sprintf('<a href="%1$s">%2$s</a>', $this->UnivISURL, (!empty($this->options['basic_univis_linktxt']) ? $this->options['basic_univis_linktxt'] : __('Text zum UnivIS Link fehlt', 'rrze-univis')));
         add_action( 'admin_enqueue_scripts', [$this, 'enqueueGutenberg'] );
         add_action( 'init',  [$this, 'initGutenberg'] );
+        add_action( 'enqueue_block_assets', [$this, 'enqueueBlockAssets'] );
     }
 
     /**
@@ -295,8 +296,9 @@ class Shortcode{
         return true;        
     }
 
-    private function makeDropdown($label, $aData, $all = NULL){
+    private function makeDropdown($id, $label, $aData, $all = NULL){
         $ret = [
+            'id' => $id,
             'label' => $label,
             'field_type' => 'select',
             'default' => '',
@@ -345,7 +347,7 @@ class Shortcode{
                     }
                 }
                 asort($aPersons);            
-                $settings['univisid'] = $this->makeDropdown(__('Person', 'rrze-univis'), $aPersons);
+                $settings['univisid'] = $this->makeDropdown('univisid', __('Person', 'rrze-univis'), $aPersons);
 
             }
 
@@ -368,17 +370,17 @@ class Shortcode{
                 }
                 
                 asort($aLectures);            
-                $settings['id'] = $this->makeDropdown(__('Lehrveranstaltung', 'rrze-univis'), $aLectures);
+                $settings['id'] = $this->makeDropdown('id', __('Lehrveranstaltung', 'rrze-univis'), $aLectures);
 
                 asort($aLectureTypes);            
-                $settings['type'] = $this->makeDropdown(__('Typ', 'rrze-univis'), $aLectureTypes);
+                $settings['type'] = $this->makeDropdown('type', __('Typ', 'rrze-univis'), $aLectureTypes);
 
                 asort($aLectureLanguages);            
-                $settings['sprache'] = $this->makeDropdown(__('Sprache', 'rrze-univis'), $aLectureLanguages);
+                $settings['sprache'] = $this->makeDropdown('sprache', __('Sprache', 'rrze-univis'), $aLectureLanguages);
 
                 // Semester
                 if (isset($settings['sem'])){
-                    $settings['sem'] = $this->makeDropdown(__('Semester', 'rrze-univis'), [], __( '-- Aktuelles Semester --', 'rrze-univis' ));
+                    $settings['sem'] = $this->makeDropdown('sem', __('Semester', 'rrze-univis'), [], __( '-- Aktuelles Semester --', 'rrze-univis' ));
                     $thisSeason = (in_array(date('n'), [10,11,12,1]) ? 'w' : 's');
                     $season = ($thisSeason = 's' ? 'w' : 's');
                     $nextYear = date("Y") + 1;
@@ -395,7 +397,7 @@ class Shortcode{
             }
 
             // 2DO: we need document ready() or equal on React built elements to use onChange of UnivIS Org Nr. to refill dropdowns 
-            unset($settings['number']);
+            // unset($settings['number']);
             unset($settings['show']);
             unset($settings['hide']);
 
@@ -443,10 +445,13 @@ class Shortcode{
             return;
         }
 
+        wp_deregister_script('RRZE-Gutenberg'); // TEST
+
         // include gutenberg lib
         wp_enqueue_script(
             'RRZE-Gutenberg',
-            plugins_url( '../js/gutenberg.js', __FILE__ ),
+            // plugins_url( '../js/gutenberg.js', __FILE__ ),
+            plugins_url( '../src/js/gutenberg.js', __FILE__ ),
             array(
                 'wp-blocks',
                 'wp-i18n',
@@ -457,6 +462,24 @@ class Shortcode{
             NULL
         );
     }
+
+    public function enqueueBlockAssets(){
+        wp_deregister_script('RRZE-UnivIS-BlockJS'); // TEST
+
+        // include blockeditor JS
+        wp_enqueue_script(
+            'RRZE-UnivIS-BlockJS',
+            // plugins_url( '../js/gutenberg.js', __FILE__ ),
+            plugins_url( '../src/js/rrze-univis-blockeditor.js', __FILE__ ),
+            array(
+                'jquery',
+                'RRZE-Gutenberg',
+            ),
+            NULL
+        );
+    }
+
+    
 
     public function getData($dataType, $univisParam = NULL){
         $sAtts = (!empty($this->atts) && is_array($this->atts) ? implode('-', $this->atts) : '');
