@@ -21,6 +21,7 @@ class ICS {
         'location',
         'description',
         'url',
+        'map',
         'ssstart',
         'ssend',
         'wsstart',
@@ -79,7 +80,9 @@ class ICS {
             'UID:' . uniqid() . '@fau.de',
         ];
 
-        $this->props['DESCRIPTION'] .= (!empty($this->props['DESCRIPTION']) ? '\n\n' : '') . 'Information: ' . $this->props['URL'];
+        $this->props['DESCRIPTION'] .= (!empty($this->props['DESCRIPTION']) ? '\n\n' : '')
+            . (!empty($this->props['URL']) ? 'Information: ' . $this->props['URL'] . '\n\n' : '')
+            . (!empty($this->props['MAP']) ? 'Map: ' . $this->props['MAP'] : '');
         $this->props['DTSTART'] = (!empty($this->props['STARTDATE']) ? $this->props['STARTDATE'] : $this->props['DTSTART']);
         $this->props['DTEND'] = (!empty($this->props['ENDDATE']) ? $this->props['ENDDATE'] : $this->props['DTSTART']);
         $this->props['STARTTIME'] = (!empty($this->props['STARTTIME']) ? $this->props['STARTTIME'] : '00:00');

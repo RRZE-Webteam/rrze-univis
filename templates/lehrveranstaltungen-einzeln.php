@@ -80,8 +80,8 @@
                     else:
                         $t['time'] = __('Time on appointment', 'rrze-univis') . ',';
                     endif;
-                    if (!empty($term['room'])) :
-                        $t['room'] = __('Room', 'rrze-univis') . ' ' . $term['room'];
+                    if (!empty($term['room']['short'])) :
+                        $t['room'] = __('Room', 'rrze-univis') . ' ' . $term['room']['short'];
                     endif;
                     if (!empty($term['exclude'])) :
                         $t['exclude'] = '(' . __('exclude', 'rrze-univis') . ' ' . $term['exclude'] . ')';
@@ -102,6 +102,7 @@
                             'location' => (!empty($t['room']) ? $t['room'] : NULL),
                             'description' => (!empty($veranstaltung['comment']) ? $veranstaltung['comment'] : NULL),
                             'url' => get_permalink(),
+                            'map' => (!empty($term['room']['north']) && !empty($term['room']['east']) ? 'https://karte.fau.de/api/v1/iframe/marker/' . $term['room']['north'] . ',' . $term['room']['east'] . '/zoom/16' : ''),
                             'filename' => sanitize_file_name($veranstaltung['lecture_type_long']),
                             'ssstart' => $ssstart,
                             'ssend' => $ssend,
@@ -191,7 +192,7 @@
             echo '<p>' . __('Expected participants', 'rrze-univis') .': ' . $veranstaltung['maxturnout'] . '</p>';
         }
         if (!empty($veranstaltung['url_description'])){
-            echo '<p>www: <a href="' . $veranstaltung['url_description'] . '>' . $veranstaltung['url_description'] . '</a></p>';
+            echo '<p>www: <a href="' . $veranstaltung['url_description'] . '">' . $veranstaltung['url_description'] . '</a></p>';
         }
     }
 endif; ?>

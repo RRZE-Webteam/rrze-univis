@@ -28,6 +28,7 @@ class UnivISAPI {
         $this->sem = (!empty($this->atts['sem']) && self::checkSemester($this->atts['sem']) ? $this->atts['sem'] : '');
         $this->showJobs = (!empty($this->atts['zeige_jobs']) ? explode('|', $this->atts['zeige_jobs']) : []);
         $this->hideJobs = (!empty($this->atts['ignoriere_jobs']) ? explode('|', $this->atts['ignoriere_jobs']) : []);
+        $this->hideJobs = (!empty($this->showJobs) ? array_diff($this->showJobs, $this->hideJobs) : $this->hideJobs);
     }
 
 
@@ -51,6 +52,8 @@ class UnivISAPI {
 
     public function getData($dataType, $univisParam = NULL){
         $url = $this->getUrl($dataType) . urlencode($univisParam);
+        // echo $url;
+        // exit;
         $data = file_get_contents($url);
         if (!$data){
             UnivISAPI::log('getData', 'error', "no data returned using $url");
@@ -383,7 +386,6 @@ class UnivISAPI {
                 // add details
                 $courses = $this->mapIt('courses', $data);
                 $persons = $this->mapIt('personByID', $data);
-                $rooms = $this->mapIt('roomByID', $data);
                 $delNr = [];
                 foreach($ret as $e_nr => $entry){
                     // add course details
@@ -432,7 +434,7 @@ class UnivISAPI {
                             foreach($course['term'] as $t_nr => $term){
                                 foreach($rooms as $room){
                                     if (isset($term['room']) && $term['room'] == $room['key']){
-                                        $ret[$nr]['courses'][$c_nr]['term'][$t_nr]['room'] = $room['short'];
+                                        $ret[$nr]['courses'][$c_nr]['term'][$t_nr]['room'] = $room;
                                     }
                                 }
                             }
@@ -443,27 +445,36 @@ class UnivISAPI {
             case 'personAll':
                 // add orga details
                 $orga = $this->mapIt('orga', $data);
+                $persons = [];
+                foreach($ret as $entry){
+                    $persons[$entry['key']] = $entry;
+                }
+
                 if (!empty($orga[0]['orga_positions'])){
-                    $orga_positions = $orga[0]['orga_positions'];
-                    foreach($ret as $e_nr => $entry){
-                        foreach($orga_positions as $orga_position => $vals){
-                            if (isset($vals['per'])){
-                                foreach($vals['per'] as $person_key){
-                                    if (isset($entry['key']) && $entry['key'] == 'Person.' . $person_key){
-                                        $ret[$e_nr]['orga_position'] = $vals['description'];
-                                        $ret[$e_nr]['orga_position_order'] = $vals['joborder'];
+                    $orgaPositions = $orga[0]['orga_positions'];
+                    foreach($orgaPositions as $orgaDetails){
+                        if (isset($orgaDetails['per'])){
+                            foreach($orgaDetails['per'] as $personKey){
+                                if (!empty($persons['Person.' . $personKey])){
+                                    if (!empty($persons['Person.' . $personKey]['orga_position'])){
+                                        $persons[] = $persons['Person.' . $personKey];
                                     }
+                                    $persons['Person.' . $personKey]['orga_position'] = $orgaDetails['description'];
+                                    $persons['Person.' . $personKey]['orga_position_order'] = $orgaDetails['joborder'];
                                 }
                             }
                         }
                     }
                 }
+                $ret = $persons;
                 break;
             }
-
+        
         return $ret;
     }
 
+    
+    
     public function sortGroup($dataType, &$data){
         // sort
         if (in_array($dataType, ['personByID', 'personByOrga', 'personByName', 'personByOrgaPhonebook'])){
@@ -503,7 +514,6 @@ class UnivISAPI {
                 $data = $sortedData;
             }
         }
-
         // sort desc and group by year
         if (in_array($dataType, ['publicationByAuthorID', 'publicationByAuthor', 'publicationByDepartment'])){
             usort($data, [$this, 'sortByYear']);            
@@ -660,6 +670,7 @@ class UnivISAPI {
             '/_(.+)_/'    => '<sub>$1</sub>', // H_2_O
             '/\[(.+?)\]\s?(\S+)/' => "<a href='$2'>$1</a>", // [Linktext] Ziel-URL bzw. -Mailadresse
             '/([^">]+)(mailto:)([^")\s>]+)/mi' => '$1<a href="mailto:$3">$3</a>', // find mailto:email@address.tld but not <a href="mailto:email@address.tld">mailto:email@address.tld</a>
+            '/\s(\S*@+\S*)\s/m' => " <a href='mailto:$1'>$1</a> ",  // plain email-address          
         ];
         $aBr = [
             "<br>\r<br>" => '<br>',
@@ -804,7 +815,6 @@ class UnivISAPI {
 
         foreach($data as $nr => $row){
             foreach($fields as $field => $values){
-                // if (isset($data[$nr][$field]) && ($field == 'phone' || $field == 'fax')){
                 if (isset($data[$nr][$field]) && ($field == 'locations')){
                     foreach($data[$nr]['locations'] as $l_nr => $location){
                         if (!empty($location['tel'])) {
@@ -837,7 +847,9 @@ class UnivISAPI {
                     }
                 }elseif ($field == 'organizational'){
                     if (isset($data[$nr][$field])){
+                        // echo $nr . ' ' . $field . '<br>';
                         $data[$nr][$field] = self::makeHTML($data[$nr][$field]);
+                        // echo $data[$nr][$field] . '<br><br>';
                     }
                 }elseif (isset($data[$nr][$field])){
                     if (in_array($field, ['title'])){
@@ -864,7 +876,6 @@ class UnivISAPI {
                 }
             }
         }
-
         return $data;
     }
 
