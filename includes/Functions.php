@@ -17,6 +17,8 @@ class Functions {
         add_action('admin_enqueue_scripts', [$this, 'adminEnqueueScripts']);
         add_action('wp_ajax_GetUnivISData', [$this, 'ajaxGetUnivISData']);
         add_action('wp_ajax_nopriv_GetUnivISData', [$this, 'ajaxGetUnivISData']);
+        add_action('wp_ajax_GetUnivISDataForBlockelements', [$this, 'ajaxGetUnivISDataForBlockelements']);
+        add_action('wp_ajax_nopriv_GetUnivISDataForBlockelements', [$this, 'ajaxGetUnivISDataForBlockelements']);
     }
 
     public function adminEnqueueScripts(){
@@ -34,16 +36,46 @@ class Functions {
 
     }
 
+    public function getTableHTML($aIn){
+        if (!is_array($aIn)){
+            return $aIn;
+        }
+        $ret = '<table class="wp-list-table widefat striped"><thead><tr><td><b><i>Univ</i>IS</b> ID</td><td><strong>Name</strong></td></tr></thead>';
+        foreach($aIn as $ID => $val){
+            $ret .= "<tr><td>$ID</td><td style='word-wrap: break-word;'>$val</td></tr>";
+        }
+        $ret .= '</table>';
+        return $ret;
+    }
 
-    public function getUnivISDataHTML($keyword, $dataType){
+    public function ajaxGetUnivISData() {
+        check_ajax_referer( 'univis-ajax-nonce', 'nonce'  );
+        $inputs = filter_input(INPUT_POST, 'data', FILTER_SANITIZE_STRING, FILTER_REQUIRE_ARRAY);
+        $response = $this->getTableHTML($this->getUnivISData(NULL, $inputs['dataType'], $inputs['keyword']));
+        wp_send_json($response);
+    }
+
+    public function getSelectHTML($aIn){
+        if (!is_array($aIn)){
+            return "<option value=''>$aIn</option>";
+        }
+        $ret = '<option value="">' . __('-- All --', 'rrze-univis') . '</option>';
+        natsort($aIn);
+        foreach($aIn as $ID => $val){
+            $ret .= "<option value='$ID'>$val</option>"; 
+        }
+        return $ret;
+    }
+
+    public function getUnivISData($univisOrgID = NULL, $dataType, $keyword = NULL){
         $data = FALSE;
         $ret = __('Keine passenden Einträge gefunden.', 'rrze-univis');
 
-        if ($keyword){
+        if ($univisOrgID){
             $options = get_option( 'rrze-univis' );
             $data = 0;
             $UnivISURL = (!empty($options['basic_univis_url']) ? $options['basic_univis_url'] : '');
-            $univisOrgID = (!empty($options['basic_UnivISOrgNr']) ? $options['basic_UnivISOrgNr'] : 0);
+            $univisOrgID = (!empty($univisOrgID) ? $univisOrgID : (!empty($options['basic_UnivISOrgNr']) ? $options['basic_UnivISOrgNr'] : 0));
 
             if ($UnivISURL){
                 $univis = new UnivISAPI($UnivISURL, $univisOrgID, NULL);
@@ -54,43 +86,61 @@ class Functions {
         }
 
         if ($data){
-            $ret = '<table class="wp-list-table widefat striped"><thead><tr><td><b><i>Univ</i>IS</b> ID</td><td><strong>Name</strong></td></tr></thead>';
+            $ret = [];
             switch ($dataType){
                 case 'departmentByName':
                     foreach($data as $entry){
                         if (isset($entry['orgnr'])){
-                            $ret .= '<tr><td>' . $entry['orgnr'] . '</td><td style="word-wrap: break-word;">' . $entry['name'] . '</td></tr>';
+                            $ret[$entry['orgnr']] = $entry['name'];
                         }
                     }
                     break;
                 case 'personByName':
                     foreach($data as $entry){
                         if (isset($entry['person_id'])){
-                            $ret .= '<tr><td>' . $entry['person_id'] . '</td><td style="word-wrap: break-word;">' . $entry['lastname'] . ', ' . $entry['firstname'] . '</td></tr>';
+                            $ret[$entry['person_id']] = $entry['lastname'] . ', ' . $entry['firstname'];
+                        }
+                    }
+                    break;
+                case 'personAll':
+                    foreach($data as $position => $entries){
+                        foreach($entries as $entry){
+                            if (isset($entry['person_id'])){
+                                $ret[$entry['person_id']] = $entry['lastname'] . ', ' . $entry['firstname'];
+                            }
                         }
                     }
                     break;
                 case 'lectureByName':
                     foreach($data as $entry){
                         if (isset($entry['lecture_id'])){
-                            $ret .= '<tr><td>' . $entry['lecture_id'] . '</td><td style="word-wrap: break-word;">' . $entry['name'] . '</td></tr>';
+                            $ret[$entry['lecture_id']] = $entry['name'];
+                        }
+                    }
+                    break;
+                case 'lectureByDepartment':
+                    foreach($data as $type => $entries){
+                        foreach($entries as $entry){
+                            if (isset($entry['lecture_id'])){
+                                $ret[$entry['lecture_id']] = $entry['name'];
+                            }
                         }
                     }
                     break;
                 default:
-                $ret .= '<tr><td colspan="2">unknown dataType</td></tr>';
+                    $ret = 'unknown dataType';
                     break;
             }
-            $ret .= '</table>';
         }
 
         return $ret;
     }
 
-    public function ajaxGetUnivISData() {
+
+    public function ajaxGetUnivISDataForBlockelements() {
         check_ajax_referer( 'univis-ajax-nonce', 'nonce'  );
         $inputs = filter_input(INPUT_POST, 'data', FILTER_SANITIZE_STRING, FILTER_REQUIRE_ARRAY);
-        $response = $this->getUnivISDataHTML($inputs['keyword'], $inputs['dataType']);
+        $response = $this->getSelectHTML($this->getUnivISData($inputs['univisOrgID'], $inputs['dataType']));
         wp_send_json($response);
     }
 

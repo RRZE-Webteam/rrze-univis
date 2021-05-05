@@ -259,9 +259,9 @@ function getShortcodeSettings(){
                 'checked'   => FALSE
             ],
             'number' => [
-                'default' => '',
                 'field_type' => 'text',
                 'label' => __( 'UnivIS OrgID', 'rrze-univis' ),
+                'default' => '',
                 'type' => 'string'
             ],
             'hstart' => [

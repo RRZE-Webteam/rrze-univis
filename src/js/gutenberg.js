@@ -32,7 +32,7 @@ function createBlock(blockConfig) {
 				  	}
 				}
 			}
-	
+
 			if ( ( props['isSelected'] === false ) && ( edited === true ) ){
 				clean( att );
 				return createElement( serverSideRender, { block: blockConfig.block.blocktype, attributes: att });
@@ -43,14 +43,14 @@ function createBlock(blockConfig) {
 				for ( var fieldname in blockConfig ){
 					switch( blockConfig[fieldname]['field_type'] ){
 						case 'checkbox': 
-							ret.push( createElement( CheckboxControl, { checked: ( typeof att[fieldname] !== 'undefined' ? att[fieldname] : blockConfig[fieldname]['default'] ), label: blockConfig[fieldname]['label'], onChange: changeField.bind( fieldname ) } ) );
+							ret.push( createElement( CheckboxControl, { id: fieldname, checked: ( typeof att[fieldname] !== 'undefined' ? att[fieldname] : blockConfig[fieldname]['default'] ), label: blockConfig[fieldname]['label'], onChange: changeField.bind( fieldname ) } ) );
 							break;
 						case 'radio': 
 							var opts = [];
 							for ( var v in blockConfig[fieldname]['values'] ){
 								opts.push( JSON.parse( '{"value":"' + v + '", "label":"' + blockConfig[fieldname]['values'][v] + '"}' ) );
 							}
-							ret.push( createElement( RadioControl, { selected: ( typeof att[fieldname] !== 'undefined' ? att[fieldname] : blockConfig[fieldname]['default'] ), label: blockConfig[fieldname]['label'], onChange: changeField.bind( fieldname ), options: opts } ) );
+							ret.push( createElement( RadioControl, { id: fieldname, selected: ( typeof att[fieldname] !== 'undefined' ? att[fieldname] : blockConfig[fieldname]['default'] ), label: blockConfig[fieldname]['label'], onChange: changeField.bind( fieldname ), options: opts } ) );
 							break;
 						case 'multi_select': 
 						case 'select': 
@@ -58,16 +58,16 @@ function createBlock(blockConfig) {
                             for (var i = 0; i < blockConfig[fieldname]['values'].length; i++) { 
                                 opts.push( JSON.parse( '{"value":"' + blockConfig[fieldname]['values'][i]['id'] + '", "label":"' + blockConfig[fieldname]['values'][i]['val'] + '"}' ) );
 							}
-							ret.push( createElement( SelectControl, { multiple: ( blockConfig[fieldname]['field_type'] == 'multi_select' ? 1 : 0 ), value: att[fieldname], label: blockConfig[fieldname]['label'], type: blockConfig[fieldname]['type'], onChange: changeField.bind( fieldname ), options: opts } ) );
+							ret.push( createElement( SelectControl, { id: fieldname, multiple: ( blockConfig[fieldname]['field_type'] == 'multi_select' ? 1 : 0 ), value: att[fieldname], label: blockConfig[fieldname]['label'], type: blockConfig[fieldname]['type'], onChange: changeField.bind( fieldname ), options: opts } ) );
 							break;
 						case 'text': 
-							ret.push( createElement( TextControl, { value: att[fieldname], label: blockConfig[fieldname]['label'], type: blockConfig[fieldname]['type'], onChange: changeField.bind( fieldname ) } ) );
+							ret.push( createElement( TextControl, { id: fieldname, value: att[fieldname], label: blockConfig[fieldname]['label'], type: blockConfig[fieldname]['type'], onChange: changeField.bind( fieldname ) } ) );
 							break;
 						case 'textarea': 
-							ret.push( createElement( TextareaControl, { value: att[fieldname], label: blockConfig[fieldname]['label'], type: blockConfig[fieldname]['type'], onChange: changeField.bind( fieldname ) } ) );
+							ret.push( createElement( TextareaControl, { id: fieldname, value: att[fieldname], label: blockConfig[fieldname]['label'], type: blockConfig[fieldname]['type'], onChange: changeField.bind( fieldname ) } ) );
 							break;
 						case 'toggle': 
-							ret.push( createElement( ToggleControl, { checked: ( typeof att[fieldname] !== 'undefined' ? att[fieldname] : blockConfig[fieldname]['default'] ), label: blockConfig[fieldname]['label'], type: blockConfig[fieldname]['type'], onChange: changeField.bind( fieldname ) } ) );
+							ret.push( createElement( ToggleControl, { id: fieldname, checked: ( typeof att[fieldname] !== 'undefined' ? att[fieldname] : blockConfig[fieldname]['default'] ), label: blockConfig[fieldname]['label'], type: blockConfig[fieldname]['type'], onChange: changeField.bind( fieldname ) } ) );
 							break;
 					}
 				}
