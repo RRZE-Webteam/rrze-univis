@@ -2,10 +2,8 @@
  
 wp.domReady( 
     function(){
-        jQuery(document).on('change', 'input#number', 
-            function(e){
-                getUnivISDataForBlockelements('personByName');
-            });
+        jQuery(document).on('change', 'input#number', function(e){getUnivISDataForBlockelements('personAll');});
+        // jQuery(document).on('change', 'select#univisid', function(e){setTask();});
     });
 
 function getUnivISDataForBlockelements($dataType) {
@@ -24,3 +22,13 @@ function getUnivISDataForBlockelements($dataType) {
         });
     }
 }
+
+// function setTask(){
+//     var $univisid = jQuery('select#univisid').val();
+
+//     if ($univisid){
+//         jQuery('select#task').val('mitarbeiter-alle');
+//     }else{
+//         jQuery('select#task').val('mitarbeiter-einzeln');
+//     }
+// }

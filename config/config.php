@@ -260,7 +260,7 @@ function getShortcodeSettings(){
             ],
             'number' => [
                 'field_type' => 'text',
-                'label' => __( 'UnivIS OrgID TEST', 'rrze-univis' ),
+                'label' => __( 'UnivIS OrgID', 'rrze-univis' ),
                 'default' => '',
                 'type' => 'string'
             ],

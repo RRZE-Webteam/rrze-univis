@@ -51,7 +51,7 @@ class Functions {
     public function ajaxGetUnivISData() {
         check_ajax_referer( 'univis-ajax-nonce', 'nonce'  );
         $inputs = filter_input(INPUT_POST, 'data', FILTER_SANITIZE_STRING, FILTER_REQUIRE_ARRAY);
-        $response = $this->getTableHTML($this->getUnivISData($inputs['keyword'], $inputs['dataType']));
+        $response = $this->getTableHTML($this->getUnivISData(NULL, $inputs['dataType'], $inputs['keyword']));
         wp_send_json($response);
     }
 
@@ -60,13 +60,14 @@ class Functions {
             return "<option value=''>$aIn</option>";
         }
         $ret = '<option value="">' . __('-- All --', 'rrze-univis') . '</option>';
+        natsort($aIn);
         foreach($aIn as $ID => $val){
             $ret .= "<option value='$ID'>$val</option>"; 
         }
         return $ret;
     }
 
-    public function getUnivISData($univisOrgID = NULL, $dataType){
+    public function getUnivISData($univisOrgID = NULL, $dataType, $keyword = NULL){
         $data = FALSE;
         $ret = __('Keine passenden Einträge gefunden.', 'rrze-univis');
 
@@ -101,6 +102,15 @@ class Functions {
                         }
                     }
                     break;
+                case 'personAll':
+                    foreach($data as $position => $entries){
+                        foreach($entries as $entry){
+                            if (isset($entry['person_id'])){
+                                $ret[$entry['person_id']] = $entry['lastname'] . ', ' . $entry['firstname'];
+                            }
+                        }
+                    }
+                    break;
                 case 'lectureByName':
                     foreach($data as $entry){
                         if (isset($entry['lecture_id'])){
@@ -121,7 +131,7 @@ class Functions {
     public function ajaxGetUnivISDataForBlockelements() {
         check_ajax_referer( 'univis-ajax-nonce', 'nonce'  );
         $inputs = filter_input(INPUT_POST, 'data', FILTER_SANITIZE_STRING, FILTER_REQUIRE_ARRAY);
-        $response = $this->getSelectHTML($this->getUnivISData($inputs['univisid'], $inputs['dataType']));
+        $response = $this->getSelectHTML($this->getUnivISData($inputs['univisOrgID'], $inputs['dataType']));
         wp_send_json($response);
     }
 
