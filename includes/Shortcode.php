@@ -346,6 +346,7 @@ class Shortcode{
                 }
                 asort($aPersons);            
                 $settings['univisid'] = $this->makeDropdown(__('Person', 'rrze-univis'), $aPersons);
+
             }
 
             // Lehrveranstaltungen
@@ -393,17 +394,10 @@ class Shortcode{
                 }
             }
 
-            // show/hide 
-            if (isset($settings['show'])){
-                unset($settings['show']);
-                unset($settings['hide']);
-                $settings['show_phone'] = $this->makeToggle(__( 'Telefonnummern anzeigen', 'rrze-univis' ));
-                $settings['show_mail'] = $this->makeToggle(__( 'eMail anzeigen', 'rrze-univis' ));
-                $settings['show_jumpmarks'] = $this->makeToggle(__( 'Sprungmarken anzeigen', 'rrze-univis' ));
-            }
-
             // 2DO: we need document ready() or equal on React built elements to use onChange of UnivIS Org Nr. to refill dropdowns 
             unset($settings['number']);
+            unset($settings['show']);
+            unset($settings['hide']);
 
             $aSettings[$task] = $settings;
         }

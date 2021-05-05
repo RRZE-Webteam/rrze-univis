@@ -71,7 +71,7 @@ class UnivISWidget extends \WP_Widget {
     public function update( $new_instance, $old_instance ) {
         $instance = [];
         $instance['task'] = (!empty($new_instance['task']) ? $new_instance['task'] : '');
-        $instance['univisid'] = (!empty($new_instance['univisid']) ? $new_instance['univisid'] : 'test');
+        $instance['univisid'] = (!empty($new_instance['univisid']) ? $new_instance['univisid'] : '');
         $instance['show'] = (!empty($new_instance['show']) ? $new_instance['show'] : '');
         $instance['hide'] = (!empty($new_instance['hide']) ? $new_instance['hide'] : '');
         return $instance;

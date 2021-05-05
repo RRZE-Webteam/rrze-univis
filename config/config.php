@@ -270,6 +270,27 @@ function getShortcodeSettings(){
                 'label' => __( 'Überschriftenebene der ersten Überschrift', 'fau-person' ),
                 'type' => 'integer' 
             ],
+            'show_phone' => [
+                'field_type' => 'toggle',
+                'label' => __( 'Telefonnummern anzeigen', 'rrze-univis' ),
+                'type' => 'boolean',
+                'default' => TRUE,
+                'checked'   => TRUE
+            ],
+            'show_mail' => [
+                'field_type' => 'toggle',
+                'label' => __( 'eMail anzeigen', 'rrze-univis' ),
+                'type' => 'boolean',
+                'default' => TRUE,
+                'checked'   => TRUE
+            ],
+            'show_jumpmarks' => [
+                'field_type' => 'toggle',
+                'label' => __( 'Sprungmarken anzeigen', 'rrze-univis' ),
+                'type' => 'boolean',
+                'default' => TRUE,
+                'checked'   => TRUE
+            ],
         ],
         'lehrveranstaltungen' => [
             'block' => [
