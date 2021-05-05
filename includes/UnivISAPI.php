@@ -28,6 +28,7 @@ class UnivISAPI {
         $this->sem = (!empty($this->atts['sem']) && self::checkSemester($this->atts['sem']) ? $this->atts['sem'] : '');
         $this->showJobs = (!empty($this->atts['zeige_jobs']) ? explode('|', $this->atts['zeige_jobs']) : []);
         $this->hideJobs = (!empty($this->atts['ignoriere_jobs']) ? explode('|', $this->atts['ignoriere_jobs']) : []);
+        $this->hideJobs = (!empty($this->showJobs) ? array_diff($this->showJobs, $this->hideJobs) : $this->hideJobs);
     }
 
 
@@ -51,6 +52,8 @@ class UnivISAPI {
 
     public function getData($dataType, $univisParam = NULL){
         $url = $this->getUrl($dataType) . urlencode($univisParam);
+        // echo $url;
+        // exit;
         $data = file_get_contents($url);
         if (!$data){
             UnivISAPI::log('getData', 'error', "no data returned using $url");
@@ -442,21 +445,28 @@ class UnivISAPI {
             case 'personAll':
                 // add orga details
                 $orga = $this->mapIt('orga', $data);
+                $persons = [];
+                foreach($ret as $entry){
+                    $persons[$entry['key']] = $entry;
+                }
+
                 if (!empty($orga[0]['orga_positions'])){
-                    $orga_positions = $orga[0]['orga_positions'];
-                    foreach($ret as $e_nr => $entry){
-                        foreach($orga_positions as $orga_position => $vals){
-                            if (isset($vals['per'])){
-                                foreach($vals['per'] as $person_key){
-                                    if (isset($entry['key']) && $entry['key'] == 'Person.' . $person_key){
-                                        $ret[$e_nr]['orga_position'] = $vals['description'];
-                                        $ret[$e_nr]['orga_position_order'] = $vals['joborder'];
+                    $orgaPositions = $orga[0]['orga_positions'];
+                    foreach($orgaPositions as $orgaDetails){
+                        if (isset($orgaDetails['per'])){
+                            foreach($orgaDetails['per'] as $personKey){
+                                if (!empty($persons['Person.' . $personKey])){
+                                    if (!empty($persons['Person.' . $personKey]['orga_position'])){
+                                        $persons[] = $persons['Person.' . $personKey];
                                     }
+                                    $persons['Person.' . $personKey]['orga_position'] = $orgaDetails['description'];
+                                    $persons['Person.' . $personKey]['orga_position_order'] = $orgaDetails['joborder'];
                                 }
                             }
                         }
                     }
                 }
+                $ret = $persons;
                 break;
             }
         
@@ -504,7 +514,6 @@ class UnivISAPI {
                 $data = $sortedData;
             }
         }
-
         // sort desc and group by year
         if (in_array($dataType, ['publicationByAuthorID', 'publicationByAuthor', 'publicationByDepartment'])){
             usort($data, [$this, 'sortByYear']);            
