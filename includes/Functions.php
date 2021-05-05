@@ -118,6 +118,15 @@ class Functions {
                         }
                     }
                     break;
+                case 'lectureByDepartment':
+                    foreach($data as $type => $entries){
+                        foreach($entries as $entry){
+                            if (isset($entry['lecture_id'])){
+                                $ret[$entry['lecture_id']] = $entry['name'];
+                            }
+                        }
+                    }
+                    break;
                 default:
                     $ret = 'unknown dataType';
                     break;

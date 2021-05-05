@@ -2,13 +2,16 @@
  
 wp.domReady( 
     function(){
-        jQuery(document).on('change', 'input#number', function(e){getUnivISDataForBlockelements('personAll');});
+        jQuery(document).on('change', 'input#number', function(e){
+            getUnivISDataForBlockelements('personAll', 'select#univisid');
+            getUnivISDataForBlockelements('lectureByDepartment', 'select#id');
+        });
         // jQuery(document).on('change', 'select#univisid', function(e){setTask();});
     });
 
-function getUnivISDataForBlockelements($dataType) {
+function getUnivISDataForBlockelements($dataType, $output) {
     var $univisOrgID = jQuery('input#number').val();
-    var $output = jQuery('select#univisid');
+    var $output = jQuery($output);
 
     if ($univisOrgID){
         $output.html('<option value="">loading...   </option>');

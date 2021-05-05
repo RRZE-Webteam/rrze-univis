@@ -464,7 +464,7 @@ class Shortcode{
         // include blockeditor JS
         wp_enqueue_script(
             'RRZE-UnivIS-BlockJS',
-            plugins_url( '../js/gutenberg.js', __FILE__ ),
+            plugins_url( '../js/rrze-univis-blockeditor.js', __FILE__ ),
             array(
                 'jquery',
                 'RRZE-Gutenberg',
