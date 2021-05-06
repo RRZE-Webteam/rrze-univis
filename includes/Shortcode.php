@@ -119,10 +119,6 @@ class Shortcode{
 
         $this->atts = $this->normalize(shortcode_atts($atts_default, $atts));
 
-        if (empty($this->UnivISOrgNr)){
-            return;
-        }
-
         $data = '';
         $this->univis = new UnivISAPI($this->UnivISURL, $this->UnivISOrgNr, $this->atts);
 
@@ -195,7 +191,7 @@ class Shortcode{
                 break;
         }
 
-        if ($data){
+        if ($data && is_array($data)){
             // $data = '<pre>' . json_encode($data, JSON_PRETTY_PRINT) . '</pre>';
             // var_dump($data);
             // exit;
@@ -218,9 +214,6 @@ class Shortcode{
             $this->UnivISOrgNr = $atts['number'];
         }elseif (!empty($atts['task']) && ($atts['task'] == 'lehrveranstaltungen-alle' || $atts['task'] == 'mitarbeiter-einzeln') && !empty($atts['id'])){
             $this->UnivISOrgNr = $atts['id'];
-        }
-        if (empty($this->UnivISOrgNr)){
-            return 'no UnivISOrgNr given';
         }
         if (!empty($atts['dozentid'])){
             $atts['id'] = $atts['dozentid'];
