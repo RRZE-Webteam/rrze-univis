@@ -52,6 +52,9 @@ class UnivISAPI {
 
     public function getData($dataType, $univisParam = NULL){
         $url = $this->getUrl($dataType) . urlencode($univisParam);
+        if (!$url) {
+            return 'Set UnivIS Org ID in settings.';
+        }
         $data = file_get_contents($url);
         if (!$data){
             UnivISAPI::log('getData', 'error', "no data returned using $url");
@@ -75,10 +78,16 @@ class UnivISAPI {
                 $url .= 'persons&fullname=';
                 break;
             case 'personAll':
+                if (empty($this->orgID)){
+                    return FALSE;
+                }
                 $url .= 'departments&number='.$this->orgID;
                 break;
             case 'personByOrga':
             case 'personByOrgaPhonebook':
+                if (empty($this->orgID)){
+                    return FALSE;
+                }
                 $url .= 'persons&department='.$this->orgID;
                 break;
             case 'publicationByAuthorID':
@@ -88,12 +97,18 @@ class UnivISAPI {
                 $url .= 'publications&author=';
                 break;  
             case 'publicationByDepartment':
+                if (empty($this->orgID)){
+                    return FALSE;
+                }
                 $url .= 'publications&department='.$this->orgID;
                 break;  
             case 'lectureByID':
                 $url .= 'lectures'.(!empty($this->atts['lang'])?'&lang='.$this->atts['lang']:'').(!empty($this->atts['lv_import']) && !$this->atts['lv_import']?'&noimports=1':'').(!empty($this->atts['type'])?'&type='.$this->atts['type']:'').(!empty($this->sem)?'&sem='.$this->sem:'').'&id=';
                 break;              
             case 'lectureByDepartment':
+                if (empty($this->orgID)){
+                    return FALSE;
+                }
                 $url .= 'lectures'.(!empty($this->atts['lang'])?'&lang='.$this->atts['lang']:'').(!empty($this->atts['lv_import']) && !$this->atts['lv_import']?'&noimports=1':'').(!empty($this->atts['type'])?'&type='.$this->atts['type']:'').(!empty($this->sem)?'&sem='.$this->sem:'').'&department='.$this->orgID;
                 break;   
             case 'lectureByLecturer':
@@ -109,6 +124,9 @@ class UnivISAPI {
                 $url .= 'positions&closed=1&id=';
                 break;
             case 'jobAll':
+                if (empty($this->orgID)){
+                    return FALSE;
+                }
                 $url .= 'positions&closed=1&department='.$this->orgID;
                 break;
             case 'roomByID':
@@ -474,6 +492,9 @@ class UnivISAPI {
     
     
     public function sortGroup($dataType, &$data){
+        if (empty($data)){
+            return [];
+        }
         // sort
         if (in_array($dataType, ['personByID', 'personByOrga', 'personByName', 'personByOrgaPhonebook'])){
             usort($data, [$this, 'sortByLastname']);            
@@ -530,6 +551,10 @@ class UnivISAPI {
         }
         // sort orga_position_order and group by orga_position
         if ($dataType == 'personAll'){
+            // echo '<pre>';
+            // var_dump($data);
+            // echo (empty($data) ? 'EMPTY' : 'not EMTPY');
+            // exit;
             usort($data, [$this, 'sortByPositionorder']);            
             $data = $this->groupBy($data, 'orga_position');
             foreach($data as $position => $members){
@@ -574,6 +599,9 @@ class UnivISAPI {
     }
 
     private function sortByPositionorder($a, $b){
+        if (empty($a["orga_position_order"]) || empty($b["orga_position_order"])){
+            return TRUE;
+        }
         return strnatcmp($a["orga_position_order"], $b["orga_position_order"]);
     }
 
