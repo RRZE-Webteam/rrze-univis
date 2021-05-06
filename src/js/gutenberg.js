@@ -33,7 +33,7 @@ function createBlock(blockConfig) {
 				}
 			}
 
-			if ( ( props['isSelected'] === false ) && ( edited === true ) ){
+            if ( ( props['isSelected'] === false ) && ( edited === true ) ){
 				clean( att );
 				return createElement( serverSideRender, { block: blockConfig.block.blocktype, attributes: att });
 			} else {

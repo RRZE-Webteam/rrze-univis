@@ -23,7 +23,7 @@ function getUnivISData() {
     if ($keywordVal){
         $resultTab.html('');
         $keyword.val('');
-    
+        
         jQuery.post(univis_ajax.ajax_url, { 
             _ajax_nonce: univis_ajax.nonce,
             action: 'GetUnivISData',

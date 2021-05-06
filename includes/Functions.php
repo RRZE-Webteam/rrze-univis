@@ -24,7 +24,7 @@ class Functions {
     public function adminEnqueueScripts(){
         wp_enqueue_script(
 			'rrze-unvis-ajax',
-			plugins_url('js/rrze-univis.js', plugin_basename($this->pluginFile)),
+			plugins_url('src/js/rrze-univis.js', plugin_basename($this->pluginFile)),
 			['jquery'],
 			NULL
         );    
@@ -71,18 +71,16 @@ class Functions {
         $data = FALSE;
         $ret = __('Keine passenden Einträge gefunden.', 'rrze-univis');
 
-        if ($univisOrgID){
-            $options = get_option( 'rrze-univis' );
-            $data = 0;
-            $UnivISURL = (!empty($options['basic_univis_url']) ? $options['basic_univis_url'] : '');
-            $univisOrgID = (!empty($univisOrgID) ? $univisOrgID : (!empty($options['basic_UnivISOrgNr']) ? $options['basic_UnivISOrgNr'] : 0));
+        $options = get_option( 'rrze-univis' );
+        $data = 0;
+        $UnivISURL = (!empty($options['basic_univis_url']) ? $options['basic_univis_url'] : '');
+        $univisOrgID = (!empty($univisOrgID) ? $univisOrgID : (!empty($options['basic_UnivISOrgNr']) ? $options['basic_UnivISOrgNr'] : 0));
 
-            if ($UnivISURL){
-                $univis = new UnivISAPI($UnivISURL, $univisOrgID, NULL);
-                $data = $univis->getData($dataType, $keyword);
-            }elseif (!$UnivISURL){
-                $ret =  __('Link zu UnivIS fehlt.', 'rrze-univis');
-            }
+        if ($UnivISURL){
+            $univis = new UnivISAPI($UnivISURL, $univisOrgID, NULL);
+            $data = $univis->getData($dataType, $keyword);
+        }elseif (!$UnivISURL){
+            $ret =  __('Link zu UnivIS fehlt.', 'rrze-univis');
         }
 
         if ($data){

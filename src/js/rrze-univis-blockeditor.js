@@ -1,15 +1,21 @@
-"use strict";
+// "use strict";
  
 wp.domReady( 
     function(){
-        jQuery(document).on('change', 'input#number', function(e){
-            getUnivISDataForBlockelements('personAll', 'select#univisid');
-            getUnivISDataForBlockelements('lectureByDepartment', 'select#id');
+        alert('domReady');
+        jQuery(document).ready(function($){
+            alert('document ready');
+            jQuery(document).on('change', 'input#number', function(){
+                alert('change');
+                getUnivISDataForBlockelements('personAll', 'select#univisid');
+                getUnivISDataForBlockelements('lectureByDepartment', 'select#id');
+            });
+            // jQuery(document).on('change', 'select#univisid', function(e){setTask();});
         });
-        // jQuery(document).on('change', 'select#univisid', function(e){setTask();});
     });
 
 function getUnivISDataForBlockelements($dataType, $output) {
+    alert('change func');
     var $univisOrgID = jQuery('input#number').val();
     var $output = jQuery($output);
 
