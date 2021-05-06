@@ -285,7 +285,6 @@ class Shortcode{
         if ($postID && !use_block_editor_for_post($postID)){
             return false;
         }
-
         return true;        
     }
 
@@ -401,7 +400,7 @@ class Shortcode{
 
 
     public function initGutenberg() {
-        if (! $this->isGutenberg() || empty($this->UnivISURL) || empty($this->UnivISOrgNr)){
+        if (! $this->isGutenberg() || empty($this->UnivISURL) ){
             return;
         }
         // get prefills for dropdowns
@@ -438,10 +437,11 @@ class Shortcode{
             return;
         }
 
+        wp_dequeue_script('RRZE-Gutenberg');
         // include gutenberg lib
         wp_enqueue_script(
             'RRZE-Gutenberg',
-            plugins_url( '../js/gutenberg.js', __FILE__ ),
+            plugins_url( '../src/js/gutenberg.js', __FILE__ ),
             array(
                 'wp-blocks',
                 'wp-i18n',
@@ -454,10 +454,11 @@ class Shortcode{
     }
 
     public function enqueueBlockAssets(){
+        wp_dequeue_script('RRZE-UnivIS-BlockJS');
         // include blockeditor JS
         wp_enqueue_script(
             'RRZE-UnivIS-BlockJS',
-            plugins_url( '../js/rrze-univis-blockeditor.js', __FILE__ ),
+            plugins_url( '../src/js/rrze-univis-blockeditor.js', __FILE__ ),
             array(
                 'jquery',
                 'RRZE-Gutenberg',

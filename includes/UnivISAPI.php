@@ -551,10 +551,6 @@ class UnivISAPI {
         }
         // sort orga_position_order and group by orga_position
         if ($dataType == 'personAll'){
-            // echo '<pre>';
-            // var_dump($data);
-            // echo (empty($data) ? 'EMPTY' : 'not EMTPY');
-            // exit;
             usort($data, [$this, 'sortByPositionorder']);            
             $data = $this->groupBy($data, 'orga_position');
             foreach($data as $position => $members){
