@@ -276,6 +276,9 @@ class Shortcode{
                 $atts['sem'] = $year . $season;
             }
         }
+        if (empty($atts['hstart'])){
+            $atts['hstart'] = $this->options['basic_hstart'];
+        }
 
         return $atts;
     }

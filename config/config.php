@@ -171,6 +171,17 @@ function getFields()
                 'default'           => date("Y") . '-07-16',
                 'sanitize_callback' => 'date'
             ],            
+            [
+                'name'              => 'hstart',
+                'label'             => __('Größe der Überschrift, ab der Ausgaben beginnen', 'rrze-univis'),
+                'desc'              => __('', 'rrze-univis'),
+                'min'               => 2,
+                'max'               => 10,
+                'step'              => '1',
+                'type'              => 'number',
+                'default'           => '2',
+                'sanitize_callback' => 'floatval'
+            ],            
         ],
     ];
 }
@@ -265,7 +276,7 @@ function getShortcodeSettings(){
                 'type' => 'string'
             ],
             'hstart' => [
-                'default' => 2,
+                'default' => NULL,
                 'field_type' => 'number',
                 'label' => __( 'Überschriftenebene der ersten Überschrift', 'fau-person' ),
                 'type' => 'integer' 
@@ -344,8 +355,8 @@ function getShortcodeSettings(){
                 'field_type' => 'toggle',
                 'label' => __( 'Importierte Lehrveranstaltungen ausgeben', 'rrze-univis' ),
                 'type' => 'boolean',
-                'default' => TRUE,
-                'checked'   => TRUE
+                'default' => FALSE,
+                'checked'   => FALSE
             ],
             'type' => [
                 'default' => '',
@@ -397,7 +408,7 @@ function getShortcodeSettings(){
                 'checked'   => TRUE
             ],
             'hstart' => [
-                'default' => 2,
+                'default' => NULL,
                 'field_type' => 'number',
                 'label' => __( 'Überschriftenebene der ersten Überschrift', 'fau-person' ),
                 'type' => 'integer' 
@@ -448,7 +459,7 @@ function getShortcodeSettings(){
                 'type' => 'string'
             ],
             'hstart' => [
-                'default' => 2,
+                'default' => NULL,
                 'field_type' => 'number',
                 'label' => __( 'Überschriftenebene der ersten Überschrift', 'fau-person' ),
                 'type' => 'integer' 
