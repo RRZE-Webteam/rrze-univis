@@ -62,7 +62,7 @@
                         // email
                         foreach($person['locations'] as $location){
                             if (!empty($location['email']) && in_array('mail', $this->show) && !in_array('mail', $this->hide)){
-                                echo '<li><span class="screen-reader-text">' . __('Email', 'rrze-univis') . ': </span><span itemprop="email">' . $location['email'] . '</span></li>';
+                                echo '<li><span class="screen-reader-text">' . __('Email', 'rrze-univis') . ': </span><span itemprop="email"><a href="mailto:' . $location['email'] . '">' . $location['email'] . '</a></span></li>';
                             }
                         }
                         // address
