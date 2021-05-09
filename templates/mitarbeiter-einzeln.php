@@ -134,7 +134,7 @@
                 <div>
                     <ul>
                         <li>
-                            <?php echo '<h' . ($this->atts['hstart'] + 2) . $lec_type . '</h' . ($this->atts['hstart'] + 2) . '>'; ?>
+                            <?php echo '<h' . ($this->atts['hstart'] + 2) . '>' . $lec_type . '</h' . ($this->atts['hstart'] + 2) . '>'; ?>
                             <ul>
                             <?php foreach ($lectures as $lecture){
                                 echo '<li><a href="' . get_permalink() . 'lv_id/' . $lecture['lecture_id'] . '">' . $lecture['name'] . '</a></li>'; 
