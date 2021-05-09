@@ -16,6 +16,7 @@ class UnivISAPI {
     protected $api;
     protected $orgID;
     protected $atts;
+    protected $univisParam;
     protected $showJobs;
     protected $hideJobs;
     protected $sem;
@@ -51,7 +52,11 @@ class UnivISAPI {
 
 
     public function getData($dataType, $univisParam = NULL){
-        $url = $this->getUrl($dataType) . urlencode($univisParam);
+        $this->univisParam = urlencode($univisParam);
+        $url = $this->getUrl($dataType) . $this->univisParam;
+        // echo $url;
+        // exit;
+
         if (!$url) {
             return 'Set UnivIS Org ID in settings.';
         }
@@ -231,6 +236,7 @@ class UnivISAPI {
                         'term' => 'term',
                         'coursename' => 'coursename',
                         'course_key' => 'key',
+                        'doz' => 'doz',
                     ],
                 ];
                 break;
@@ -395,19 +401,26 @@ class UnivISAPI {
                     unset($ret[$e_nr]['author']);
                 }
                 break;                        
+            case 'lectureByLecturerID':
+                // unset entries not by this lecturer ID
+                $lecturer = $this->getData('personByID', $this->univisParam);
+                if (isset($lecturer[0]['key'])){
+                    $subs = explode('Person.', $lecturer[0]['key']);
+                }
+                $lecturer_key = (isset($subs[1]) ? $subs[1] : '');
             case 'lectureByID':
             case 'lectureByLecturer':
             case 'lectureByDepartment':
-            case 'lectureByLecturerID':
                 // add details
                 $courses = $this->mapIt('courses', $data);
                 $persons = $this->mapIt('personByID', $data);
                 $delNr = [];
                 foreach($ret as $e_nr => $entry){
+                    $ret[$e_nr]['lecturer_key'] = (!empty($lecturer_key) ? $lecturer_key : '');
                     // add course details
                     if (isset($entry['course_keys'])){
                         foreach($entry['course_keys'] as $course_key){
-                            foreach($courses as $course){
+                            foreach($courses as $c_nr => $course){
                                 if (($course['course_key'] == 'Lecture.' . $course_key) && (isset($course['term']))){
                                     unset($course['course_key']);
                                     $ret[$e_nr]['courses'][] = $course;
