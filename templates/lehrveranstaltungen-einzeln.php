@@ -8,7 +8,7 @@
     $wsend = (!empty($options['basic_wsEnd']) ? $options['basic_wsEnd'] : 0);
 
     echo '<h' . $this->atts['hstart'] . '>';
-    if ($lang != 'de_DE' && !empty($veranstaltung['ects_name'])){
+    if ($lang != 'de_DE' && $lang != 'de_DE_formal' && !empty($veranstaltung['ects_name'])){
         $veranstaltung['title'] = $veranstaltung['ects_name']; 
     }else{
         $veranstaltung['title'] = $veranstaltung['name'];
