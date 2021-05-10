@@ -403,7 +403,7 @@ class Shortcode{
 
 
     public function initGutenberg() {
-        if (! $this->isGutenberg() || empty($this->UnivISURL) ){
+        if (!$this->isGutenberg() || empty($this->UnivISURL) || empty($this->UnivISOrgNr) ){
             return;
         }
         // get prefills for dropdowns
