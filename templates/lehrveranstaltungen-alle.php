@@ -18,7 +18,7 @@
                 <li>
                 <?php 
                 echo '<h' . ($this->atts['hstart'] + 1) . '><a href="' . $url . '">'; 
-                if ($lang != 'de_DE' && !empty($veranstaltung['ects_name'])){
+                if ($lang != 'de_DE' && $lang!='de_DE_formal' && !empty($veranstaltung['ects_name'])){
                     $veranstaltung['title'] = $veranstaltung['ects_name']; 
                 }else{
                     $veranstaltung['title'] = $veranstaltung['name'];
