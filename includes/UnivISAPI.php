@@ -52,7 +52,7 @@ class UnivISAPI {
 
 
     public function getData($dataType, $univisParam = NULL){
-        $this->univisParam = urlencode($univisParam);
+        $this->univisParam = $univisParam;
         $url = $this->getUrl($dataType) . $this->univisParam;
         // echo $url;
         // exit;
@@ -402,14 +402,20 @@ class UnivISAPI {
                 }
                 break;                        
             case 'lectureByLecturerID':
-                // unset entries not by this lecturer ID
+                // $lecturer_key is used in template to filter courses that are not by this lecturer
                 $lecturer = $this->getData('personByID', $this->univisParam);
                 if (isset($lecturer[0]['key'])){
                     $subs = explode('Person.', $lecturer[0]['key']);
                 }
                 $lecturer_key = (isset($subs[1]) ? $subs[1] : '');
-            case 'lectureByID':
             case 'lectureByLecturer':
+                // $lecturer_key is used in template to filter courses that are not by this lecturer
+                $lecturer = $this->getData('personByName', $this->univisParam);
+                if (isset($lecturer[0]['key'])){
+                    $subs = explode('Person.', $lecturer[0]['key']);
+                }
+                $lecturer_key = (isset($subs[1]) ? $subs[1] : '');
+            case 'lectureByID':
             case 'lectureByDepartment':
                 // add details
                 $courses = $this->mapIt('courses', $data);
@@ -836,13 +842,14 @@ class UnivISAPI {
             'leclanguage' => [
                 0 => __('Unterrichtssprache Deutsch', 'rrze-univis'),
                 "D" => __('Unterrichtssprache Deutsch', 'rrze-univis'),
+                "E" => __('Unterrichtssprache Englisch', 'rrze-univis'),
             ],
             'sws' => __(' SWS', 'rrze-univis'),
             'schein' => __('Schein', 'rrze-univis'),
             'ects' => __('ECTS-Studium', 'rrze-univis'),
             'ects_cred' => __('ECTS-Credits: ', 'rrze-univis'),
-            'beginners' => __('für Anfänger geeignet', 'rrze-univis'),
-            'gast' => __('für Gasthörer zugelassen', 'rrze-univis'),
+            'beginners' => __('Für Anfänger geeignet', 'rrze-univis'),
+            'gast' => __('Für Gasthörer zugelassen', 'rrze-univis'),
             'evaluation' => __('Evaluation', 'rrze-univis'),
             'locations' => '',
             'organizational' => '',

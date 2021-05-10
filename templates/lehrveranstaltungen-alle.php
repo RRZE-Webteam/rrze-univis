@@ -28,6 +28,30 @@
                 if (!empty($veranstaltung['comment'])){
                     echo '<p>' . $veranstaltung['comment'] . '</p>';
                 }
+                if (!empty($veranstaltung['organizational'])){
+                    echo '<p>' . $veranstaltung['organizational'] . '</p>';
+                }
+                if (!empty($veranstaltung['sws'])){
+                    echo '<p>' . $veranstaltung['sws'] . '</p>';
+                }
+                if (!empty($veranstaltung['maxturnout'])){
+                    echo '<p>' . __('Expected participants', 'rrze-univis') .': ' . $veranstaltung['maxturnout'] . '</p>';
+                }
+                if (!empty($veranstaltung['gast'])){
+                    echo '<p>' . $veranstaltung['gast'] . '</p>';
+                }
+                if (!empty($veranstaltung['schein'])){
+                    echo '<p>' . $veranstaltung['schein'] . '</p>';
+                }
+                if (!empty($veranstaltung['ects'])){
+                    echo '<p>' . $veranstaltung['ects'] . '</p>';
+                }
+                if (!empty($veranstaltung['ects_cred'])){
+                    echo '<p>' . $veranstaltung['ects_cred'] . '</p>';
+                }
+                if (!empty($veranstaltung['leclanguage_long']) && ($veranstaltung['leclanguage_long'] != __('Unterrichtssprache Deutsch', 'rrze-univis'))){
+                    echo '<p>' . $veranstaltung['leclanguage_long'] . '</p>';
+                }
                 ?>
                 <ul>
                         <?php
