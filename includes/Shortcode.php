@@ -227,6 +227,9 @@ class Shortcode{
         if (empty($atts['hide'])){
             $atts['hide'] = '';
         }
+        if (empty($atts['sprache'])){
+            $atts['lang'] = $atts['sprache'];
+        }
         if (isset($atts['show_phone'])){
             if ($atts['show_phone']){
                 $atts['show'] .= ',telefon';
@@ -403,7 +406,7 @@ class Shortcode{
 
 
     public function initGutenberg() {
-        if (! $this->isGutenberg() || empty($this->UnivISURL) ){
+        if (!$this->isGutenberg() || empty($this->UnivISURL) || empty($this->UnivISOrgNr) ){
             return;
         }
         // get prefills for dropdowns
@@ -480,7 +483,7 @@ class Shortcode{
             return $data;
         }
         $data = get_transient(self::TRANSIENT_PREFIX . $dataType . $sAtts . $this->UnivISOrgNr . $univisParam);
-        if ($data){
+        if ($data && $data != __('Keine passenden Datensätze gefunden.', 'rrze-univis')){
             return $data;
         }else{
             $data = $this->univis->getData($dataType, $univisParam);
