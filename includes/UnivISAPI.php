@@ -29,7 +29,7 @@ class UnivISAPI {
         $this->sem = (!empty($this->atts['sem']) && self::checkSemester($this->atts['sem']) ? $this->atts['sem'] : '');
         $this->showJobs = (!empty($this->atts['zeige_jobs']) ? explode('|', $this->atts['zeige_jobs']) : []);
         $this->hideJobs = (!empty($this->atts['ignoriere_jobs']) ? explode('|', $this->atts['ignoriere_jobs']) : []);
-        $this->hideJobs = (!empty($this->showJobs) ? array_diff($this->showJobs, $this->hideJobs) : $this->hideJobs);
+        //  $this->hideJobs = (!empty($this->showJobs) && !empty($this->hideJobs) ? array_diff($this->showJobs, $this->hideJobs) : $this->hideJobs);
     }
 
 
@@ -54,9 +54,6 @@ class UnivISAPI {
     public function getData($dataType, $univisParam = NULL){
         $this->univisParam = $univisParam;
         $url = $this->getUrl($dataType) . $this->univisParam;
-        // echo $url;
-        // exit;
-
         if (!$url) {
             return 'Set UnivIS Org ID in settings.';
         }
