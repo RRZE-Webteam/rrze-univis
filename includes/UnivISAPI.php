@@ -708,7 +708,6 @@ class UnivISAPI {
             '/_(.+)_/'    => '<sub>$1</sub>', // H_2_O
             '/\[(.+?)\]\s?(\S+)/' => "<a href='$2'>$1</a>", // [Linktext] Ziel-URL bzw. -Mailadresse
             '/([^">]+)(mailto:)([^")\s>]+)/mi' => '$1<a href="mailto:$3">$3</a>', // find mailto:email@address.tld but not <a href="mailto:email@address.tld">mailto:email@address.tld</a>
-            '/\s(\S*@+\S*)\s/m' => " <a href='mailto:$1'>$1</a> ",  // plain email-address          
         ];
         $aBr = [
             "<br>\r<br>" => '<br>',
