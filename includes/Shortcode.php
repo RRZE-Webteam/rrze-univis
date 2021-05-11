@@ -227,7 +227,7 @@ class Shortcode{
         if (empty($atts['hide'])){
             $atts['hide'] = '';
         }
-        if (empty($atts['sprache'])){
+        if (!empty($atts['sprache'])){
             $atts['lang'] = $atts['sprache'];
         }
         if (isset($atts['show_phone'])){
