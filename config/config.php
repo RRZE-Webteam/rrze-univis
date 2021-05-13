@@ -201,6 +201,7 @@ function getShortcodeSettings(){
                 'title' => 'RRZE-UnivIS Mitarbeiter',
                 'category' => 'widgets',
                 'icon' => 'admin-users',
+                'tinymce_icon' => 'user'
             ],
             'task' => [
                 'values' => [
@@ -310,6 +311,7 @@ function getShortcodeSettings(){
                 'title' => 'RRZE-UnivIS Lehrveranstaltungen',
                 'category' => 'widgets',
                 'icon' => 'bank',
+                'tinymce_icon' => 'paste'
             ],
             'task' => [
                 'values' => [
@@ -421,6 +423,7 @@ function getShortcodeSettings(){
                 'title' => 'RRZE-UnivIS Publikationen',
                 'category' => 'widgets',
                 'icon' => 'megaphone',
+                'tinymce_icon' => 'preview'
             ],
             'task' => [
                 'values' => [

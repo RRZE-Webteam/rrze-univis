@@ -26,12 +26,8 @@ class Shortcode{
     protected $noCache = FALSE;
     const TRANSIENT_PREFIX = 'rrze_univis_cache_';    
     const TRANSIENT_EXPIRATION = DAY_IN_SECONDS;    
-
-    /**
-     * Settings-Objekt
-     * @var object
-     */
     private $settings = '';
+
 
     /** 
      * Variablen Werte zuweisen.
@@ -47,6 +43,8 @@ class Shortcode{
         add_action( 'admin_enqueue_scripts', [$this, 'enqueueGutenberg'] );
         add_action( 'init',  [$this, 'initGutenberg'] );
         add_action( 'enqueue_block_assets', [$this, 'enqueueBlockAssets'] );
+        add_action('admin_head', [$this, 'setMCEConfig']);
+        add_filter('mce_external_plugins', [$this, 'addMCEButtons']);
     }
 
     /**
@@ -490,5 +488,35 @@ class Shortcode{
             set_transient(self::TRANSIENT_PREFIX . $dataType . $sAtts . $this->UnivISOrgNr . $univisParam, $data, self::TRANSIENT_EXPIRATION);
             return $data;
         }
+    }
+
+    public function setMCEConfig(){
+        foreach($this->settings as $task => $block){
+            $shortcode = '';
+            foreach($block as $att => $details){
+                if ($att != 'block' && $att != 'task'){
+                    $shortcode .= ' ' . $att . '=""';
+                }
+            }
+            $shortcode = '[univis task="' . $task . '"' . $shortcode . ']';
+                ?>
+                <script type='text/javascript'>
+                    tmp = [{
+                        'name': <?php echo json_encode($task); ?>,
+                        'title': <?php echo json_encode($this->settings[$task]['block']['title']); ?>,
+                        'icon': <?php echo json_encode($this->settings[$task]['block']['tinymce_icon']); ?>,
+                        'shortcode': <?php echo json_encode($shortcode); ?>,
+                    }];
+                    phpvar = (typeof phpvar === 'undefined' ? tmp : phpvar.concat(tmp)); 
+                </script> 
+                <?php        
+            }
+    }
+
+    public function addMCEButtons($pluginArray){
+        if (current_user_can('edit_posts') &&  current_user_can('edit_pages')) {
+            $pluginArray['rrze_shortcode'] = plugins_url('../js/tinymce-shortcodes.js', plugin_basename(__FILE__));
+        }
+        return $pluginArray;
     }
 }
