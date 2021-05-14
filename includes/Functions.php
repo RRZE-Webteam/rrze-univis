@@ -73,7 +73,7 @@ class Functions {
 
         $options = get_option( 'rrze-univis' );
         $data = 0;
-        $UnivISURL = (!empty($options['basic_univis_url']) ? $options['basic_univis_url'] : '');
+        $UnivISURL = (!empty($options['basic_univis_url']) ? $options['basic_univis_url'] : 'https://univis.uni-erlangen.de');
         $univisOrgID = (!empty($univisOrgID) ? $univisOrgID : (!empty($options['basic_UnivISOrgNr']) ? $options['basic_UnivISOrgNr'] : 0));
 
         if ($UnivISURL){

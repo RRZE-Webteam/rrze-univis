@@ -6,7 +6,6 @@ defined('ABSPATH') || exit;
 
 use RRZE\UnivIS\Settings;
 use RRZE\UnivIS\Shortcode;
-use RRZE\UnivIS\TinyMCEButtons;
 use function RRZE\UnivIS\Config\getConstants;
 
 
@@ -27,7 +26,6 @@ class Main {
         $this->pluginFile = $pluginFile;
         add_action('init', 'RRZE\UnivIS\add_endpoint');
         add_action('template_redirect', [$this, 'getSingleEntry']);
-        new TinyMCEButtons();
     }
 
     public function onLoaded() {
