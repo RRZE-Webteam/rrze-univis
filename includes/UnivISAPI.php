@@ -52,7 +52,7 @@ class UnivISAPI {
 
 
     public function getData($dataType, $univisParam = NULL){
-        $this->univisParam = $univisParam;
+        $this->univisParam = urlencode($univisParam);
         $url = $this->getUrl($dataType) . $this->univisParam;
         if (!$url) {
             return 'Set UnivIS Org ID in settings.';

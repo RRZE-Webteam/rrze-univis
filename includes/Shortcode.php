@@ -105,6 +105,8 @@ class Shortcode{
             case 'publikationen': 
                 $this->settings = $this->settings['publikationen'];
                 break;
+            default:
+                return;
         }        
 
         // merge given attributes with default ones
