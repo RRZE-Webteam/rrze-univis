@@ -90,6 +90,9 @@ class Settings
             foreach($oldOptions as $k => $v){
                 $oldOptions['basic_' . $k] =  $v;
             }
+            if (empty($oldOptions['basic_univis_url'])){
+                $oldOptions['basic_univis_url'] = 'https://univis.uni-erlangen.de';
+            }
             update_option('rrze-univis', $oldOptions);
             update_option('univis-updated', 1);
         }

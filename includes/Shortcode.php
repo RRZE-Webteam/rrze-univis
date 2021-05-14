@@ -38,7 +38,7 @@ class Shortcode{
         $this->settings = getShortcodeSettings();
         $this->options = get_option( 'rrze-univis' );
         $this->UnivISOrgNr = (!empty($this->options['basic_UnivISOrgNr']) ? $this->options['basic_UnivISOrgNr'] : 0);
-        $this->UnivISURL = (!empty($this->options['basic_univis_url']) ? $this->options['basic_univis_url'] : '');
+        $this->UnivISURL = (!empty($this->options['basic_univis_url']) ? $this->options['basic_univis_url'] : 'https://univis.uni-erlangen.de');
         $this->UnivISLink = sprintf('<a href="%1$s">%2$s</a>', $this->UnivISURL, (!empty($this->options['basic_univis_linktxt']) ? $this->options['basic_univis_linktxt'] : __('Text zum UnivIS Link fehlt', 'rrze-univis')));
         add_action( 'admin_enqueue_scripts', [$this, 'enqueueGutenberg'] );
         add_action( 'init',  [$this, 'initGutenberg'] );
