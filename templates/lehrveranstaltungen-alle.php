@@ -26,10 +26,10 @@
                 echo $veranstaltung['title'];
                 echo '</a></h' . ($this->atts['hstart'] + 1) . '>'; 
                 if (!empty($veranstaltung['comment'])){
-                    echo '<p>' . $veranstaltung['comment'] . '</p>';
+                    echo '<p>' . make_clickable($veranstaltung['comment']) . '</p>';
                 }
                 if (!empty($veranstaltung['organizational'])){
-                    echo '<p>' . $veranstaltung['organizational'] . '</p>';
+                    echo '<p>' . make_clickable($veranstaltung['organizational']) . '</p>';
                 }
                 if (!empty($veranstaltung['sws'])){
                     echo '<p>' . $veranstaltung['sws'] . '</p>';
