@@ -708,6 +708,7 @@ class UnivISAPI {
             '/_(.+)_/'    => '<sub>$1</sub>', // H_2_O
             '/\[(.+?)\]\s?(\S+)/' => "<a href='$2'>$1</a>", // [Linktext] Ziel-URL bzw. -Mailadresse
             '/([^">]+)(mailto:)([^")\s>]+)/mi' => '$1<a href="mailto:$3">$3</a>', // find mailto:email@address.tld but not <a href="mailto:email@address.tld">mailto:email@address.tld</a>
+
         ];
         $aBr = [
             "<br>\r<br>" => '<br>',
@@ -885,9 +886,7 @@ class UnivISAPI {
                     }
                 }elseif ($field == 'organizational'){
                     if (isset($data[$nr][$field])){
-                        // echo $nr . ' ' . $field . '<br>';
                         $data[$nr][$field] = self::makeHTML($data[$nr][$field]);
-                        // echo $data[$nr][$field] . '<br><br>';
                     }
                 }elseif (isset($data[$nr][$field])){
                     if (in_array($field, ['title'])){

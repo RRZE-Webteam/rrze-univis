@@ -392,6 +392,8 @@ class Shortcode{
                         $settings['sem']['values'][] = ['id' => $i . 'w', 'val' => $i . ' ' . __( 'WS', 'rrze-univis' )];
                     }
                 }
+
+                unset($settings['dozentid']);
             }
 
             // 2DO: we need document ready() or equal on React built elements to use onChange of UnivIS Org Nr. to refill dropdowns 

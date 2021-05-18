@@ -46,12 +46,12 @@
     echo '<h' . ($this->atts['hstart'] + 1) . '>' . __('Details', 'rrze-univis') . '</h' . ($this->atts['hstart'] + 1) . '>';
 
     if (!empty($veranstaltung['angaben'])): ?>
-        <p><?php echo $veranstaltung['angaben']; ?></p>
+        <p><?php echo make_clickable($veranstaltung['angaben']); ?></p>
     <?php endif; 
 
     echo '<h' . ($this->atts['hstart'] + 2) . '>' . __('Time and place', 'rrze-univis') . '</h' . ($this->atts['hstart'] + 2) . '>';
     if (array_key_exists('comment', $veranstaltung)) : ?>
-        <p><?php echo $veranstaltung['comment']; ?></p>
+        <p><?php echo make_clickable($veranstaltung['comment']); ?></p>
     <?php endif; ?>
     <ul>
         <?php if (isset($veranstaltung['courses'])) :
@@ -148,7 +148,7 @@
 
     <?php if (!empty($veranstaltung['organizational'])) : ?>
         <h4><?php __('Prerequisites / Organizational information', 'rrze-univis');?></h4>
-        <p><?php echo $veranstaltung['organizational']; ?></p>
+        <p><?php echo make_clickable($veranstaltung['organizational']); ?></p>
         <?php endif;
     ?>
 
@@ -156,12 +156,12 @@
     <?php 
     if (!empty($veranstaltung['summary'])){
         echo '<h' . ($this->atts['hstart'] + 2) . '>' . __('Content', 'rrze-univis') . '</h' . ($this->atts['hstart'] + 2) . '>';
-        echo '<p>' . $veranstaltung['summary'] . '</p>';
+        echo '<p>' . make_clickable($veranstaltung['summary']) . '</p>';
     }
 
     if (!empty($veranstaltung['literature'])){
         echo '<h' . ($this->atts['hstart'] + 2) . '>' . __('Recommended Literature', 'rrze-univis') . '</h' . ($this->atts['hstart'] + 2) . '>';
-        echo '<p>' . $veranstaltung['literature'] . '</p>';
+        echo '<p>' . make_clickable($veranstaltung['literature']) . '</p>';
     }
     if (!empty($veranstaltung['ects_infos'])){
         echo '<h' . ($this->atts['hstart'] + 2) . '>' . __('ECTS information', 'rrze-univis') . '</h' . ($this->atts['hstart'] + 2) . '>';
