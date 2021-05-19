@@ -43,7 +43,6 @@ class Shortcode{
         add_action( 'admin_enqueue_scripts', [$this, 'enqueueGutenberg'] );
         add_action( 'init',  [$this, 'initGutenberg'] );
         add_action( 'enqueue_block_assets', [$this, 'enqueueBlockAssets'] );
-        add_action('admin_head', [$this, 'setMCEConfig']);
         add_filter('mce_external_plugins', [$this, 'addMCEButtons']);
     }
 
@@ -449,7 +448,7 @@ class Shortcode{
         // include gutenberg lib
         wp_enqueue_script(
             'RRZE-Gutenberg',
-            plugins_url( '../src/js/gutenberg.js', __FILE__ ),
+            plugins_url( '../js/gutenberg.js', __FILE__ ),
             array(
                 'wp-blocks',
                 'wp-i18n',
@@ -466,7 +465,7 @@ class Shortcode{
         // include blockeditor JS
         wp_enqueue_script(
             'RRZE-UnivIS-BlockJS',
-            plugins_url( '../src/js/rrze-univis-blockeditor.js', __FILE__ ),
+            plugins_url( '../js/rrze-univis-blockeditor.js', __FILE__ ),
             array(
                 'jquery',
                 'RRZE-Gutenberg',
@@ -474,8 +473,6 @@ class Shortcode{
             NULL
         );
     }
-
-    
 
     public function getData($dataType, $univisParam = NULL){
         $sAtts = (!empty($this->atts) && is_array($this->atts) ? implode('-', $this->atts) : '');
@@ -494,32 +491,9 @@ class Shortcode{
         }
     }
 
-    public function setMCEConfig(){
-        foreach($this->settings as $task => $block){
-            $shortcode = '';
-            foreach($block as $att => $details){
-                if ($att != 'block' && $att != 'task'){
-                    $shortcode .= ' ' . $att . '=""';
-                }
-            }
-            $shortcode = '[univis task="' . $task . '"' . $shortcode . ']';
-                ?>
-                <script type='text/javascript'>
-                    tmp = [{
-                        'name': <?php echo json_encode($task); ?>,
-                        'title': <?php echo json_encode($this->settings[$task]['block']['title']); ?>,
-                        'icon': <?php echo json_encode($this->settings[$task]['block']['tinymce_icon']); ?>,
-                        'shortcode': <?php echo json_encode($shortcode); ?>,
-                    }];
-                    phpvar = (typeof phpvar === 'undefined' ? tmp : phpvar.concat(tmp)); 
-                </script> 
-                <?php        
-            }
-    }
-
     public function addMCEButtons($pluginArray){
-        if (current_user_can('edit_posts') &&  current_user_can('edit_pages')) {
-            $pluginArray['rrze_shortcode'] = plugins_url('../js/tinymce-shortcodes.js', plugin_basename(__FILE__));
+        if (current_user_can('edit_posts') && current_user_can('edit_pages')) {
+            $pluginArray['rrze_univis_shortcode'] = plugins_url('../js/tinymce-shortcodes.js', plugin_basename(__FILE__));
         }
         return $pluginArray;
     }
