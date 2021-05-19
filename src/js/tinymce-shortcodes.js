@@ -1,18 +1,83 @@
-(function() {
-    tinymce.PluginManager.add('rrze_shortcode', function(editor) {
-        if (typeof phpvar !== 'undefined') {
-            for(i=0; i < phpvar.length; i++){
-                shortcode = phpvar[i].shortcode;
-                editor.addMenuItem('insert_' + phpvar[i].name, {
-                    id: i,
-                    icon: phpvar[i].icon,
-                    text: phpvar[i].title,
-                    context: 'insert',
-                    onclick: function() {
-                        editor.insertContent(phpvar[this.settings.id].shortcode);
-                    }
-                });
-            }
-        }
+tinymce.PluginManager.add('rrze_univis_shortcode', function(editor) {
+
+    var menuItems = [];
+    menuItems.push({
+        text: 'Lehrveranstaltungen',
+        menu: [
+            {
+                type: 'menuitem',
+                text: 'Alle',
+                onclick: function() {
+                    editor.insertContent('[univis task="lehrveranstaltungen-alle"]');
+                }
+            },
+            {
+                type: 'menuitem',
+                text: 'Einzelne',
+                onclick: function() {
+                    editor.insertContent('[univis task="lehrveranstaltungen-einzeln" lv_id=""]');
+                }
+            },
+        ]
     });
+    menuItems.push({
+        text: 'Mitabeiter',
+        menu: [
+            {
+                type: 'menuitem',
+                text: 'Alle',
+                onclick: function() {
+                    editor.insertContent('[univis task="mitarbeiter-alle"]');
+                }
+            },
+            {
+                type: 'menuitem',
+                text: 'Einzel',
+                onclick: function() {
+                    editor.insertContent('[univis task="mitarbeiter-einzeln" univisid=""]');
+                }
+            },
+            {
+                type: 'menuitem',
+                text: 'Organisation',
+                onclick: function() {
+                    editor.insertContent('[univis task="mitarbeiter-orga"]');
+                }
+            },
+            {
+                type: 'menuitem',
+                text: 'Telefonbuch',
+                onclick: function() {
+                    editor.insertContent('[univis task="mitarbeiter-telefonbuch"]');
+                }
+            },
+        ]
+    });
+    menuItems.push({
+        text: 'Publikationen',
+        menu: [
+            {
+                type: 'menuitem',
+                text: 'Alle',
+                onclick: function() {
+                    editor.insertContent('[univis task="publikationen"]');
+                }
+            },
+            {
+                type: 'menuitem',
+                text: 'Einer Person',
+                onclick: function() {
+                    editor.insertContent('[univis task="publikationen" id=""]');
+                }
+            },
+        ]
+    });
+
+
+editor.addMenuItem('insertShortcodesRRZEUnivIS', {
+    icon: 'code',
+    text: 'RRZE-UnivIS',
+    menu: menuItems,
+    context: 'insert',
+});
 })();
