@@ -78,9 +78,9 @@
                                             $time['endtime'] = $term['endtime'];
                                         endif;
                                         if (!empty($time)) :
-                                            $t['time'] = $time['starttime'] . '-' . $time['endtime'] . ',';
+                                            $t['time'] = $time['starttime'] . '-' . $time['endtime'];
                                         else:
-                                            $t['time'] = __('Time on appointment', 'rrze-univis') . ',';
+                                            $t['time'] = __('Time on appointment', 'rrze-univis');
                                         endif;
                                         if (!empty($term['room']['short'])) :
                                             $t['room'] = __('Room', 'rrze-univis') . ' ' . $term['room']['short'];
@@ -110,10 +110,11 @@
                                                 'wsstart' => $wsstart,
                                                 'wsend' => $wsend,
                                             ];
-                        
-                                            $t['ics'] = '<span class="lecture-info-ics" itemprop="ics"><a href="' . plugin_dir_url(__FILE__ ) .'../ics.php?' . http_build_query($props) . '">.ics</a></span>';
-                                        }
 
+                                            $screenReaderTxt = ': ' . __('Termin', 'rrze-univis') . ' ' . (!empty($t['repeat']) ? $t['repeat'] : '') . ' ' . (!empty($t['date']) ? $t['date'] . ' ' : '') . $t['time'] . ' ' . __('in den Kalender importieren', 'rrze-univis');
+                                            $t['ics'] = '<span class="lecture-info-ics" itemprop="ics"><a href="' . plugin_dir_url(__FILE__ ) .'../ics.php?' . http_build_query($props) . '">.ics<span class="screen-reader-text">' . $screenReaderTxt . '</span></a></span>';
+                                        }
+                                        $t['time'] .= ',';
                                         $term_formatted = implode(' ', $t);
                                         ?>    
                                         <li><?php echo $term_formatted; ?></li>

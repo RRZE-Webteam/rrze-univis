@@ -3,6 +3,7 @@ tinymce.PluginManager.add('rrze_univis_shortcode', function(editor) {
     var menuItems = [];
     menuItems.push({
         text: 'Lehrveranstaltungen',
+        icon: 'paste', 
         menu: [
             {
                 type: 'menuitem',
@@ -22,6 +23,7 @@ tinymce.PluginManager.add('rrze_univis_shortcode', function(editor) {
     });
     menuItems.push({
         text: 'Mitabeiter',
+        icon: 'user', 
         menu: [
             {
                 type: 'menuitem',
@@ -55,6 +57,7 @@ tinymce.PluginManager.add('rrze_univis_shortcode', function(editor) {
     });
     menuItems.push({
         text: 'Publikationen',
+        icon: 'preview', 
         menu: [
             {
                 type: 'menuitem',
@@ -75,7 +78,7 @@ tinymce.PluginManager.add('rrze_univis_shortcode', function(editor) {
 
 
 editor.addMenuItem('insertShortcodesRRZEUnivIS', {
-    icon: 'code',
+    icon: 'orientation', 
     text: 'RRZE-UnivIS',
     menu: menuItems,
     context: 'insert',
