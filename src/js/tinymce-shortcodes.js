@@ -1,4 +1,5 @@
-tinymce.PluginManager.add('rrze_univis_shortcode', function(editor) {
+(function() {
+    tinymce.PluginManager.add('rrze_univis_shortcode', function(editor) {
 
     var menuItems = [];
     menuItems.push({
@@ -77,10 +78,11 @@ tinymce.PluginManager.add('rrze_univis_shortcode', function(editor) {
     });
 
 
-editor.addMenuItem('insertShortcodesRRZEUnivIS', {
-    icon: 'orientation', 
-    text: 'RRZE-UnivIS',
-    menu: menuItems,
-    context: 'insert',
+    editor.addMenuItem('insertShortcodesRRZEUnivIS', {
+        icon: 'orientation', 
+        text: 'RRZE-UnivIS',
+        menu: menuItems,
+        context: 'insert',
+    });
 });
 })();

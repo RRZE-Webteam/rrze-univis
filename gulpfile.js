@@ -36,7 +36,7 @@ function cssdev() {
 }
 
 function js() {
-    return src(['./src/js/*.js'])
+    return src(['./src/js/*.js', '!./src/js/tinymce-shortcodes.js']) // because uglyfy deletes (function() { which is mandatory otherwise editor is undefined BK 09.06.2021
 	.pipe(uglify())
 	.pipe(dest('./js'))
 	.pipe(touch());
