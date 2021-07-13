@@ -277,10 +277,10 @@ function getShortcodeSettings(){
                 'type' => 'string'
             ],
             'hstart' => [
-                'default' => NULL,
-                'field_type' => 'number',
-                'label' => __( 'Überschriftenebene der ersten Überschrift', 'fau-person' ),
-                'type' => 'integer' 
+                'default' => 2,
+                'field_type' => 'text',
+                'label' => __( 'Überschriftenebene der ersten Überschrift', 'rrze-univis' ),
+                'type' => 'number' 
             ],
             'show_phone' => [
                 'field_type' => 'toggle',
@@ -410,10 +410,10 @@ function getShortcodeSettings(){
                 'checked'   => TRUE
             ],
             'hstart' => [
-                'default' => NULL,
-                'field_type' => 'number',
+                'default' => 2,
+                'field_type' => 'text',
                 'label' => __( 'Überschriftenebene der ersten Überschrift', 'fau-person' ),
-                'type' => 'integer' 
+                'type' => 'number' 
             ],
         ],
         'publikationen' => [
@@ -462,10 +462,10 @@ function getShortcodeSettings(){
                 'type' => 'string'
             ],
             'hstart' => [
-                'default' => NULL,
-                'field_type' => 'number',
+                'default' => 2,
+                'field_type' => 'text',
                 'label' => __( 'Überschriftenebene der ersten Überschrift', 'fau-person' ),
-                'type' => 'integer' 
+                'type' => 'number' 
             ],
         ]
     ];

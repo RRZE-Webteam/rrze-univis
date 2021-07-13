@@ -7,13 +7,18 @@
     $wsstart = (!empty($options['basic_wsStart']) ? $options['basic_wsStart'] : 0);
     $wsend = (!empty($options['basic_wsEnd']) ? $options['basic_wsEnd'] : 0);
 
+    echo '<div itemscope itemtype="https://schema.org/Course">';
+
     echo '<h' . $this->atts['hstart'] . '>';
     if ($lang != 'de_DE' && $lang != 'de_DE_formal' && !empty($veranstaltung['ects_name'])){
         $veranstaltung['title'] = $veranstaltung['ects_name']; 
     }else{
         $veranstaltung['title'] = $veranstaltung['name'];
     }
-    echo $veranstaltung['title'];
+    echo '<span itemprop="name">' . $veranstaltung['title'] . '</span>';
+
+    // echo '<span itemprop="provider" itemscope itemtype="http://schema.org/EducationalOrganization">;
+
     echo '</h' . $this->atts['hstart'] . '>';
     if (!empty($veranstaltung['lecturers'])) : 
         echo '<h' . ($this->atts['hstart'] + 1) . '>' . __('Lecturers', 'rrze-univis') . '</h' . ($this->atts['hstart'] + 1) . '>';
@@ -37,7 +42,7 @@
             else:
                 $url = $fullname;
             endif;?>
-            <li itemprop="name" itemscope itemtype="http://schema.org/Person"><?php echo $url; ?></li>
+            <li itemprop="provider" itemscope itemtype="http://schema.org/Person"><?php echo $url; ?></li>
             <?php
         endforeach; ?>
         </ul>
@@ -158,7 +163,7 @@
     <?php 
     if (!empty($veranstaltung['summary'])){
         echo '<h' . ($this->atts['hstart'] + 2) . '>' . __('Content', 'rrze-univis') . '</h' . ($this->atts['hstart'] + 2) . '>';
-        echo '<p>' . make_clickable($veranstaltung['summary']) . '</p>';
+        echo '<p itemprop="description">' . make_clickable($veranstaltung['summary']) . '</p>';
     }
 
     if (!empty($veranstaltung['literature'])){
@@ -197,5 +202,13 @@
             echo '<p>www: <a href="' . $veranstaltung['url_description'] . '">' . $veranstaltung['url_description'] . '</a></p>';
         }
     }
+
+// echo '<div itemprop="provider" itemscope itemtype="https://schema.org/provider">';
+// echo '<span itemprop="name">FAU</span>';
+// echo '<span itemprop="url">https://www.fau.de</span>';
+// echo '</div>';
+
+echo '</div>'; // schema
+
 endif; ?>
 </div>
