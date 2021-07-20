@@ -37,6 +37,9 @@
                 if (!empty($veranstaltung['maxturnout'])){
                     echo '<p>' . __('Expected participants', 'rrze-univis') .': ' . $veranstaltung['maxturnout'] . '</p>';
                 }
+                if (!empty($veranstaltung['fruehstud'])){
+                    echo '<p>' . $veranstaltung['fruehstud'] . '</p>';
+                }
                 if (!empty($veranstaltung['gast'])){
                     echo '<p>' . $veranstaltung['gast'] . '</p>';
                 }

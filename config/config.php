@@ -415,6 +415,13 @@ function getShortcodeSettings(){
                 'label' => __( 'Überschriftenebene der ersten Überschrift', 'fau-person' ),
                 'type' => 'number' 
             ],
+            'fruehstud' => [
+                'field_type' => 'toggle',
+                'label' => __( 'Nur Frühstudium anzeigen', 'rrze-univis' ),
+                'type' => 'boolean',
+                'default' => NULL,
+                'checked'   => FALSE
+            ]
         ],
         'publikationen' => [
             'block' => [

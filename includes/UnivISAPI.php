@@ -54,6 +54,7 @@ class UnivISAPI {
     public function getData($dataType, $univisParam = NULL){
         $this->univisParam = urlencode($univisParam);
         $url = $this->getUrl($dataType) . $this->univisParam;
+
         if (!$url) {
             return 'Set UnivIS Org ID in settings.';
         }
@@ -111,7 +112,7 @@ class UnivISAPI {
                 if (empty($this->orgID)){
                     return FALSE;
                 }
-                $url .= 'lectures'.(!empty($this->atts['lang'])?'&lang='.$this->atts['lang']:'').(isset($this->atts['lv_import']) && !$this->atts['lv_import']?'&noimports=1':'').(!empty($this->atts['type'])?'&type='.$this->atts['type']:'').(!empty($this->sem)?'&sem='.$this->sem:'').'&department='.$this->orgID;
+                $url .= 'lectures'.(!empty($this->atts['fruehstud'])?'&fruehstud='.($this->atts['fruehstud']?'ja':'nein'):'').(!empty($this->atts['lang'])?'&lang='.$this->atts['lang']:'').(isset($this->atts['lv_import']) && !$this->atts['lv_import']?'&noimports=1':'').(!empty($this->atts['type'])?'&type='.$this->atts['type']:'').(!empty($this->sem)?'&sem='.$this->sem:'').'&department='.$this->orgID;
                 break;   
             case 'lectureByLecturer':
                 $url .= 'lectures'.(!empty($this->atts['lang'])?'&lang='.$this->atts['lang']:'').(isset($this->atts['lv_import']) && !$this->atts['lv_import']?'&noimports=1':'').(!empty($this->atts['type'])?'&type='.$this->atts['type']:'').(!empty($this->sem)?'&sem='.$this->sem:'').'&lecturer=';
@@ -220,6 +221,7 @@ class UnivISAPI {
                         'ects' => 'ects',
                         'ects_cred' => 'ects_cred',
                         'beginners' => 'beginners',
+                        'fruehstud' => 'fruehstud',
                         'gast' => 'gast',
                         'evaluation' => 'evaluation',
                         'doz' => 'doz',
@@ -845,6 +847,7 @@ class UnivISAPI {
             'ects' => __('ECTS-Studium', 'rrze-univis'),
             'ects_cred' => __('ECTS-Credits: ', 'rrze-univis'),
             'beginners' => __('Für Anfänger geeignet', 'rrze-univis'),
+            'fruehstud' => __('Frühstudium', 'rrze-univis'),
             'gast' => __('Für Gasthörer zugelassen', 'rrze-univis'),
             'evaluation' => __('Evaluation', 'rrze-univis'),
             'locations' => '',
