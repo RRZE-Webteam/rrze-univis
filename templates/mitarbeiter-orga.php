@@ -1,5 +1,5 @@
 <?php if ($data) : ?>
-<div id="univis-personenindex" class="rrze-univis">
+<div class="rrze-univis">
     <?php foreach ($data as $department => $persons) : 
         echo '<h' . $this->atts['hstart'] . '><a name="' . $department . '">' . $department . '</a></h' . $this->atts['hstart'] . '>';
     ?>
