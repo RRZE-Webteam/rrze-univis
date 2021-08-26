@@ -55,7 +55,10 @@ class Main {
     }
 
     public function addMetaboxes(){
-        add_meta_box('get_univis_ids', __('Suche nach UnivIS IDs'), [$this, 'fillMetabox'], NULL, 'side', 'core');
+        $aPosttypes = [ 'post', 'page', 'faq', 'glossary', 'synonym' ];
+        foreach ($aPosttypes as $posttype) {
+            add_meta_box('get_univis_ids', __('Suche nach UnivIS IDs'), [$this, 'fillMetabox'], $posttype, 'side', 'core');
+        }
     }
 
     public function fillMetabox() {
