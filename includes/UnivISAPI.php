@@ -448,7 +448,7 @@ class UnivISAPI {
                         foreach($entry['doz'] as $doz_key){
                             foreach($persons as $p_nr => $person){
                                 if ($person['key'] == 'Person.' . $doz_key){
-                                    unset($person['key']);
+                                    // unset($person['key']);
                                     $ret[$e_nr]['lecturers'][] = $person;
                                     unset($person[$p_nr]);
                                 }
