@@ -155,6 +155,10 @@ class Shortcode{
                 $sHubMode = 'person';
                 break;
             case 'mitarbeiter-telefonbuch': 
+                $aHubAtts = [
+                    'univisID' => $this->UnivISOrgNr,
+                    'groupBy' => 'letter'
+                ];
                 $sHubMode = 'person';
                 break;
             case 'mitarbeiter-alle': 

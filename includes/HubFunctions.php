@@ -7,7 +7,8 @@ defined('ABSPATH') || exit;
 
 class HubFunctions{
     protected $pluginFile;
-
+    protected $showJobs;
+    protected $hideJobs;
 
     public function __construct($pluginFile) {
     }
@@ -16,6 +17,17 @@ class HubFunctions{
     public function onLoaded() {
     }
 
+    public function showPosition($position){
+        // show is given => show matches only 
+        if (!empty($this->showJobs) && !in_array($position, $this->showJobs)){
+            return FALSE;
+        }
+        // hide defined jobs, show all others => config: ignoriere_jobs && shortcode: ignoriere_jobs
+        if (!empty($this->hideJobs) && in_array($position, $this->hideJobs)){
+            return FALSE;
+        }
+        return TRUE;
+    }
 
 
         // 2DO:
@@ -32,7 +44,6 @@ class HubFunctions{
 
         // setJobs
         // getJobs
-
 
 
     public function getPerson($aAtts){
@@ -58,8 +69,11 @@ class HubFunctions{
             $prepare_vals = [
                 $aAtts['univisID']
             ];
-            $sClause = "univisID = %s ORDER BY orga_position_order";
-            $bAllRows = TRUE;
+            $this->showJobs = (!empty($this->atts['zeige_jobs']) ? explode('|', $this->atts['zeige_jobs']) : []);
+            $this->hideJobs = (!empty($this->atts['ignoriere_jobs']) ? explode('|', $this->atts['ignoriere_jobs']) : []);
+        
+            // $sClause = "univisID = %s ORDER BY orga_position_order";
+            $sClause = "univisID = %s";
         }
 
         $rows = $wpdb->get_results($wpdb->prepare("SELECT * FROM getPersons WHERE " . $sClause, $prepare_vals), ARRAY_A);
@@ -82,6 +96,7 @@ class HubFunctions{
                 'work' => $row['work'],
                 'organization' => $row['organization'],
                 'department' => $row['department'],
+                'letter' => $row['letter']
             ];
 
             if (!(empty($row['email']) && empty($row['tel']) && empty($row['mobile']) && empty($row['street']) && empty($row['city']) && empty($row['office']))) {
@@ -97,7 +112,7 @@ class HubFunctions{
                 ];
                 $aRet[$row['ID']]['locations'] = $aLocations[$row['ID']];
             }
-            
+
             if (!(empty($row['repeat']) && empty($row['starttime']) && empty($row['endtime']) && empty($row['officehours_office']) && empty($row['comment']))){
                 $aOfficehours[$row['ID']][$row['officehoursID']] = [
                     'repeat' => $row['repeat'],
@@ -112,14 +127,9 @@ class HubFunctions{
 
         // group by  - 2DO: if $aAtts['groupBy'] is a valid field in $aRet => reset($aRet) and check if isset($aRet[0][$aAtts['groupBy']])
         if (!empty($aAtts['groupBy'])){
-            // echo 'found';
-            // exit;
             $aTmp = [];
             foreach($aRet as $person){
-                //  empty() könnte "Mitarbeiter" sein
-                // if (!empty($person[$aAtts['groupBy']])){
-                    $aTmp[$person[$aAtts['groupBy']]][] = $person; 
-                // }
+                $aTmp[$person[$aAtts['groupBy']]][] = $person; 
             }
             $aRet = $aTmp;
         }
