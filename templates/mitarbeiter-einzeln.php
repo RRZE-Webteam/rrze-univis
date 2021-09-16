@@ -1,4 +1,7 @@
-<?php if ($person) : ?>
+<?php 
+    foreach ($data as $person) : 
+    
+    ?>
 	<div class="person rrze-univis" class="person liste-person" itemscope itemtype="http://schema.org/Person">
         <div class="page">
             <?php
@@ -147,4 +150,4 @@
             <?php endforeach; ?>
     	</div>
     <?php endif; ?>
-<?php endif;?>
+    <?php endforeach; ?>

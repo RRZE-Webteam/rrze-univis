@@ -23,6 +23,7 @@ class Shortcode{
     protected $hide = [];
     protected $atts;
     protected $univis;
+    protected $hub;
     protected $noCache = FALSE;
     const TRANSIENT_PREFIX = 'rrze_univis_cache_';    
     const TRANSIENT_EXPIRATION = DAY_IN_SECONDS;    
@@ -119,7 +120,13 @@ class Shortcode{
         $this->atts = $this->normalize(shortcode_atts($atts_default, $atts));
 
         $data = '';
-        $this->univis = new UnivISAPI($this->UnivISURL, $this->UnivISOrgNr, $this->atts);
+
+
+
+        // $this->univis = new UnivISAPI($this->UnivISURL, $this->UnivISOrgNr, $this->atts);
+        $this->hub = new HubFunctions($this->pluginFile);
+        $aHubAtts = [];
+        $sHubMode = '';
 
         switch($this->atts['task']){
             case 'mitarbeiter-einzeln': 
@@ -130,29 +137,35 @@ class Shortcode{
                     $this->show[] = 'mail';
                 }
                 if (!empty($atts['univisid'])){
-                    $data = $this->getData('personByID', $this->atts['univisid']);
-                    if ($data){
-                        $this->atts['name'] = $data[0]['lastname'] . ',' . $data[0]['firstname'];
-                    }
+                    $aHubAtts = [
+                        'person_id' => $this->atts['univisid']
+                    ];
                 }elseif(!empty($this->atts['name'])){
-                        $data = $this->getData('personByName', $this->atts['name']);
+                    $aHubAtts = [
+                        'name' => $this->atts['name']
+                    ];
                 }
-                if ($data && !empty($this->atts['name'])){
-                    $person = $data[0];
-                    $person['lectures'] = $this->getData('lectureByLecturer', $this->atts['name']);
-                }
+                $sHubMode = 'person';
                 break;
             case 'mitarbeiter-orga': 
-                $data = $this->getData('personByOrga');
+                $aHubAtts = [
+                    'univisID' => $this->UnivISOrgNr,
+                    'groupBy' => 'department'
+                ];
+                $sHubMode = 'person';
                 break;
             case 'mitarbeiter-telefonbuch': 
-                $data = $this->getData('personByOrgaPhonebook');
+                $sHubMode = 'person';
                 break;
             case 'mitarbeiter-alle': 
                 if (!in_array('telefon', $this->hide) && !in_array('telefon', $this->show)){
                     $this->show[] = 'telefon';
                 }
-                $data = $this->getData('personAll', NULL);
+                $aHubAtts = [
+                    'univisID' => $this->UnivISOrgNr,
+                    'groupBy' => 'work'
+                ];
+                $sHubMode = 'person';
                 break;
             case 'lehrveranstaltungen-einzeln': 
                 if (!empty($this->atts['id'])){
@@ -188,6 +201,20 @@ class Shortcode{
                     $data = $this->getData('publicationByDepartment');
                 }
                 break;
+        }
+
+        if (!empty($sHubMode)){
+            switch($sHubMode){
+                case 'person':
+                    $data = $this->hub->getPerson($aHubAtts);
+                    break;
+                case 'lecture':
+                    $data = $this->hub->getLecture($aHubAtts);
+                    break;
+                case 'publication':
+                    $data = $this->hub->getPublication($aHubAtts);
+                    break;
+            }
         }
 
         if ($data && is_array($data)){
