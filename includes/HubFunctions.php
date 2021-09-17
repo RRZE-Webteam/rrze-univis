@@ -6,11 +6,16 @@ defined('ABSPATH') || exit;
 
 
 class HubFunctions{
-    protected $pluginFile;
-    protected $showJobs;
-    protected $hideJobs;
+    protected $showPositon;
+    protected $hidePositon;
 
-    public function __construct($pluginFile) {
+    public function __construct($atts) {
+        // $this->sem = (!empty($atts['sem']) && self::checkSemester($atts['sem']) ? $atts['sem'] : '');
+        $this->showPositon = (!empty($atts['zeige_jobs']) ? explode('|', $atts['zeige_jobs']) : []);
+        $this->hidePositon = (!empty($atts['ignoriere_jobs']) ? explode('|', $atts['ignoriere_jobs']) : []);
+
+        // echo 'in construct';
+        // var_dump($this->hideJobs);
     }
 
 
@@ -19,11 +24,11 @@ class HubFunctions{
 
     public function showPosition($position){
         // show is given => show matches only 
-        if (!empty($this->showJobs) && !in_array($position, $this->showJobs)){
+        if (!empty($this->showPositon) && !in_array($position, $this->showPositon)){
             return FALSE;
         }
         // hide defined jobs, show all others => config: ignoriere_jobs && shortcode: ignoriere_jobs
-        if (!empty($this->hideJobs) && in_array($position, $this->hideJobs)){
+        if (!empty($this->hidePositon) && in_array($position, $this->hidePositon)){
             return FALSE;
         }
         return TRUE;
@@ -50,33 +55,11 @@ class HubFunctions{
         global $wpdb;
         $aRet = [];
 
-        if (!empty($aAtts['person_id'])){
-            // get person by its univis ID
-            $prepare_vals = [
-                $aAtts['person_id']
-            ];
-            $sClause = "person_id = %s";
-        }elseif(!empty($aAtts['name'])){
-            // get person by its fullname (= lastname,firstname)
-            $parts = explode(',', strtolower($aAtts['name']));
-            $prepare_vals = [
-                !empty($parts[0]) ? trim($parts[0]) : '',
-                !empty($parts[1]) ? trim($parts[1]) : ''
-            ];
-            $sClause = "LOWER(lastname) = %s AND LOWER(firstname) = %s";
-        }elseif(!empty($aAtts['univisID'])){
-            // get all persons refering to univisID (=department)
-            $prepare_vals = [
-                $aAtts['univisID']
-            ];
-            $this->showJobs = (!empty($this->atts['zeige_jobs']) ? explode('|', $this->atts['zeige_jobs']) : []);
-            $this->hideJobs = (!empty($this->atts['ignoriere_jobs']) ? explode('|', $this->atts['ignoriere_jobs']) : []);
-        
-            // $sClause = "univisID = %s ORDER BY orga_position_order";
-            $sClause = "univisID = %s";
-        }
+        $prepare_vals = [
+            $aAtts['filterValue']
+        ];
 
-        $rows = $wpdb->get_results($wpdb->prepare("SELECT * FROM getPersons WHERE " . $sClause, $prepare_vals), ARRAY_A);
+        $rows = $wpdb->get_results($wpdb->prepare("SELECT * FROM getPersons WHERE " . $aAtts['filterBy'] . " = %s" . (!empty($aAtts['orderBy'])?" ORDER BY " . $aAtts['orderBy']:''), $prepare_vals), ARRAY_A);
         if ($wpdb->last_error){
             echo json_encode($wpdb->last_error);
             exit;
@@ -84,6 +67,7 @@ class HubFunctions{
 
         $aLocations = [];
         $aOfficehours = [];
+        $aGroup = [];
 
         foreach ($rows as $row) {
             $aRet[$row['ID']] = [
@@ -93,7 +77,6 @@ class HubFunctions{
                 'atitle' => $row['atitle'],
                 'firstname' => $row['firstname'],
                 'lastname' => $row['lastname'],
-                'work' => $row['work'],
                 'organization' => $row['organization'],
                 'department' => $row['department'],
                 'letter' => $row['letter']
@@ -123,15 +106,21 @@ class HubFunctions{
                 ];
                 $aRet[$row['ID']]['officehours'] = $aOfficehours[$row['ID']];
             }
+
+            if (!empty($aAtts['groupBy'])){
+                if ($aAtts['groupBy'] != 'position'){
+                    $aGroup[$row[$aAtts['groupBy']]][$row['ID']] = $aRet[$row['ID']]; 
+                }elseif ($this->showPosition($row['position'])){
+                    $aGroup[$row[$aAtts['groupBy']]][$row['ID']] = $aRet[$row['ID']]; 
+                }
+            }
         }
 
-        // group by  - 2DO: if $aAtts['groupBy'] is a valid field in $aRet => reset($aRet) and check if isset($aRet[0][$aAtts['groupBy']])
         if (!empty($aAtts['groupBy'])){
-            $aTmp = [];
-            foreach($aRet as $person){
-                $aTmp[$person[$aAtts['groupBy']]][] = $person; 
+            if ($aAtts['groupBy'] != 'position') {
+                ksort($aGroup);
             }
-            $aRet = $aTmp;
+            $aRet = $aGroup; 
         }
 
         return $aRet;

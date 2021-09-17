@@ -42,7 +42,7 @@ class Shortcode{
         $this->UnivISURL = (!empty($this->options['basic_univis_url']) ? $this->options['basic_univis_url'] : 'https://univis.uni-erlangen.de');
         $this->UnivISLink = sprintf('<a href="%1$s">%2$s</a>', $this->UnivISURL, (!empty($this->options['basic_univis_linktxt']) ? $this->options['basic_univis_linktxt'] : __('Text zum UnivIS Link fehlt', 'rrze-univis')));
         add_action( 'admin_enqueue_scripts', [$this, 'enqueueGutenberg'] );
-        add_action( 'init',  [$this, 'initGutenberg'] );
+        // add_action( 'init',  [$this, 'initGutenberg'] );
         add_action( 'enqueue_block_assets', [$this, 'enqueueBlockAssets'] );
         add_filter('mce_external_plugins', [$this, 'addMCEButtons']);
     }
@@ -122,9 +122,8 @@ class Shortcode{
         $data = '';
 
 
-
         // $this->univis = new UnivISAPI($this->UnivISURL, $this->UnivISOrgNr, $this->atts);
-        $this->hub = new HubFunctions($this->pluginFile);
+        $this->hub = new HubFunctions($this->atts);
         $aHubAtts = [];
         $sHubMode = '';
 
@@ -138,26 +137,32 @@ class Shortcode{
                 }
                 if (!empty($atts['univisid'])){
                     $aHubAtts = [
-                        'person_id' => $this->atts['univisid']
+                        'filterBy' => 'person_id',
+                        'filterValue' => $this->atts['univisid']
                     ];
                 }elseif(!empty($this->atts['name'])){
                     $aHubAtts = [
-                        'name' => $this->atts['name']
+                        'filterBy' => 'name',
+                        'filterValue' => $this->atts['name']
                     ];
                 }
                 $sHubMode = 'person';
                 break;
             case 'mitarbeiter-orga': 
                 $aHubAtts = [
-                    'univisID' => $this->UnivISOrgNr,
-                    'groupBy' => 'department'
+                    'filterBy' => 'dep_univisID',
+                    'filterValue' => $this->UnivISOrgNr,
+                    'groupBy' => 'department',
+                    'orderBy' => 'lastname'
                 ];
                 $sHubMode = 'person';
                 break;
             case 'mitarbeiter-telefonbuch': 
                 $aHubAtts = [
-                    'univisID' => $this->UnivISOrgNr,
-                    'groupBy' => 'letter'
+                    'filterBy' => 'dep_univisID',
+                    'filterValue' => $this->UnivISOrgNr,
+                    'groupBy' => 'letter',
+                    'orderBy' => 'lastname'
                 ];
                 $sHubMode = 'person';
                 break;
@@ -166,8 +171,10 @@ class Shortcode{
                     $this->show[] = 'telefon';
                 }
                 $aHubAtts = [
-                    'univisID' => $this->UnivISOrgNr,
-                    'groupBy' => 'work'
+                    'filterBy' => 'dep_univisID',
+                    'filterValue' => $this->UnivISOrgNr,
+                    'groupBy' => 'position',
+                    'orderBy' => 'position_order, lastname'
                 ];
                 $sHubMode = 'person';
                 break;
