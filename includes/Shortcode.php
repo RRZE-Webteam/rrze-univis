@@ -200,7 +200,13 @@ class Shortcode{
                 }elseif (!empty($this->atts['id'])){
                     $data = $this->getData('lectureByLecturerID', $this->atts['id']);
                 }else{
-                    $data = $this->getData('lectureByDepartment');
+                    // $data = $this->getData('lectureByDepartment');
+                    $aHubAtts = [
+                        'filterBy' => 'univisID',
+                        'filterValue' => $this->UnivISOrgNr,
+                        'groupBy' => 'lecture_type',
+                    ];
+                    $sHubMode = 'lecture';
                 }
                 break;
             case 'publikationen': 

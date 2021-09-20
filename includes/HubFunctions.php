@@ -34,23 +34,6 @@ class HubFunctions{
         return TRUE;
     }
 
-
-        // 2DO:
-
-        // connect to rrze-hub db with readonly-user 
-
-        // personByOrga => group by department
-        // personByOrgaPhonebook => group by department
-        // personAll => group by work and sort by orga_postion_order
-
-        // exception handling
-
-        // getLectures mit allen Variationen
-
-        // setJobs
-        // getJobs
-
-
     public function getPerson($aAtts){
         global $wpdb;
         $aRet = [];
@@ -59,7 +42,7 @@ class HubFunctions{
             $aAtts['filterValue']
         ];
 
-        $rows = $wpdb->get_results($wpdb->prepare("SELECT * FROM getPersons WHERE " . $aAtts['filterBy'] . " = %s" . (!empty($aAtts['orderBy'])?" ORDER BY " . $aAtts['orderBy']:''), $prepare_vals), ARRAY_A);
+        $rows = $wpdb->get_results($wpdb->prepare("SELECT * FROM getPerson WHERE " . $aAtts['filterBy'] . " = %s" . (!empty($aAtts['orderBy'])?" ORDER BY " . $aAtts['orderBy']:''), $prepare_vals), ARRAY_A);
         if ($wpdb->last_error){
             echo json_encode($wpdb->last_error);
             exit;
@@ -125,4 +108,41 @@ class HubFunctions{
 
         return $aRet;
     }
+
+
+    public function getLecture($aAtts){
+        global $wpdb;
+        $aRet = [];
+
+        $prepare_vals = [
+            $aAtts['filterValue']
+        ];
+
+        $rows = $wpdb->get_results($wpdb->prepare("SELECT * FROM getLecture WHERE " . $aAtts['filterBy'] . " = %s", $prepare_vals), ARRAY_A);
+        if ($wpdb->last_error) {
+            echo json_encode($wpdb->last_error);
+            exit;
+        }
+
+        // echo '<pre>';
+        // var_dump($rows);
+        // exit;
+
+        $aGroup = [];
+
+        if (!empty($aAtts['groupBy'])){
+            foreach($rows as $row){
+                $aGroup[$row[$aAtts['groupBy']]][$row['lecture_id']] = $row;
+            }
+            $aRet = $aGroup;
+        }
+
+        echo '<pre>';
+        var_dump($aRet);
+        exit;
+
+        return $aRet;
+
+    }
+
 }
