@@ -125,21 +125,65 @@ class HubFunctions{
         }
 
         // echo '<pre>';
-        // var_dump($rows);
+        // var_dump($aRet);
         // exit;
 
-        $aGroup = [];
+        $aCourses = [];
+        foreach($rows as $row){
+            if (!empty($row['courseID'])){
+                $aCourses[$row['lecture_id']][$row['courseID']] = [
+                    'repeat' => $row['repeat'],
+                    'starttime' => $row['starttime'],
+                    'endtime' => $row['endtime'],
+                    'room' => $row['room'],
+                    'exclude' => $row['exclude'],
+                    'coursename' => $row['coursename'],
+                ];
+            }
+            $aRet[$row['lecture_id']] = $row;
+            if (!empty($aCourses[$row['lecture_id']])){
+                $aRet[$row['lecture_id']]['courses'] = $aCourses[$row['lecture_id']];
+            }
+        }
+
+
+        // echo '<pre>';
+        // var_dump($aRet);
+        // exit;
+
+
+
 
         if (!empty($aAtts['groupBy'])){
-            foreach($rows as $row){
+            $aGroup = [];
+            foreach($aRet as $row){
                 $aGroup[$row[$aAtts['groupBy']]][$row['lecture_id']] = $row;
             }
             $aRet = $aGroup;
         }
 
-        echo '<pre>';
-        var_dump($aRet);
-        exit;
+        // sort by attribute "order"
+        if (!empty($aAtts['orderBy'])){
+            $aOrder = explode(',', $aAtts['orderBy']);
+            $aSorted = [];
+            foreach($aOrder as $order){
+                foreach($aRet as $type => $lectures){
+                    foreach($lectures as $lecture){
+                        if ($lecture['lecture_type_short'] == trim($order)){
+                            $aSorted[$type] = $aRet[$type];
+                            unset($aRet[$type]);
+                            break 1;
+                        }
+                    }
+                }
+            }
+            $aRet = $aSorted;
+        }
+
+
+        // echo '<pre>';
+        // var_dump($aRet);
+        // exit;
 
         return $aRet;
 

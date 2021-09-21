@@ -205,6 +205,7 @@ class Shortcode{
                         'filterBy' => 'univisID',
                         'filterValue' => $this->UnivISOrgNr,
                         'groupBy' => 'lecture_type',
+                        'orderBy' => $this->atts['order']
                     ];
                     $sHubMode = 'lecture';
                 }

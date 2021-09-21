@@ -21,7 +21,7 @@
                 if ($lang != 'de_DE' && $lang!='de_DE_formal' && !empty($veranstaltung['ects_name'])){
                     $veranstaltung['title'] = $veranstaltung['ects_name']; 
                 }else{
-                    $veranstaltung['title'] = $veranstaltung['name'];
+                    $veranstaltung['title'] = $veranstaltung['lecture_title'];
                 }
                 echo $veranstaltung['title'];
                 echo '</a></h' . ($this->atts['hstart'] + 1) . '>'; 
@@ -61,35 +61,35 @@
                         if (isset($veranstaltung['courses'])) :
                             foreach ($veranstaltung['courses'] as $course):
                                 if ((empty($veranstaltung['lecturer_key']) || empty($course['doz'])) || (!empty($veranstaltung['lecturer_key']) && !empty($course['doz']) && (in_array($veranstaltung['lecturer_key'], $course['doz'])))){
-                                    foreach ($course['term'] as $term):
+                                    // foreach ($course['term'] as $course):
                                         $t = array();
                                         $time = array();
-                                        if (!empty($term['repeat'])) :
-                                            $t['repeat'] = $term['repeat'];
+                                        if (!empty($course['repeat'])) :
+                                            $t['repeat'] = $course['repeat'];
                                         endif;
-                                        if (!empty($term['startdate'])) :
-                                            if (!empty($term['enddate']) && $term['startdate'] != $term['enddate']):
-                                                $t['date'] = date("d.m.Y", strtotime($term['startdate'])) . '-' . date("d.m.Y", strtotime($term['enddate']));
+                                        if (!empty($course['startdate'])) :
+                                            if (!empty($course['enddate']) && $course['startdate'] != $course['enddate']):
+                                                $t['date'] = date("d.m.Y", strtotime($course['startdate'])) . '-' . date("d.m.Y", strtotime($course['enddate']));
                                             else:
-                                                $t['date'] = date("d.m.Y", strtotime($term['startdate']));
+                                                $t['date'] = date("d.m.Y", strtotime($course['startdate']));
                                             endif;
                                         endif;
-                                        if (!empty($term['starttime'])) :
-                                            $time['starttime'] = $term['starttime'];
+                                        if (!empty($course['starttime'])) :
+                                            $time['starttime'] = $course['starttime'];
                                         endif;
-                                        if (!empty($term['endtime'])) :
-                                            $time['endtime'] = $term['endtime'];
+                                        if (!empty($course['endtime'])) :
+                                            $time['endtime'] = $course['endtime'];
                                         endif;
                                         if (!empty($time)) :
                                             $t['time'] = $time['starttime'] . '-' . $time['endtime'];
                                         else:
                                             $t['time'] = __('Time on appointment', 'rrze-univis');
                                         endif;
-                                        if (!empty($term['room']['short'])) :
-                                            $t['room'] = __('Room', 'rrze-univis') . ' ' . $term['room']['short'];
+                                        if (!empty($course['room'])) :
+                                            $t['room'] = __('Room', 'rrze-univis') . ' ' . $course['room'];
                                         endif;
-                                        if (!empty($term['exclude'])) :
-                                            $t['exclude'] = '(' . __('exclude', 'rrze-univis') . ' ' . $term['exclude'] . ')';
+                                        if (!empty($course['exclude'])) :
+                                            $t['exclude'] = '(' . __('exclude', 'rrze-univis') . ' ' . $course['exclude'] . ')';
                                         endif;
                                         if (!empty($course['coursename'])) :
                                             $t['coursename'] = '(' . __('Course', 'rrze-univis') . ' ' . $course['coursename'] . ')';
@@ -98,15 +98,15 @@
                                         if (in_array('ics', $this->show) && !in_array('ics', $this->hide)){
                                             $props = [
                                                 'summary' => $veranstaltung['title'],
-                                                'startdate' => (!empty($term['startdate']) ? $term['startdate'] : NULL),
-                                                'enddate' => (!empty($term['enddate']) ? $term['enddate'] : NULL),
-                                                'starttime' => (!empty($term['starttime']) ? $term['starttime'] : NULL),
-                                                'endtime' => (!empty($term['endtime']) ? $term['endtime'] : NULL),
-                                                'repeat' => (!empty($term['repeat']) ? $term['repeat'] : NULL),
+                                                'startdate' => (!empty($course['startdate']) ? $course['startdate'] : NULL),
+                                                'enddate' => (!empty($course['enddate']) ? $course['enddate'] : NULL),
+                                                'starttime' => (!empty($course['starttime']) ? $course['starttime'] : NULL),
+                                                'endtime' => (!empty($course['endtime']) ? $course['endtime'] : NULL),
+                                                'repeat' => (!empty($course['repeat']) ? $course['repeat'] : NULL),
                                                 'location' => (!empty($t['room']) ? $t['room'] : NULL),
                                                 'description' => (!empty($veranstaltung['comment']) ? $veranstaltung['comment'] : NULL),
                                                 'url' => get_permalink(),
-                                                'map' => (!empty($term['room']['north']) && !empty($term['room']['east']) ? 'https://karte.fau.de/api/v1/iframe/marker/' . $term['room']['north'] . ',' . $term['room']['east'] . '/zoom/16' : ''),
+                                                'map' => (!empty($course['room']['north']) && !empty($course['room']['east']) ? 'https://karte.fau.de/api/v1/iframe/marker/' . $course['room']['north'] . ',' . $course['room']['east'] . '/zoom/16' : ''),
                                                 'filename' => sanitize_file_name($typ),
                                                 'ssstart' => $ssstart,
                                                 'ssend' => $ssend,
@@ -118,11 +118,11 @@
                                             $t['ics'] = '<span class="lecture-info-ics" itemprop="ics"><a href="' . plugin_dir_url(__FILE__ ) .'../ics.php?' . http_build_query($props) . '">.ics<span class="screen-reader-text">' . $screenReaderTxt . '</span></a></span>';
                                         }
                                         $t['time'] .= ',';
-                                        $term_formatted = implode(' ', $t);
+                                        $course_formatted = implode(' ', $t);
                                         ?>    
-                                        <li><?php echo $term_formatted; ?></li>
+                                        <li><?php echo $course_formatted; ?></li>
                                     <?php
-                                    endforeach;
+                                    // endforeach;
                                 }
                             endforeach;
                         else : ?>
