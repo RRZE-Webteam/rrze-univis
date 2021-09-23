@@ -180,7 +180,14 @@ class Shortcode{
                 break;
             case 'lehrveranstaltungen-einzeln': 
                 if (!empty($this->atts['id'])){
-                    $data = $this->getData('lectureByID', $this->atts['id']);
+                    // $data = $this->getData('lectureByID', $this->atts['id']);
+                    $aHubAtts = [
+                        'filterBy' => 'lectureID',
+                        'filterValue' => $this->atts['id'],
+                        // 'groupBy' => 'lecture_type',
+                        // 'orderBy' => $this->atts['order']
+                    ];
+                    $sHubMode = 'lecture';
                 }elseif (!empty($this->atts['name'])){
                     $data = $this->getData('lectureByLecturer', $this->atts['name']);
                 }elseif (!empty($this->atts['univisid'])){
@@ -200,7 +207,6 @@ class Shortcode{
                 }elseif (!empty($this->atts['id'])){
                     $data = $this->getData('lectureByLecturerID', $this->atts['id']);
                 }else{
-                    // $data = $this->getData('lectureByDepartment');
                     $aHubAtts = [
                         'filterBy' => 'univisID',
                         'filterValue' => $this->UnivISOrgNr,

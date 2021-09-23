@@ -13,9 +13,6 @@ class HubFunctions{
         // $this->sem = (!empty($atts['sem']) && self::checkSemester($atts['sem']) ? $atts['sem'] : '');
         $this->showPositon = (!empty($atts['zeige_jobs']) ? explode('|', $atts['zeige_jobs']) : []);
         $this->hidePositon = (!empty($atts['ignoriere_jobs']) ? explode('|', $atts['ignoriere_jobs']) : []);
-
-        // echo 'in construct';
-        // var_dump($this->hideJobs);
     }
 
 
@@ -124,11 +121,6 @@ class HubFunctions{
             exit;
         }
 
-        // echo '<pre>';
-        // var_dump($rows);
-        // exit;
-
-
         $aLecturers = [];
         $aStud = [];
         $aCourses = [];
@@ -219,10 +211,6 @@ class HubFunctions{
             }
         }
 
-        // echo '<pre>';
-        // var_dump($aRet);
-        // exit;
-
         if (!empty($aAtts['groupBy'])){
             $aGroup = [];
             foreach($aRet as $row){
@@ -249,12 +237,6 @@ class HubFunctions{
             $aRet = $aSorted;
         }
 
-        // echo '<pre>';
-        // var_dump($aRet);
-        // exit;
-
         return $aRet;
-
     }
-
 }
