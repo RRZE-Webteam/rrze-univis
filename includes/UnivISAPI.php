@@ -532,6 +532,12 @@ class UnivISAPI {
         }
         // group by lecture_type_long
         if (in_array($dataType, ['lectureByID', 'lectureByLecturerID', 'lectureByLecturer', 'lectureByDepartment'])){
+
+            if (!empty($this->atts['lang'])){
+                // 2021-09-23 quickfix because there is a bug in UnivIS-API's filtering by language 
+                $data = $this->filterByLang($data);
+            }
+
             $data = $this->groupBy($data, 'lecture_type_long');
             // sort by attribute "order"
             if (!empty($this->atts['order'])){
@@ -587,6 +593,17 @@ class UnivISAPI {
         }
 
         return $data;
+    }
+
+
+    private function filterByLang($arr) {
+        $ret = [];
+        foreach($arr as $key => $val) {
+            if (!empty($val['leclanguage']) && ($val['leclanguage'] == $this->atts['lang'])){
+                $ret[$key] = $val;
+            }
+        }
+        return $ret;
     }
 
 
