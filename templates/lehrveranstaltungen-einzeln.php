@@ -50,10 +50,6 @@
 
     echo '<h' . ($this->atts['hstart'] + 1) . '>' . __('Details', 'rrze-univis') . '</h' . ($this->atts['hstart'] + 1) . '>';
 
-    if (!empty($veranstaltung['angaben'])): ?>
-        <p><?php echo make_clickable($veranstaltung['angaben']); ?></p>
-    <?php endif; 
-
     echo '<h' . ($this->atts['hstart'] + 2) . '>' . __('Time and place', 'rrze-univis') . '</h' . ($this->atts['hstart'] + 2) . '>';
     if (array_key_exists('comment', $veranstaltung)) : ?>
         <p><?php echo make_clickable($veranstaltung['comment']); ?></p>

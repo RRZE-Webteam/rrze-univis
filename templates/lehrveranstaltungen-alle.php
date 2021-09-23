@@ -13,7 +13,7 @@
 	<ul>
         <?php 
             foreach ($veranstaltungen as $veranstaltung) : 
-                $url = get_permalink() . 'lv_id/' . $veranstaltung['lecture_id'];
+                $url = get_permalink() . 'lv_id/' . $veranstaltung['lecture_univisID'];
                 ?>
                 <li>
                 <?php 
@@ -25,6 +25,16 @@
                 }
                 echo $veranstaltung['title'];
                 echo '</a></h' . ($this->atts['hstart'] + 1) . '>'; 
+
+                if (!empty($veranstaltung['lecturers'])){
+                    $lecturers = '';
+                    foreach($veranstaltung['lecturers'] as $lecturer){
+                        $lecturers .= '<a class="url" href="' . get_permalink() . 'univisid/' . $lecturer['univisID'] . '" itemprop="name">' . $lecturer['title'] . ' ' . $lecturer['firstname'] . ' ' . $lecturer['lastname'] . '</a>, ';
+                    }
+                    $lecturers = substr($lecturers, 0, strlen($lecturers) - 2);
+                    echo __('Dozentinnen/Dozenten', 'rrze_univis') . ': ' . $lecturers;
+                }
+
                 if (!empty($veranstaltung['comment'])){
                     echo '<p>' . make_clickable($veranstaltung['comment']) . '</p>';
                 }
@@ -37,14 +47,17 @@
                 if (!empty($veranstaltung['maxturnout'])){
                     echo '<p>' . __('Expected participants', 'rrze-univis') .': ' . $veranstaltung['maxturnout'] . '</p>';
                 }
-                if (!empty($veranstaltung['fruehstud'])){
-                    echo '<p>' . $veranstaltung['fruehstud'] . '</p>';
+                if (!empty($veranstaltung['beginners'])){
+                    echo '<p>' . $veranstaltung['beginners'] . '</p>';
                 }
-                if (!empty($veranstaltung['gast'])){
-                    echo '<p>' . $veranstaltung['gast'] . '</p>';
+                if (!empty($veranstaltung['earlystudy'])){
+                    echo '<p>' . $veranstaltung['earlystudy'] . '</p>';
                 }
-                if (!empty($veranstaltung['schein'])){
-                    echo '<p>' . $veranstaltung['schein'] . '</p>';
+                if (!empty($veranstaltung['guest'])){
+                    echo '<p>' . $veranstaltung['guest'] . '</p>';
+                }
+                if (!empty($veranstaltung['certification'])){
+                    echo '<p>' . $veranstaltung['certification'] . '</p>';
                 }
                 if (!empty($veranstaltung['ects'])){
                     echo '<p>' . $veranstaltung['ects'] . '</p>';
@@ -52,84 +65,80 @@
                 if (!empty($veranstaltung['ects_cred'])){
                     echo '<p>' . $veranstaltung['ects_cred'] . '</p>';
                 }
-                if (!empty($veranstaltung['leclanguage_long']) && ($veranstaltung['leclanguage_long'] != __('Unterrichtssprache Deutsch', 'rrze-univis'))){
-                    echo '<p>' . $veranstaltung['leclanguage_long'] . '</p>';
+                if (!empty($veranstaltung['leclanguage_long']) && ($veranstaltung['leclanguage_long'] != 'German')){
+                    echo '<p>' . __('Unterrichtssprache', 'rrze-univis') . ' ' . $veranstaltung['leclanguage_long'] . '</p>';
                 }
                 ?>
                 <ul>
-                        <?php
-                        if (isset($veranstaltung['courses'])) :
-                            foreach ($veranstaltung['courses'] as $course):
-                                if ((empty($veranstaltung['lecturer_key']) || empty($course['doz'])) || (!empty($veranstaltung['lecturer_key']) && !empty($course['doz']) && (in_array($veranstaltung['lecturer_key'], $course['doz'])))){
-                                    // foreach ($course['term'] as $course):
-                                        $t = array();
-                                        $time = array();
-                                        if (!empty($course['repeat'])) :
-                                            $t['repeat'] = $course['repeat'];
-                                        endif;
-                                        if (!empty($course['startdate'])) :
-                                            if (!empty($course['enddate']) && $course['startdate'] != $course['enddate']):
-                                                $t['date'] = date("d.m.Y", strtotime($course['startdate'])) . '-' . date("d.m.Y", strtotime($course['enddate']));
-                                            else:
-                                                $t['date'] = date("d.m.Y", strtotime($course['startdate']));
-                                            endif;
-                                        endif;
-                                        if (!empty($course['starttime'])) :
-                                            $time['starttime'] = $course['starttime'];
-                                        endif;
-                                        if (!empty($course['endtime'])) :
-                                            $time['endtime'] = $course['endtime'];
-                                        endif;
-                                        if (!empty($time)) :
-                                            $t['time'] = $time['starttime'] . '-' . $time['endtime'];
-                                        else:
-                                            $t['time'] = __('Time on appointment', 'rrze-univis');
-                                        endif;
-                                        if (!empty($course['room'])) :
-                                            $t['room'] = __('Room', 'rrze-univis') . ' ' . $course['room'];
-                                        endif;
-                                        if (!empty($course['exclude'])) :
-                                            $t['exclude'] = '(' . __('exclude', 'rrze-univis') . ' ' . $course['exclude'] . ')';
-                                        endif;
-                                        if (!empty($course['coursename'])) :
-                                            $t['coursename'] = '(' . __('Course', 'rrze-univis') . ' ' . $course['coursename'] . ')';
-                                        endif;
-                                        // ICS
-                                        if (in_array('ics', $this->show) && !in_array('ics', $this->hide)){
-                                            $props = [
-                                                'summary' => $veranstaltung['title'],
-                                                'startdate' => (!empty($course['startdate']) ? $course['startdate'] : NULL),
-                                                'enddate' => (!empty($course['enddate']) ? $course['enddate'] : NULL),
-                                                'starttime' => (!empty($course['starttime']) ? $course['starttime'] : NULL),
-                                                'endtime' => (!empty($course['endtime']) ? $course['endtime'] : NULL),
-                                                'repeat' => (!empty($course['repeat']) ? $course['repeat'] : NULL),
-                                                'location' => (!empty($t['room']) ? $t['room'] : NULL),
-                                                'description' => (!empty($veranstaltung['comment']) ? $veranstaltung['comment'] : NULL),
-                                                'url' => get_permalink(),
-                                                'map' => (!empty($course['room']['north']) && !empty($course['room']['east']) ? 'https://karte.fau.de/api/v1/iframe/marker/' . $course['room']['north'] . ',' . $course['room']['east'] . '/zoom/16' : ''),
-                                                'filename' => sanitize_file_name($typ),
-                                                'ssstart' => $ssstart,
-                                                'ssend' => $ssend,
-                                                'wsstart' => $wsstart,
-                                                'wsend' => $wsend,
-                                            ];
+                <?php
+                if (isset($veranstaltung['courses'])){
+                    foreach ($veranstaltung['courses'] as $aCourse) {
+                        if (!empty($aCourse['coursename'])) {
+                            $t['coursename'] = '(' . __('Course', 'rrze-univis') . ' ' . $course['coursename'] . ')';
+                        }
+                        if (isset($aCourse['terms'])){
+                            foreach ($aCourse['terms'] as $term) {
+                                $t = array();
+                                $time = array();
+                                if (!empty($term['repeat'])) :
+                                        $t['repeat'] = $term['repeat'];
+                                endif;
+                                if (!empty($term['startdate'])) :
+                                        if (!empty($term['enddate']) && $term['startdate'] != $term['enddate']):
+                                            $t['date'] = date("d.m.Y", strtotime($term['startdate'])) . '-' . date("d.m.Y", strtotime($term['enddate'])); else:
+                                            $t['date'] = date("d.m.Y", strtotime($term['startdate']));
+                                endif;
+                                endif;
+                                if (!empty($term['starttime'])) :
+                                        $time['starttime'] = $term['starttime'];
+                                endif;
+                                if (!empty($term['endtime'])) :
+                                        $time['endtime'] = $term['endtime'];
+                                endif;
+                                if (!empty($time)) :
+                                        $t['time'] = $time['starttime'] . '-' . $time['endtime']; else:
+                                        $t['time'] = __('Time on appointment', 'rrze-univis');
+                                endif;
+                                if (!empty($term['room'])) :
+                                        $t['room'] = __('Room', 'rrze-univis') . ' ' . $term['room'];
+                                endif;
+                                if (!empty($term['exclude'])) :
+                                        $t['exclude'] = '(' . __('exclude', 'rrze-univis') . ' ' . $term['exclude'] . ')';
+                                endif;
+                                // ICS
+                                if (in_array('ics', $this->show) && !in_array('ics', $this->hide)) {
+                                    $props = [
+                                            'summary' => $veranstaltung['title'],
+                                            'startdate' => (!empty($term['startdate']) ? $term['startdate'] : null),
+                                            'enddate' => (!empty($term['enddate']) ? $term['enddate'] : null),
+                                            'starttime' => (!empty($term['starttime']) ? $term['starttime'] : null),
+                                            'endtime' => (!empty($term['endtime']) ? $term['endtime'] : null),
+                                            'repeat' => (!empty($term['repeat']) ? $term['repeat'] : null),
+                                            'location' => (!empty($t['room']) ? $t['room'] : null),
+                                            'description' => (!empty($veranstaltung['comment']) ? $veranstaltung['comment'] : null),
+                                            'url' => get_permalink(),
+                                            'map' => (!empty($term['room']['north']) && !empty($course['room']['east']) ? 'https://karte.fau.de/api/v1/iframe/marker/' . $course['room']['north'] . ',' . $course['room']['east'] . '/zoom/16' : ''),
+                                            'filename' => sanitize_file_name($typ),
+                                            'ssstart' => $ssstart,
+                                            'ssend' => $ssend,
+                                            'wsstart' => $wsstart,
+                                            'wsend' => $wsend,
+                                        ];
 
-                                            $screenReaderTxt = ': ' . __('Termin', 'rrze-univis') . ' ' . (!empty($t['repeat']) ? $t['repeat'] : '') . ' ' . (!empty($t['date']) ? $t['date'] . ' ' : '') . $t['time'] . ' ' . __('in den Kalender importieren', 'rrze-univis');
-                                            $t['ics'] = '<span class="lecture-info-ics" itemprop="ics"><a href="' . plugin_dir_url(__FILE__ ) .'../ics.php?' . http_build_query($props) . '">.ics<span class="screen-reader-text">' . $screenReaderTxt . '</span></a></span>';
-                                        }
-                                        $t['time'] .= ',';
-                                        $course_formatted = implode(' ', $t);
-                                        ?>    
-                                        <li><?php echo $course_formatted; ?></li>
-                                    <?php
-                                    // endforeach;
+                                    $screenReaderTxt = ': ' . __('Termin', 'rrze-univis') . ' ' . (!empty($t['repeat']) ? $t['repeat'] : '') . ' ' . (!empty($t['date']) ? $t['date'] . ' ' : '') . $t['time'] . ' ' . __('in den Kalender importieren', 'rrze-univis');
+                                    $t['ics'] = '<span class="lecture-info-ics" itemprop="ics"><a href="' . plugin_dir_url(__FILE__) .'../ics.php?' . http_build_query($props) . '">.ics<span class="screen-reader-text">' . $screenReaderTxt . '</span></a></span>';
                                 }
-                            endforeach;
-                        else : ?>
-                                <li><?php _e('Time and place on appointment', 'rrze-univis');?></li>
-                        <?php endif; ?>
-                        </ul>
-
+                                $t['time'] .= ',';
+                                $course_formatted = implode(' ', $t);
+                                echo '<li>' . $course_formatted . '</li>';
+                            }
+                        }
+                    }
+                }else{
+                    echo '<li>' . __('Time and place on appointment', 'rrze-univis') . '</li>';
+                } 
+                ?>
+                    </ul>
                 </li>
                 <?php 
             endforeach;
@@ -137,7 +146,6 @@
 	</ul>
     <?php 
     endforeach;
-                
 endif;
 ?>
 </div>

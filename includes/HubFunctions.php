@@ -130,6 +130,7 @@ class HubFunctions{
 
 
         $aLecturers = [];
+        $aStud = [];
         $aCourses = [];
         $aTerms = [];
         $aCourseLecturers = [];
@@ -149,9 +150,7 @@ class HubFunctions{
                 'certification' => $row['certification'],
                 'ects' => $row['ects'],
                 'ects_cred' => $row['ects_cred'],
-                'leclanguage_long' => $row['leclanguage'], 
-                // 2DO: angaben
-                // 2DO: 'studs'
+                'leclanguage_long' => $row['leclanguage']
             ];
 
             if (!empty($row['lecture_person_univisID'])) {
@@ -166,6 +165,20 @@ class HubFunctions{
                     $aRet[$row['lecture_univisID']]['lecturers'] = $aLecturers[$row['lecture_univisID']];
                 }
             }
+
+            if (!empty($row['stud_lectureID'])) {
+                $aStud[$row['lecture_univisID']][$row['studID']] = [
+                    'richt' => $row['richt'],
+                    'pflicht' => $row['pflicht'],
+                    'sem' => $row['sem'],
+                    'credits' => $row['credits']
+                ];
+
+                if (!empty($aStud[$row['lecture_univisID']])) {
+                    $aRet[$row['lecture_univisID']]['stud'] = $aStud[$row['lecture_univisID']];
+                }
+            }
+
 
             if (!empty($row['courseID'])){
                 $aCourses[$row['lecture_univisID']][$row['courseID']] = [
@@ -236,10 +249,9 @@ class HubFunctions{
             $aRet = $aSorted;
         }
 
-
-        echo '<pre>';
-        var_dump($aRet);
-        exit;
+        // echo '<pre>';
+        // var_dump($aRet);
+        // exit;
 
         return $aRet;
 
