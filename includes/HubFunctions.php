@@ -125,39 +125,95 @@ class HubFunctions{
         }
 
         // echo '<pre>';
-        // var_dump($aRet);
+        // var_dump($rows);
         // exit;
 
+
+        $aLecturers = [];
         $aCourses = [];
+        $aTerms = [];
+        $aCourseLecturers = [];
         foreach($rows as $row){
-            if (!empty($row['courseID'])){
-                $aCourses[$row['lecture_id']][$row['courseID']] = [
-                    'repeat' => $row['repeat'],
-                    'starttime' => $row['starttime'],
-                    'endtime' => $row['endtime'],
-                    'room' => $row['room'],
-                    'exclude' => $row['exclude'],
-                    'coursename' => $row['coursename'],
+            $aRet[$row['lecture_univisID']] = [
+                'lecture_type' => $row['lecture_type'],
+                'lecture_univisID' => $row['lecture_univisID'],
+                'lecture_title' => $row['lecture_title'],
+                'ects_name' => $row['ects_name'],
+                'comment' => $row['comment'],
+                'organizational' => $row['organizational'],
+                'sws' => $row['sws'],
+                'maxturnout' => $row['maxturnout'],
+                'beginners' => $row['beginners'],
+                'earlystudy' => $row['earlystudy'],
+                'guest' => $row['guest'],
+                'certification' => $row['certification'],
+                'ects' => $row['ects'],
+                'ects_cred' => $row['ects_cred'],
+                'leclanguage_long' => $row['leclanguage'], 
+                // 2DO: angaben
+                // 2DO: 'studs'
+            ];
+
+            if (!empty($row['lecture_person_univisID'])) {
+                $aLecturers[$row['lecture_univisID']][$row['lecture_person_univisID']] = [
+                    'univisID' => $row['lecture_person_univisID'],
+                    'title' => $row['lecture_person_title'],
+                    'firstname' => $row['lecture_person_firstname'],
+                    'lastname' => $row['lecture_person_lastname']
                 ];
+
+                if (!empty($aLecturers[$row['lecture_univisID']])) {
+                    $aRet[$row['lecture_univisID']]['lecturers'] = $aLecturers[$row['lecture_univisID']];
+                }
             }
-            $aRet[$row['lecture_id']] = $row;
-            if (!empty($aCourses[$row['lecture_id']])){
-                $aRet[$row['lecture_id']]['courses'] = $aCourses[$row['lecture_id']];
+
+            if (!empty($row['courseID'])){
+                $aCourses[$row['lecture_univisID']][$row['courseID']] = [
+                    'coursename' => $row['coursename']
+                ];
+
+                if (!empty($row['course_person_univisID'])) {
+                    $aCourseLecturers[$row['courseID']][$row['course_person_univisID']] = [
+                        'univisID' => $row['course_person_univisID'],
+                        'title' => $row['course_person_title'],
+                        'firstname' => $row['course_person_firstname'],
+                        'lastname' => $row['course_person_lastname']
+                    ];
+                }
+
+                if (!empty($row['termID'])){
+                    $aTerms[$row['courseID']][$row['termID']] = [
+                        'repeat' => $row['repeat'],
+                        'starttime' => $row['term_starttime'],
+                        'endtime' => $row['term_endtime'],
+                        'room' => $row['room'],
+                        'north' => $row['north'],
+                        'east' => $row['east'],
+                        'exclude' => $row['exclude']
+                    ];
+                }
+
+                if (!empty($aCourses[$row['lecture_univisID']])){
+                    if (!empty($aCourses[$row['lecture_univisID']][$row['courseID']])){
+                        if (!empty($aCourseLecturers[$row['courseID']])){
+                            $aCourses[$row['lecture_univisID']][$row['courseID']]['lecturers'] = $aCourseLecturers[$row['courseID']];
+                        }
+                        $aCourses[$row['lecture_univisID']][$row['courseID']]['terms'] = $aTerms[$row['courseID']];
+                    }
+            
+                    $aRet[$row['lecture_univisID']]['courses'] = $aCourses[$row['lecture_univisID']];
+                }
             }
         }
-
 
         // echo '<pre>';
         // var_dump($aRet);
         // exit;
 
-
-
-
         if (!empty($aAtts['groupBy'])){
             $aGroup = [];
             foreach($aRet as $row){
-                $aGroup[$row[$aAtts['groupBy']]][$row['lecture_id']] = $row;
+                $aGroup[$row[$aAtts['groupBy']]][$row['lecture_univisID']] = $row;
             }
             $aRet = $aGroup;
         }
@@ -181,9 +237,9 @@ class HubFunctions{
         }
 
 
-        // echo '<pre>';
-        // var_dump($aRet);
-        // exit;
+        echo '<pre>';
+        var_dump($aRet);
+        exit;
 
         return $aRet;
 
