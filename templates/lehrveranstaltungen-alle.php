@@ -76,35 +76,45 @@
                         if (!empty($aCourse['coursename'])) {
                             $t['coursename'] = '(' . __('Course', 'rrze-univis') . ' ' . $course['coursename'] . ')';
                         }
+                        if (!empty($aCourse['lecturers'])){
+                            $lecturers = '';
+                            foreach($aCourse['lecturers'] as $lecturer){
+                                $lecturers .= '<a class="url" href="' . get_permalink() . 'univisid/' . $lecturer['univisID'] . '" itemprop="name">' . $lecturer['title'] . ' ' . $lecturer['firstname'] . ' ' . $lecturer['lastname'] . '</a>, ';
+                            }
+                            $t['lecturers'] = substr($lecturers, 0, strlen($lecturers) - 2);
+                        }
+
                         if (isset($aCourse['terms'])){
                             foreach ($aCourse['terms'] as $term) {
                                 $t = array();
                                 $time = array();
-                                if (!empty($term['repeat'])) :
-                                        $t['repeat'] = $term['repeat'];
-                                endif;
-                                if (!empty($term['startdate'])) :
-                                        if (!empty($term['enddate']) && $term['startdate'] != $term['enddate']):
-                                            $t['date'] = date("d.m.Y", strtotime($term['startdate'])) . '-' . date("d.m.Y", strtotime($term['enddate'])); else:
-                                            $t['date'] = date("d.m.Y", strtotime($term['startdate']));
-                                endif;
-                                endif;
-                                if (!empty($term['starttime'])) :
-                                        $time['starttime'] = $term['starttime'];
-                                endif;
-                                if (!empty($term['endtime'])) :
-                                        $time['endtime'] = $term['endtime'];
-                                endif;
-                                if (!empty($time)) :
-                                        $t['time'] = $time['starttime'] . '-' . $time['endtime']; else:
-                                        $t['time'] = __('Time on appointment', 'rrze-univis');
-                                endif;
-                                if (!empty($term['room'])) :
-                                        $t['room'] = __('Room', 'rrze-univis') . ' ' . $term['room'];
-                                endif;
-                                if (!empty($term['exclude'])) :
-                                        $t['exclude'] = '(' . __('exclude', 'rrze-univis') . ' ' . $term['exclude'] . ')';
-                                endif;
+                                if (!empty($term['repeat'])) {
+                                    $t['repeat'] = $term['repeat'];
+                                }
+                                if (!empty($term['startdate'])){
+                                    if (!empty($term['enddate']) && $term['startdate'] != $term['enddate']){
+                                        $t['date'] = date("d.m.Y", strtotime($term['startdate'])) . '-' . date("d.m.Y", strtotime($term['enddate']));
+                                    }else{
+                                        $t['date'] = date("d.m.Y", strtotime($term['startdate']));
+                                    }
+                                }
+                                if (!empty($term['starttime'])){
+                                    $time['starttime'] = $term['starttime'];
+                                }
+                                if (!empty($term['endtime'])){
+                                    $time['endtime'] = $term['endtime'];
+                                }
+                                if (!empty($time)){
+                                    $t['time'] = $time['starttime'] . '-' . $time['endtime'];
+                                }else{
+                                    $t['time'] = __('Time on appointment', 'rrze-univis');
+                                }
+                                if (!empty($term['room'])){
+                                    $t['room'] = __('Room', 'rrze-univis') . ' ' . $term['room'];
+                                }
+                                if (!empty($term['exclude'])){
+                                    $t['exclude'] = '(' . __('exclude', 'rrze-univis') . ' ' . $term['exclude'] . ')';
+                                }
                                 // ICS
                                 if (in_array('ics', $this->show) && !in_array('ics', $this->hide)) {
                                     $props = [
