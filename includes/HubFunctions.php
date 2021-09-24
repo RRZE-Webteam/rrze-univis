@@ -133,6 +133,7 @@ class HubFunctions{
                 'lecture_title' => $row['lecture_title'],
                 'ects_name' => $row['ects_name'],
                 'comment' => $row['comment'],
+                'summary' => $row['summary'],
                 'organizational' => $row['organizational'],
                 'sws' => $row['sws'],
                 'maxturnout' => $row['maxturnout'],
@@ -142,6 +143,11 @@ class HubFunctions{
                 'certification' => $row['certification'],
                 'ects' => $row['ects'],
                 'ects_cred' => $row['ects_cred'],
+                'literature' => $row['literature'],
+                'ects_summary' => $row['ects_summary'],
+                'ects_literature' => $row['ects_literature'],
+                'ects_organizational' => $row['ects_organizational'],
+                'keywords' => $row['keywords'],
                 'leclanguage_long' => $row['leclanguage']
             ];
 

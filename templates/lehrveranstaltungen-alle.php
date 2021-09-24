@@ -83,8 +83,8 @@
                             $lecturers = substr($lecturers, 0, strlen($lecturers) - 2);
                         }
                         if (isset($aCourse['terms'])){
-                            $t = [];
                             foreach ($aCourse['terms'] as $term) {
+                                $t = [];
                                 if (!empty($term['time_description'])) {
                                     $t['time_description'] = make_clickable($term['time_description']);
                                 }

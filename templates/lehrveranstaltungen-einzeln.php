@@ -1,5 +1,10 @@
 <div class="rrze-univis">
-<?php if ($veranstaltung) : 
+<?php foreach ($data as $event) : 
+
+// echo '<pre>';
+// var_dump($event);
+// exit;
+
     $lang = get_locale();
     $options = get_option('rrze-univis');
     $ssstart = (!empty($options['basic_ssStart']) ? $options['basic_ssStart'] : 0);
@@ -8,37 +13,33 @@
     $wsend = (!empty($options['basic_wsEnd']) ? $options['basic_wsEnd'] : 0);
 
     echo '<div itemscope itemtype="https://schema.org/Course">';
-
     echo '<h' . $this->atts['hstart'] . '>';
-    if ($lang != 'de_DE' && $lang != 'de_DE_formal' && !empty($veranstaltung['ects_name'])){
-        $veranstaltung['title'] = $veranstaltung['ects_name']; 
+    if ($lang != 'de_DE' && $lang != 'de_DE_formal' && !empty($event['ects_name'])){
+        $event['title'] = $event['ects_name']; 
     }else{
-        $veranstaltung['title'] = $veranstaltung['name'];
+        $event['title'] = $event['lecture_title'];
     }
-    echo '<span itemprop="name">' . $veranstaltung['title'] . '</span>';
-
-    // echo '<span itemprop="provider" itemscope itemtype="http://schema.org/EducationalOrganization">;
-
+    echo '<span itemprop="name">' . $event['title'] . '</span>';
     echo '</h' . $this->atts['hstart'] . '>';
-    if (!empty($veranstaltung['lecturers'])) : 
+    if (!empty($event['lecturers'])) : 
         echo '<h' . ($this->atts['hstart'] + 1) . '>' . __('Lecturers', 'rrze-univis') . '</h' . ($this->atts['hstart'] + 1) . '>';
     ?>
         <ul>
         <?php
-        foreach ($veranstaltung['lecturers'] as $doz) :
+        foreach ($event['lecturers'] as $lecturer) :
             $name = array();
-            if (!empty($doz['title'])) :
-                $name['title'] = '<span itemprop="honorificPrefix">' . $doz['title'] . '</span>';
+            if (!empty($lecturer['title'])) :
+                $name['title'] = '<span itemprop="honorificPrefix">' . $lecturer['title'] . '</span>';
             endif;
-            if (!empty($doz['firstname'])) :
-                $name['firstname'] = '<span itemprop="givenName">' . $doz['firstname'] . '</span>';
+            if (!empty($lecturer['firstname'])) :
+                $name['firstname'] = '<span itemprop="givenName">' . $lecturer['firstname'] . '</span>';
             endif;
-            if (!empty($doz['lastname'])) :
-                $name['lastname'] = '<span itemprop="familyName">' . $doz['lastname'] . '</span>';
+            if (!empty($lecturer['lastname'])) :
+                $name['lastname'] = '<span itemprop="familyName">' . $lecturer['lastname'] . '</span>';
             endif;
             $fullname = implode(' ', $name);
-            if (!empty($doz['person_id'])):
-                $url = '<a href="' . get_permalink() . 'univisid/' . $doz['person_id'] . '">' . $fullname . '</a>';
+            if (!empty($lecturer['univisID'])):
+                $url = '<a href="' . get_permalink() . 'univisid/' . $lecturer['univisID'] . '">' . $fullname . '</a>';
             else:
                 $url = $fullname;
             endif;?>
@@ -49,88 +50,98 @@
     <?php endif; 
 
     echo '<h' . ($this->atts['hstart'] + 1) . '>' . __('Details', 'rrze-univis') . '</h' . ($this->atts['hstart'] + 1) . '>';
+    if (!empty($event['comment'])){
+        echo '<p>' . make_clickable($event['comment']) . '</p>';
+    }
 
     echo '<h' . ($this->atts['hstart'] + 2) . '>' . __('Time and place', 'rrze-univis') . '</h' . ($this->atts['hstart'] + 2) . '>';
-    if (array_key_exists('comment', $veranstaltung)) : ?>
-        <p><?php echo make_clickable($veranstaltung['comment']); ?></p>
-    <?php endif; ?>
-    <ul>
-        <?php if (isset($veranstaltung['courses'])) :
-            foreach ($veranstaltung['courses'] as $course):
-                foreach ($course['term'] as $term):
-                    $t = array();
-                    $time = array();
-                    if (!empty($term['repeat'])) :
-                        $t['repeat'] = $term['repeat'];
-                    endif;
-                    if (!empty($term['startdate'])) :
-                        if (!empty($term['enddate']) && $term['startdate'] != $term['enddate']):
-                            $t['date'] = date("d.m.Y", strtotime($term['startdate'])) . '-' . date("d.m.Y", strtotime($term['enddate']));
-                        else:
-                            $t['date'] = date("d.m.Y", strtotime($term['startdate']));
-                        endif;
-                    endif;
-                    if (!empty($term['starttime'])) :
-                        $time['starttime'] = $term['starttime'];
-                    endif;
-                    if (!empty($term['endtime'])) :
-                        $time['endtime'] = $term['endtime'];
-                    endif;
-                    if (!empty($time)) :
-                        $t['time'] = $time['starttime'] . '-' . $time['endtime'];
-                    else:
-                        $t['time'] = __('Time on appointment', 'rrze-univis');
-                    endif;
-                    if (!empty($term['room']['short'])) :
-                        $t['room'] = __('Room', 'rrze-univis') . ' ' . $term['room']['short'];
-                    endif;
-                    if (!empty($term['exclude'])) :
-                        $t['exclude'] = '(' . __('exclude', 'rrze-univis') . ' ' . $term['exclude'] . ')';
-                    endif;
-                    // Kursname
-                    if (!empty($course['coursename'])) :
-                        $t['coursename'] = '(' . __('Course', 'rrze-univis') . ' ' . $course['coursename'] . ')';
-                    endif;
-                    // ICS
-                    if (in_array('ics', $this->show) && !in_array('ics', $this->hide)){
-                        $props = [
-                            'summary' => $veranstaltung['title'],
-                            'startdate' => (!empty($term['startdate']) ? $term['startdate'] : NULL),
-                            'enddate' => (!empty($term['enddate']) ? $term['enddate'] : NULL),
-                            'starttime' => (!empty($term['starttime']) ? $term['starttime'] : NULL),
-                            'endtime' => (!empty($term['endtime']) ? $term['endtime'] : NULL),
-                            'repeat' => (!empty($term['repeat']) ? $term['repeat'] : NULL),
-                            'location' => (!empty($t['room']) ? $t['room'] : NULL),
-                            'description' => (!empty($veranstaltung['comment']) ? $veranstaltung['comment'] : NULL),
-                            'url' => get_permalink(),
-                            'map' => (!empty($term['room']['north']) && !empty($term['room']['east']) ? 'https://karte.fau.de/api/v1/iframe/marker/' . $term['room']['north'] . ',' . $term['room']['east'] . '/zoom/16' : ''),
-                            'filename' => sanitize_file_name($veranstaltung['lecture_type_long']),
-                            'ssstart' => $ssstart,
-                            'ssend' => $ssend,
-                            'wsstart' => $wsstart,
-                            'wsend' => $wsend,
-                        ];
 
-                        $screenReaderTxt = ': ' . __('Termin', 'rrze-univis') . ' ' . (!empty($t['repeat']) ? $t['repeat'] : '') . ' ' . (!empty($t['date']) ? $t['date'] . ' ' : '') . $t['time'] . ' ' . __('in den Kalender importieren', 'rrze-univis');
-                        $t['ics'] = '<span class="lecture-info-ics" itemprop="ics"><a href="' . plugin_dir_url(__FILE__ ) .'../ics.php?' . http_build_query($props) . '">.ics<span class="screen-reader-text">' . $screenReaderTxt . '</span></a></span>';
+    ?>
+    <ul>
+    <?php
+    if (isset($event['courses'])){
+                    foreach ($event['courses'] as $aCourse) {
+                        if (!empty($aCourse['coursename'])) {
+                            $t['coursename'] = '(' . __('Course', 'rrze-univis') . ' ' . $aCourse['coursename'] . ')';
+                        }
+                        $lecturers = '';
+                        if (!empty($aCourse['lecturers'])){
+                            foreach($aCourse['lecturers'] as $lecturer){
+                                $lecturers .= '<a class="url" href="' . get_permalink() . 'univisid/' . $lecturer['univisID'] . '" itemprop="name">' . ' ' . (!empty($lecturer['firstname']) ? substr($lecturer['firstname'], 0, 1) . '. ' : '' ) . $lecturer['lastname'] . '</a>, ';
+                            }
+                            $lecturers = substr($lecturers, 0, strlen($lecturers) - 2);
+                        }
+                        if (isset($aCourse['terms'])){
+                            $t = [];
+                            foreach ($aCourse['terms'] as $term) {
+                                if (!empty($term['time_description'])) {
+                                    $t['time_description'] = make_clickable($term['time_description']);
+                                }
+                                if (!empty($term['repeat'])) {
+                                    $t['repeat'] = $term['repeat'];
+                                }
+                                if (!empty($term['startdate']) && (int)$term['startdate']){
+                                    if (!empty($term['enddate']) && (int)$term['enddate'] && ($term['startdate'] != $term['enddate'])){
+                                        $t['date'] = date("d.m.Y", strtotime($term['startdate'])) . ' - ' . date("d.m.Y", strtotime($term['enddate']));
+                                    }else{
+                                        $t['date'] = date("d.m.Y", strtotime($term['startdate']));
+                                    }
+                                }
+                                if (!empty($term['starttime']) && !empty($term['endtime']) && (int)$term['starttime'] && (int)$term['endtime']){
+                                    $t['time'] = $term['starttime'] . ' - ' . $term['endtime'];
+                                }else{
+                                    $t['time'] = __('Time on appointment', 'rrze-univis');
+                                }
+                                if (!empty($term['exclude'])){
+                                    $t['time'] .= ' (' . __('exclude', 'rrze-univis') . ' ' . $term['exclude'] . ')';
+                                }
+                                $map = (!empty($term['north']) && !empty($term['east']) ? 'https://karte.fau.de/api/v1/iframe/marker/' . $term['north'] . ',' . $term['east'] . '/zoom/16' : '');
+                                if (!empty($term['room'])){
+                                    $t['room'] = __('Room', 'rrze-univis') . ' ' . (!empty($map)?"<a class='url' href='$map'>":'') . $term['room'] . (!empty($map)?'</a>':'');
+                                }
+                                if (!empty($lecturers)) {
+                                    $t['lecturers'] = $lecturers;
+                                }
+                                // ICS
+                                $ics = '';
+                                if (in_array('ics', $this->show) && !in_array('ics', $this->hide)) {
+                                    $props = [
+                                        'summary' => $event['title'],
+                                        'startdate' => (!empty($term['startdate']) ? $term['startdate'] : null),
+                                        'enddate' => (!empty($term['enddate']) ? $term['enddate'] : null),
+                                        'starttime' => (!empty($term['starttime']) ? $term['starttime'] : null),
+                                        'endtime' => (!empty($term['endtime']) ? $term['endtime'] : null),
+                                        'repeat' => (!empty($term['repeat']) ? $term['repeat'] : null),
+                                        'location' => (!empty($t['room']) ? $t['room'] : null),
+                                        'description' => (!empty($event['comment']) ? $event['comment'] : null),
+                                        'url' => get_permalink(),
+                                        'map' => $map,
+                                        'filename' => sanitize_file_name($event['lecture_type']),
+                                        'ssstart' => $ssstart,
+                                        'ssend' => $ssend,
+                                        'wsstart' => $wsstart,
+                                        'wsend' => $wsend,
+                                    ];
+                                    $screenReaderTxt = ': ' . __('Termin', 'rrze-univis') . ' ' . (!empty($t['repeat']) ? $t['repeat'] : '') . ' ' . (!empty($t['date']) ? $t['date'] . ' ' : '') . $t['time'] . ' ' . __('in den Kalender importieren', 'rrze-univis');
+                                    $ics = ' <span class="lecture-info-ics" itemprop="ics"><a href="' . plugin_dir_url(__FILE__) .'../ics.php?' . http_build_query($props) . '">.ics<span class="screen-reader-text">' . $screenReaderTxt . '</span></a></span>';
+                                }
+                                echo '<li>' . implode(', ', $t) . $ics . '</li>';
+                            }
+                        }
                     }
-                    $t['time'] .= ',';
-                    $term_formatted = implode(' ', $t);
-                    ?>
-                    <li><?php echo $term_formatted; ?></li>
-            <?php endforeach;
-            endforeach;
-        else : ?>
-            <li><?php __('Time and place on appointment', 'rrze-univis'); ?></li>
-        <?php endif; ?>
+                }else{
+                    echo '<li>' . __('Time and place on appointment', 'rrze-univis') . '</li>';
+                } 
+?>
+
     </ul>
 
-    <?php if (array_key_exists('studs', $veranstaltung) && array_key_exists('stud', $veranstaltung['studs'][0])) : 
+    <?php if (!empty($event['stud'])) : 
         echo '<h' . ($this->atts['hstart'] + 2) . '>' . __('Fields of study', 'rrze-univis') . '</h' . ($this->atts['hstart'] + 2) . '>';
     ?>
     <ul>
         <?php
-        foreach ($veranstaltung['studs'][0]['stud'] as $stud) :
+        foreach ($event['stud'] as $stud) :
             $s = array();
             if (!empty($stud['pflicht'])) :
                 $s['pflicht'] = $stud['pflicht'];
@@ -138,8 +149,8 @@
             if (!empty($stud['richt'])) :
                 $s['richt'] = $stud['richt'];
             endif;
-            if (!empty($stud['sem'][0]) && absint($stud['sem'][0])) :
-                $s['sem'] = sprintf('%s %d', __('from SEM', 'rrze-univis'), absint($stud['sem'][0]));
+            if (!empty($stud['sem'])) :
+                $s['sem'] = __('from SEM', 'rrze-univis') . $stud['sem'];
             endif;
             $studinfo = implode(' ', $s);
             ?>
@@ -149,62 +160,61 @@
     <?php endif; ?>
 
 
-    <?php if (!empty($veranstaltung['organizational'])) : ?>
+    <?php if (!empty($event['organizational'])) : ?>
         <h4><?php __('Prerequisites / Organizational information', 'rrze-univis');?></h4>
-        <p><?php echo make_clickable($veranstaltung['organizational']); ?></p>
+        <p><?php echo make_clickable($event['organizational']); ?></p>
         <?php endif;
     ?>
 
 
     <?php 
-    if (!empty($veranstaltung['summary'])){
+    if (!empty($event['summary'])){
         echo '<h' . ($this->atts['hstart'] + 2) . '>' . __('Content', 'rrze-univis') . '</h' . ($this->atts['hstart'] + 2) . '>';
-        echo '<p itemprop="description">' . make_clickable($veranstaltung['summary']) . '</p>';
+        echo '<p itemprop="description">' . make_clickable($event['summary']) . '</p>';
     }
 
-    if (!empty($veranstaltung['literature'])){
+    if (!empty($event['literature'])){
         echo '<h' . ($this->atts['hstart'] + 2) . '>' . __('Recommended Literature', 'rrze-univis') . '</h' . ($this->atts['hstart'] + 2) . '>';
-        echo '<p>' . make_clickable($veranstaltung['literature']) . '</p>';
+        echo '<p>' . make_clickable($event['literature']) . '</p>';
     }
-    if (!empty($veranstaltung['ects_infos'])){
+    if (!empty($event['ects_name'])){
         echo '<h' . ($this->atts['hstart'] + 2) . '>' . __('ECTS information', 'rrze-univis') . '</h' . ($this->atts['hstart'] + 2) . '>';
-        if (!empty($veranstaltung['ects_name'])){
+        if (!empty($event['ects_name'])){
             echo '<h' . ($this->atts['hstart'] + 3) . '>' . __('Title', 'rrze-univis') . '</h' . ($this->atts['hstart'] + 3) . '>';
-            echo '<p>' . $veranstaltung['ects_name'] . '</p>';
+            echo '<p>' . $event['ects_name'] . '</p>';
         }
-        if (!empty($veranstaltung['ects_cred'])){
+        if (!empty($event['ects_cred'])){
             echo '<h' . ($this->atts['hstart'] + 3) . '>' . __('Credits', 'rrze-univis') . '</h' . ($this->atts['hstart'] + 3) . '>';
-            echo '<p>' . $veranstaltung['ects_cred'] . '</p>';
+            echo '<p>' . $event['ects_cred'] . '</p>';
         }
-        if (!empty($veranstaltung['ects_summary'])){
+        if (!empty($event['ects_summary'])){
             echo '<h' . ($this->atts['hstart'] + 3) . '>' . __('Content', 'rrze-univis') . '</h' . ($this->atts['hstart'] + 3) . '>';
-            echo '<p>' . $veranstaltung['ects_summary'] . '</p>';
+            echo '<p>' . $event['ects_summary'] . '</p>';
         }
-        if (!empty($veranstaltung['ects_literature'])){
+        if (!empty($event['ects_summary'])){
+            echo '<h' . ($this->atts['hstart'] + 3) . '>' . __('Organizational', 'rrze-univis') . '</h' . ($this->atts['hstart'] + 3) . '>';
+            echo '<p>' . $event['ects_summary'] . '</p>';
+        }
+        if (!empty($event['ects_literature'])){
             echo '<h' . ($this->atts['hstart'] + 3) . '>' . __('Literature', 'rrze-univis') . '</h' . ($this->atts['hstart'] + 3) . '>';
-            echo '<p>' . $veranstaltung['ects_literature'] . '</p>';
+            echo '<p>' . $event['ects_literature'] . '</p>';
         }
     }
 
-    if (!empty($veranstaltung['keywords']) || !empty($veranstaltung['maxturnout']) || !empty($veranstaltung['url_description'])){
+    if (!empty($event['keywords']) || !empty($event['maxturnout']) || !empty($event['url_description'])){
         echo '<h' . ($this->atts['hstart'] + 2) . '>' . __('Additional information', 'rrze-univis') . '</h' . ($this->atts['hstart'] + 2) . '>';
-        if (!empty($veranstaltung['keywords'])){
-            echo '<p>' . __('Keywords', 'rrze-univis') .': ' . $veranstaltung['keywords'] . '</p>';
+        if (!empty($event['keywords'])){
+            echo '<p>' . __('Keywords', 'rrze-univis') .': ' . $event['keywords'] . '</p>';
         }
-        if (!empty($veranstaltung['maxturnout'])){
-            echo '<p>' . __('Expected participants', 'rrze-univis') .': ' . $veranstaltung['maxturnout'] . '</p>';
+        if (!empty($event['maxturnout'])){
+            echo '<p>' . __('Expected participants', 'rrze-univis') .': ' . $event['maxturnout'] . '</p>';
         }
-        if (!empty($veranstaltung['url_description'])){
-            echo '<p>www: <a href="' . $veranstaltung['url_description'] . '">' . $veranstaltung['url_description'] . '</a></p>';
+        if (!empty($event['url_description'])){
+            echo '<p>www: <a href="' . $event['url_description'] . '">' . $event['url_description'] . '</a></p>';
         }
     }
-
-// echo '<div itemprop="provider" itemscope itemtype="https://schema.org/provider">';
-// echo '<span itemprop="name">FAU</span>';
-// echo '<span itemprop="url">https://www.fau.de</span>';
-// echo '</div>';
 
 echo '</div>'; // schema
 
-endif; ?>
+endforeach; ?>
 </div>

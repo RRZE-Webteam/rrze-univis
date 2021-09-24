@@ -180,12 +180,9 @@ class Shortcode{
                 break;
             case 'lehrveranstaltungen-einzeln': 
                 if (!empty($this->atts['id'])){
-                    // $data = $this->getData('lectureByID', $this->atts['id']);
                     $aHubAtts = [
-                        'filterBy' => 'lectureID',
-                        'filterValue' => $this->atts['id'],
-                        // 'groupBy' => 'lecture_type',
-                        // 'orderBy' => $this->atts['order']
+                        'filterBy' => 'lecture_univisID',
+                        'filterValue' => $this->atts['id']
                     ];
                     $sHubMode = 'lecture';
                 }elseif (!empty($this->atts['name'])){
@@ -240,6 +237,11 @@ class Shortcode{
                     break;
             }
         }
+
+        // echo '<pre>';
+        // var_dump($data);
+        // exit;
+
 
         if ($data && is_array($data)){
             // $data = '<pre>' . json_encode($data, JSON_PRETTY_PRINT) . '</pre>';
