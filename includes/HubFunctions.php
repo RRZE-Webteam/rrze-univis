@@ -188,9 +188,12 @@ class HubFunctions{
 
                 if (!empty($row['termID'])){
                     $aTerms[$row['courseID']][$row['termID']] = [
+                        'time_description' => $row['time_description'],
                         'repeat' => $row['repeat'],
                         'starttime' => $row['term_starttime'],
                         'endtime' => $row['term_endtime'],
+                        'startdate' => $row['term_startdate'],
+                        'enddate' => $row['term_enddate'],
                         'room' => $row['room'],
                         'north' => $row['north'],
                         'east' => $row['east'],
