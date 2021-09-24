@@ -99,30 +99,26 @@
         					echo _e('Office hours', 'rrze-univis') . ': </span> <span><b>'; 
         					echo _e('Office hours', 'rrze-univis') .':</b><br>' ;
         					foreach ($person['officehours'] as $officehour){
-        					 
+                                $t = [];
         						if (!empty($officehour['repeat'])) { 
-        							 echo $officehour['repeat'] . " ";
+                                    $t[] = $officehour['repeat'];
         						}
-        						if (!empty($officehour['starttime'])) { 
-        							 echo $officehour['starttime'];
-        						}
-        					    if (!empty($officehour['endtime'])) { 
-        							echo " ";
-        							echo _e('to', 'rrze-univis') . " " . $officehour['endtime'];
-        						}
+                                if (!empty($officehour['starttime']) && (int)$officehour['starttime']) {
+                                    $tmp = $officehour['starttime'];
+                                    if (!empty($officehour['endtime']) && (int)$officehour['endtime']) {
+                                        $tmp .= ' ' . __('to', 'rrze-univis') . ' ' . $officehour['endtime'];
+                                    }
+                                    $t[] = $tmp;
+                                }
         						if (!empty($officehour['office'])) { 
-        							  echo ", " ; 
-        							  echo  _e('Room', 'rrze-univis') . " " . $officehour['office'];
+        							  $t[] = __('Room', 'rrze-univis') . " " . $officehour['office'];
         							}
         						if (!empty($officehour['comment'])) { 
-        							if (!empty($officehour['repeat']) || !empty($officehour['starttime']) ) {
-        								echo ", " ;
+        							$t[] = $officehour['comment'];
         							}
-        							  echo $officehour['comment'];
-        							}
-        							echo "<br>";
+        						echo implode(', ', $t) . '<br>';
         					}
-        					echo " </span></li>"; 
+        					echo '</span></li>'; 
                         }
                     } ?> 
             </ul>
