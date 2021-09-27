@@ -1,10 +1,5 @@
 <div class="rrze-univis">
 <?php foreach ($data as $event) : 
-
-// echo '<pre>';
-// var_dump($event);
-// exit;
-
     $lang = get_locale();
     $options = get_option('rrze-univis');
     $ssstart = (!empty($options['basic_ssStart']) ? $options['basic_ssStart'] : 0);

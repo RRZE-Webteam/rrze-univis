@@ -73,14 +73,14 @@
                             if (!empty($location['url']) && ((in_array('url', $this->show) && !in_array('url', $this->hide)) || ((in_array('address', $this->show) && !in_array('address', $this->hide) && !in_array('url', $this->hide))))){
                                 echo '<li><span class="screen-reader-text">' . __('Website', 'rrze-univis') . ': </span><a itemprop="url" href="' . $location['url'] . '">' . $location['url'] . '</a></li>';
                             }
-                            if (in_array('address', $this->show) && !in_array('address', $this->hide) && (!empty($location['street']) || !empty($location['ort']) || !empty($location['office']))){
-                                if (!empty($location['street']) || !empty($location['ort'])){
+                            if (in_array('address', $this->show) && !in_array('address', $this->hide) && (!empty($location['street']) || !empty($location['city']) || !empty($location['office']))){
+                                if (!empty($location['street']) || !empty($location['city'])){
                                     echo '<li><span class="screen-reader-text">' . __('Address', 'rrze-univis') . ': <br></span>';
                                     if (!empty($location['street'])){
                                         echo '<div itemprop="address" itemscope="" itemtype="http://schema.org/PostalAddress"><span class="person-info-street" itemprop="streetAddress">' . $location['street'] . '</span><br>';
                                     }
-                                    if (!empty($location['ort'])){
-                                        echo '<span itemprop="addressLocality">' . $location['ort'] . '</span>';
+                                    if (!empty($location['city'])){
+                                        echo '<span itemprop="addressLocality">' . $location['city'] . '</span>';
                                         
                                     }
                                     echo '</div>';
@@ -88,7 +88,7 @@
                                 if (!empty($location['office'])){
                                     echo '<div itemprop="workLocation" itemscope="" itemtype="http://schema.org/Person">' . __('Room', 'rrze-univis') . ' ' .  $location['office'] . '</div>';
                                 }
-                                if (!empty($location['street']) || !empty($location['ort'])){
+                                if (!empty($location['street']) || !empty($location['city'])){
                                     echo '</li>';
                                 }
                             }

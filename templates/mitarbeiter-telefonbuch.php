@@ -79,12 +79,12 @@
                     if (!empty($location['url']) && ((in_array('url', $this->show) && !in_array('url', $this->hide)) || ((in_array('address', $this->show) && !in_array('address', $this->hide) && !in_array('url', $this->hide))))){
                         $pers[] = '<span class="screen-reader-text">' . __('Website', 'rrze-univis') . ': </span><a itemprop="url" href="' . $location['url'] . '">' . $location['url'] . '</a>';
                     }
-                    if (in_array('address', $this->show) && !in_array('address', $this->hide) && (!empty($location['street']) || !empty($location['ort']) || !empty($location['office']))){
+                    if (in_array('address', $this->show) && !in_array('address', $this->hide) && (!empty($location['street']) || !empty($location['city']) || !empty($location['office']))){
                         if (!empty($location['street'])){
                             $pers[] = '<span class="person-info-street" itemprop="streetAddress">' . $location['street'] . '</span>';
                         }
-                        if (!empty($location['ort'])){
-                            $pers[] = '<span itemprop="addressLocality">' . $location['ort'] . '</span>';
+                        if (!empty($location['city'])){
+                            $pers[] = '<span itemprop="addressLocality">' . $location['city'] . '</span>';
                             
                         }
                     if (!empty($location['office'])){

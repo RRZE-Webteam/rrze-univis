@@ -69,6 +69,7 @@ class HubFunctions{
                     'tel_call' => $row['tel_call'],
                     'mobile' => $row['mobile'],
                     'mobile_call' => $row['mobile_call'],
+                    'fax' => $row['fax'],
                     'street' => $row['street'],
                     'city' => $row['city'],
                     'office' => $row['office']
@@ -91,14 +92,18 @@ class HubFunctions{
                 if ($aAtts['groupBy'] != 'position'){
                     $aGroup[$row[$aAtts['groupBy']]][$row['ID']] = $aRet[$row['ID']]; 
                 }elseif ($this->showPosition($row['position'])){
-                    $aGroup[$row[$aAtts['groupBy']]][$row['ID']] = $aRet[$row['ID']]; 
+                    // mitarbeiter-alle (das ist historisch bedingt die Organisationsübersicht s. https://www.wordpress.rrze.fau.de/plugins/fau-und-rrze-plugins/rrze-univis/organisationsdaten-einbinden/ )
+                    if (!empty($row[$aAtts['groupBy']])){
+                        // exclude persons that have no position
+                        $aGroup[$row[$aAtts['groupBy']]][$row['ID']] = $aRet[$row['ID']]; 
+                    }
                 }
             }
         }
 
         if (!empty($aAtts['groupBy'])){
             if ($aAtts['groupBy'] != 'position') {
-                ksort($aGroup);
+                ksort($aGroup, SORT_NATURAL);
             }
             $aRet = $aGroup; 
         }

@@ -335,7 +335,7 @@ function getShortcodeSettings(){
                 'label' => __( 'UnivIS ID Lehrveranstaltung', 'rrze-univis' ),
                 'type' => 'string'
             ],
-            'name' => [
+            'dozentname' => [
                 'default' => '',
                 'field_type' => 'text',
                 'label' => __( 'Nachname, Vorname', 'rrze-univis' ),

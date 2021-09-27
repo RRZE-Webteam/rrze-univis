@@ -118,29 +118,27 @@ class Shortcode{
         }
 
         $this->atts = $this->normalize(shortcode_atts($atts_default, $atts));
+        if (!in_array('telefon', $this->hide) && !in_array('telefon', $this->show)){
+            $this->show[] = 'telefon';
+        }
+        if (!in_array('mail', $this->hide) && !in_array('mail', $this->show)){
+            $this->show[] = 'mail';
+        }
 
         $data = '';
 
-
-        // $this->univis = new UnivISAPI($this->UnivISURL, $this->UnivISOrgNr, $this->atts);
         $this->hub = new HubFunctions($this->atts);
         $aHubAtts = [];
         $sHubMode = '';
 
         switch($this->atts['task']){
-            case 'mitarbeiter-einzeln': 
-                if (!in_array('telefon', $this->hide) && !in_array('telefon', $this->show)){
-                    $this->show[] = 'telefon';
-                }
-                if (!in_array('mail', $this->hide) && !in_array('mail', $this->show)){
-                    $this->show[] = 'mail';
-                }
-                if (!empty($atts['univisid'])){
+            case 'mitarbeiter-einzeln':  // 2DO:  Vorlesungen mitausgeben
+                if (!empty($this->atts['univisid'])){ // OK
                     $aHubAtts = [
                         'filterBy' => 'person_id',
                         'filterValue' => $this->atts['univisid']
                     ];
-                }elseif(!empty($this->atts['name'])){
+                }elseif(!empty($this->atts['name'])){ // OK
                     $aHubAtts = [
                         'filterBy' => 'name',
                         'filterValue' => $this->atts['name']
@@ -148,7 +146,7 @@ class Shortcode{
                 }
                 $sHubMode = 'person';
                 break;
-            case 'mitarbeiter-orga': 
+            case 'mitarbeiter-orga': // OK
                 $aHubAtts = [
                     'filterBy' => 'dep_univisID',
                     'filterValue' => $this->UnivISOrgNr,
@@ -157,7 +155,7 @@ class Shortcode{
                 ];
                 $sHubMode = 'person';
                 break;
-            case 'mitarbeiter-telefonbuch': 
+            case 'mitarbeiter-telefonbuch':  // OK
                 $aHubAtts = [
                     'filterBy' => 'dep_univisID',
                     'filterValue' => $this->UnivISOrgNr,
@@ -166,7 +164,7 @@ class Shortcode{
                 ];
                 $sHubMode = 'person';
                 break;
-            case 'mitarbeiter-alle': 
+            case 'mitarbeiter-alle':  // OK
                 if (!in_array('telefon', $this->hide) && !in_array('telefon', $this->show)){
                     $this->show[] = 'telefon';
                 }
@@ -184,25 +182,38 @@ class Shortcode{
                         'filterBy' => 'lecture_univisID',
                         'filterValue' => $this->atts['id']
                     ];
-                    $sHubMode = 'lecture';
-                }elseif (!empty($this->atts['name'])){
-                    $data = $this->getData('lectureByLecturer', $this->atts['name']);
-                }elseif (!empty($this->atts['univisid'])){
-                    $data = $this->getData('lectureByLecturerID', $this->atts['univisid']);
-                }elseif (!empty($this->atts['id'])){
-                    $data = $this->getData('lectureByLecturerID', $this->atts['id']);
-                }
-                if ($data){
-                    $veranstaltung = $data[array_key_first($data)][0];
+                    $sHubMode = 'lecture'; // OK
+                }elseif (!empty($this->atts['dozentname'])){
+                    $aHubAtts = [
+                        'filterBy' => 'lecture_person_name',
+                        'filterValue' => $this->atts['dozentname']
+                    ];
+                    $sHubMode = 'lecture'; // OK
+                }elseif (!empty($this->atts['dozentid'])){
+                    $aHubAtts = [
+                        'filterBy' => 'lecture_person_univisID',
+                        'filterValue' => $this->atts['dozentid']
+                    ];
+                    $sHubMode = 'lecture'; // OK
                 }
                 break;
             case 'lehrveranstaltungen-alle': 
-                if (!empty($this->atts['name'])){
-                    $data = $this->getData('lectureByLecturer', $this->atts['name']);
-                }elseif (!empty($this->atts['univisid'])){
-                    $data = $this->getData('lectureByLecturerID', $this->atts['univisid']);
-                }elseif (!empty($this->atts['id'])){
-                    $data = $this->getData('lectureByLecturerID', $this->atts['id']);
+                if (!empty($this->atts['dozentname'])){
+                    $aHubAtts = [
+                        'filterBy' => 'lecture_person_name',
+                        'filterValue' => $this->atts['dozentname'],
+                        'groupBy' => 'lecture_type',
+                        'orderBy' => $this->atts['order']
+                    ];
+                    $sHubMode = 'lecture';  // OK
+                }elseif (!empty($this->atts['dozentid'])){
+                    $aHubAtts = [
+                        'filterBy' => 'lecture_person_univisID',
+                        'filterValue' => $this->atts['dozentid'],
+                        'groupBy' => 'lecture_type',
+                        'orderBy' => $this->atts['order']
+                    ];
+                    $sHubMode = 'lecture'; // OK
                 }else{
                     $aHubAtts = [
                         'filterBy' => 'univisID',
@@ -210,7 +221,7 @@ class Shortcode{
                         'groupBy' => 'lecture_type',
                         'orderBy' => $this->atts['order']
                     ];
-                    $sHubMode = 'lecture';
+                    $sHubMode = 'lecture'; // OK
                 }
                 break;
             case 'publikationen': 
@@ -266,12 +277,6 @@ class Shortcode{
             $this->UnivISOrgNr = $atts['number'];
         }elseif (!empty($atts['task']) && ($atts['task'] == 'lehrveranstaltungen-alle' || $atts['task'] == 'mitarbeiter-einzeln') && !empty($atts['id'])){
             $this->UnivISOrgNr = $atts['id'];
-        }
-        if (!empty($atts['dozentid'])){
-            $atts['id'] = $atts['dozentid'];
-        }
-        if (!empty($atts['dozentname'])){
-            $atts['name'] = $atts['dozentname'];
         }
         if (empty($atts['show'])){
             $atts['show'] = '';
