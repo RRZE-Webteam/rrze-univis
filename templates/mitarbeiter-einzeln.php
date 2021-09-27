@@ -1,6 +1,7 @@
 <?php 
+    $lang = get_locale();
+
     foreach ($data as $person) : 
-    
     ?>
 	<div class="person rrze-univis" class="person liste-person" itemscope itemtype="http://schema.org/Person">
         <div class="page">
@@ -128,15 +129,20 @@
         <div>
         <?php
             echo '<h' . ($this->atts['hstart'] + 1) . ' class="active">' . __('Lehrveranstaltungen', 'rrze-univis') . '</h' . ($this->atts['hstart'] + 1) . '>';
-            foreach ($person['lectures'] as $lec_type => $lectures) :
+            foreach ($person['lectures'] as $lec_type => $aEvents) :
                 ?>
                 <div>
                     <ul>
                         <li>
                             <?php echo '<h' . ($this->atts['hstart'] + 2) . '>' . $lec_type . '</h' . ($this->atts['hstart'] + 2) . '>'; ?>
                             <ul>
-                            <?php foreach ($lectures as $lecture){
-                                echo '<li><a href="' . get_permalink() . 'lv_id/' . $lecture['lecture_id'] . '">' . $lecture['name'] . '</a></li>'; 
+                            <?php foreach ($aEvents as $event){
+                                if ($lang != 'de_DE' && $lang!='de_DE_formal' && !empty($event['ects_name'])){
+                                    $event['title'] = $event['ects_name']; 
+                                }else{
+                                    $event['title'] = $event['lecture_title'];
+                                }
+                                echo '<li><a href="' . get_permalink() . 'lv_id/' . $event['lecture_univisID'] . '">' . $event['title'] . '</a></li>'; 
                             }
                             ?>
                             </ul>

@@ -138,13 +138,14 @@ class Shortcode{
                         'filterBy' => 'person_id',
                         'filterValue' => $this->atts['univisid']
                     ];
+                    $sHubMode = 'person';
                 }elseif(!empty($this->atts['name'])){ // OK
                     $aHubAtts = [
                         'filterBy' => 'name',
                         'filterValue' => $this->atts['name']
                     ];
+                    $sHubMode = 'person';
                 }
-                $sHubMode = 'person';
                 break;
             case 'mitarbeiter-orga': // OK
                 $aHubAtts = [
@@ -186,13 +187,17 @@ class Shortcode{
                 }elseif (!empty($this->atts['dozentname'])){
                     $aHubAtts = [
                         'filterBy' => 'lecture_person_name',
-                        'filterValue' => $this->atts['dozentname']
+                        'filterValue' => $this->atts['dozentname'],
+                        'groupBy' => 'lecture_type',
+                        'orderBy' => $this->atts['order']
                     ];
                     $sHubMode = 'lecture'; // OK
                 }elseif (!empty($this->atts['dozentid'])){
                     $aHubAtts = [
                         'filterBy' => 'lecture_person_univisID',
-                        'filterValue' => $this->atts['dozentid']
+                        'filterValue' => $this->atts['dozentid'],
+                        'groupBy' => 'lecture_type',
+                        'orderBy' => $this->atts['order']
                     ];
                     $sHubMode = 'lecture'; // OK
                 }
@@ -239,6 +244,20 @@ class Shortcode{
             switch($sHubMode){
                 case 'person':
                     $data = $this->hub->getPerson($aHubAtts);
+                    if ($this->atts['task'] == 'mitarbeiter-einzeln'){
+                        // add lectures
+                        foreach($data as $key => $person){
+                            if (!empty($person['person_id'])){
+                                $aHubAtts = [
+                                    'filterBy' => 'lecture_person_univisID',
+                                    'filterValue' => $person['person_id'],
+                                    'groupBy' => 'lecture_type',
+                                    // 'orderBy' => $this->atts['order']
+                                ];
+                                $data[$key]['lectures'] = $this->hub->getLecture($aHubAtts);
+                            }
+                        }
+                    }
                     break;
                 case 'lecture':
                     $data = $this->hub->getLecture($aHubAtts);
@@ -248,11 +267,6 @@ class Shortcode{
                     break;
             }
         }
-
-        // echo '<pre>';
-        // var_dump($data);
-        // exit;
-
 
         if ($data && is_array($data)){
             // $data = '<pre>' . json_encode($data, JSON_PRETTY_PRINT) . '</pre>';
