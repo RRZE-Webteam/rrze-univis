@@ -157,6 +157,7 @@ class HubFunctions{
         foreach($rows as $row){
             $aRet[$row['lecture_univisID']] = [
                 'lecture_type' => $row['lecture_type'],
+                'lecture_type_short' => $row['lecture_type_short'],
                 'lecture_univisID' => $row['lecture_univisID'],
                 'lecture_title' => $row['lecture_title'],
                 'ects_name' => $row['ects_name'],

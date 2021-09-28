@@ -1,5 +1,6 @@
 <div class="rrze-univis">
-<?php foreach ($data as $event) : 
+<?php foreach ($data as $aEvent) : 
+foreach ($aEvent as $event) :
     $lang = get_locale();
     $options = get_option('rrze-univis');
     $ssstart = (!empty($options['basic_ssStart']) ? $options['basic_ssStart'] : 0);
@@ -210,6 +211,6 @@
     }
 
 echo '</div>'; // schema
-
+endforeach; 
 endforeach; ?>
 </div>

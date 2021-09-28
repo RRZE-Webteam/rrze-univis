@@ -237,7 +237,7 @@ class Shortcode{
                         foreach($data as $key => $person){
                             if (!empty($person['person_id'])){
                                 $aHubAtts = [
-                                    'filter' => ['lecture_person_univisID' =>  $this->atts['dozentid']],
+                                    'filter' => ['lecture_person_univisID' =>  $person['person_id']],
                                     'groupBy' => 'lecture_type',
                                     // 'orderBy' => $this->atts['order']
                                 ];
