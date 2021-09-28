@@ -259,7 +259,7 @@ class Shortcode{
                     }
                     $aBoolVals = ['earlystudy', 'guest', 'ects'];
                     foreach($aBoolVals as $val){
-                        if (!empty($this->atts[$va])){
+                        if (!empty($this->atts[$val])){
                             $aHubAtts['filter'][$val] = boolval($this->atts[$val]);
                         }
                     }
