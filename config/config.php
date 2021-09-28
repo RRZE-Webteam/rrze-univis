@@ -378,7 +378,7 @@ function getShortcodeSettings(){
                 'label' => __( 'Semester z.B. 2020w', 'rrze-univis' ),
                 'type' => 'string'
             ],
-            'sprache' => [
+            'lang' => [
                 'default' => '',
                 'field_type' => 'text',
                 'label' => __( 'Sprache', 'rrze-univis' ),
@@ -415,9 +415,23 @@ function getShortcodeSettings(){
                 'label' => __( 'Überschriftenebene der ersten Überschrift', 'fau-person' ),
                 'type' => 'number' 
             ],
-            'fruehstud' => [
+            'earlystudy' => [
                 'field_type' => 'toggle',
                 'label' => __( 'Nur Frühstudium anzeigen', 'rrze-univis' ),
+                'type' => 'boolean',
+                'default' => NULL,
+                'checked'   => FALSE
+            ],
+            'guest' => [
+                'field_type' => 'toggle',
+                'label' => __( 'Nur Veranstaltungen anzeigen, die für Gasthörer zugelassen sind', 'rrze-univis' ),
+                'type' => 'boolean',
+                'default' => NULL,
+                'checked'   => FALSE
+            ],
+            'ecst' => [
+                'field_type' => 'toggle',
+                'label' => __( 'Nur ECTS-Studium anzeigen', 'rrze-univis' ),
                 'type' => 'boolean',
                 'default' => NULL,
                 'checked'   => FALSE

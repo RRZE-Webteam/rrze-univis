@@ -85,6 +85,10 @@ class Shortcode{
                 $atts['task'] = 'lehrveranstaltungen-einzeln';
             }
         }
+        // lv_id is not in config (=> id)
+        if (!empty($atts['sprache'])) {
+            $atts['lang'] = $atts['sprache'];
+        }
 
         if (empty($atts['task'])){
             $atts['task'] = 'mitarbeiter-alle';
@@ -180,53 +184,37 @@ class Shortcode{
             case 'lehrveranstaltungen-einzeln': 
                 if (!empty($this->atts['id'])){
                     $aHubAtts = [
-                        'filterBy' => 'lecture_univisID',
-                        'filterValue' => $this->atts['id']
+                        'filter' => ['lecture_univisID' =>  $this->atts['id']],
                     ];
-                    $sHubMode = 'lecture'; // OK
+                    $sHubMode = 'lecture';
                 }elseif (!empty($this->atts['dozentname'])){
                     $aHubAtts = [
-                        'filterBy' => 'lecture_person_name',
-                        'filterValue' => $this->atts['dozentname'],
-                        'groupBy' => 'lecture_type',
-                        'orderBy' => $this->atts['order']
+                        'filter' => ['lecture_person_name' =>  $this->atts['dozentname']],
                     ];
-                    $sHubMode = 'lecture'; // OK
+                    $sHubMode = 'lecture';
                 }elseif (!empty($this->atts['dozentid'])){
                     $aHubAtts = [
-                        'filterBy' => 'lecture_person_univisID',
-                        'filterValue' => $this->atts['dozentid'],
-                        'groupBy' => 'lecture_type',
-                        'orderBy' => $this->atts['order']
+                        'filter' => ['lecture_person_univisID' =>  $this->atts['dozentid']],
                     ];
-                    $sHubMode = 'lecture'; // OK
+                    $sHubMode = 'lecture';
                 }
                 break;
             case 'lehrveranstaltungen-alle': 
                 if (!empty($this->atts['dozentname'])){
                     $aHubAtts = [
-                        'filterBy' => 'lecture_person_name',
-                        'filterValue' => $this->atts['dozentname'],
-                        'groupBy' => 'lecture_type',
-                        'orderBy' => $this->atts['order']
+                        'filter' => ['lecture_person_name' =>  $this->atts['dozentname']],
                     ];
-                    $sHubMode = 'lecture';  // OK
+                    $sHubMode = 'lecture';
                 }elseif (!empty($this->atts['dozentid'])){
                     $aHubAtts = [
-                        'filterBy' => 'lecture_person_univisID',
-                        'filterValue' => $this->atts['dozentid'],
-                        'groupBy' => 'lecture_type',
-                        'orderBy' => $this->atts['order']
+                        'filter' => ['lecture_person_univisID' =>  $this->atts['dozentid']],
                     ];
-                    $sHubMode = 'lecture'; // OK
+                    $sHubMode = 'lecture';
                 }else{
                     $aHubAtts = [
-                        'filterBy' => 'univisID',
-                        'filterValue' => $this->UnivISOrgNr,
-                        'groupBy' => 'lecture_type',
-                        'orderBy' => $this->atts['order']
+                        'filter' => ['univisID' =>  $this->UnivISOrgNr],
                     ];
-                    $sHubMode = 'lecture'; // OK
+                    $sHubMode = 'lecture';
                 }
                 break;
             case 'publikationen': 
@@ -249,8 +237,7 @@ class Shortcode{
                         foreach($data as $key => $person){
                             if (!empty($person['person_id'])){
                                 $aHubAtts = [
-                                    'filterBy' => 'lecture_person_univisID',
-                                    'filterValue' => $person['person_id'],
+                                    'filter' => ['lecture_person_univisID' =>  $this->atts['dozentid']],
                                     'groupBy' => 'lecture_type',
                                     // 'orderBy' => $this->atts['order']
                                 ];
@@ -260,6 +247,22 @@ class Shortcode{
                     }
                     break;
                 case 'lecture':
+                    $aHubAtts['groupBy'] = 'lecture_type';
+                    if (!empty($this->atts['order'])){
+                        $aHubAtts['orderBy'] = $this->atts['order'];
+                    }
+                    if (!empty($this->atts['type'])){
+                        $aHubAtts['filter']['lecture_type_short'] = explode(',', $this->atts['type']);
+                    }
+                    if (!empty($this->atts['lang'])){
+                        $aHubAtts['filter']['leclanguage_short'] = $this->atts['lang'];
+                    }
+                    $aBoolVals = ['earlystudy', 'guest', 'ects'];
+                    foreach($aBoolVals as $val){
+                        if (!empty($this->atts[$va])){
+                            $aHubAtts['filter'][$val] = boolval($this->atts[$val]);
+                        }
+                    }
                     $data = $this->hub->getLecture($aHubAtts);
                     break;
                 case 'publication':
@@ -301,6 +304,25 @@ class Shortcode{
         if (!empty($atts['sprache'])){
             $atts['lang'] = $atts['sprache'];
         }
+        if (!empty($atts['fruehstud'])){
+            $atts['earlystudy'] = $atts['fruehstud'];
+        }
+        if (!empty($atts['lang'])){
+            // for historical reasons one letter input is allowed f.e. "D", "E" instead of "de", "en"
+            switch (strtolower($atts['lang'])){
+                case 'e' : $atts['lang'] = 'en';
+                    break;
+                case 'f' : $atts['lang'] = 'fr';
+                    break;
+                case 's' : $atts['lang'] = 'es';
+                    break;
+                case 'r' : $atts['lang'] = 'ru';
+                    break;
+                case 'c' : $atts['lang'] = 'zh';
+                    break;
+            }
+        }
+
         if (isset($atts['show_phone'])){
             if ($atts['show_phone']){
                 $atts['show'] .= ',telefon';

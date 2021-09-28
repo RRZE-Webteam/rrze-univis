@@ -112,15 +112,38 @@ class HubFunctions{
     }
 
 
+// params => getLecture:
+// sem
+// type => lecture_type_short funktioniert
+// lang => leclanguage funktioniert
+// lv_import
+// fruehstud => earlystudy IS NOT NULL
+// order => umgesetzt
+
     public function getLecture($aAtts){
         global $wpdb;
         $aRet = [];
 
-        $prepare_vals = [
-            $aAtts['filterValue']
-        ];
+        $aPrepare = [];
+        $sWhere = 'WHERE ';
+        foreach($aAtts['filter'] as $k => $val){
+            if (is_array($val)){
+                $aType = [];
+                foreach($val as $v){
+                    $aPrepare[] = $v;
+                    $aType[] = '%s';
+                }
+                $sWhere .= $k . ' IN ('. implode(',', $aType) . ') AND ';
+            }elseif(is_bool($val)){
+                $sWhere .= "$k IS " . ($val?' NOT ':'') . "NULL AND ";
+            }else{
+                $aPrepare[] = $val;
+                $sWhere .= "$k = %s AND ";
+            }
+        } 
+        $sWhere = substr($sWhere, 0, -5);
 
-        $rows = $wpdb->get_results($wpdb->prepare("SELECT * FROM getLecture WHERE " . $aAtts['filterBy'] . " = %s", $prepare_vals), ARRAY_A);
+        $rows = $wpdb->get_results($wpdb->prepare("SELECT * FROM getLecture $sWhere", $aPrepare), ARRAY_A);
         if ($wpdb->last_error) {
             echo json_encode($wpdb->last_error);
             exit;
