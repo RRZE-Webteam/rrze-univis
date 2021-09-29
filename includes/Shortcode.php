@@ -10,10 +10,6 @@ use function RRZE\UnivIS\Config\getShortcodeSettings;
  * Shortcode
  */
 class Shortcode{
-    /**
-     * Der vollständige Pfad- und Dateiname der Plugin-Datei.
-     * @var string
-     */
     protected $pluginFile;
     protected $UnivISOrgNr;
     protected $UnivISURL;
@@ -30,10 +26,6 @@ class Shortcode{
     private $settings = '';
 
 
-    /** 
-     * Variablen Werte zuweisen.
-     * @param string $pluginFile Pfad- und Dateiname der Plugin-Datei
-     */
     public function __construct($pluginFile, $settings){
         $this->pluginFile = $pluginFile;
         $this->settings = getShortcodeSettings();
@@ -47,10 +39,6 @@ class Shortcode{
         add_filter('mce_external_plugins', [$this, 'addMCEButtons']);
     }
 
-    /**
-     * Er wird ausgeführt, sobald die Klasse instanziiert wird.
-     * @return void
-     */
     public function onLoaded(){
         add_action('wp_enqueue_scripts', [$this, 'enqueueScripts']);
         add_shortcode('univis', [$this, 'shortcodeOutput'], 10, 2);
@@ -61,12 +49,6 @@ class Shortcode{
         wp_enqueue_style( 'rrze-univis' );
     }
 
-
-    /**
-     * Generieren Sie die Shortcode-Ausgabe
-     * @param  array   $atts Shortcode-Attribute
-     * @return string Gib den Inhalt zurück
-     */
     public function shortcodeOutput( $atts ) {
         $this->settings = getShortcodeSettings();
 
@@ -131,19 +113,18 @@ class Shortcode{
 
         $data = '';
 
-        // $this->hub = new HubFunctions($this->atts);
         $aHubAtts = [];
         $sHubMode = '';
 
         switch($this->atts['task']){
-            case 'mitarbeiter-einzeln':  // 2DO:  Vorlesungen mitausgeben
-                if (!empty($this->atts['univisid'])){ // OK
+            case 'mitarbeiter-einzeln':
+                if (!empty($this->atts['univisid'])){
                     $aHubAtts = [
                         'filterBy' => 'person_id',
                         'filterValue' => $this->atts['univisid']
                     ];
                     $sHubMode = 'person';
-                }elseif(!empty($this->atts['name'])){ // OK
+                }elseif(!empty($this->atts['name'])){
                     $aHubAtts = [
                         'filterBy' => 'name',
                         'filterValue' => $this->atts['name']
@@ -151,7 +132,7 @@ class Shortcode{
                     $sHubMode = 'person';
                 }
                 break;
-            case 'mitarbeiter-orga': // OK
+            case 'mitarbeiter-orga':
                 $aHubAtts = [
                     'filterBy' => 'dep_univisID',
                     'filterValue' => $this->UnivISOrgNr,
@@ -160,7 +141,7 @@ class Shortcode{
                 ];
                 $sHubMode = 'person';
                 break;
-            case 'mitarbeiter-telefonbuch':  // OK
+            case 'mitarbeiter-telefonbuch':
                 $aHubAtts = [
                     'filterBy' => 'dep_univisID',
                     'filterValue' => $this->UnivISOrgNr,
@@ -169,7 +150,7 @@ class Shortcode{
                 ];
                 $sHubMode = 'person';
                 break;
-            case 'mitarbeiter-alle':  // OK
+            case 'mitarbeiter-alle':
                 if (!in_array('telefon', $this->hide) && !in_array('telefon', $this->show)){
                     $this->show[] = 'telefon';
                 }
@@ -217,21 +198,21 @@ class Shortcode{
                     $sHubMode = 'lecture';
                 }
                 break;
-            case 'publikationen': 
-                if (!empty($atts['name'])){
-                    $data = $this->getData('publicationByAuthor', $this->atts['name']);
-                }elseif (!empty($this->atts['univisid'])){
-                    $data = $this->getData('publicationByAuthorID', $this->atts['univisid']);
-                }else{
-                    $data = $this->getData('publicationByDepartment');
-                }
-                break;
+            // case 'publikationen': 
+            //     if (!empty($atts['name'])){
+            //         $data = $this->getData('publicationByAuthor', $this->atts['name']);
+            //     }elseif (!empty($this->atts['univisid'])){
+            //         $data = $this->getData('publicationByAuthorID', $this->atts['univisid']);
+            //     }else{
+            //         $data = $this->getData('publicationByDepartment');
+            //     }
+            //     break;
         }
 
         if (!empty($sHubMode)){
             switch($sHubMode){
                 case 'person':
-                    $data = $this->getDataFromHub('person', $aHubAtts);
+                    $data = $this->getData('person', $aHubAtts);
                     if ($this->atts['task'] == 'mitarbeiter-einzeln'){
                         // add lectures
                         foreach($data as $key => $person){
@@ -241,7 +222,7 @@ class Shortcode{
                                     'groupBy' => 'lecture_type',
                                     // 'orderBy' => $this->atts['order']
                                 ];
-                                $data[$key]['lectures'] = $this->getDataFromHub('lecture', $aHubAtts);
+                                $data[$key]['lectures'] = $this->getData('lecture', $aHubAtts);
                             }
                         }
                     }
@@ -263,19 +244,15 @@ class Shortcode{
                             $aHubAtts['filter'][$val] = boolval($this->atts[$val]);
                         }
                     }
-                    $data = $this->getDataFromHub('lecture', $aHubAtts);
+                    $data = $this->getData('lecture', $aHubAtts);
                     break;
-                case 'publication':
-                    $data = $this->getDataFromHub('publication', $aHubAtts);
-                    break;
+                // case 'publication':
+                //     $data = $this->getData('publication', $aHubAtts);
+                //     break;
             }
         }
 
         if ($data && is_array($data)){
-            // $data = '<pre>' . json_encode($data, JSON_PRETTY_PRINT) . '</pre>';
-            // var_dump($data);
-            // exit;
-            
             $filename = trailingslashit(dirname(__FILE__)) . '../templates/' . $this->atts['task'] . '.php';
             
             if (is_file($filename)) {
@@ -322,7 +299,6 @@ class Shortcode{
                     break;
             }
         }
-
         if (isset($atts['show_phone'])){
             if ($atts['show_phone']){
                 $atts['show'] .= ',telefon';
@@ -574,19 +550,33 @@ class Shortcode{
         );
     }
 
-    public function getData($dataType, $univisParam = NULL){
-        $sAtts = (!empty($this->atts) && is_array($this->atts) ? implode('-', $this->atts) : '');
+    public function getDataFromHub($dataType, $aParams){
+        $url = HUB_ENDPOINT . $dataType . '?' . http_build_query($aParams,'','&');
+        $request = wp_remote_get($url);
+        $status_code = wp_remote_retrieve_response_code( $request );
+
+        if ( $status_code != '200' ){
+            return $url . ' ' . __( 'is not valid.', 'rrze-univis' );
+        }else{
+            return json_decode(wp_remote_retrieve_body($request), TRUE);
+        } 
+    }
+
+    public function getData($dataType, $aParams){
+        $sTransientName = self::TRANSIENT_PREFIX . $dataType . http_build_query($aParams,'','&');
+
         if ($this->noCache){
-            $data = $this->univis->getData($dataType, $univisParam);
-            set_transient(self::TRANSIENT_PREFIX . $dataType . $sAtts . $this->UnivISOrgNr . $univisParam, $data, self::TRANSIENT_EXPIRATION);
+            $data = $this->getDataFromHub($dataType, $aParams);
+            set_transient($sTransientName, $data, self::TRANSIENT_EXPIRATION);
             return $data;
         }
-        $data = get_transient(self::TRANSIENT_PREFIX . $dataType . $sAtts . $this->UnivISOrgNr . $univisParam);
+        $data = get_transient($sTransientName);
+
         if ($data && $data != __('Keine passenden Datensätze gefunden.', 'rrze-univis')){
             return $data;
         }else{
-            $data = $this->univis->getData($dataType, $univisParam);
-            set_transient(self::TRANSIENT_PREFIX . $dataType . $sAtts . $this->UnivISOrgNr . $univisParam, $data, self::TRANSIENT_EXPIRATION);
+            $data = $this->getDataFromHub($dataType, $aParams);
+            set_transient($sTransientName, $data, self::TRANSIENT_EXPIRATION);
             return $data;
         }
     }
@@ -596,19 +586,5 @@ class Shortcode{
             $pluginArray['rrze_univis_shortcode'] = plugins_url('../js/tinymce-shortcodes.js', plugin_basename(__FILE__));
         }
         return $pluginArray;
-    }
-
-
-    public function getDataFromHub($dataType, $aParams){
-        $url = HUB_ENDPOINT . $dataType . '?' . http_build_query($aParams,'','&');
-
-        $request = wp_remote_get($url);
-        $status_code = wp_remote_retrieve_response_code( $request );
-
-        if ( $status_code != '200' ){
-            return $url . ' ' . __( 'is not valid.', 'rrze-univis' );
-        }else{
-            return json_decode(wp_remote_retrieve_body($request), TRUE);
-        } 
     }
 }
