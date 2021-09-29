@@ -251,13 +251,13 @@ function getShortcodeSettings(){
                 'label' => __( 'ausblenden', 'rrze-univis' ),
                 'type' => 'string'
             ],
-            'ignoriere_jobs' => [
+            'ignore_jobs' => [
                 'default' => 'Sicherheitsbeauftragter|IT-Sicherheits-Beauftragter|Webmaster|Postmaster|IT-Betreuer|UnivIS-Beauftragte',
                 'field_type' => 'text',
                 'label' => __( 'Ignoriere Jobs - einzelne Tätigkeiten durch | voneinander trennen.', 'rrze-univis' ),
                 'type' => 'string'
             ],
-            'zeige_jobs' => [
+            'show_jobs' => [
                 'default' => '',
                 'field_type' => 'text',
                 'label' => __( 'Zeige nur diese Jobs', 'rrze-univis' ),

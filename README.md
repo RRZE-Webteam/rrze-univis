@@ -1,6 +1,6 @@
 # RRZE-UnivIS
 
-Darstellung von Lehrveranstaltungen und organisatorischen Daten aus UnivIS.
+Darstellung von Lehrveranstaltungen und organisatorischen Daten aus UnivIS unter Verwendung von rrze-hub.
 
 ## Download 
 

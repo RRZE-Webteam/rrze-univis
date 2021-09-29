@@ -1,7 +1,7 @@
 {
   "name": "rrze-univis",
-  "version": "4.0.17",
-  "description": "Einbindung von Daten aus UnivIS",
+  "version": "4.1.0",
+  "description": "Einbindung von Daten aus UnivIS über rrze-hub",
   "main": "rrze-univis.php",
   "textdomain": "rrze-univis",
   "scripts": {

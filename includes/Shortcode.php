@@ -372,6 +372,12 @@ class Shortcode{
                 $atts['sem'] = $year . $season;
             }
         }
+        if (!empty($atts['zeige_jobs'])){
+            $atts['show_jobs'] = $atts['zeige_jobs'];
+        }
+        if (!empty($atts['ignoriere_jobs'])){
+            $atts['ignore_jobs'] = $atts['ignoriere_jobs'];
+        }
         if (empty($atts['hstart'])){
             $atts['hstart'] = $this->options['basic_hstart'];
         }
