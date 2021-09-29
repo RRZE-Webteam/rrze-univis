@@ -4,6 +4,8 @@ namespace RRZE\UnivIS\Config;
 
 defined('ABSPATH') || exit;
 
+define('HUB_ENDPOINT', 'https://www.nickless.test.rrze.fau.de/wp-16/wp-json/rrze-hub/api/v1/');
+
 /**
  * Gibt der Name der Option zurück.
  * @return array [description]

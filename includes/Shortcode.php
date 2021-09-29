@@ -131,7 +131,7 @@ class Shortcode{
 
         $data = '';
 
-        $this->hub = new HubFunctions($this->atts);
+        // $this->hub = new HubFunctions($this->atts);
         $aHubAtts = [];
         $sHubMode = '';
 
@@ -231,20 +231,20 @@ class Shortcode{
         if (!empty($sHubMode)){
             switch($sHubMode){
                 case 'person':
-                    $data = $this->hub->getPerson($aHubAtts);
-                    if ($this->atts['task'] == 'mitarbeiter-einzeln'){
-                        // add lectures
-                        foreach($data as $key => $person){
-                            if (!empty($person['person_id'])){
-                                $aHubAtts = [
-                                    'filter' => ['lecture_person_univisID' =>  $person['person_id']],
-                                    'groupBy' => 'lecture_type',
-                                    // 'orderBy' => $this->atts['order']
-                                ];
-                                $data[$key]['lectures'] = $this->hub->getLecture($aHubAtts);
-                            }
-                        }
-                    }
+                    $data = $this->getDataFromHub('person', $aHubAtts);
+                    // if ($this->atts['task'] == 'mitarbeiter-einzeln'){
+                    //     // add lectures
+                    //     foreach($data as $key => $person){
+                    //         if (!empty($person['person_id'])){
+                    //             $aHubAtts = [
+                    //                 'filter' => ['lecture_person_univisID' =>  $person['person_id']],
+                    //                 'groupBy' => 'lecture_type',
+                    //                 // 'orderBy' => $this->atts['order']
+                    //             ];
+                    //             $data[$key]['lectures'] = $this->hub->getLecture($aHubAtts);
+                    //         }
+                    //     }
+                    // }
                     break;
                 case 'lecture':
                     $aHubAtts['groupBy'] = 'lecture_type';
@@ -596,5 +596,19 @@ class Shortcode{
             $pluginArray['rrze_univis_shortcode'] = plugins_url('../js/tinymce-shortcodes.js', plugin_basename(__FILE__));
         }
         return $pluginArray;
+    }
+
+
+    public function getDataFromHub($dataType, $aParams){
+        $url = HUB_ENDPOINT . $dataType . '?' . http_build_query($aParams,'','&');
+
+        $request = wp_remote_get($url);
+        $status_code = wp_remote_retrieve_response_code( $request );
+
+        if ( $status_code != '200' ){
+            return $url . ' ' . __( 'is not valid.', 'rrze-univis' );
+        }else{
+            return json_decode(wp_remote_retrieve_body($request), TRUE);
+        } 
     }
 }
