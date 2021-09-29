@@ -7,8 +7,8 @@
     $wsstart = (!empty($options['basic_wsStart']) ? $options['basic_wsStart'] : 0);
     $wsend = (!empty($options['basic_wsEnd']) ? $options['basic_wsEnd'] : 0);
 
-    foreach ($data as $typ => $aEvent) : 
-        echo '<h' . $this->atts['hstart'] . '>' . $typ . '</h' . $this->atts['hstart'] . '>';
+    foreach ($data as $type => $aEvent) : 
+        echo '<h' . $this->atts['hstart'] . '>' . $type . '</h' . $this->atts['hstart'] . '>';
 ?>
 	<ul>
         <?php 
@@ -118,16 +118,16 @@
                                 if (in_array('ics', $this->show) && !in_array('ics', $this->hide)) {
                                     $props = [
                                         'summary' => $event['title'],
-                                        'startdate' => (!empty($term['startdate']) ? $term['startdate'] : null),
-                                        'enddate' => (!empty($term['enddate']) ? $term['enddate'] : null),
-                                        'starttime' => (!empty($term['starttime']) ? $term['starttime'] : null),
-                                        'endtime' => (!empty($term['endtime']) ? $term['endtime'] : null),
+                                        'startdate' => (!empty($term['startdate'])  && (int)$term['startdate'] ? $term['startdate'] : null),
+                                        'enddate' => (!empty($term['enddate']) && (int)$term['enddate'] ? $term['enddate'] : null),
+                                        'starttime' => (!empty($term['starttime']) && (int)$term['starttime'] ? $term['starttime'] : null),
+                                        'endtime' => (!empty($term['endtime']) && (int)$term['endtime'] ? $term['endtime'] : null),
                                         'repeat' => (!empty($term['repeat']) ? $term['repeat'] : null),
                                         'location' => (!empty($t['room']) ? $t['room'] : null),
                                         'description' => (!empty($event['comment']) ? $event['comment'] : null),
                                         'url' => get_permalink(),
                                         'map' => $map,
-                                        'filename' => sanitize_file_name($typ),
+                                        'filename' => sanitize_file_name($type),
                                         'ssstart' => $ssstart,
                                         'ssend' => $ssend,
                                         'wsstart' => $wsstart,

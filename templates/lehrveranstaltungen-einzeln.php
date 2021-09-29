@@ -1,6 +1,7 @@
 <div class="rrze-univis">
 <?php foreach ($data as $aEvent) : 
 foreach ($aEvent as $event) :
+    $type = $event['lecture_type'];
     $lang = get_locale();
     $options = get_option('rrze-univis');
     $ssstart = (!empty($options['basic_ssStart']) ? $options['basic_ssStart'] : 0);
@@ -103,16 +104,16 @@ foreach ($aEvent as $event) :
                                 if (in_array('ics', $this->show) && !in_array('ics', $this->hide)) {
                                     $props = [
                                         'summary' => $event['title'],
-                                        'startdate' => (!empty($term['startdate']) ? $term['startdate'] : null),
-                                        'enddate' => (!empty($term['enddate']) ? $term['enddate'] : null),
-                                        'starttime' => (!empty($term['starttime']) ? $term['starttime'] : null),
-                                        'endtime' => (!empty($term['endtime']) ? $term['endtime'] : null),
+                                        'startdate' => (!empty($term['startdate'])  && (int)$term['startdate'] ? $term['startdate'] : null),
+                                        'enddate' => (!empty($term['enddate']) && (int)$term['enddate'] ? $term['enddate'] : null),
+                                        'starttime' => (!empty($term['starttime']) && (int)$term['starttime'] ? $term['starttime'] : null),
+                                        'endtime' => (!empty($term['endtime']) && (int)$term['endtime'] ? $term['endtime'] : null),
                                         'repeat' => (!empty($term['repeat']) ? $term['repeat'] : null),
                                         'location' => (!empty($t['room']) ? $t['room'] : null),
                                         'description' => (!empty($event['comment']) ? $event['comment'] : null),
                                         'url' => get_permalink(),
                                         'map' => $map,
-                                        'filename' => sanitize_file_name($event['lecture_type']),
+                                        'filename' => sanitize_file_name($type),
                                         'ssstart' => $ssstart,
                                         'ssend' => $ssend,
                                         'wsstart' => $wsstart,
