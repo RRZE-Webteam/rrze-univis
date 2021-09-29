@@ -232,19 +232,19 @@ class Shortcode{
             switch($sHubMode){
                 case 'person':
                     $data = $this->getDataFromHub('person', $aHubAtts);
-                    // if ($this->atts['task'] == 'mitarbeiter-einzeln'){
-                    //     // add lectures
-                    //     foreach($data as $key => $person){
-                    //         if (!empty($person['person_id'])){
-                    //             $aHubAtts = [
-                    //                 'filter' => ['lecture_person_univisID' =>  $person['person_id']],
-                    //                 'groupBy' => 'lecture_type',
-                    //                 // 'orderBy' => $this->atts['order']
-                    //             ];
-                    //             $data[$key]['lectures'] = $this->hub->getLecture($aHubAtts);
-                    //         }
-                    //     }
-                    // }
+                    if ($this->atts['task'] == 'mitarbeiter-einzeln'){
+                        // add lectures
+                        foreach($data as $key => $person){
+                            if (!empty($person['person_id'])){
+                                $aHubAtts = [
+                                    'filter' => ['lecture_person_univisID' =>  $person['person_id']],
+                                    'groupBy' => 'lecture_type',
+                                    // 'orderBy' => $this->atts['order']
+                                ];
+                                $data[$key]['lectures'] = $this->getDataFromHub('lecture', $aHubAtts);
+                            }
+                        }
+                    }
                     break;
                 case 'lecture':
                     $aHubAtts['groupBy'] = 'lecture_type';
@@ -263,10 +263,10 @@ class Shortcode{
                             $aHubAtts['filter'][$val] = boolval($this->atts[$val]);
                         }
                     }
-                    $data = $this->hub->getLecture($aHubAtts);
+                    $data = $this->getDataFromHub('lecture', $aHubAtts);
                     break;
                 case 'publication':
-                    $data = $this->hub->getPublication($aHubAtts);
+                    $data = $this->getDataFromHub('publication', $aHubAtts);
                     break;
             }
         }
