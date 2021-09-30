@@ -711,33 +711,24 @@ class UnivISAPI {
         return implode('', $matches[0]);
     }
 
-    public function makeHTML($str){
-        $aStr = [
-            '\*\*' => '*',
-            '\|\|' => '|',
-            '\^\^' => '^',
-            '__'   => '_', 
-        ];
-
-        $aReg = [
-            '/^- ?(.+)/m' => '<ul><li>$1</li></ul>', // - am Anfang der Zeilen: Jeder Listenpunkt wird als vollständige Aufzählung umgesetzt
-            '/\*(.+)\*/'  => '<b>$1</b>',  // *fett*
-            '/\|(.+)\|/'  => '<i>$1</i>', // |kursiv|
-            '/\^(.+)\^/'  => '<sup>$1</sup>', // pi^2^
-            '/_(.+)_/'    => '<sub>$1</sub>', // H_2_O
-            '/\[(.+?)\]\s?(\S+)/' => "<a href='$2'>$1</a>", // [Linktext] Ziel-URL bzw. -Mailadresse
-            '/([^">]?)(mailto:)([^")\s<>]+)/mi' => '$1<a href="mailto:$3">$3</a>', // find mailto:email@address.tld but not <a href="mailto:email@address.tld">mailto:email@address.tld</a>
-        ];
-        $aBr = [
-            "<br>\r<br>" => '<br>',
-            "\n" => "<br/>",
-            PHP_EOL => '<br>',
-        ];
-        $str = str_replace(array_keys($aStr), array_values($aStr), $str);
-        $str = preg_replace(array_keys($aReg), array_values($aReg), $str);
-        $str = str_replace(array_keys($aBr), array_values($aBr), $str);
-
-        return $str;
+    public function formatUnivIS( $txt ){
+        $subs = array(
+            '/^\-+\s+(.*)?/mi' => '<ul><li>$1</li></ul>',  // list 
+            '/(<\/ul>\n(.*)<ul>*)+/' => '',  // list 
+            '/\*{2}/m' => '/\*/', // **
+            '/_{2}/m' => '/_/', // __
+            '/\|(.*)\|/m' => '<i>$1</i>',  // |itallic|
+            '/_(.*)_/m' => '<sub>$1</sub>',  // H_2_O
+            '/\^(.*)\^/m' => '<sup>$1</sup>',  // pi^2^
+            '/\[([^\]]*)\]\s{1}((http|https|ftp|ftps):\/\/\S*)/mi' => '<a href="$2">$1</a>', // [link text] http...
+            '/\[([^\]]*)\]\s{1}(mailto:)([^")\s<>]+)/mi' => '<a href="mailto:$3">$1</a>', // find [link text] mailto:email@address.tld but not <a href="mailto:email@address.tld">mailto:email@address.tld</a>
+            '/\*(.*)\*/m' => '<strong>$1</strong>', // *bold*
+        );
+        
+        $txt = preg_replace( array_keys( $subs ), array_values( $subs ), $txt );
+        $txt = nl2br($txt);
+        $txt = make_clickable( $txt );
+        return $txt;
     }
 
     private function dict(&$data){
@@ -905,7 +896,7 @@ class UnivISAPI {
                     }
                 }elseif ($field == 'organizational'){
                     if (isset($data[$nr][$field])){
-                        $data[$nr][$field] = self::makeHTML($data[$nr][$field]);
+                        $data[$nr][$field] = self::formatUnivIS($data[$nr][$field]);
                     }
                 }elseif (isset($data[$nr][$field])){
                     if (in_array($field, ['title'])){
