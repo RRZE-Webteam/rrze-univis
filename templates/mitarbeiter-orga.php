@@ -85,8 +85,7 @@
                             $pers[] = '<span class="person-info-street" itemprop="streetAddress">' . $location['street'] . '</span>';
                         }
                         if (!empty($location['city'])){
-                            $pers[] = '<span itemprop="addressLocality">' . $location['city'] . '</span>';
-                            
+                            $pers[] = (!empty($location['postalcode']) ? '<span itemprop="postalCode">' . $location['postalcode'] . '</span> ' : '') . '<span itemprop="addressLocality">' . $location['city'] . '</span>';
                         }
                     if (!empty($location['office'])){
                             $pers[] =  __('Room', 'rrze-univis') . ' ' .  $location['office'];

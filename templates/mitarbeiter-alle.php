@@ -83,9 +83,8 @@
                             if (!empty($location['street'])){
                                 $pers[] = '<span class="person-info-street" itemprop="streetAddress">' . $location['street'] . '</span>';
                             }
-                            if (!empty($location['ort'])){
-                                $pers[] = '<span itemprop="addressLocality">' . $location['ort'] . '</span>';
-                                
+                            if (!empty($location['city'])){
+                                $pers[] = (!empty($location['postalcode']) ? '<span itemprop="postalCode">' . $location['postalcode'] . '</span> ' : '') . '<span itemprop="addressLocality">' . $location['city'] . '</span>';
                             }
                         }
                         if (!empty($location['office'])){

@@ -80,6 +80,10 @@
                                     if (!empty($location['street'])){
                                         echo '<div itemprop="address" itemscope="" itemtype="http://schema.org/PostalAddress"><span class="person-info-street" itemprop="streetAddress">' . $location['street'] . '</span><br>';
                                     }
+                                    if (!empty($location['postalcode'])){
+                                        echo '<span itemprop="postalCode">' . $location['postalcode'] . '</span> ';
+                                        
+                                    }
                                     if (!empty($location['city'])){
                                         echo '<span itemprop="addressLocality">' . $location['city'] . '</span>';
                                         
