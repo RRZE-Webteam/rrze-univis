@@ -213,6 +213,10 @@ class Shortcode{
             switch($sHubMode){
                 case 'person':
                     $data = $this->getData('person', $aHubAtts);
+                    // echo '<pre>';
+                    // var_dump($aHubAtts);
+                    // exit;
+                    
                     if ($this->atts['task'] == 'mitarbeiter-einzeln'){
                         // add lectures
                         foreach($data as $key => $person){
@@ -251,6 +255,7 @@ class Shortcode{
                 //     break;
             }
         }
+
 
         if ($data && is_array($data)){
             $filename = trailingslashit(dirname(__FILE__)) . '../templates/' . $this->atts['task'] . '.php';
