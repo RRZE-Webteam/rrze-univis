@@ -31,31 +31,46 @@
                 if (!empty($veranstaltung['organizational'])){
                     echo '<p>' . make_clickable($veranstaltung['organizational']) . '</p>';
                 }
+		
+		echo '<ul class="terminmeta">';
+		echo '<li>';
+		
+		$infos = '';
                 if (!empty($veranstaltung['sws'])){
-                    echo '<p>' . $veranstaltung['sws'] . '</p>';
+                    $infos .= '<span>' . $veranstaltung['sws'] . '</span>';
                 }
                 if (!empty($veranstaltung['maxturnout'])){
-                    echo '<p>' . __('Expected participants', 'rrze-univis') .': ' . $veranstaltung['maxturnout'] . '</p>';
+		    if (!empty($infos)) { $infos .= '; '; }
+                    $infos .= '<span>' . __('Expected participants', 'rrze-univis') .': ' . $veranstaltung['maxturnout'] . '</span>';
                 }
                 if (!empty($veranstaltung['fruehstud'])){
-                    echo '<p>' . $veranstaltung['fruehstud'] . '</p>';
+		     if (!empty($infos)) { $infos .= '; '; }
+                    $infos .= '<span>' . $veranstaltung['fruehstud'] . '</span>';
                 }
                 if (!empty($veranstaltung['gast'])){
-                    echo '<p>' . $veranstaltung['gast'] . '</p>';
+		     if (!empty($infos)) { $infos .= '; '; }
+                    $infos .= '<span>' . $veranstaltung['gast'] . '</span>';
                 }
                 if (!empty($veranstaltung['schein'])){
-                    echo '<p>' . $veranstaltung['schein'] . '</p>';
+		     if (!empty($infos)) { $infos .= '; '; }
+                    $infos .= '<span>' . $veranstaltung['schein'] . '</span>';
                 }
                 if (!empty($veranstaltung['ects'])){
-                    echo '<p>' . $veranstaltung['ects'] . '</p>';
+		     if (!empty($infos)) { $infos .= '; '; }
+                     $infos .= '<span>' . $veranstaltung['ects'] . '</span>';
+		    if (!empty($veranstaltung['ects_cred'])) {
+			$infos .= ' (' . $veranstaltung['ects_cred'] . ')';
+		   }
+		   $infos .= '</span>';
                 }
-                if (!empty($veranstaltung['ects_cred'])){
-                    echo '<p>' . $veranstaltung['ects_cred'] . '</p>';
-                }
+                
                 if (!empty($veranstaltung['leclanguage_long']) && ($veranstaltung['leclanguage_long'] != __('Unterrichtssprache Deutsch', 'rrze-univis'))){
-                    echo '<p>' . $veranstaltung['leclanguage_long'] . '</p>';
+		     if (!empty($infos)) { $infos .= ', '; }
+                    $infos .= '<span>' . $veranstaltung['leclanguage_long'] . '</span>';
                 }
+		echo $infos.'</li>';
                 ?>
+		<li class="termindaten"><?php _e('Termin', 'rrze-univis');?>: 
                 <ul>
                         <?php
                         if (isset($veranstaltung['courses'])) :
@@ -114,8 +129,8 @@
                                                 'wsend' => $wsend,
                                             ];
 
-                                            $screenReaderTxt = ': ' . __('Termin', 'rrze-univis') . ' ' . (!empty($t['repeat']) ? $t['repeat'] : '') . ' ' . (!empty($t['date']) ? $t['date'] . ' ' : '') . $t['time'] . ' ' . __('in den Kalender importieren', 'rrze-univis');
-                                            $t['ics'] = '<span class="lecture-info-ics" itemprop="ics"><a href="' . plugin_dir_url(__FILE__ ) .'../ics.php?' . http_build_query($props) . '">.ics<span class="screen-reader-text">' . $screenReaderTxt . '</span></a></span>';
+                                            $screenReaderTxt =  __('Termin', 'rrze-univis') . ' ' . (!empty($t['repeat']) ? $t['repeat'] : '') . ' ' . (!empty($t['date']) ? $t['date'] . ' ' : '') . $t['time'] . ' ' . __('in den Kalender importieren', 'rrze-univis');
+                                            $t['ics'] = '<span class="lecture-info-ics" itemprop="ics"><a href="' . plugin_dir_url(__FILE__ ) .'../ics.php?' . http_build_query($props) . '" aria-label="'.$screenReaderTxt.'">.ics</a></span>';
                                         }
                                         $t['time'] .= ',';
                                         $term_formatted = implode(' ', $t);
@@ -129,7 +144,8 @@
                                 <li><?php _e('Time and place on appointment', 'rrze-univis');?></li>
                         <?php endif; ?>
                         </ul>
-
+		    </li>
+		    </ul>
                 </li>
                 <?php 
             endforeach;

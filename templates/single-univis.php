@@ -16,44 +16,65 @@ use RRZE\UnivIS\Main;
 $thisThemeGroup = Main::getThemeGroup();
 
 get_header();
-if ($thisThemeGroup == 'fauthemes') {
-    get_template_part('template-parts/hero', 'index'); 
-?>
+if ($thisThemeGroup == 'fauthemes') { ?>
 
-    <div id="content">
-        <div class="container">
-            <div class="row">
-                <div class="col-xs-12">
-                    <main id="droppoint">
-                        <h1 class="screen-reader-text"><?php echo __('Index','fau'); ?></h1>
+    <section id="hero" class="hero-small">
+	<div class="container hero-content">
+		<div class="row">
+		    <div class="col-xs-12">
+			<?php 
+			fau_breadcrumb();
+			?>
+			
+		    </div>
+		</div>
+		<div class="row" aria-hidden="true" role="presentation">
+		    <div class="col-xs-12">
+			<p class="presentationtitle"><?php _e('UnivIS', 'rrze-univis'); ?></p>
+		    </div>
+		</div>
+	</div>
+    </section>
+    
+	<div id="content">
+		<div class="content-container">
+		    <div class="content-row">
+			    <main>
+				<h1 class="screen-reader-text"><?php _e('UnivIS', 'rrze-univis'); ?></h1>
+					<div class="inline-box">			    
+					    <?php get_template_part('template-parts/sidebar', 'inline');  
+						echo '<div class="content-inline">';
 
-<?php } elseif ($thisThemeGroup == 'rrzethemes') {
 
-if (!is_front_page()) { ?>
-    <div id="sidebar" class="sidebar">
-        <?php get_sidebar('page'); ?>
-    </div><!-- .sidebar -->
-<?php } ?>
 
-<div id="primary" class="content-area">
-    <div id="content" class="site-content" role="main">
+
+} elseif ($thisThemeGroup == 'rrzethemes') {
+
+	if (!is_front_page()) { ?>
+	    <div id="sidebar" class="sidebar">
+		<?php get_sidebar('page'); ?>
+	    </div><!-- .sidebar -->
+	<?php } ?>
+
+	<div id="primary" class="content-area">
+	    <div id="content" class="site-content" role="main">
 
 <?php }else{ ?>
 
-<div id="sidebar" class="sidebar">
+    <div id="sidebar" class="sidebar">
 
-    <?php get_sidebar(); ?>
+	<?php get_sidebar(); ?>
 
-</div>
-<div id="primary" class="content-area">
-    <main id="main" class="site-main">
+    </div>
+    <div id="primary" class="content-area">
+	<main id="main" class="site-main">
 
 <?php }
 
 echo $data;
 
 ?>
-<nav class="navigation">
+<nav class="rrze-univis navigation">
     <div class="nav-previous">
         <a href="<?php echo get_permalink();?>"><span class="meta-nav">&laquo;</span> <?php _e('Back to overview', 'rrze-univis'); ?></a>
     </div>
@@ -62,12 +83,18 @@ echo $data;
 <?php
 
 if ($thisThemeGroup == 'fauthemes') { ?>
-    </main>
-</div>
-</div>
-</div>
-</div>
-<?php get_template_part('template-parts/footer', 'social');
+			    
+			</div>
+		    </div>    
+	        </main>
+	    </div>
+	</div>
+    </div>
+	
+    <?php
+    get_template_part('template-parts/footer', 'social');
+
+	
 } elseif($thisThemeGroup == 'rrzethemes') { ?>
 
     </div>
