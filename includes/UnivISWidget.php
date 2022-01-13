@@ -20,7 +20,7 @@ class UnivISWidget extends \WP_Widget {
         parent::__construct(
             'univis_widget', 
             __('UnivIS Widget', 'rrze-univis'), 
-            array( 'description' => __( 'Zeigt eine Vorlesung, Person oder Publikation an', 'rrze-univis' ), ) 
+            array( 'description' => __( 'Displays a lecture, person or publication', 'rrze-univis' ), ) 
         );
     }
       

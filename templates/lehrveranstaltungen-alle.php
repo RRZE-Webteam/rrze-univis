@@ -41,7 +41,7 @@
                 }
                 if (!empty($veranstaltung['maxturnout'])){
 		    if (!empty($infos)) { $infos .= '; '; }
-                    $infos .= '<span>' . __('Erwartete TeilnehmerInnen', 'rrze-univis') .': ' . $veranstaltung['maxturnout'] . '</span>';
+                    $infos .= '<span>' . __('Expected participants', 'rrze-univis') .': ' . $veranstaltung['maxturnout'] . '</span>';
                 }
                 if (!empty($veranstaltung['fruehstud'])){
 		     if (!empty($infos)) { $infos .= '; '; }
@@ -98,16 +98,16 @@
                                         if (!empty($time)) :
                                             $t['time'] = $time['starttime'] . '-' . $time['endtime'];
                                         else:
-                                            $t['time'] = __('Uhrzeit nach Vereinbarung', 'rrze-univis');
+                                            $t['time'] = __('Time on appointment', 'rrze-univis');
                                         endif;
                                         if (!empty($term['room']['short'])) :
-                                            $t['room'] = __('Raum', 'rrze-univis') . ' ' . $term['room']['short'];
+                                            $t['room'] = __('Room', 'rrze-univis') . ' ' . $term['room']['short'];
                                         endif;
                                         if (!empty($term['exclude'])) :
-                                            $t['exclude'] = '(' . __('außer', 'rrze-univis') . ' ' . $term['exclude'] . ')';
+                                            $t['exclude'] = '(' . __('exclude', 'rrze-univis') . ' ' . $term['exclude'] . ')';
                                         endif;
                                         if (!empty($course['coursename'])) :
-                                            $t['coursename'] = '(' . __('Kurs', 'rrze-univis') . ' ' . $course['coursename'] . ')';
+                                            $t['coursename'] = '(' . __('Course', 'rrze-univis') . ' ' . $course['coursename'] . ')';
                                         endif;
                                         // ICS
                                         if (in_array('ics', $this->show) && !in_array('ics', $this->hide)){
