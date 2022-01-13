@@ -421,6 +421,13 @@ function getShortcodeSettings(){
                 'type' => 'boolean',
                 'default' => NULL,
                 'checked'   => FALSE
+            ],
+            'gast' => [
+                'field_type' => 'toggle',
+                'label' => __( 'Nur für Gaststudium geeignet anzeigen', 'rrze-univis' ),
+                'type' => 'boolean',
+                'default' => NULL,
+                'checked'   => FALSE
             ]
         ],
         'publikationen' => [

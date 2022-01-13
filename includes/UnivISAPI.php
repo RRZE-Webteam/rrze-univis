@@ -20,6 +20,7 @@ class UnivISAPI {
     protected $showJobs;
     protected $hideJobs;
     protected $sem;
+    protected $gast;
 
 
     public function __construct($api, $orgID, $atts) {
@@ -29,6 +30,7 @@ class UnivISAPI {
         $this->sem = (!empty($this->atts['sem']) && self::checkSemester($this->atts['sem']) ? $this->atts['sem'] : '');
         $this->showJobs = (!empty($this->atts['zeige_jobs']) ? explode('|', $this->atts['zeige_jobs']) : []);
         $this->hideJobs = (!empty($this->atts['ignoriere_jobs']) ? explode('|', $this->atts['ignoriere_jobs']) : []);
+        $this->gast = (!empty($this->atts['gast']) ? __('Für Gasthörer zugelassen', 'rrze-univis') : '');
         //  $this->hideJobs = (!empty($this->showJobs) && !empty($this->hideJobs) ? array_diff($this->showJobs, $this->hideJobs) : $this->hideJobs);
     }
 
@@ -537,15 +539,19 @@ class UnivISAPI {
         // group by lecture_type_long
         if (in_array($dataType, ['lectureByID', 'lectureByLecturerID', 'lectureByLecturer', 'lectureByDepartment'])){
 
+            // 2021-09-23 quickfix because there is a bug in UnivIS-API's filtering by language 
             if (!empty($this->atts['lang'])){
-                // 2021-09-23 quickfix because there is a bug in UnivIS-API's filtering by language 
                 $data = $this->filterByLang($data);
             }
 
             // 2021-10-01 quickfix because there is a bug in UnivIS-API's filtering by type
             if (!empty($this->atts['type'])){
-                // 2021-09-23 quickfix because there is a bug in UnivIS-API's filtering by language 
                 $data = $this->filterByType($data);
+            }
+
+            // 2022-01-13 UnivIS-API's does not support filtering by gast ("für Gaststudium geeignet")
+            if (!empty($this->atts['gast'])){
+                $data = $this->filterByGast($data);
             }
 
             $data = $this->groupBy($data, 'lecture_type_long');
@@ -605,6 +611,18 @@ class UnivISAPI {
 
         return $data;
     }
+
+
+    private function filterByGast($arr) {
+        $ret = [];
+        foreach($arr as $key => $val) {
+            if (!empty($val['gast']) && ($val['gast'] == $this->gast)){
+                $ret[$key] = $val;
+            }
+        }
+        return $ret;
+    }
+
 
 
     private function filterByLang($arr) {
