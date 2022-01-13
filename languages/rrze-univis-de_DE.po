@@ -335,11 +335,11 @@ msgid "Working group"
 msgstr "Abteilung"
 
 #: RRZE/UnivIS/Templates/mitarbeiter-einzeln.php:59
-msgid "Phone number"
+msgid "Telefonnummer"
 msgstr "Telefonnummer"
 
 #: RRZE/UnivIS/Templates/mitarbeiter-einzeln.php:62
-msgid "Fax number"
+msgid "Faxnummer"
 msgstr "Faxnummer"
 
 #: RRZE/UnivIS/Templates/mitarbeiter-einzeln.php:65

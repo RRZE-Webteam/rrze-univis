@@ -52,7 +52,7 @@ function getMenuSettings()
         'menu_title'    => __('RRZE UnivIS', 'rrze-univis'),
         'capability'    => 'manage_options',
         'menu_slug'     => 'rrze-univis',
-        'title'         => __('RRZE UnivIS Settings', 'rrze-univis'),
+        'title'         => __('RRZE UnivIS Einstellungen', 'rrze-univis'),
     ];
 }
 
@@ -66,10 +66,10 @@ function getHelpTab()
         [
             'id'        => 'rrze-univis-help',
             'content'   => [
-                '<p>' . __('Here comes the Context Help content.', 'rrze-univis') . '</p>'
+                '<p>' . __('Hier steht der Text zur Hilfe.', 'rrze-univis') . '</p>'
             ],
-            'title'     => __('Overview', 'rrze-univis'),
-            'sidebar'   => sprintf('<p><strong>%1$s:</strong></p><p><a href="https://blogs.fau.de/webworking">RRZE Webworking</a></p><p><a href="https://github.com/RRZE Webteam">%2$s</a></p>', __('For more information', 'rrze-univis'), __('RRZE Webteam on Github', 'rrze-univis'))
+            'title'     => __('Übersicht', 'rrze-univis'),
+            'sidebar'   => sprintf('<p><strong>%1$s:</strong></p><p><a href="https://blogs.fau.de/webworking">RRZE Webworking</a></p><p><a href="https://github.com/RRZE Webteam">%2$s</a></p>', __('Für weitere Informationen', 'rrze-univis'), __('RRZE Webteam auf Github', 'rrze-univis'))
         ]
     ];
 }
@@ -83,7 +83,7 @@ function getSections()
     return [
         [
             'id'    => 'basic',
-            'title' => __('UnivIS Settings', 'rrze-univis')
+            'title' => __('UnivIS Einstellungen', 'rrze-univis')
         ],
     ];
 }
@@ -111,7 +111,7 @@ function getFields()
                 'desc'              => __('', 'rrze-univis'),
                 'placeholder'       => __('', 'rrze-univis'),
                 'type'              => 'text',
-                'default'           => __('<b><i>Univ</i>IS</b> - Information System of the FAU', 'rrze-univis'),
+                'default'           => __('<b><i>Univ</i>IS</b> - Informationssystem der FAU', 'rrze-univis'),
                 'sanitize_callback' => 'sanitize_text_field'
             ],
             [
@@ -412,7 +412,7 @@ function getShortcodeSettings(){
             'hstart' => [
                 'default' => 2,
                 'field_type' => 'text',
-                'label' => __( 'Überschriftenebene der ersten Überschrift', 'fau-person' ),
+                'label' => __( 'Überschriftenebene der ersten Überschrift', 'rrze-univis' ),
                 'type' => 'number' 
             ],
             'fruehstud' => [
@@ -484,7 +484,7 @@ function getShortcodeSettings(){
             'hstart' => [
                 'default' => 2,
                 'field_type' => 'text',
-                'label' => __( 'Überschriftenebene der ersten Überschrift', 'fau-person' ),
+                'label' => __( 'Überschriftenebene der ersten Überschrift', 'rrze-univis' ),
                 'type' => 'number' 
             ],
         ]

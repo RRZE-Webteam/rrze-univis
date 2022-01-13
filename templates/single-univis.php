@@ -76,7 +76,7 @@ echo $data;
 ?>
 <nav class="rrze-univis navigation">
     <div class="nav-previous">
-        <a href="<?php echo get_permalink();?>"><span class="meta-nav">&laquo;</span> <?php _e('Back to overview', 'rrze-univis'); ?></a>
+        <a href="<?php echo get_permalink();?>"><span class="meta-nav">&laquo;</span> <?php _e('Zurück zur Übersicht', 'rrze-univis'); ?></a>
     </div>
 </nav>          
 

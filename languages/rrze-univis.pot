@@ -319,11 +319,11 @@ msgid "Working group"
 msgstr ""
 
 #: RRZE/UnivIS/Templates/mitarbeiter-einzeln.php:59
-msgid "Phone number"
+msgid "Telefonnummer"
 msgstr ""
 
 #: RRZE/UnivIS/Templates/mitarbeiter-einzeln.php:62
-msgid "Fax number"
+msgid "Faxnummer"
 msgstr ""
 
 #: RRZE/UnivIS/Templates/mitarbeiter-einzeln.php:65

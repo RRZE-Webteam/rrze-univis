@@ -46,9 +46,9 @@
                 foreach($person['locations'] as $location){
                     if (!empty($location['tel']) && in_array('telefon', $this->show) && !in_array('telefon', $this->hide)){
                         if (in_array('call', $this->show) && !in_array('call', $this->hide)) {
-                            $pers[] = '<span class="screen-reader-text">' . __('Phone number', 'rrze-univis') . ': </span><span itemprop="telephone"><a href="tel:' . $location['tel_call'] . '"> ' . $location['tel'] . '</a></span>';
+                            $pers[] = '<span class="screen-reader-text">' . __('Telefonnummer', 'rrze-univis') . ': </span><span itemprop="telephone"><a href="tel:' . $location['tel_call'] . '"> ' . $location['tel'] . '</a></span>';
                         } else {
-                            $pers[] = '<span class="screen-reader-text">' . __('Phone number', 'rrze-univis') . ': </span><span itemprop="telephone">' . $location['tel'] . '</span>';
+                            $pers[] = '<span class="screen-reader-text">' . __('Telefonnummer', 'rrze-univis') . ': </span><span itemprop="telephone">' . $location['tel'] . '</span>';
                         }
                     }
                 }
@@ -56,16 +56,16 @@
                 foreach($person['locations'] as $location){
                     if (!empty($location['mobile']) && in_array('mobile', $this->show) && !in_array('mobile', $this->hide)) {
                         if (in_array('call', $this->show) && !in_array('call', $this->hide)) {
-                            $pers[] = '<span class="screen-reader-text">' . __('Mobile number', 'rrze-univis') . ': </span><span class="mobile" itemprop="telephone"><a href="tel:' . $location['mobile_call'] . '"> ' . $location['mobile'] . '</a></span>';
+                            $pers[] = '<span class="screen-reader-text">' . __('Mobilnummer', 'rrze-univis') . ': </span><span class="mobile" itemprop="telephone"><a href="tel:' . $location['mobile_call'] . '"> ' . $location['mobile'] . '</a></span>';
                         } else {
-                            $pers[] = '<span class="screen-reader-text">' . __('Mobile number', 'rrze-univis') . ': </span><span class="mobile" itemprop="telephone">' . $location['mobile'] . '</span>';
+                            $pers[] = '<span class="screen-reader-text">' . __('Mobilnummer', 'rrze-univis') . ': </span><span class="mobile" itemprop="telephone">' . $location['mobile'] . '</span>';
                         }
                     }
                 }
                 // fax
                 foreach($person['locations'] as $location){
                     if (!empty($location['fax']) && in_array('fax', $this->show) && !in_array('fax', $this->hide)){
-                        $pers[] = '<span class="screen-reader-text">' . __('Fax number', 'rrze-univis') . ': </span><span itemprop="faxNumber">' . $location['fax'] . '</span>';
+                        $pers[] = '<span class="screen-reader-text">' . __('Faxnummer', 'rrze-univis') . ': </span><span itemprop="faxNumber">' . $location['fax'] . '</span>';
                     }
                 }
                 // email
@@ -88,7 +88,7 @@
                             
                         }
                     if (!empty($location['office'])){
-                            $pers[] =  __('Room', 'rrze-univis') . ' ' .  $location['office'];
+                            $pers[] =  __('Raum', 'rrze-univis') . ' ' .  $location['office'];
                         }
                     }
                 }
