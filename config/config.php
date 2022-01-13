@@ -428,12 +428,6 @@ function getShortcodeSettings(){
                 'type' => 'boolean',
                 'default' => NULL,
                 'checked'   => FALSE
-            ],
-            'departmentid' => [
-                'default' => '',
-                'field_type' => 'text',
-                'label' => __( 'UnivIS ID Department', 'rrze-univis' ),
-                'type' => 'string'
             ]
         ],
         'publikationen' => [
