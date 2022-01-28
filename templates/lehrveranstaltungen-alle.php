@@ -28,7 +28,7 @@
                 if (!empty($veranstaltung['comment'])){
                     echo '<p>' . make_clickable($veranstaltung['comment']) . '</p>';
                 }
-                if (!empty($veranstaltung['organizational'])){
+                if (!empty($veranstaltung['organizational']) && !in_array('organizational', $this->hide)){
                     echo '<p>' . make_clickable($veranstaltung['organizational']) . '</p>';
                 }
 		
