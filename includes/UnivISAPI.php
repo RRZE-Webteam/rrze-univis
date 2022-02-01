@@ -757,6 +757,7 @@ class UnivISAPI {
         return implode('', $matches[0]);
     }
 
+
     public function formatUnivIS( $txt ){
         $subs = array(
             '/^\-+\s+(.*)?/mi' => '<ul><li>$1</li></ul>',  // list 
@@ -766,8 +767,8 @@ class UnivISAPI {
             '/\|(.*)\|/m' => '<i>$1</i>',  // |itallic|
             '/_(.*)_/m' => '<sub>$1</sub>',  // H_2_O
             '/\^(.*)\^/m' => '<sup>$1</sup>',  // pi^2^
-            '/\[([^\]]*)\]\s{1}((http|https|ftp|ftps):\/\/\S*)/mi' => '<a href="$2">$1</a>', // [link text] http...
-            '/\[([^\]]*)\]\s{1}(mailto:)([^")\s<>]+)/mi' => '<a href="mailto:$3">$1</a>', // find [link text] mailto:email@address.tld but not <a href="mailto:email@address.tld">mailto:email@address.tld</a>
+            '/\[([^\]]*)\]\s{0,1}((http|https|ftp|ftps):\/\/\S*)/mi' => '<a href="$2">$1</a>', // [link text] http...
+            '/\[([^\]]*)\]\s{0,1}(mailto:)([^")\s<>]+)/mi' => '<a href="mailto:$3">$1</a>', // find [link text] mailto:email@address.tld but not <a href="mailto:email@address.tld">mailto:email@address.tld</a>
             '/\*(.*)\*/m' => '<strong>$1</strong>', // *bold*
         );
         
