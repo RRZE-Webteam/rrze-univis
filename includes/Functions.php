@@ -67,7 +67,7 @@ class Functions {
         return $ret;
     }
 
-    public function getUnivISData($univisOrgID = NULL, $dataType, $keyword = NULL){
+    public function getUnivISData($univisOrgID = NULL, $dataType = '', $keyword = NULL){
         $data = FALSE;
         $ret = __('Keine passenden Einträge gefunden.', 'rrze-univis');
 
