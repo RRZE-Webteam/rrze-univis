@@ -155,7 +155,7 @@
 
     <?php if (!empty($veranstaltung['organizational'])) : ?>
         <h4><?php __('Prerequisites / Organizational information', 'rrze-univis');?></h4>
-        <p><?php echo make_clickable($veranstaltung['organizational']); ?></p>
+        <p><?php echo $veranstaltung['organizational']; ?></p>
         <?php endif;
     ?>
 

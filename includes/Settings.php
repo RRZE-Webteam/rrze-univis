@@ -111,6 +111,12 @@ class Settings
         $this->optionName = getOptionName();
         $this->options = $this->getOptions();
 
+        // Save options if they haven't been saved at least once because we need them for ICS (see https://github.com/RRZE-Webteam/rrze-univis/issues/180)
+        $storedOptions = get_option('rrze-univis');
+        if (empty($storedOptions)){
+            update_option('rrze-univis', $this->options);
+        }
+
         add_action('admin_init', [$this, 'adminInit']);
         add_action('admin_menu', [$this, 'adminMenu']);
         add_action('admin_enqueue_scripts', [$this, 'adminEnqueueScripts']);
