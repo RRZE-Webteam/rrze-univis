@@ -25,7 +25,7 @@
                 }
                 echo $veranstaltung['title'];
                 echo '</a></h' . ($this->atts['hstart'] + 1) . '>'; 
-                if (!empty($veranstaltung['comment'])){
+                if (!empty($veranstaltung['comment']) && !in_array('comment', $this->hide)){
                     echo '<p>' . make_clickable($veranstaltung['comment']) . '</p>';
                 }
                 if (!empty($veranstaltung['organizational']) && !in_array('organizational', $this->hide)){
