@@ -88,9 +88,12 @@
                                 
                             }
                         }
-                        if (!empty($location['office'])){
+                        if (!empty($location['office']) && !in_array('office', $this->hide)){
                             $pers[] =  __('Room', 'rrze-univis') . ' ' .  $location['office'];
                         }
+                    }
+                    if (in_array('office', $this->show) && !in_array('office', $this->hide) && !in_array('address', $this->show) && (!empty($location['office']))){
+                        $pers[] =  __('Room', 'rrze-univis') . ' ' .  $location['office'];
                     }
                 }
             }

@@ -82,12 +82,15 @@
                                     }
                                     echo '</div>';
                                 }
-                                if (!empty($location['office'])){
+                                if (!empty($location['office']) && !in_array('office', $this->hide)){
                                     echo '<div itemprop="workLocation" itemscope="" itemtype="http://schema.org/Person">' . __('Room', 'rrze-univis') . ' ' .  $location['office'] . '</div>';
                                 }
                                 if (!empty($location['street']) || !empty($location['ort'])){
                                     echo '</li>';
                                 }
+                            }
+                            if (in_array('office', $this->show) && !in_array('office', $this->hide) && !in_array('address', $this->show) && (!empty($location['office']))){
+                                echo '<div itemprop="workLocation" itemscope="" itemtype="http://schema.org/Person">' . __('Room', 'rrze-univis') . ' ' .  $location['office'] . '</div>';
                             }
                         }
 
