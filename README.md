@@ -154,7 +154,8 @@ telefon,
 mobile, 
 fax,
 url,
-address, 
+address,
+office,
 call
 
 - hide:
@@ -164,7 +165,8 @@ telefon,
 mobile, 
 fax,
 url,
-address, 
+address,
+office,
 call
 
 - sem:

@@ -93,7 +93,13 @@ class Main {
         if (isset($wp_query->query_vars['lv_id'])) {
             $data = do_shortcode('[univis task="lehrveranstaltungen-einzeln" lv_id="' . $wp_query->query_vars['lv_id'] . '" ]');
         } elseif (isset($wp_query->query_vars['univisid'])) {
-            $data = do_shortcode('[univis task="mitarbeiter-einzeln" univisid="' . $wp_query->query_vars['univisid'] . '" ]');
+            $sShortcodeParams = '';
+            $aParts = explode('_', $wp_query->query_vars['univisid']);
+            if (!empty($aParts[1])){
+                parse_str($aParts[1], $aParams);
+                $sShortcodeParams = 'show="' . $aParams['show'] . '" hide="' . $aParams['hide'] . '"';
+            }
+            $data = do_shortcode('[univis task="mitarbeiter-einzeln" univisid="' . $aParts[0] . '" ' . $sShortcodeParams . ']');
         } else {
             return;
         }
