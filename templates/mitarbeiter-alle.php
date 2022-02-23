@@ -26,7 +26,11 @@
             if(!empty($p)) :
                 $n = implode(' ', $p);
                 if (!empty($person['person_id'])) :
-                    $url = get_permalink() . 'univisid/' . $person['person_id'];
+                    $aShortcodeParams = [
+                        'show' => implode(',', $this->show),
+                        'hide' => implode(',', $this->hide)
+                    ];
+                    $url = get_permalink() . 'univisid/' . $person['person_id'] . '_' . http_build_query($aShortcodeParams);
                     $fullname .= '<a class="url" href="' . $url . '" itemprop="name">';
                 endif; 
                 $fullname .= $n;
