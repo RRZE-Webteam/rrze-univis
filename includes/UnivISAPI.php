@@ -228,7 +228,7 @@ class UnivISAPI {
                         'ects_cred' => 'ects_cred',
                         'beginners' => 'beginners',
                         'fruehstud' => 'fruehstud',
-                        'gast' => 'gast',
+                        'gast' => 'scientia',
                         'evaluation' => 'evaluation',
                         'doz' => 'doz',
                     ],
