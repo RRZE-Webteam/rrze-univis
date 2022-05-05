@@ -4,11 +4,11 @@ namespace RRZE\UnivIS;
 
 defined('ABSPATH') || exit;
 
-use function RRZE\UnivIS\Config\getOptionName;
-use function RRZE\UnivIS\Config\getMenuSettings;
-use function RRZE\UnivIS\Config\getHelpTab;
-use function RRZE\UnivIS\Config\getSections;
 use function RRZE\UnivIS\Config\getFields;
+use function RRZE\UnivIS\Config\getHelpTab;
+use function RRZE\UnivIS\Config\getMenuSettings;
+use function RRZE\UnivIS\Config\getOptionName;
+use function RRZE\UnivIS\Config\getSections;
 
 /**
  * Settings-Klasse
@@ -79,18 +79,19 @@ class Settings
      * Variablen Werte zuweisen.
      * @param string $pluginFile [description]
      */
-    public function __construct($pluginFile){
+    public function __construct($pluginFile)
+    {
         $this->pluginFile = $pluginFile;
         $this->settingsPrefix = dirname(plugin_basename($this->pluginFile)) . '-';
 
         // einmalig alte Parameter holen
-        $oldOptions = get_option( '_rrze_univis' );
+        $oldOptions = get_option('_rrze_univis');
         $updated = get_option('univis-updated');
-        if (!empty($oldOptions) && empty($updated)){
-            foreach($oldOptions as $k => $v){
-                $oldOptions['basic_' . $k] =  $v;
+        if (!empty($oldOptions) && empty($updated)) {
+            foreach ($oldOptions as $k => $v) {
+                $oldOptions['basic_' . $k] = $v;
             }
-            if (empty($oldOptions['basic_univis_url'])){
+            if (empty($oldOptions['basic_univis_url'])) {
                 $oldOptions['basic_univis_url'] = 'https://univis.uni-erlangen.de';
             }
             update_option('rrze-univis', $oldOptions);
@@ -102,7 +103,8 @@ class Settings
      * Er wird ausgeführt, sobald die Klasse instanziiert wird.
      * @return void
      */
-    public function onLoaded(){
+    public function onLoaded()
+    {
         $this->setMenu();
         $this->setSections();
         $this->setFields();
@@ -113,7 +115,7 @@ class Settings
 
         // Save options if they haven't been saved at least once because we need them for ICS (see https://github.com/RRZE-Webteam/rrze-univis/issues/180)
         $storedOptions = get_option('rrze-univis');
-        if (empty($storedOptions)){
+        if (empty($storedOptions)) {
             update_option('rrze-univis', $this->options);
         }
 
@@ -162,10 +164,10 @@ class Settings
     protected function addField($section, $field)
     {
         $defaults = array(
-            'name'  => '',
+            'name' => '',
             'label' => '',
-            'desc'  => '',
-            'type'  => 'text'
+            'desc' => '',
+            'type' => 'text',
         );
 
         $arg = wp_parse_args($field, $defaults);
@@ -308,16 +310,16 @@ class Settings
         foreach ($this->settingsSections as $section) {
             if ($this->settingsPrefix . $section['id'] != $this->currentTab) {
                 continue;
-            } ?>
+            }?>
             <div id="<?php echo $this->settingsPrefix . $section['id']; ?>">
                 <form method="post" action="options.php">
-                    <?php settings_fields($this->settingsPrefix . $section['id']); ?>
-                    <?php do_settings_sections($this->settingsPrefix . $section['id']); ?>
-                    <?php submit_button(); ?>
+                    <?php settings_fields($this->settingsPrefix . $section['id']);?>
+                    <?php do_settings_sections($this->settingsPrefix . $section['id']);?>
+                    <?php submit_button();?>
                 </form>
             </div>
         <?php
-        }
+}
         $this->getUnivISSearchPage();
     }
 
@@ -354,7 +356,7 @@ class Settings
                 [
                     'id' => $help['id'],
                     'title' => $help['title'],
-                    'content' => implode(PHP_EOL, $help['content'])
+                    'content' => implode(PHP_EOL, $help['content']),
                 ]
             );
             $screen->set_help_sidebar($help['sidebar']);
@@ -454,7 +456,8 @@ class Settings
         $this->currentTab = array_key_exists('current-tab', $_GET) && in_array($_GET['current-tab'], $this->allTabs) ? $_GET['current-tab'] : $this->defaultTab;
     }
 
-    public function adminEnqueueScripts(){
+    public function adminEnqueueScripts()
+    {
         wp_register_script('wp-color-picker-settings', plugins_url('js/wp-color-picker.js', plugin_basename($this->pluginFile)));
         wp_register_script('wp-media-settings', plugins_url('js/wp-media.js', plugin_basename($this->pluginFile)));
     }
@@ -488,7 +491,7 @@ class Settings
      */
     public function getFieldDescription($args)
     {
-        if (! empty($args['desc'])) {
+        if (!empty($args['desc'])) {
             $desc = sprintf('<p class="description">%s</p>', $args['desc']);
         } else {
             $desc = '';
@@ -637,7 +640,7 @@ class Settings
     public function callbackRadio($args)
     {
         $value = $this->getOption($args['section'], $args['id'], $args['default']);
-        $html  = '<fieldset>';
+        $html = '<fieldset>';
 
         foreach ($args['options'] as $key => $label) {
             $html .= sprintf(
@@ -673,8 +676,8 @@ class Settings
     public function callbackSelect($args)
     {
         $value = esc_attr($this->getOption($args['section'], $args['id'], $args['default']));
-        $size  = isset($args['size']) && !is_null($args['size']) ? $args['size'] : 'regular';
-        $html  = sprintf(
+        $size = isset($args['size']) && !is_null($args['size']) ? $args['size'] : 'regular';
+        $html = sprintf(
             '<select class="%1$s" id="%3$s-%4$s" name="%2$s[%3$s_%4$s]">',
             $size,
             $this->optionName,
@@ -701,10 +704,11 @@ class Settings
      * Zeigt eine Multi-Auswahlliste (Selectbox) für ein Einstellungsfeld an.
      * @param array   $args Argumente des Einstellungsfelds
      */
-    public function callbackMultiSelect($args) {
+    public function callbackMultiSelect($args)
+    {
         $value = $this->getOption($args['section'], $args['id'], $args['default']);
-        $size  = isset($args['size']) && !is_null($args['size']) ? $args['size'] : 'regular';
-        $html  = sprintf(
+        $size = isset($args['size']) && !is_null($args['size']) ? $args['size'] : 'regular';
+        $html = sprintf(
             '<select class="%1$s" id="%3$s-%4$s" name="%2$s[%3$s_%4$s][]" multiple="multiple">',
             $size,
             $this->optionName,
@@ -716,7 +720,7 @@ class Settings
             $html .= sprintf(
                 '<option value="%s"%s>%s</option>',
                 $key,
-                selected( true, in_array( $key, $value ), false ),
+                selected(true, in_array($key, $value), false),
                 $label
             );
         }
@@ -726,7 +730,6 @@ class Settings
 
         echo $html;
     }
-
 
     /**
      * Zeigt ein Textfeld für ein Einstellungsfeld an.
@@ -766,7 +769,7 @@ class Settings
         $editor_settings = [
             'teeny' => true,
             'textarea_name' => sprintf('%1$s[%2$s_%3$s]', $this->optionName, $args['section'], $args['id']),
-            'textarea_rows' => 10
+            'textarea_rows' => 10,
         ];
 
         if (isset($args['options']) && is_array($args['options'])) {
@@ -788,7 +791,7 @@ class Settings
     {
         $value = esc_attr($this->getOption($args['section'], $args['id'], $args['default']));
         $size = isset($args['size']) && !is_null($args['size']) ? $args['size'] : 'regular';
-        $id = $args['section']  . '[' . $args['id'] . ']';
+        $id = $args['section'] . '[' . $args['id'] . ']';
         $label = isset($args['options']['button_label']) ? $args['options']['button_label'] : __('Choose File');
 
         $html = sprintf(
@@ -812,7 +815,7 @@ class Settings
     public function callbackPassword($args)
     {
         $value = esc_attr($this->getOption($args['section'], $args['id'], $args['default']));
-        $size  = isset($args['size']) && !is_null($args['size']) ? $args['size'] : 'regular';
+        $size = isset($args['size']) && !is_null($args['size']) ? $args['size'] : 'regular';
 
         $html = sprintf(
             '<input type="password" class="%1$s-text" id="%3$s-%4$s" name="%2$s[%3$s_%4$s]" value="%5$s">',
@@ -850,7 +853,6 @@ class Settings
         echo $html;
     }
 
-
     /**
      * Zeigt ein Textfeld mit Datepicker für ein Einstellungsfeld an.
      * @param array   $args Argumente des Einstellungsfelds
@@ -877,7 +879,8 @@ class Settings
         echo $html;
     }
 
-    public function getUnivISSearchPage() {
+    public function getUnivISSearchPage()
+    {
         ?>
         <br><br>
         <div class="wrap">
@@ -892,7 +895,7 @@ class Settings
                                     <option value="departmentByName"><?php echo __('Organisation', 'rrze-univis'); ?></option>
                                     <option value="personByName"><?php echo __('Person', 'rrze-univis'); ?></option>
                                     <option value="lectureByName"><?php echo __('Lehrveranstaltung', 'rrze-univis'); ?></option>
-                                </select>                        
+                                </select>
                             </td>
                         </tr>
                         <tr>
@@ -904,11 +907,11 @@ class Settings
                             <td><div id="loading"><i class="fa fa-refresh fa-spin fa-2x aligncenter"></i></div></td>
                         </tr>
                     </tbody>
-                </table>            
+                </table>
             </form>
         </div>
         <div id="univis-search-result"></div>
-        
+
         <?php
-    }
+}
 }

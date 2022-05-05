@@ -2,7 +2,8 @@
 
 namespace RRZE\UnivIS;
 
-class ICS {
+class ICS
+{
     const DT_FORMAT = 'Ymd\THis';
     const VTIMEZONE = 'Europe/Berlin';
 
@@ -15,8 +16,8 @@ class ICS {
         'enddate',
         'dtend',
         'dtstart',
-        'freq', 
-        'repeat', 
+        'freq',
+        'repeat',
         'rrule',
         'location',
         'description',
@@ -28,11 +29,13 @@ class ICS {
         'wsend',
     );
 
-    public function __construct($props){
+    public function __construct($props)
+    {
         $this->set($props);
     }
 
-    public function set($key, $val = false){
+    public function set($key, $val = false)
+    {
         if (is_array($key)) {
             foreach ($key as $k => $v) {
                 $this->set($k, $v);
@@ -44,12 +47,14 @@ class ICS {
         }
     }
 
-    public function toString(){
+    public function toString()
+    {
         $rows = $this->buildProps();
         return implode("\r\n", $rows);
     }
 
-    private function buildProps(){
+    private function buildProps()
+    {
         // ICS Header
         $icsProps = [
             'BEGIN:VCALENDAR',
@@ -88,19 +93,19 @@ class ICS {
         $this->props['STARTTIME'] = (!empty($this->props['STARTTIME']) ? $this->props['STARTTIME'] : '00:00');
         $this->props['ENDTIME'] = (!empty($this->props['ENDTIME']) ? $this->props['ENDTIME'] : '00:00');
 
-        if (empty($this->props['STARTDATE']) && empty($this->props['REPEAT'])){
+        if (empty($this->props['STARTDATE']) && empty($this->props['REPEAT'])) {
             $this->props['REPEAT'] = 'MO,TU,WE,TH,FR';
             $this->props['FREQ'] = 'WEEKLY;INTERVAL=1';
         }
 
         $start = '';
-        $bRule = FALSE;
+        $bRule = false;
         if (!empty($this->props['REPEAT'])) {
             $tsStart = strtotime($this->props['DTSTART']);
             $start = date('Ymd', $tsStart);
             $day = date('Ymd', $start);
             $allowedDays = explode(',', $this->props['REPEAT']);
-            if (!in_array($day, $allowedDays)){
+            if (!in_array($day, $allowedDays)) {
                 // move to next possible date
                 $dic = [
                     'MO' => 'Monday',
@@ -111,9 +116,9 @@ class ICS {
                     'SA' => 'Saturday',
                     'SU' => 'Sunday',
                 ];
-                foreach($dic as $short => $long){
+                foreach ($dic as $short => $long) {
                     $nextPossibleDay = strtotime('next ' . $long);
-                    if (in_array($short, $allowedDays) && $nextPossibleDay > $tsStart){
+                    if (in_array($short, $allowedDays) && $nextPossibleDay > $tsStart) {
                         $start = date('Ymd', $nextPossibleDay);
                         break 1;
                     }
@@ -121,7 +126,7 @@ class ICS {
             }
 
             if (empty($this->props['ENDDATE'])) {
-                // find enddate: either in winters' or summers' semester or if between +1 month 
+                // find enddate: either in winters' or summers' semester or if between +1 month
                 if ($start >= $this->props['SSSTART']) {
                     $this->props['ENDDATE'] = $this->formatTimestamp($this->props['SSEND']);
                 } elseif ($start <= $this->props['WSEND']) {
@@ -130,7 +135,7 @@ class ICS {
                     $this->props['ENDDATE'] = $this->formatTimestamp('1 month');
                 }
             }
-            $bRule = TRUE;
+            $bRule = true;
         }
 
         $start = (!empty($start) ? $start : $this->props['STARTDATE']);
@@ -138,7 +143,7 @@ class ICS {
         $this->props['DTEND'] = date(self::DT_FORMAT, strtotime(date('Ymd', strtotime($this->props['DTSTART'])) . date('Hi', strtotime($this->props['ENDTIME']))));
         $this->props['ENDDATE'] = date(self::DT_FORMAT, strtotime(date('Ymd', strtotime($this->props['ENDDATE'])) . date('Hi', strtotime($this->props['ENDTIME']))));
 
-        if ($bRule){
+        if ($bRule) {
             $this->props['RRULE'] = 'FREQ=' . $this->props['FREQ'] . ';UNTIL=' . $this->props['ENDDATE'] . ';WKST=MO;BYDAY=' . $this->props['REPEAT'];
         }
 
@@ -161,9 +166,9 @@ class ICS {
         }
 
         foreach ($props as $k => $v) {
-            if (in_array($k, ['DTSTART', 'DTEND'])){
+            if (in_array($k, ['DTSTART', 'DTEND'])) {
                 $icsProps[] = $k . ';TZID=' . self::VTIMEZONE . ':' . $v;
-            }else{
+            } else {
                 $icsProps[] = "$k:$v";
             }
         }
@@ -175,7 +180,8 @@ class ICS {
         return $icsProps;
     }
 
-    private function sanitizeVal($val, $key = false){
+    private function sanitizeVal($val, $key = false)
+    {
         switch ($key) {
             case 'dtend':
             case 'dtstart':
@@ -186,7 +192,7 @@ class ICS {
             case 'repeat':
             case 'freq':
                 // do not beautifyString
-                break;    
+                break;
             default:
                 $val = $this->beautifyString($val);
         }
@@ -194,12 +200,14 @@ class ICS {
         return $val;
     }
 
-    private function formatTimestamp($timestamp){
+    private function formatTimestamp($timestamp)
+    {
         $dt = new \DateTime($timestamp);
         return $dt->format(self::DT_FORMAT);
     }
 
-    private function beautifyString($str){
+    private function beautifyString($str)
+    {
         $aReplace = [
             ';' => '.\n\n',
             // '. ' => '.\n',
