@@ -4,16 +4,15 @@ namespace RRZE\UnivIS;
 
 defined('ABSPATH') || exit;
 
+use function RRZE\UnivIS\Config\getConstants;
 use RRZE\UnivIS\Settings;
 use RRZE\UnivIS\Shortcode;
-use function RRZE\UnivIS\Config\getConstants;
-
-
 
 /**
  * Hauptklasse (Main)
  */
-class Main {
+class Main
+{
     /**
      * Der vollständige Pfad- und Dateiname der Plugin-Datei.
      * @var string
@@ -21,14 +20,15 @@ class Main {
     protected $pluginFile;
     protected $widget;
 
-
-    public function __construct($pluginFile) {
+    public function __construct($pluginFile)
+    {
         $this->pluginFile = $pluginFile;
         add_action('init', 'RRZE\UnivIS\add_endpoint');
         add_action('template_redirect', [$this, 'getSingleEntry']);
     }
 
-    public function onLoaded() {
+    public function onLoaded()
+    {
         // add_action('admin_enqueue_scripts', [$this, 'enqueueAdminScripts']);
         add_action('add_meta_boxes', [$this, 'addMetaboxes']);
 
@@ -45,23 +45,26 @@ class Main {
 
         // Widget
         $this->widget = new UnivISWidget($this->pluginFile, $settings);
-        add_action( 'widgets_init', [$this, 'loadWidget'] );    
-        add_theme_support( 'widgets-block-editor' );
-        apply_filters('gutenberg_use_widgets_block_editor', get_theme_support( 'widgets-block-editor' ));
+        add_action('widgets_init', [$this, 'loadWidget']);
+        add_theme_support('widgets-block-editor');
+        apply_filters('gutenberg_use_widgets_block_editor', get_theme_support('widgets-block-editor'));
     }
 
-    public function loadWidget() {
+    public function loadWidget()
+    {
         register_widget($this->widget);
     }
 
-    public function addMetaboxes(){
-        $aPosttypes = [ 'post', 'page', 'faq', 'glossary', 'synonym' ];
+    public function addMetaboxes()
+    {
+        $aPosttypes = ['post', 'page', 'faq', 'glossary', 'synonym'];
         foreach ($aPosttypes as $posttype) {
             add_meta_box('get_univis_ids', __('Suche nach UnivIS IDs'), [$this, 'fillMetabox'], $posttype, 'side', 'core');
         }
     }
 
-    public function fillMetabox() {
+    public function fillMetabox()
+    {
         ?>
             <div class="tagsdiv" id="univis">
                 <div class="jaxtag">
@@ -71,7 +74,7 @@ class Main {
                             <option value="departmentByName"><?php echo __('Organisation', 'rrze-univis'); ?></option>
                             <option value="personByName"><?php echo __('Person', 'rrze-univis'); ?></option>
                             <option value="lectureByName"><?php echo __('Lehrveranstaltung', 'rrze-univis'); ?></option>
-                        </select>     
+                        </select>
                     </div>
                     <div class="ajaxtag hide-if-no-js">
                         <input type="text" name="keyword" id="keyword" value="">
@@ -85,9 +88,10 @@ class Main {
                 </div>
             </div>
         <?php
-    }
+}
 
-    public function getSingleEntry(){
+    public function getSingleEntry()
+    {
         global $wp_query;
 
         if (isset($wp_query->query_vars['lv_id'])) {
@@ -95,7 +99,7 @@ class Main {
         } elseif (isset($wp_query->query_vars['univisid'])) {
             $sShortcodeParams = '';
             $aParts = explode('_', $wp_query->query_vars['univisid']);
-            if (!empty($aParts[1])){
+            if (!empty($aParts[1])) {
                 parse_str($aParts[1], $aParams);
                 $sShortcodeParams = 'show="' . $aParams['show'] . '" hide="' . $aParams['hide'] . '"';
             }
@@ -108,19 +112,19 @@ class Main {
         exit;
     }
 
-
-    public static function getThemeGroup() {
+    public static function getThemeGroup()
+    {
         $constants = getConstants();
         $ret = '';
         $active_theme = wp_get_theme();
-        $active_theme = $active_theme->get( 'Name' );
+        $active_theme = $active_theme->get('Name');
 
         if (in_array($active_theme, $constants['fauthemes'])) {
             $ret = 'fauthemes';
-        }elseif (in_array($active_theme, $constants['rrzethemes'])) {
+        } elseif (in_array($active_theme, $constants['rrzethemes'])) {
             $ret = 'rrzethemes';
         }
-        return $ret;   
+        return $ret;
     }
 
 }
