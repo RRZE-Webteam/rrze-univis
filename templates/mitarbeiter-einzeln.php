@@ -131,7 +131,7 @@ if (!empty($person['locations'])) {
     <?php if (!empty($person['lectures'])): ?>
         <div>
         <?php
-echo '<h' . ($this->atts['hstart'] + 1) . ' class="active">' . __('Lehrveranstaltungen', 'rrze-univis') . '</h' . ($this->atts['hstart'] + 1) . '>';
+echo '<h' . ($this->atts['hstart'] + 1) . ' class="active">' . __('Lectures', 'rrze-univis') . '</h' . ($this->atts['hstart'] + 1) . '>';
 foreach ($person['lectures'] as $lec_type => $lectures):
 ?>
                 <div>

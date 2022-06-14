@@ -44,7 +44,7 @@ class UnivISWidget extends \WP_Widget
     public function getSelectHTML($name, $selectedID = 0)
     {
         $aOptions = [
-            'lehrveranstaltungen-einzeln' => __('Lehrveranstaltung', 'rrze-univis'),
+            'lehrveranstaltungen-einzeln' => __('Lecture', 'rrze-univis'),
             'mitarbeiter-einzeln' => __('Person', 'rrze-univis'),
         ];
         $output = "<select id='{$this->get_field_id($name)}' name='{$this->get_field_name($name)}' class='widefat'>";
