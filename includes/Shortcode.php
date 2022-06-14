@@ -39,7 +39,7 @@ class Shortcode
         $this->options = get_option('rrze-univis');
         $this->UnivISOrgNr = (!empty($this->options['basic_UnivISOrgNr']) ? $this->options['basic_UnivISOrgNr'] : 0);
         $this->UnivISURL = (!empty($this->options['basic_univis_url']) ? $this->options['basic_univis_url'] : 'https://univis.uni-erlangen.de');
-        $this->UnivISLink = sprintf('<a href="%1$s">%2$s</a>', $this->UnivISURL, (!empty($this->options['basic_univis_linktxt']) ? $this->options['basic_univis_linktxt'] : __('Text zum UnivIS Link fehlt', 'rrze-univis')));
+        $this->UnivISLink = sprintf('<a href="%1$s">%2$s</a>', $this->UnivISURL, (!empty($this->options['basic_univis_linktxt']) ? $this->options['basic_univis_linktxt'] : __('Text for UnivIS link is missing', 'rrze-univis')));
         add_action('admin_enqueue_scripts', [$this, 'enqueueGutenberg']);
         add_action('init', [$this, 'initGutenberg']);
         add_action('enqueue_block_assets', [$this, 'enqueueBlockAssets']);
@@ -205,7 +205,7 @@ class Shortcode
                 return str_replace("\n", " ", ob_get_clean());
             }
         } else {
-            return __('Keine passenden Datensätze gefunden.', 'rrze-univis');
+            return __('No matching records found.', 'rrze-univis'); // Keine passenden Datensätze gefunden.
         }
     }
 
@@ -306,7 +306,7 @@ class Shortcode
             'default' => '',
             'type' => 'string',
             'items' => ['type' => 'text'],
-            'values' => [['id' => '', 'val' => (empty($all) ? __('-- Alle --', 'rrze-univis') : $all)]],
+            'values' => [['id' => '', 'val' => (empty($all) ? __('-- All --', 'rrze-univis') : $all)]],
         ];
 
         foreach ($aData as $id => $name) {
@@ -374,17 +374,17 @@ class Shortcode
                 }
 
                 asort($aLectures);
-                $settings['id'] = $this->makeDropdown('id', __('Lehrveranstaltung', 'rrze-univis'), $aLectures);
+                $settings['id'] = $this->makeDropdown('id', __('Lecture', 'rrze-univis'), $aLectures);
 
                 asort($aLectureTypes);
-                $settings['type'] = $this->makeDropdown('type', __('Typ', 'rrze-univis'), $aLectureTypes);
+                $settings['type'] = $this->makeDropdown('type', __('Type', 'rrze-univis'), $aLectureTypes);
 
                 asort($aLectureLanguages);
-                $settings['sprache'] = $this->makeDropdown('sprache', __('Sprache', 'rrze-univis'), $aLectureLanguages);
+                $settings['sprache'] = $this->makeDropdown('sprache', __('Language', 'rrze-univis'), $aLectureLanguages);
 
                 // Semester
                 if (isset($settings['sem'])) {
-                    $settings['sem'] = $this->makeDropdown('sem', __('Semester', 'rrze-univis'), [], __('-- Aktuelles Semester --', 'rrze-univis'));
+                    $settings['sem'] = $this->makeDropdown('sem', __('Semester', 'rrze-univis'), [], __('-- Current semester --', 'rrze-univis'));
                     $thisSeason = (in_array(date('n'), [10, 11, 12, 1]) ? 'w' : 's');
                     $season = ($thisSeason = 's' ? 'w' : 's');
                     $nextYear = date("Y") + 1;
@@ -492,7 +492,7 @@ class Shortcode
             return $data;
         }
         $data = get_transient(self::TRANSIENT_PREFIX . $dataType . $sAtts . $this->UnivISOrgNr . $univisParam);
-        if ($data && $data != __('Keine passenden Datensätze gefunden.', 'rrze-univis')) {
+        if ($data && $data != __('No matching records found.', 'rrze-univis')) {
             return $data;
         } else {
             $data = $this->univis->getData($dataType, $univisParam);

@@ -71,9 +71,9 @@ class Main
                     <form method="post">
                     <div class="ajaxtag hide-if-no-js">
                         <select name="dataType" id="dataType" class="univisSelect" required="required">
-                            <option value="departmentByName"><?php echo __('Organisation', 'rrze-univis'); ?></option>
+                            <option value="departmentByName"><?php echo __('Organization', 'rrze-univis'); ?></option>
                             <option value="personByName"><?php echo __('Person', 'rrze-univis'); ?></option>
-                            <option value="lectureByName"><?php echo __('Lehrveranstaltung', 'rrze-univis'); ?></option>
+                            <option value="lectureByName"><?php echo __('Lecture', 'rrze-univis'); ?></option>
                         </select>
                     </div>
                     <div class="ajaxtag hide-if-no-js">

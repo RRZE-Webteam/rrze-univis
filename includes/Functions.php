@@ -76,7 +76,7 @@ class Functions
     public function getUnivISData($univisOrgID = null, $dataType = '', $keyword = null)
     {
         $data = false;
-        $ret = __('Keine passenden Einträge gefunden.', 'rrze-univis');
+        $ret = __('No matching entries found.', 'rrze-univis'); // Keine passenden Einträge gefunden.
 
         $options = get_option('rrze-univis');
         $data = 0;
@@ -87,7 +87,7 @@ class Functions
             $univis = new UnivISAPI($UnivISURL, $univisOrgID, null);
             $data = $univis->getData($dataType, $keyword);
         } elseif (!$UnivISURL) {
-            $ret = __('Link zu UnivIS fehlt.', 'rrze-univis');
+            $ret = __('Link to UnivIS is missing.', 'rrze-univis');
         }
 
         if ($data) {

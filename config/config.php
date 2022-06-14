@@ -99,7 +99,7 @@ function getFields()
         'basic' => [
             [
                 'name' => 'univis_url',
-                'label' => __('Link zu <b><i>Univ</i>IS</b>', 'rrze-univis'),
+                'label' => __('Link to <b><i>Univ</i>IS</b>', 'rrze-univis'),
                 'desc' => __('', 'rrze-univis'),
                 'placeholder' => __('', 'rrze-univis'),
                 'type' => 'text',
@@ -108,7 +108,7 @@ function getFields()
             ],
             [
                 'name' => 'univis_linktxt',
-                'label' => __('Text zum <b><i>Univ</i>IS</b> Link', 'rrze-univis'),
+                'label' => __('Text to <b><i>Univ</i>IS</b> link', 'rrze-univis'),
                 'desc' => __('', 'rrze-univis'),
                 'placeholder' => __('', 'rrze-univis'),
                 'type' => 'text',
@@ -126,7 +126,7 @@ function getFields()
             ],
             [
                 'name' => 'semesterMin',
-                'label' => __('Finde Lehrveranstaltungen ab dem Sommersemester', 'rrze-univis'),
+                'label' => __('Find Lectures from the soúmmer semester', 'rrze-univis'), // Finde Lehrveranstaltungen ab dem Sommersemester
                 'desc' => __('', 'rrze-univis'),
                 'placeholder' => '',
                 'min' => 0,
@@ -138,7 +138,7 @@ function getFields()
             ],
             [
                 'name' => 'wsStart',
-                'label' => __('Beginn der Vorlesungszeit in diesem Wintersemester', 'rrze-univis'),
+                'label' => __('Lectures begin this winter semester', 'rrze-univis'), // Beginn der Vorlesungszeit in diesem Wintersemester
                 'desc' => __('', 'rrze-univis'),
                 'placeholder' => '',
                 'type' => 'date',
@@ -147,7 +147,7 @@ function getFields()
             ],
             [
                 'name' => 'wsEnd',
-                'label' => __('Ende der Vorlesungszeit in diesem Wintersemester', 'rrze-univis'),
+                'label' => __('End of the lecture period this winter semester', 'rrze-univis'), // Ende der Vorlesungszeit in diesem Wintersemester
                 'desc' => __('', 'rrze-univis'),
                 'placeholder' => '',
                 'type' => 'date',
@@ -156,7 +156,7 @@ function getFields()
             ],
             [
                 'name' => 'ssStart',
-                'label' => __('Beginn der Vorlesungszeit in diesem Sommersemester', 'rrze-univis'),
+                'label' => __('Lectures begin this summer semester', 'rrze-univis'), // Beginn der Vorlesungszeit in diesem Sommersemester
                 'desc' => __('', 'rrze-univis'),
                 'placeholder' => '',
                 'type' => 'date',
@@ -165,7 +165,7 @@ function getFields()
             ],
             [
                 'name' => 'ssEnd',
-                'label' => __('Ende der Vorlesungszeit in diesem Sommersemester', 'rrze-univis'),
+                'label' => __('End of the lecture period this summer semester', 'rrze-univis'), // Ende der Vorlesungszeit in diesem Sommersemester
                 'desc' => __('', 'rrze-univis'),
                 'placeholder' => '',
                 'type' => 'date',
@@ -174,7 +174,7 @@ function getFields()
             ],
             [
                 'name' => 'hstart',
-                'label' => __('Größe der Überschrift, ab der Ausgaben beginnen', 'rrze-univis'),
+                'label' => __('Size of heading where output starts', 'rrze-univis'), // Größe der Überschrift, ab der Ausgaben beginnen
                 'desc' => __('', 'rrze-univis'),
                 'min' => 2,
                 'max' => 10,
@@ -208,65 +208,65 @@ function getShortcodeSettings()
                 'values' => [
                     [
                         'id' => 'mitarbeiter-einzeln',
-                        'val' => __('Mitarbeiter Einzeln', 'rrze-univis'),
+                        'val' => __('Single employee', 'rrze-univis'), // Mitarbeiter Einzeln
                     ],
                     [
                         'id' => 'mitarbeiter-alle',
-                        'val' => __('Mitarbeiter Alle', 'rrze-univis'),
+                        'val' => __('All employees', 'rrze-univis'), // Mitarbeiter Alle
                     ],
                     [
                         'id' => 'mitarbeiter-telefonbuch',
-                        'val' => __('Mitarbeiter Telefonbuch', 'rrze-univis'),
+                        'val' => __('Employees phone book', 'rrze-univis'), // Mitarbeiter Telefonbuch
                     ],
                     [
                         'id' => 'mitarbeiter-orga',
-                        'val' => __('Mitarbeiter Organisation', 'rrze-univis'),
+                        'val' => __('Employees organization', 'rrze-univis'), // Mitarbeiter Organisation
                     ],
                 ],
                 'default' => 'mitarbeiter-alle',
                 'field_type' => 'select',
-                'label' => __('Bitte wählen Sie', 'rrze-univis'),
+                'label' => __('Please select', 'rrze-univis'), // Bitte wählen Sie
                 'type' => 'string',
             ],
             'name' => [
                 'default' => '',
                 'field_type' => 'text',
-                'label' => __('Nachname, Vorname', 'rrze-univis'),
+                'label' => __('Last name, first name', 'rrze-univis'), // Nachname, Vorname
                 'type' => 'string',
             ],
             'univisid' => [
                 'default' => '',
                 'field_type' => 'text',
-                'label' => __('UnivIS ID Person', 'rrze-univis'),
+                'label' => __('UnivIS ID person', 'rrze-univis'),
                 'type' => 'string',
             ],
             'show' => [
                 'default' => '',
                 'field_type' => 'text',
-                'label' => __('anzeigen', 'rrze-univis'),
+                'label' => __('show', 'rrze-univis'), // anzeigen
                 'type' => 'string',
             ],
             'hide' => [
                 'default' => '',
                 'field_type' => 'text',
-                'label' => __('ausblenden', 'rrze-univis'),
+                'label' => __('hide', 'rrze-univis'), // ausblenden
                 'type' => 'string',
             ],
             'ignoriere_jobs' => [
                 'default' => 'Sicherheitsbeauftragter|IT-Sicherheits-Beauftragter|Webmaster|Postmaster|IT-Betreuer|UnivIS-Beauftragte',
                 'field_type' => 'text',
-                'label' => __('Ignoriere Jobs - einzelne Tätigkeiten durch | voneinander trennen.', 'rrze-univis'),
+                'label' => __('Ignore jobs - separate individual activities with | from each other.', 'rrze-univis'), // Ignoriere Jobs - einzelne Tätigkeiten durch | voneinander trennen.
                 'type' => 'string',
             ],
             'zeige_jobs' => [
                 'default' => '',
                 'field_type' => 'text',
-                'label' => __('Zeige nur diese Jobs', 'rrze-univis'),
+                'label' => __('Show these jobs only', 'rrze-univis'), // Zeige nur diese Jobs
                 'type' => 'string',
             ],
             'call' => [
                 'field_type' => 'toggle',
-                'label' => __('Telefonnummern wählbar machen', 'rrze-univis'),
+                'label' => __('Make phone numbers dialable', 'rrze-univis'), // Telefonnummern wählbar machen
                 'type' => 'boolean',
                 'default' => true,
                 'checked' => true,
@@ -280,26 +280,26 @@ function getShortcodeSettings()
             'hstart' => [
                 'default' => 2,
                 'field_type' => 'text',
-                'label' => __('Überschriftenebene der ersten Überschrift', 'rrze-univis'),
+                'label' => __('Size of heading where output starts', 'rrze-univis'),
                 'type' => 'number',
             ],
             'show_phone' => [
                 'field_type' => 'toggle',
-                'label' => __('Telefonnummern anzeigen', 'rrze-univis'),
+                'label' => __('Show phone numbers', 'rrze-univis'),
                 'type' => 'boolean',
                 'default' => true,
                 'checked' => true,
             ],
             'show_mail' => [
                 'field_type' => 'toggle',
-                'label' => __('eMail anzeigen', 'rrze-univis'),
+                'label' => __('Show eMail', 'rrze-univis'),
                 'type' => 'boolean',
                 'default' => true,
                 'checked' => true,
             ],
             'show_jumpmarks' => [
                 'field_type' => 'toggle',
-                'label' => __('Sprungmarken anzeigen', 'rrze-univis'),
+                'label' => __('Show anchors', 'rrze-univis'),
                 'type' => 'boolean',
                 'default' => true,
                 'checked' => true,
@@ -324,45 +324,45 @@ function getShortcodeSettings()
                 'values' => [
                     [
                         'id' => 'lehrveranstaltungen-einzeln',
-                        'val' => __('Lehrveranstaltungen Einzeln', 'rrze-univis'),
+                        'val' => __('Single lecture', 'rrze-univis'), // Lehrveranstaltungen Einzeln
                     ],
                     [
                         'id' => 'lehrveranstaltungen-alle',
-                        'val' => __('Lehrveranstaltungen Alle', 'rrze-univis'),
+                        'val' => __('All lectures', 'rrze-univis'), // Lehrveranstaltungen Alle
                     ],
                 ],
                 'default' => 'lehrveranstaltungen-alle',
                 'field_type' => 'select',
-                'label' => __('Bitte wählen Sie', 'rrze-univis'),
+                'label' => __('Please select', 'rrze-univis'), // Bitte wählen Sie
                 'type' => 'string',
             ],
             'id' => [
                 'default' => '',
                 'field_type' => 'text',
-                'label' => __('UnivIS ID Lehrveranstaltung', 'rrze-univis'),
+                'label' => __('UnivIS ID lecture', 'rrze-univis'),
                 'type' => 'string',
             ],
             'name' => [
                 'default' => '',
                 'field_type' => 'text',
-                'label' => __('Nachname, Vorname', 'rrze-univis'),
+                'label' => __('Last name, first name', 'rrze-univis'),
                 'type' => 'string',
             ],
             'univisid' => [
                 'default' => '',
                 'field_type' => 'text',
-                'label' => __('UnivIS ID Person', 'rrze-univis'),
+                'label' => __('UnivIS ID person', 'rrze-univis'),
                 'type' => 'string',
             ],
             'dozentid' => [
                 'default' => '',
                 'field_type' => 'text',
-                'label' => __('UnivIS ID Person', 'rrze-univis'),
+                'label' => __('UnivIS ID person', 'rrze-univis'),
                 'type' => 'string',
             ],
             'lv_import' => [
                 'field_type' => 'toggle',
-                'label' => __('Importierte Lehrveranstaltungen ausgeben', 'rrze-univis'),
+                'label' => __('Output imported courses', 'rrze-univis'), // Importierte Lehrveranstaltungen ausgeben
                 'type' => 'boolean',
                 'default' => false,
                 'checked' => false,
@@ -370,25 +370,25 @@ function getShortcodeSettings()
             'type' => [
                 'default' => '',
                 'field_type' => 'text',
-                'label' => __('Typ. z.B. vorl (=Vorlesung)', 'rrze-univis'),
+                'label' => __('Type f.e. vorl (=lecture)', 'rrze-univis'), // Typ. z.B. vorl (=Vorlesung)
                 'type' => 'string',
             ],
             'order' => [
                 'default' => '',
                 'field_type' => 'text',
-                'label' => __('Sortierung nach Typ z.B. "vorl,ueb"', 'rrze-univis'),
+                'label' => __('Sort by type f.e. "vorl,ueb"', 'rrze-univis'), // Sortierung nach Typ z.B. "vorl,ueb"
                 'type' => 'string',
             ],
             'sem' => [
                 'default' => '',
                 'field_type' => 'text',
-                'label' => __('Semester z.B. 2020w', 'rrze-univis'),
+                'label' => __('Semester f.e. 2020w', 'rrze-univis'), // Semester z.B. 2020w
                 'type' => 'string',
             ],
             'sprache' => [
                 'default' => '',
                 'field_type' => 'text',
-                'label' => __('Sprache', 'rrze-univis'),
+                'label' => __('language', 'rrze-univis'),
                 'type' => 'string',
             ],
             'number' => [
@@ -400,18 +400,18 @@ function getShortcodeSettings()
             'show' => [
                 'default' => '',
                 'field_type' => 'text',
-                'label' => __('anzeigen', 'rrze-univis'),
+                'label' => __('show', 'rrze-univis'),
                 'type' => 'string',
             ],
             'hide' => [
                 'default' => '',
                 'field_type' => 'text',
-                'label' => __('ausblenden', 'rrze-univis'),
+                'label' => __('hide', 'rrze-univis'),
                 'type' => 'string',
             ],
             'ics' => [
                 'field_type' => 'toggle',
-                'label' => __('ICS anbieten', 'rrze-univis'),
+                'label' => __('Offer ICS', 'rrze-univis'), // ICS anbieten
                 'type' => 'boolean',
                 'default' => true,
                 'checked' => true,
@@ -419,19 +419,19 @@ function getShortcodeSettings()
             'hstart' => [
                 'default' => 2,
                 'field_type' => 'text',
-                'label' => __('Überschriftenebene der ersten Überschrift', 'fau-person'),
+                'label' => __('Size of heading where output starts', 'fau-person'),
                 'type' => 'number',
             ],
             'fruehstud' => [
                 'field_type' => 'toggle',
-                'label' => __('Nur Frühstudium anzeigen', 'rrze-univis'),
+                'label' => __('Show early studies only', 'rrze-univis'), // Nur Frühstudium anzeigen
                 'type' => 'boolean',
                 'default' => null,
                 'checked' => false,
             ],
             'gast' => [
                 'field_type' => 'toggle',
-                'label' => __('Nur für Gaststudium geeignet anzeigen', 'rrze-univis'),
+                'label' => __('Show suitable for visiting students only', 'rrze-univis'), // Nur für Gaststudium geeignet anzeigen
                 'type' => 'boolean',
                 'default' => null,
                 'checked' => false,
@@ -450,30 +450,30 @@ function getShortcodeSettings()
                 'values' => [
                     [
                         'id' => 'publikationen',
-                        'val' => __('Publikationen', 'rrze-univis'),
+                        'val' => __('Publications', 'rrze-univis'), // Publikationen
                     ],
                 ],
                 'default' => 'publikationen',
                 'field_type' => 'select',
-                'label' => __('Bitte wählen Sie', 'rrze-univis'),
+                'label' => __('Please select', 'rrze-univis'),
                 'type' => 'string',
             ],
             'name' => [
                 'default' => '',
                 'field_type' => 'text',
-                'label' => __('Nachname, Vorname', 'rrze-univis'),
+                'label' => __('Last name, first name', 'rrze-univis'),
                 'type' => 'string',
             ],
             'univisid' => [
                 'default' => '',
                 'field_type' => 'text',
-                'label' => __('UnivIS ID Person', 'rrze-univis'),
+                'label' => __('UnivIS ID person', 'rrze-univis'),
                 'type' => 'string',
             ],
             'since' => [
                 'default' => 0,
                 'field_type' => 'text',
-                'label' => __('Ab dem angegebenen Erscheinungsjahr anzeigen. Z.B. 2017', 'rrze-univis'),
+                'label' => __('Show from the specified year of publication. F.e. 2017', 'rrze-univis'), // Ab dem angegebenen Erscheinungsjahr anzeigen. Z.B. 2017
                 'type' => 'number',
             ],
             'number' => [
@@ -485,7 +485,7 @@ function getShortcodeSettings()
             'hstart' => [
                 'default' => 2,
                 'field_type' => 'text',
-                'label' => __('Überschriftenebene der ersten Überschrift', 'fau-person'),
+                'label' => __('Size of heading where output starts', 'fau-person'),
                 'type' => 'number',
             ],
         ],

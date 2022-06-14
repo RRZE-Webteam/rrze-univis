@@ -64,13 +64,13 @@
                 $infos .= '</span>';
             }
 
-            if (!empty($veranstaltung['leclanguage_long']) && ($veranstaltung['leclanguage_long'] != __('Unterrichtssprache Deutsch', 'rrze-univis'))) {
+            if (!empty($veranstaltung['leclanguage_long']) && ($veranstaltung['leclanguage_long'] != __('Lecture\'s language German', 'rrze-univis'))) {
                 if (!empty($infos)) {$infos .= ', ';}
                 $infos .= '<span>' . $veranstaltung['leclanguage_long'] . '</span>';
             }
             echo $infos . '</li>';
             ?>
-					<li class="termindaten"><?php _e('Termin', 'rrze-univis');?>:
+					<li class="termindaten"><?php _e('Date', 'rrze-univis');?>:
 			                <ul>
 			                        <?php
             if (isset($veranstaltung['courses'])):
@@ -129,7 +129,7 @@
                                     'wsend' => $wsend,
                                 ];
 
-                                $screenReaderTxt = __('ICS', 'rrze-univis') . ': ' . __('Termin', 'rrze-univis') . ' ' . (!empty($t['repeat']) ? $t['repeat'] : '') . ' ' . (!empty($t['date']) ? $t['date'] . ' ' : '') . $t['time'] . ' ' . __('in den Kalender importieren', 'rrze-univis');
+                                $screenReaderTxt = __('ICS', 'rrze-univis') . ': ' . __('Date', 'rrze-univis') . ' ' . (!empty($t['repeat']) ? $t['repeat'] : '') . ' ' . (!empty($t['date']) ? $t['date'] . ' ' : '') . $t['time'] . ' ' . __('import to calendar', 'rrze-univis');
                                 $t['ics'] = '<span class="lecture-info-ics" itemprop="ics"><a href="' . plugin_dir_url(__DIR__) . 'ics.php?' . http_build_query($props) . '" aria-label="' . $screenReaderTxt . '">' . __('ICS', 'rrze-univis') . '</a></span>';
                             }
                             $t['time'] .= ',';
