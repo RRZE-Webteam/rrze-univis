@@ -3,391 +3,903 @@ msgstr ""
 "Project-Id-Version: RRZE UnivIS\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2018-11-15 10:23+0000\n"
-"PO-Revision-Date: 2020-03-02 13:23+0100\n"
+"PO-Revision-Date: 2022-06-14 15:47+0000\n"
 "Last-Translator: RRZE Webteam <webmaster@fau.de>\n"
-"Language-Team: Deutsch\n"
+"Language-Team: German\n"
 "Language: de_DE\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Generator: Poedit 2.3\n"
+"X-Generator: Loco https://localise.biz/"
 
-#: rrze-univis.php:78
-#, php-format
-msgid ""
-"Your server is running PHP version %s. Please upgrade at least to PHP "
-"version %s."
-msgstr ""
-"Ihre PHP-Version %s ist veraltet. Bitte aktualisieren Sie mindestens auf die "
-"PHP-Version %s."
+#: includes/UnivISAPI.php:878
+msgid " Fr"
+msgstr "Fr"
 
-#: rrze-univis.php:82
-#, php-format
-msgid ""
-"Your Wordpress version is %s. Please upgrade at least to Wordpress version "
-"%s."
-msgstr ""
-"Ihre Wordpress-Version %s ist veraltet. Bitte aktualisieren Sie mindestens "
-"auf die Wordpress-Version %s."
+#: includes/UnivISAPI.php:874
+msgid " Mo"
+msgstr "Mo"
 
-#: RRZE/UnivIS/Controller.php:112
-msgid "Template Error: Could not find template file."
-msgstr "Template Fehler: Konnte Template Datei nicht finden."
+#: includes/UnivISAPI.php:879
+msgid " Sa"
+msgstr "Sa"
 
-#: RRZE/UnivIS/Main.php:236
-msgid "Please enter a valid UnivIS OrgNr."
-msgstr "Bitte geben Sie eine gültige UnivIS-Organisationsnummer an."
+#: includes/UnivISAPI.php:873 includes/UnivISAPI.php:880
+msgid " Su"
+msgstr "So"
 
-#: RRZE/UnivIS/Main.php:244
-msgid "Please enter a valid lecture ID."
-msgstr "Bitte geben Sie eine gültige Lehrveranstaltungs-ID an."
+#: includes/UnivISAPI.php:916
+msgid " SWS"
+msgstr "SWS"
 
-#: RRZE/UnivIS/Main.php:252
-msgid "Please enter a first and last name or a UnivIS ID."
-msgstr "Bitte geben Sie einen Vor- und Nachnamen oder eine UnivIS-ID an."
+#: includes/UnivISAPI.php:877
+#| msgid "Thu"
+msgid " Thu"
+msgstr "Do"
 
-#: RRZE/UnivIS/Core/Options.php:22
+#: includes/UnivISAPI.php:875
+#| msgid "Tue"
+msgid " Tue"
+msgstr "Di"
+
+#: includes/UnivISAPI.php:876
+#| msgid "Wed"
+msgid " Wed"
+msgstr "Mi"
+
+#: includes/Functions.php:68 includes/Shortcode.php:309
+msgid "-- All --"
+msgstr "-- Alle --"
+
+#: includes/Shortcode.php:387
+msgid "-- Current semester --"
+msgstr "-- Aktuelles Semester --"
+
+#: config/config.php:115
 msgid "<b><i>Univ</i>IS</b> - Information System of the FAU"
 msgstr "<b><i>Univ</i>IS</b> - Informationssystem der FAU"
 
-#: RRZE/UnivIS/Core/Render.php:561 RRZE/UnivIS/Core/Render.php:985
-msgid "daily"
-msgstr "Jeden Tag"
+#: config/config.php:120
+msgid "<b><i>Univ</i>IS</b> OrgNr."
+msgstr "<b><i>Univ</i>IS</b> OrgNr."
 
-#: RRZE/UnivIS/Core/Render.php:561 RRZE/UnivIS/Core/Render.php:986
-msgid "weekly"
-msgstr "Jede Woche"
+#: includes/UnivISAPI.php:858
+msgid "Accompanying seminar (BSEM)"
+msgstr "Begleitseminar (BSEM)"
 
-#: RRZE/UnivIS/Core/Render.php:561 RRZE/UnivIS/Core/Render.php:746
-msgid "Every second week"
-msgstr "Alle zwei Wochen"
-
-#: RRZE/UnivIS/Core/Render.php:562 RRZE/UnivIS/Core/Render.php:747
-msgid "Every third week"
-msgstr "Alle drei Wochen"
-
-#: RRZE/UnivIS/Core/Render.php:563 RRZE/UnivIS/Core/Render.php:748
-msgid "Every fourth week"
-msgstr "Alle vier Wochen"
-
-#: RRZE/UnivIS/Core/Render.php:564 RRZE/UnivIS/Core/Render.php:749
-msgid "Single appointment on"
-msgstr "Einzeltermin am"
-
-#: RRZE/UnivIS/Core/Render.php:565 RRZE/UnivIS/Core/Render.php:750
-msgid "Block appointment"
-msgstr "Blockveranstaltung"
-
-#: RRZE/UnivIS/Core/Render.php:587 RRZE/UnivIS/Core/Render.php:594
-#: RRZE/UnivIS/Core/Render.php:771 RRZE/UnivIS/Core/Render.php:778
-msgid "Sun"
-msgstr "So"
-
-#: RRZE/UnivIS/Core/Render.php:588 RRZE/UnivIS/Core/Render.php:772
-msgid "Mon"
-msgstr "Mo"
-
-#: RRZE/UnivIS/Core/Render.php:589 RRZE/UnivIS/Core/Render.php:773
-msgid "Tue"
-msgstr "Di"
-
-#: RRZE/UnivIS/Core/Render.php:590 RRZE/UnivIS/Core/Render.php:774
-msgid "Wed"
-msgstr "Mi"
-
-#: RRZE/UnivIS/Core/Render.php:591 RRZE/UnivIS/Core/Render.php:775
-msgid "Thu"
-msgstr "Do"
-
-#: RRZE/UnivIS/Core/Render.php:592 RRZE/UnivIS/Core/Render.php:776
-msgid "Fri"
-msgstr "Fr"
-
-#: RRZE/UnivIS/Core/Render.php:593 RRZE/UnivIS/Core/Render.php:777
-msgid "Sat"
-msgstr "Sa"
-
-#: RRZE/UnivIS/Core/Render.php:598 RRZE/UnivIS/Core/Render.php:605
-#: RRZE/UnivIS/Core/Render.php:782 RRZE/UnivIS/Core/Render.php:789
-msgid "Sunday"
-msgstr "Sonntag"
-
-#: RRZE/UnivIS/Core/Render.php:599 RRZE/UnivIS/Core/Render.php:783
-msgid "Monday"
-msgstr "Montag"
-
-#: RRZE/UnivIS/Core/Render.php:600 RRZE/UnivIS/Core/Render.php:784
-msgid "Tuesday"
-msgstr "Dienstag"
-
-#: RRZE/UnivIS/Core/Render.php:601 RRZE/UnivIS/Core/Render.php:785
-msgid "Wednesday"
-msgstr "Mittwoch"
-
-#: RRZE/UnivIS/Core/Render.php:602 RRZE/UnivIS/Core/Render.php:786
-msgid "Thursday"
-msgstr "Donnerstag"
-
-#: RRZE/UnivIS/Core/Render.php:603 RRZE/UnivIS/Core/Render.php:787
-msgid "Friday"
-msgstr "Freitag"
-
-#: RRZE/UnivIS/Core/Render.php:604 RRZE/UnivIS/Core/Render.php:788
-msgid "Saturday"
-msgstr "Samstag"
-
-#: RRZE/UnivIS/Core/Settings.php:32
-msgid "UnivIS"
-msgstr "UnivIS"
-
-#: RRZE/UnivIS/Core/Settings.php:44
-msgid "UnivIS Settings"
-msgstr "Einstellungen &rsaquo; UnivIS"
-
-#: RRZE/UnivIS/Core/Settings.php:63
-msgid "Text for link to UnivIS"
-msgstr "Linktext zu UnivIS"
-
-#: RRZE/UnivIS/Core/Settings.php:64
-msgid "UnivIS OrgNr."
-msgstr "UnivIS-OrgNr."
-
-#: RRZE/UnivIS/Core/Settings.php:114
-msgid "Overview"
-msgstr "Übersicht"
-
-#: RRZE/UnivIS/Core/Settings.php:118
-msgid "For more information"
-msgstr "Für mehr Information"
-
-#: RRZE/UnivIS/Core/Settings.php:118
-msgid "RRZE Webteam on Github"
-msgstr "RRZE-Webteam in Github"
-
-#: RRZE/UnivIS/Core/UnivIS.php:89
-msgid "Error: Unknown command"
-msgstr "Fehler: Unbekannter Fehler"
-
-#: RRZE/UnivIS/Core/UnivIS.php:112
-msgid "No connection could be established to UnivIS."
-msgstr "Leider konnte zu UnivIS keine Verbindung aufgebaut werden."
-
-#: RRZE/UnivIS/Core/UnivIS.php:123 RRZE/UnivIS/Core/UnivIS.php:259
-#: RRZE/UnivIS/Core/UnivIS.php:334 RRZE/UnivIS/Core/UnivIS.php:414
-#: RRZE/UnivIS/Core/UnivIS.php:494 RRZE/UnivIS/Core/UnivIS.php:587
-msgid "No results. Please check the search parameters."
-msgstr ""
-"Leider brachte Ihre Suche kein Ergebnis. Bitte überprüfen Sie die "
-"Suchparameter."
-
-#: RRZE/UnivIS/Core/UnivIS.php:136
-msgid "The organizational unit could not be found."
-msgstr "Leider konnte die Organisationseinheit nicht gefunden werden."
-
-#: RRZE/UnivIS/Core/UnivIS.php:142
-msgid "No employees can be found in this organizational unit."
-msgstr ""
-"In dieser Organisationseinheit konnten keine Mitarbeiter gefunden werden."
-
-#: RRZE/UnivIS/Core/UnivIS.php:249
-msgid "No connection could be stablished to UnivIS."
-msgstr "Leider konnte zu UnivIS keine Verbindung aufgebaut werden."
-
-#: RRZE/UnivIS/Core/UnivIS.php:270
-msgid "Leider konnte die Organisationseinheit nicht gefunden werden."
-msgstr "Leider konnte die Organisationseinheit nicht gefunden werden."
-
-#: RRZE/UnivIS/Core/UnivIS.php:323 RRZE/UnivIS/Core/UnivIS.php:403
-#: RRZE/UnivIS/Core/UnivIS.php:483 RRZE/UnivIS/Core/UnivIS.php:576
-msgid "Leider konnte zu UnivIS keine Verbindung aufgebaut werden."
-msgstr "Leider konnte zu UnivIS keine Verbindung aufgebaut werden."
-
-#: RRZE/UnivIS/Core/UnivIS.php:344 RRZE/UnivIS/Core/UnivIS.php:353
-msgid "The person could not be found."
-msgstr "Leider konnte die Person nicht gefunden werden."
-
-#: RRZE/UnivIS/Core/UnivIS.php:425
-msgid "No publications could be found."
-msgstr "Leider konnten keine Publikationen gefunden werden."
-
-#: RRZE/UnivIS/Core/UnivIS.php:508
-msgid "No lectures could be found."
-msgstr "Leider konnten keine Lehrveranstaltungen gefunden werden."
-
-#. Fehler: Bitte geben Sie eine Lehrveranstaltung an
-#: RRZE/UnivIS/Core/UnivIS.php:556
-msgid "<div class=\\\"hinweis_wichtig\\\">Please specify a lecture.</div>"
-msgstr ""
-"<div class=\\\"hinweis_wichtig\\\">Bitte geben Sie eine Lehrveranstaltung an."
-"</div>"
-
-#: RRZE/UnivIS/Core/UnivIS.php:598
-msgid "No results."
-msgstr "Leider brachte Ihre Suche kein Ergebnis."
-
-#: RRZE/UnivIS/MCE/langs.php:17
-msgid "Add UnivIS"
-msgstr "UnivIS einfügen"
-
-#: RRZE/UnivIS/Templates/lehrveranstaltungen-alle.php:42
-#: RRZE/UnivIS/Templates/lehrveranstaltungen-alle.php:76
-#: RRZE/UnivIS/Templates/lehrveranstaltungen-einzeln.php:60
-#: RRZE/UnivIS/Templates/lehrveranstaltungen-einzeln.php:97
-msgid "Time on appointment"
-msgstr "Zeit n.V."
-
-#: RRZE/UnivIS/Templates/lehrveranstaltungen-alle.php:50
-#: RRZE/UnivIS/Templates/lehrveranstaltungen-alle.php:84
-#: RRZE/UnivIS/Templates/lehrveranstaltungen-einzeln.php:68
-#: RRZE/UnivIS/Templates/lehrveranstaltungen-einzeln.php:105
-#: RRZE/UnivIS/Templates/mitarbeiter-einzeln.php:81
-msgid "Room"
-msgstr "Raum"
-
-#: RRZE/UnivIS/Templates/lehrveranstaltungen-alle.php:53
-#: RRZE/UnivIS/Templates/lehrveranstaltungen-alle.php:87
-#: RRZE/UnivIS/Templates/lehrveranstaltungen-einzeln.php:71
-#: RRZE/UnivIS/Templates/lehrveranstaltungen-einzeln.php:108
-msgid "exclude"
-msgstr "außer"
-
-#: RRZE/UnivIS/Templates/lehrveranstaltungen-alle.php:94
-#: RRZE/UnivIS/Templates/lehrveranstaltungen-einzeln.php:114
-msgid "Time and place on appointment"
-msgstr "Zeit/Ort n.V."
-
-#: RRZE/UnivIS/Templates/lehrveranstaltungen-einzeln.php:7
-msgid "Lecturers"
-msgstr "Dozent/in"
-
-#: RRZE/UnivIS/Templates/lehrveranstaltungen-einzeln.php:33
-msgid "Details"
-msgstr "Details"
-
-#: RRZE/UnivIS/Templates/lehrveranstaltungen-einzeln.php:39
-msgid "Time and place"
-msgstr "Zeit/Ort n.V."
-
-#: RRZE/UnivIS/Templates/lehrveranstaltungen-einzeln.php:75
-msgid "Course"
-msgstr "Kurs"
-
-#: RRZE/UnivIS/Templates/lehrveranstaltungen-einzeln.php:120
-msgid "Fields of study"
-msgstr "Studienfächer / Studienrichtungen"
-
-#: RRZE/UnivIS/Templates/lehrveranstaltungen-einzeln.php:132
-msgid "from SEM"
-msgstr "ab Sem."
-
-#: RRZE/UnivIS/Templates/lehrveranstaltungen-einzeln.php:143
-msgid "Prerequisites / Organizational information"
-msgstr "Voraussetzungen / Organisatorisches"
-
-#: RRZE/UnivIS/Templates/lehrveranstaltungen-einzeln.php:150
-#: RRZE/UnivIS/Templates/lehrveranstaltungen-einzeln.php:171
-msgid "Content"
-msgstr "Inhalt"
-
-#: RRZE/UnivIS/Templates/lehrveranstaltungen-einzeln.php:156
-msgid "Recommended Literature"
-msgstr "Empfohlene Literatur"
-
-#: RRZE/UnivIS/Templates/lehrveranstaltungen-einzeln.php:161
-msgid "ECTS information"
-msgstr "ECTS-Informationen"
-
-#: RRZE/UnivIS/Templates/lehrveranstaltungen-einzeln.php:163
-msgid "Title"
-msgstr "Titel"
-
-#: RRZE/UnivIS/Templates/lehrveranstaltungen-einzeln.php:167
-msgid "Credits"
-msgstr "Credits"
-
-#: RRZE/UnivIS/Templates/lehrveranstaltungen-einzeln.php:175
-msgid "Literature"
-msgstr "Literature"
-
-#: RRZE/UnivIS/Templates/lehrveranstaltungen-einzeln.php:181
+#: templates/lehrveranstaltungen-einzeln.php:194
 msgid "Additional information"
 msgstr "Zusätzliche Informationen"
 
-#: RRZE/UnivIS/Templates/lehrveranstaltungen-einzeln.php:183
-msgid "Keywords"
-msgstr "Schlagwörter"
-
-#: RRZE/UnivIS/Templates/lehrveranstaltungen-einzeln.php:186
-msgid "Expected participants"
-msgstr "Erwartete Teilnehmerzahl"
-
-#: RRZE/UnivIS/Templates/mitarbeiter-einzeln.php:25
-msgid "Job title"
-msgstr "Tätigkeit"
-
-#: RRZE/UnivIS/Templates/mitarbeiter-einzeln.php:41
-msgid "Organization"
-msgstr "Organisation"
-
-#: RRZE/UnivIS/Templates/mitarbeiter-einzeln.php:51
-msgid "Working group"
-msgstr "Abteilung"
-
-#: RRZE/UnivIS/Templates/mitarbeiter-einzeln.php:59
-msgid "Phone number"
-msgstr "Telefonnummer"
-
-#: RRZE/UnivIS/Templates/mitarbeiter-einzeln.php:62
-msgid "Fax number"
-msgstr "Faxnummer"
-
-#: RRZE/UnivIS/Templates/mitarbeiter-einzeln.php:65
-msgid "Email"
-msgstr "E-Mail"
-
-#: RRZE/UnivIS/Templates/mitarbeiter-einzeln.php:68
-msgid "Website"
-msgstr "Website"
-
-#: RRZE/UnivIS/Templates/mitarbeiter-einzeln.php:71
+#: templates/mitarbeiter-einzeln.php:75
 msgid "Address"
 msgstr "Adresse"
 
-#: RRZE/UnivIS/Templates/mitarbeiter-einzeln.php:91
-msgid "Office hours"
-msgstr "Sprechzeiten"
+#: includes/UnivISAPI.php:824
+msgid "Advanced course (AK)"
+msgstr "Aufbaukurs (AK)"
 
-#: RRZE/UnivIS/Templates/mitarbeiter-einzeln.php:102
-msgid "to"
-msgstr "bis"
+#: includes/UnivISAPI.php:834
+msgid "Advanced seminar (AS)"
+msgstr "Aufbauseminar (AS)"
 
-#: RRZE/UnivIS/Templates/single-univis.php:9
-#: RRZE/UnivIS/Templates/Themes/Blue-Edgy/content-univis.php:9
-#: RRZE/UnivIS/Templates/Themes/FAU/single-univis.php:14
+#: config/config.php:215
+msgid "All employees"
+msgstr "Alle Mitarbeiter"
+
+#: config/config.php:331
+msgid "All lectures"
+msgstr "Alle Lehrveranstaltungen"
+
+#: includes/UnivISAPI.php:34 includes/UnivISAPI.php:922
+msgid "Allowed for guest students"
+msgstr "Für Gaststudenten zugelassen"
+
+#: includes/Settings.php:892
+msgid "Area"
+msgstr "Bereich"
+
+#: includes/UnivISAPI.php:883
+msgid "Article in anthology"
+msgstr "Artikel im Sammelband"
+
+#: includes/UnivISAPI.php:885
+msgid "Article in magazine"
+msgstr "Artikel in Zeitschrift"
+
+#: includes/UnivISAPI.php:884
+msgid "Article in proceedings"
+msgstr "Artikel im Tagungsband"
+
+#: includes/UnivISAPI.php:807
+msgid "Bachelor"
+msgstr "Bakkalaureus"
+
+#: includes/UnivISAPI.php:900
+msgid "Bachelor thesis"
+msgstr "Bachelorarbeit"
+
+#: templates/single-univis.php:75
 msgid "Back to overview"
 msgstr "Zurück zur Übersicht"
 
-#: RRZE/UnivIS/Templates/Themes/Blue-Edgy/content-univis.php:14
-msgid "(Edit)"
-msgstr "(Bearbeiten)"
+#: includes/UnivISAPI.php:826
+msgid "Basic course (GK)"
+msgstr "Grundkurs (GK)"
 
-#. Name of the plugin
-msgid "RRZE UnivIS"
-msgstr "RRZE UnivIS"
+#: includes/UnivISAPI.php:832
+msgid "Basic seminar (GS)"
+msgstr "Grundseminar (GS)"
+
+#: includes/UnivISAPI.php:872
+msgid "block event"
+msgstr "Blockveranstaltung"
+
+#: includes/UnivISAPI.php:804
+msgid "Business Informatics"
+msgstr "Wirtschaftsinformatik"
+
+#: includes/UnivISAPI.php:917
+msgid "Certificate"
+msgstr "Schein"
+
+#: includes/UnivISAPI.php:838
+msgid "Clinical visit (KLV)"
+msgstr "Klinische Visite (KLV)"
+
+#: includes/UnivISAPI.php:859
+msgid "College (KOL)"
+msgstr "Kolleg (KOL)"
+
+#: includes/UnivISAPI.php:839
+msgid "Colloquium (KO)"
+msgstr "Kolloquium (KO)"
+
+#: includes/UnivISAPI.php:840
+msgid "Combined seminar (KS)"
+msgstr "Kombiseminar (KS)"
+
+#: includes/UnivISAPI.php:855
+msgid "Committee meeting (GSZ)"
+msgstr "Gremiensitzung (GSZ)"
+
+#: includes/UnivISAPI.php:803
+msgid "Computer Science"
+msgstr "Informatik"
+
+#: includes/UnivISAPI.php:890
+msgid "Conference volume (not published by the publisher)"
+msgstr "Tagungsband (nicht im Verlag erschienen)"
+
+#: templates/lehrveranstaltungen-einzeln.php:165
+#: templates/lehrveranstaltungen-einzeln.php:184
+msgid "Content"
+msgstr "Inhalt"
+
+#: templates/lehrveranstaltungen-alle.php:110
+#: templates/lehrveranstaltungen-einzeln.php:96
+msgid "Course"
+msgstr "Kurs"
+
+#: includes/UnivISAPI.php:823
+msgid "Course (KU)"
+msgstr "Course (KU)"
+
+#: templates/lehrveranstaltungen-einzeln.php:180
+msgid "Credits"
+msgstr "Credits"
+
+#: templates/lehrveranstaltungen-alle.php:73
+#: templates/lehrveranstaltungen-alle.php:132
+#: templates/lehrveranstaltungen-einzeln.php:118
+msgid "Date"
+msgstr "Termin"
+
+#: includes/UnivISAPI.php:815
+msgid "Dentistry"
+msgstr "Zahnmedizin"
+
+#: templates/lehrveranstaltungen-einzeln.php:51
+msgid "Details"
+msgstr "Details"
+
+#: includes/UnivISAPI.php:802 includes/UnivISAPI.php:895
+msgid "Diploma"
+msgstr "Diplom"
+
+#: includes/UnivISAPI.php:907
+msgid "Disclosure document"
+msgstr "Offenlegungsschrift"
+
+#: includes/UnivISAPI.php:902 includes/UnivISAPI.php:903
+msgid "Discussion paper"
+msgstr "Diskussionspapier"
+
+#: includes/UnivISWidget.php:24
+msgid "Displays a lecture, person or publication"
+msgstr "Zeigt eine Lehrveranstaltung, Person oder Publikation an"
+
+#: includes/UnivISAPI.php:894
+msgid "Dissertation"
+msgstr "Dissertation"
+
+#: includes/UnivISAPI.php:800
+msgid "Doctor"
+msgstr "Doktor"
+
+#: includes/UnivISAPI.php:921
+msgid "Early study"
+msgstr "Frühstudium"
+
+#: includes/UnivISAPI.php:919
+msgid "ECTS credits: "
+msgstr "ECTS credits: "
+
+#: templates/lehrveranstaltungen-einzeln.php:174
+msgid "ECTS information"
+msgstr "ECTS-Informationen"
+
+#: includes/UnivISAPI.php:918
+msgid "ECTS studies"
+msgstr "ECTS studies"
 
 #. Description of the plugin
-msgid "Einbindung von Daten aus UnivIS für den Geschäftsverteilungsplan."
-msgstr "Einbindung von Daten aus UnivIS für den Geschäftsverteilungsplan."
+msgid "Einbindung von Daten aus UnivIS"
+msgstr "Einbindung von Daten aus UnivIS"
+
+#: templates/mitarbeiter-alle.php:77 templates/mitarbeiter-einzeln.php:65
+#: templates/mitarbeiter-orga.php:79 templates/mitarbeiter-telefonbuch.php:78
+msgid "Email"
+msgstr "E-Mail"
+
+#: config/config.php:223
+msgid "Employees organization"
+msgstr "Mitarbeiter Organisation"
+
+#: config/config.php:219
+msgid "Employees phone book"
+msgstr "Mitarbeiter Telefonbuch"
+
+#: config/config.php:168
+msgid "End of the lecture period this summer semester"
+msgstr "Ende der Vorlesungszeit in diesem Sommersemester"
+
+#: config/config.php:150
+msgid "End of the lecture period this winter semester"
+msgstr "Ende der Vorlesungszeit in diesem Wintersemester"
+
+#: includes/UnivISAPI.php:806
+msgid "Engineering"
+msgstr "Ingenieurwissenschaft"
+
+#: includes/UnivISAPI.php:923
+msgid "Evaluation"
+msgstr "Evaluation"
+
+#: includes/UnivISAPI.php:868
+msgid "Every fourth week"
+msgstr "Alle vier Wochen"
+
+#: includes/UnivISAPI.php:866
+msgid "Every other week"
+msgstr "Jede zweite Woche"
+
+#: includes/UnivISAPI.php:867
+msgid "Every third week"
+msgstr "Alle drei Wochen"
+
+#: includes/UnivISAPI.php:837
+msgid "Exam course (KK)"
+msgstr "Klausurenkurs (KK)"
+
+#: includes/UnivISAPI.php:828
+msgid "Exam seminar (ES)"
+msgstr "Examensseminar (ES)"
+
+#: includes/UnivISAPI.php:854
+msgid "Examination (PF)"
+msgstr "Prüfung (PF)"
+
+#: templates/lehrveranstaltungen-alle.php:107
+#: templates/lehrveranstaltungen-einzeln.php:92
+msgid "exclude"
+msgstr "außer"
+
+#: includes/UnivISAPI.php:825
+msgid "Excursion (EX)"
+msgstr "Exkursion (EX)"
+
+#: includes/UnivISAPI.php:851
+msgid "Exercise (UE)"
+msgstr "Übung (UE)"
+
+#: templates/lehrveranstaltungen-alle.php:44
+#: templates/lehrveranstaltungen-einzeln.php:199
+msgid "Expected participants"
+msgstr "Erwartete Teilnehmerzahl"
+
+#: templates/mitarbeiter-alle.php:71 templates/mitarbeiter-einzeln.php:59
+#: templates/mitarbeiter-orga.php:73 templates/mitarbeiter-telefonbuch.php:72
+msgid "Fax number"
+msgstr "Faxnummer"
+
+#: templates/lehrveranstaltungen-einzeln.php:133
+msgid "Fields of study"
+msgstr "Studienfächer / Studienrichtungen"
+
+#: includes/UnivISAPI.php:905
+msgid "Final report"
+msgstr "Abschlussbericht"
+
+#: config/config.php:129
+msgid "Find Lectures from the soúmmer semester"
+msgstr "Finde Lehrveranstaltungen ab dem Sommersemester"
+
+#: config/config.php:73
+msgid "For more information"
+msgstr "Für mehr Information"
+
+#: templates/lehrveranstaltungen-einzeln.php:146
+msgid "from SEM"
+msgstr "ab Sem."
+
+#: includes/UnivISAPI.php:898
+msgid "Habilitation thesis"
+msgstr "Habilitationsschrift"
+
+#: config/config.php:70
+msgid "Here comes the Context Help content."
+msgstr "Here comes the Context Help content."
+
+#: config/config.php:252 config/config.php:409
+msgid "hide"
+msgstr "ausblenden"
+
+#: includes/UnivISAPI.php:857
+msgid "History of Languages Seminar (HIS)"
+msgstr "Sprachhistorisches Seminar (HIS)"
+
+#: includes/UnivISAPI.php:816
+msgid "honorary"
+msgstr "ehrenhalber"
+
+#. Author URI of the plugin
+msgid "https://blogs.fau.de/webworking/"
+msgstr "https://blogs.fau.de/webworking/"
 
 #. URI of the plugin
 msgid "https://github.com/RRZE-Webteam/rrze-univis"
-msgstr ""
+msgstr "https://github.com/RRZE-Webteam/rrze-univis"
+
+#: includes/UnivISAPI.php:809
+msgid "Humanities"
+msgstr "Geisteswissenschaft"
+
+#: templates/lehrveranstaltungen-alle.php:132
+#: templates/lehrveranstaltungen-alle.php:133
+#: templates/lehrveranstaltungen-einzeln.php:118
+#: templates/lehrveranstaltungen-einzeln.php:119
+msgid "ICS"
+msgstr "ICS"
+
+#: config/config.php:258
+msgid "Ignore jobs - separate individual activities with | from each other."
+msgstr "Ignoriere Jobs - einzelne Tätigkeiten durch | voneinander trennen."
+
+#: templates/lehrveranstaltungen-alle.php:132
+#: templates/lehrveranstaltungen-einzeln.php:118
+msgid "import to calendar"
+msgstr "in den Kalender importieren"
+
+#: includes/UnivISAPI.php:822
+msgid "Instructions for scientific work (AWA)"
+msgstr "Anleitung zu wiss. Arbeiten (AWA)"
+
+#: includes/UnivISAPI.php:901
+msgid "Internal Report"
+msgstr "Interner Bericht"
+
+#: includes/UnivISAPI.php:886
+msgid "Internal Report (Technical Report, Research Report)"
+msgstr "Interner Bericht (Technischer Bericht, Forschungsbericht)"
+
+#: includes/UnivISAPI.php:844
+msgid "Internship (PR)"
+msgstr "Internship (PR)"
+
+#: includes/UnivISAPI.php:841
+msgid "Introductory course (EK)"
+msgstr "Einführungskurs (EK)"
+
+#: includes/UnivISAPI.php:891
+msgid "IPR"
+msgstr "Schutzrecht"
+
+#: templates/mitarbeiter-einzeln.php:25
+msgid "Job title"
+msgstr "Tätigkeit"
+
+#: includes/Settings.php:902
+msgid "Keyword"
+msgstr "Suchbegriff"
+
+#: templates/lehrveranstaltungen-einzeln.php:196
+msgid "Keywords"
+msgstr "Schlagwörter"
+
+#: config/config.php:310 includes/Shortcode.php:383
+msgid "Language"
+msgstr "Sprache"
+
+#: config/config.php:391
+msgid "language"
+msgstr "Sprache"
+
+#: config/config.php:234 config/config.php:348 config/config.php:464
+msgid "Last name, first name"
+msgstr "Nachname, Vorname"
+
+#: includes/UnivISAPI.php:818
+msgid "law"
+msgstr "Recht"
+
+#: includes/Main.php:76 includes/Settings.php:897 includes/Shortcode.php:377
+#: includes/UnivISWidget.php:47
+msgid "Lecture"
+msgstr "Lehrveranstaltung"
+
+#: includes/UnivISAPI.php:852
+msgid "Lecture (VORL)"
+msgstr "Vorlesung (VORL)"
+
+#: includes/UnivISAPI.php:850
+msgid "Lecture with exercise (V/UE)"
+msgstr "Vorlesung mit Übung (V/UE)"
+
+#: includes/UnivISAPI.php:914
+msgid "Lecture's language English"
+msgstr "Unterrichtssprache Englisch"
+
+#: includes/UnivISAPI.php:912 includes/UnivISAPI.php:913
+#: templates/lehrveranstaltungen-alle.php:67
+msgid "Lecture's language German"
+msgstr "Unterrichtssprache Deutsch"
+
+#: templates/lehrveranstaltungen-einzeln.php:24
+msgid "Lecturers"
+msgstr "Dozent/in"
+
+#: templates/mitarbeiter-einzeln.php:134
+msgid "Lectures"
+msgstr "Lehrveranstaltungen"
+
+#: config/config.php:159
+msgid "Lectures begin this summer semester"
+msgstr "Beginn der Vorlesungszeit in diesem Sommersemester"
+
+#: config/config.php:141
+msgid "Lectures begin this winter semester"
+msgstr "Beginn der Vorlesungszeit in diesem Wintersemester"
+
+#: config/config.php:102
+msgid "Link to <b><i>Univ</i>IS</b>"
+msgstr "Link zu <b><i>Univ</i>IS</b>"
+
+#: includes/Functions.php:90
+msgid "Link to UnivIS is missing."
+msgstr "Link zu UnivIS fehlt."
+
+#: templates/lehrveranstaltungen-einzeln.php:188
+msgid "Literature"
+msgstr "Literature"
+
+#: includes/UnivISAPI.php:808
+msgid "Magister Artium"
+msgstr "Magister "
+
+#: includes/UnivISAPI.php:853
+msgid "Main Lecture (HVL)"
+msgstr "Hauptvorlesung (HVL)"
+
+#: includes/UnivISAPI.php:835
+msgid "Main seminar (HS)"
+msgstr "Hauptseminar (HS)"
+
+#: config/config.php:269
+msgid "Make phone numbers dialable"
+msgstr "Telefonnummern wählbar machen"
+
+#: includes/UnivISAPI.php:831
+msgid "Master seminar (MAS)"
+msgstr "Masterseminar (MAS)"
+
+#: includes/UnivISAPI.php:896 includes/UnivISAPI.php:899
+msgid "Master's thesis"
+msgstr "Masterarbeit"
+
+#: includes/UnivISAPI.php:805
+msgid "Math"
+msgstr "Mathematik"
+
+#: includes/UnivISAPI.php:817
+msgid "medicine"
+msgstr "Medizin"
+
+#: includes/UnivISAPI.php:842
+msgid "Middle seminar (MS)"
+msgstr "Mittelseminar (MS)"
+
+#: templates/mitarbeiter-alle.php:62 templates/mitarbeiter-alle.php:64
+#: templates/mitarbeiter-einzeln.php:50 templates/mitarbeiter-einzeln.php:52
+#: templates/mitarbeiter-orga.php:64 templates/mitarbeiter-orga.php:66
+#: templates/mitarbeiter-telefonbuch.php:63
+#: templates/mitarbeiter-telefonbuch.php:65
+msgid "Mobile number"
+msgstr "Mobilnummer"
+
+#: includes/UnivISAPI.php:889
+msgid "Monograph"
+msgstr "Monographie"
+
+#: includes/UnivISAPI.php:860
+msgid "MS (HS, PO 2020) (MHS)"
+msgstr "MS (HS, PO 2020) (MHS)"
+
+#: includes/UnivISAPI.php:811
+msgid "Natural Science"
+msgstr "Naturwissenschaft"
+
+#: includes/Functions.php:79
+msgid "No matching entries found."
+msgstr "Keine passenden Einträge gefunden."
+
+#: includes/Shortcode.php:208 includes/Shortcode.php:495
+msgid "No matching records found."
+msgstr "Keine passenden Datensätze gefunden."
+
+#: config/config.php:414
+msgid "Offer ICS"
+msgstr "ICS anbieten"
+
+#: templates/mitarbeiter-einzeln.php:99 templates/mitarbeiter-einzeln.php:100
+msgid "Office hours"
+msgstr "Sprechzeiten"
+
+#: includes/Main.php:74 includes/Settings.php:895
+#: templates/mitarbeiter-einzeln.php:28
+msgid "Organization"
+msgstr "Organisation"
+
+#: includes/UnivISAPI.php:506
+msgid "Other"
+msgstr "Andere"
+
+#: includes/UnivISAPI.php:848
+msgid "Other courses (SL)"
+msgstr "Sonstige Lehrveranstaltung (SL)"
+
+#: config/config.php:365
+msgid "Output imported courses"
+msgstr "Importierte Lehrveranstaltungen ausgeben"
+
+#: config/config.php:72
+msgid "Overview"
+msgstr "Übersicht"
+
+#: includes/UnivISAPI.php:908
+msgid "Patent application"
+msgstr "Patentanmeldung"
+
+#: includes/UnivISAPI.php:906
+msgid "Patent specification"
+msgstr "Patentschrift"
+
+#: includes/Main.php:75 includes/Settings.php:896 includes/Shortcode.php:354
+#: includes/UnivISWidget.php:48
+msgid "Person"
+msgstr "Person"
+
+#: includes/UnivISAPI.php:861
+msgid "PG Master Seminar (PGMAS)"
+msgstr "PG Masterseminar (PGMAS)"
+
+#: templates/mitarbeiter-alle.php:52 templates/mitarbeiter-alle.php:54
+#: templates/mitarbeiter-einzeln.php:40 templates/mitarbeiter-einzeln.php:42
+#: templates/mitarbeiter-orga.php:54 templates/mitarbeiter-orga.php:56
+#: templates/mitarbeiter-telefonbuch.php:53
+#: templates/mitarbeiter-telefonbuch.php:55
+msgid "Phone number"
+msgstr "Telefonnummer"
+
+#: config/config.php:228 config/config.php:336 config/config.php:458
+msgid "Please select"
+msgstr "Bitte wählen Sie"
+
+#: rrze-univis.php:129
+#, php-format
+msgid "Plugins: %1$s: %2$s"
+msgstr "Plugins: %1$s: %2$s"
+
+#: includes/UnivISAPI.php:810
+msgid "Political Science"
+msgstr "Politikwissenschaft"
+
+#: includes/UnivISAPI.php:845
+msgid "Practice seminar (PRS)"
+msgstr "Praxisseminar (PRS)"
+
+#: templates/lehrveranstaltungen-einzeln.php:157
+msgid "Prerequisites / Organizational information"
+msgstr "Voraussetzungen / Organisatorisches"
+
+#: includes/UnivISAPI.php:847
+msgid "Pro seminar (PS)"
+msgstr "Proseminar (PS)"
+
+#: includes/UnivISAPI.php:801
+msgid "Professor"
+msgstr "Professor"
+
+#: includes/UnivISAPI.php:846
+msgid "Project Seminar (PJS)"
+msgstr "Projektseminar (PJS)"
+
+#: includes/UnivISAPI.php:856
+msgid "Propaedeutic Exercise (PPU)"
+msgstr "Propädeutische Übung (PPU)"
+
+#: includes/UnivISAPI.php:862
+msgid "PS (MS, PO 2020) (PMS)"
+msgstr "PS (MS, PO 2020) (PMS)"
+
+#: config/config.php:453
+msgid "Publications"
+msgstr "Publikationen"
+
+#: templates/lehrveranstaltungen-einzeln.php:170
+msgid "Recommended Literature"
+msgstr "Empfohlene Literatur"
+
+#: includes/UnivISAPI.php:836
+msgid "Repetitorium (RE)"
+msgstr "Repetitorium (RE)"
+
+#: includes/UnivISAPI.php:904
+msgid "Research report"
+msgstr "Forschungsbericht"
+
+#: templates/lehrveranstaltungen-alle.php:104
+#: templates/lehrveranstaltungen-einzeln.php:89
+#: templates/mitarbeiter-alle.php:96 templates/mitarbeiter-alle.php:100
+#: templates/mitarbeiter-einzeln.php:86 templates/mitarbeiter-einzeln.php:93
+#: templates/mitarbeiter-einzeln.php:115 templates/mitarbeiter-orga.php:96
+#: templates/mitarbeiter-orga.php:100 templates/mitarbeiter-telefonbuch.php:95
+#: templates/mitarbeiter-telefonbuch.php:99
+msgid "Room"
+msgstr "Raum"
+
+#. Name of the plugin
+#: config/config.php:52 config/config.php:53
+msgid "RRZE UnivIS"
+msgstr "RRZE UnivIS"
+
+#: config/config.php:56
+msgid "RRZE UnivIS Settings"
+msgstr "RRZE UnivIS Einstellungen"
+
+#: config/config.php:73
+msgid "RRZE Webteam on Github"
+msgstr "RRZE-Webteam in Github"
 
 #. Author of the plugin
 msgid "RRZE-Webteam"
 msgstr "RRZE-Webteam"
 
-#. Author URI of the plugin
-msgid "https://blogs.fau.de/webworking/"
+#: includes/Settings.php:906
+msgid "Search"
+msgstr "Suchen"
+
+#: includes/Settings.php:887
+msgid "Search for UnivIS IDs"
+msgstr "Nach UnivIS IDs suchen"
+
+#: includes/Shortcode.php:387
+msgid "Semester"
+msgstr "Semester"
+
+#: config/config.php:385
+msgid "Semester f.e. 2020w"
+msgstr "Semester f.e. 2020w"
+
+#: includes/UnivISAPI.php:827
+msgid "Seminar (SEM)"
+msgstr "Seminar (SEM)"
+
+#: config/config.php:246 config/config.php:403
+msgid "show"
+msgstr "anzeigen"
+
+#: config/config.php:302
+msgid "Show anchors"
+msgstr "Sprungmarken anzeigen"
+
+#: config/config.php:427
+msgid "Show early studies only"
+msgstr "Nur Frühstudium anzeigen"
+
+#: config/config.php:295
+msgid "Show eMail"
+msgstr "eMail anzeigen"
+
+#: config/config.php:476
+msgid "Show from the specified year of publication. F.e. 2017"
+msgstr "Ab dem angegebenen Erscheinungsjahr anzeigen. Z.B. 2017"
+
+#: config/config.php:288
+msgid "Show phone numbers"
+msgstr "Telefonnummern anzeigen"
+
+#: config/config.php:434
+msgid "Show suitable for visiting students only"
+msgstr "Nur für Gaststudium geeignet anzeigen"
+
+#: config/config.php:264
+msgid "Show these jobs only"
+msgstr "Nur diese Jobs anzeigen"
+
+#: includes/UnivISAPI.php:871
+#| msgid "Single appointment on"
+msgid "single appointment on"
+msgstr "Einzeltermin am"
+
+#: config/config.php:211
+msgid "Single employee"
+msgstr "Mitarbeiter einzeln"
+
+#: config/config.php:327
+msgid "Single lecture"
+msgstr "Lehrveranstaltung einzeln"
+
+#: config/config.php:177 config/config.php:283
+msgid "Size of heading where output starts"
+msgstr "Größe der Überschrift, ab der Ausgaben beginnen"
+
+#: includes/UnivISAPI.php:812
+msgid "Social Science"
+msgstr "Sozialwissenschaft"
+
+#: config/config.php:379
+msgid "Sort by type f.e. \"vorl,ueb\""
+msgstr "Sortierung nach Typ z.B. \"vorl,ueb\""
+
+#: includes/Shortcode.php:397
+msgid "SS"
+msgstr "SS"
+
+#: includes/UnivISAPI.php:897
+msgid "Study paper"
+msgstr "Studienarbeit"
+
+#: includes/UnivISAPI.php:920
+msgid "Suitable for beginners"
+msgstr "Für Anfänger geeignet"
+
+#: includes/UnivISAPI.php:813
+msgid "Technical Sciences"
+msgstr "technische Wissenschaften"
+
+#: includes/Shortcode.php:42
+msgid "Text for UnivIS link is missing"
+msgstr "Text für den UnivIS Link fehlt"
+
+#: config/config.php:111
+msgid "Text to <b><i>Univ</i>IS</b> link"
+msgstr "Text für den <b><i>Univ</i>IS</b> Link"
+
+#: includes/UnivISAPI.php:829
+msgid "Theory Seminar (TS)"
+msgstr "Theorieseminar (TS)"
+
+#: includes/UnivISAPI.php:888
+msgid "Thesis (also published by the publisher)"
+msgstr "Hochschulschrift (auch im Verlag erschienen)"
+
+#: templates/lehrveranstaltungen-einzeln.php:57
+msgid "Time and place"
+msgstr "Zeit/Ort n.V."
+
+#: templates/lehrveranstaltungen-alle.php:144
+#: templates/lehrveranstaltungen-einzeln.php:128
+msgid "Time and place on appointment"
+msgstr "Zeit/Ort n.V."
+
+#: templates/lehrveranstaltungen-alle.php:101
+#: templates/lehrveranstaltungen-einzeln.php:86
+msgid "Time on appointment"
+msgstr "Zeit n.V."
+
+#: templates/lehrveranstaltungen-einzeln.php:176
+msgid "Title"
+msgstr "Titel"
+
+#: templates/mitarbeiter-einzeln.php:111
+msgid "to"
+msgstr "bis"
+
+#: includes/UnivISAPI.php:833
+msgid "Training seminar (US)"
+msgstr "Übungsseminar (US)"
+
+#: includes/UnivISAPI.php:849
+msgid "Tutorial (TUT)"
+msgstr "Tutorium (TUT)"
+
+#: includes/Shortcode.php:380
+msgid "Type"
+msgstr "Typ"
+
+#: config/config.php:373
+msgid "Type f.e. vorl (=lecture)"
+msgstr "Typ z.B. vorl (=Vorlesung)"
+
+#: includes/UnivISAPI.php:887
+msgid ""
+"University thesis (dissertation, habilitation thesis, diploma thesis etc.)"
 msgstr ""
+"Hochschulschrift (Dissertation, Habilitationsschrift, Diplomarbeit etc.)"
+
+#: templates/single-univis.php:32 templates/single-univis.php:42
+msgid "UnivIS"
+msgstr "UnivIS"
+
+#: config/config.php:342
+msgid "UnivIS ID lecture"
+msgstr "UnivIS ID Lehrveranstaltung"
+
+#: config/config.php:240 config/config.php:354 config/config.php:360
+#: config/config.php:470
+msgid "UnivIS ID person"
+msgstr "UnivIS ID Person"
+
+#: config/config.php:276 config/config.php:397 config/config.php:482
+#| msgid "UnivIS OrgNr."
+msgid "UnivIS OrgID"
+msgstr "UnivIS-OrgNr."
+
+#: config/config.php:87
+msgid "UnivIS Settings"
+msgstr "Einstellungen &rsaquo; UnivIS"
+
+#: includes/UnivISWidget.php:23
+msgid "UnivIS Widget"
+msgstr "UnivIS Widget"
+
+#: includes/UnivISAPI.php:843
+msgid "Upper seminar (OS)"
+msgstr "Oberseminar (OS)"
+
+#: includes/UnivISAPI.php:909
+msgid "Utility model"
+msgstr "Gebrauchsmuster"
+
+#: includes/UnivISAPI.php:814
+msgid "Veterinary Medicine"
+msgstr "Tiermedizin"
+
+#: templates/mitarbeiter-alle.php:83 templates/mitarbeiter-einzeln.php:71
+#: templates/mitarbeiter-orga.php:85 templates/mitarbeiter-telefonbuch.php:84
+msgid "Website"
+msgstr "Website"
+
+#: templates/mitarbeiter-einzeln.php:31
+msgid "Working group"
+msgstr "Abteilung"
+
+#: includes/UnivISAPI.php:830
+msgid "Working group (AG)"
+msgstr "Arbeitsgemeinschaft (AG)"
+
+#: includes/Shortcode.php:398
+msgid "WS"
+msgstr "WS"
