@@ -1,5 +1,18 @@
-<div class="rrze-univis">
-<?php if ($data):
+<?php 
+
+$aAllowedColors = [
+    'med',
+    'nat',
+    'rw',
+    'phil',
+    'tk',
+];
+
+$aColor = array_intersect($this->show, $aAllowedColors);
+$this->atts['color'] = (!empty($aColor) ? $aColor[1] : '');
+
+$ret = '<div class="rrze-univis">';
+if ($data){
     $lang = get_locale();
     $options = get_option('rrze-univis');
     $ssstart = (!empty($options['basic_ssStart']) ? $options['basic_ssStart'] : 0);
@@ -7,34 +20,39 @@
     $wsstart = (!empty($options['basic_wsStart']) ? $options['basic_wsStart'] : 0);
     $wsend = (!empty($options['basic_wsEnd']) ? $options['basic_wsEnd'] : 0);
 
-    foreach ($data as $typ => $veranstaltungen):
-        echo '<h' . $this->atts['hstart'] . '>' . $typ . '</h' . $this->atts['hstart'] . '>';
-        ?>
-			<ul>
-		        <?php
-        foreach ($veranstaltungen as $veranstaltung):
+    if (in_array('accordion', $this->show)){
+        $ret .= '[collapsibles hstart="' . $this->atts['hstart'] . '"]';
+    }
+
+    foreach ($data as $typ => $veranstaltungen){
+
+        if (in_array('accordion', $this->show)){
+            $ret .= '[collapse title="' . $typ . '" name="' . urlencode($typ) . '" color="' . $this->atts['color'] . '"]';
+        }else{
+            $ret .= '<h' . $this->atts['hstart'] . '>' . $typ . '</h' . $this->atts['hstart'] . '>';
+        }
+
+        $ret .= '<ul>';
+        foreach ($veranstaltungen as $veranstaltung){
             $url = get_permalink() . 'lv_id/' . $veranstaltung['lecture_id'];
-            ?>
-			                <li>
-			                <?php
-            echo '<h' . ($this->atts['hstart'] + 1) . '><a href="' . $url . '">';
+			$ret .= '<li>';
+            $ret .= '<h' . ($this->atts['hstart'] + 1) . '><a href="' . $url . '">';
             if ($lang != 'de_DE' && $lang != 'de_DE_formal' && !empty($veranstaltung['ects_name'])) {
                 $veranstaltung['title'] = $veranstaltung['ects_name'];
             } else {
                 $veranstaltung['title'] = $veranstaltung['name'];
             }
-            echo $veranstaltung['title'];
-            echo '</a></h' . ($this->atts['hstart'] + 1) . '>';
+            $ret .= $veranstaltung['title'];
+            $ret .= '</a></h' . ($this->atts['hstart'] + 1) . '>';
             if (!empty($veranstaltung['comment']) && !in_array('comment', $this->hide)) {
-                echo '<p>' . make_clickable($veranstaltung['comment']) . '</p>';
+                $ret .= '<p>' . make_clickable($veranstaltung['comment']) . '</p>';
             }
             if (!empty($veranstaltung['organizational']) && !in_array('organizational', $this->hide)) {
-                echo '<p>' . make_clickable($veranstaltung['organizational']) . '</p>';
+                $ret .= '<p>' . make_clickable($veranstaltung['organizational']) . '</p>';
             }
 
-            echo '<ul class="terminmeta">';
-            echo '<li>';
-
+            $ret .= '<ul class="terminmeta">';
+            $ret .= '<li>';
             $infos = '';
             if (!empty($veranstaltung['sws'])) {
                 $infos .= '<span>' . $veranstaltung['sws'] . '</span>';
@@ -63,52 +81,51 @@
                 }
                 $infos .= '</span>';
             }
-
             if (!empty($veranstaltung['leclanguage_long']) && ($veranstaltung['leclanguage_long'] != __('Lecture\'s language German', 'rrze-univis'))) {
                 if (!empty($infos)) {$infos .= ', ';}
                 $infos .= '<span>' . $veranstaltung['leclanguage_long'] . '</span>';
             }
-            echo $infos . '</li>';
-            ?>
-					<li class="termindaten"><?php _e('Date', 'rrze-univis');?>:
-			                <ul>
-			                        <?php
-            if (isset($veranstaltung['courses'])):
-                foreach ($veranstaltung['courses'] as $course):
+            $ret .= $infos . '</li>';
+
+			$courseDates = '<li class="termindaten">' . __('Date', 'rrze-univis') . ':';
+			$courseDates .= '<ul>';
+
+            if (isset($veranstaltung['courses'])){
+                foreach ($veranstaltung['courses'] as $course){
                     if ((empty($veranstaltung['lecturer_key']) || empty($course['doz'])) || (!empty($veranstaltung['lecturer_key']) && !empty($course['doz']) && (in_array($veranstaltung['lecturer_key'], $course['doz'])))) {
-                        foreach ($course['term'] as $term):
+                        foreach ($course['term'] as $term){
                             $t = array();
                             $time = array();
-                            if (!empty($term['repeat'])):
+                            if (!empty($term['repeat'])){
                                 $t['repeat'] = $term['repeat'];
-                            endif;
-                            if (!empty($term['startdate'])):
-                                if (!empty($term['enddate']) && $term['startdate'] != $term['enddate']):
+                            }
+                            if (!empty($term['startdate'])){
+                                if (!empty($term['enddate']) && $term['startdate'] != $term['enddate']){
                                     $t['date'] = date("d.m.Y", strtotime($term['startdate'])) . '-' . date("d.m.Y", strtotime($term['enddate']));
-                                else:
+                                }else{
                                     $t['date'] = date("d.m.Y", strtotime($term['startdate']));
-                                endif;
-                            endif;
-                            if (!empty($term['starttime'])):
+                                }
+                            }
+                            if (!empty($term['starttime'])){
                                 $time['starttime'] = $term['starttime'];
-                            endif;
-                            if (!empty($term['endtime'])):
+                            }
+                            if (!empty($term['endtime'])){
                                 $time['endtime'] = $term['endtime'];
-                            endif;
-                            if (!empty($time)):
+                            }
+                            if (!empty($time)){
                                 $t['time'] = $time['starttime'] . '-' . $time['endtime'];
-                            else:
+                            }else{
                                 $t['time'] = __('Time on appointment', 'rrze-univis');
-                            endif;
-                            if (!empty($term['room']['short'])):
+                            }
+                            if (!empty($term['room']['short'])){
                                 $t['room'] = __('Room', 'rrze-univis') . ' ' . $term['room']['short'];
-                            endif;
-                            if (!empty($term['exclude'])):
+                            }
+                            if (!empty($term['exclude'])){
                                 $t['exclude'] = '(' . __('exclude', 'rrze-univis') . ' ' . $term['exclude'] . ')';
-                            endif;
-                            if (!empty($course['coursename'])):
+                            }
+                            if (!empty($course['coursename'])){
                                 $t['coursename'] = '(' . __('Course', 'rrze-univis') . ' ' . $course['coursename'] . ')';
-                            endif;
+                            }
                             // ICS
                             if (in_array('ics', $this->show) && !in_array('ics', $this->hide)) {
                                 $props = [
@@ -134,26 +151,30 @@
                             }
                             $t['time'] .= ',';
                             $term_formatted = implode(' ', $t);
-                            ?>
-						                                        <li><?php echo $term_formatted; ?></li>
-						                                    <?php
-                    endforeach;
+						    $courseDates .= '<li>' . $term_formatted . '</li>';
+                        }
                     }
-                endforeach;
-            else: ?>
-			                                <li><?php _e('Time and place on appointment', 'rrze-univis');?></li>
-			                        <?php endif;?>
-		                        </ul>
-				    </li>
-				    </ul>
-		                </li>
-		                <?php
-    endforeach;
-    ?>
-		</ul>
-	    <?php
-endforeach;
+                }
+            }else{
+			    $courseDates .= '<li>' . __('Time and place on appointment', 'rrze-univis') . '</li>';
+            }
+		    $courseDates .= '</ul>';
+		    $courseDates .= '</li>';
+		    $ret .= $courseDates. '</li>';
+        }
+        $ret .= '</ul>';
 
-endif;
-?>
-</div>
+        if (in_array('accordion', $this->show)){
+            $ret .= '[/collapse]';
+        }
+    }
+
+    if (in_array('accordion', $this->show)){
+        $ret .= '[/collapsibles]';
+        $ret = do_shortcode($ret);
+    }
+}
+
+$ret .= '</div>';
+
+echo $ret;

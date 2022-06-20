@@ -32,7 +32,6 @@ class UnivISAPI
         $this->showJobs = (!empty($this->atts['zeige_jobs']) ? explode('|', $this->atts['zeige_jobs']) : []);
         $this->hideJobs = (!empty($this->atts['ignoriere_jobs']) ? explode('|', $this->atts['ignoriere_jobs']) : []);
         $this->gast = (!empty($this->atts['gast']) ? __('Allowed for guest students', 'rrze-univis') : '');
-        //  $this->hideJobs = (!empty($this->showJobs) && !empty($this->hideJobs) ? array_diff($this->showJobs, $this->hideJobs) : $this->hideJobs);
     }
 
     private function setAPI($api)
