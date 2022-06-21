@@ -167,7 +167,7 @@ class Shortcode
                     $data = $this->getData('lectureByLecturerID', $this->atts['id']);
                 }
                 if ($data) {
-                    $veranstaltung = $data[array_key_first($data)][0];
+                    $lecture = $data[array_key_first($data)][0];
                 }
                 break;
             case 'lehrveranstaltungen-alle':
