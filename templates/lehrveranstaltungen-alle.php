@@ -8,8 +8,9 @@ $aAllowedColors = [
     'tk',
 ];
 
-$aColor = array_intersect($this->show, $aAllowedColors);
-$this->atts['color'] = (!empty($aColor) ? $aColor[1] : '');
+$this->atts['color'] = implode('', array_intersect($this->show, $aAllowedColors));
+$this->atts['color_courses'] = explode('_', implode('', array_intersect($this->show, preg_filter('/$/', '_courses', $aAllowedColors))));
+$this->atts['color_courses'] = $this->atts['color_courses'][0];
 
 $ret = '<div class="rrze-univis">';
 if ($data){
@@ -20,12 +21,11 @@ if ($data){
     $wsstart = (!empty($options['basic_wsStart']) ? $options['basic_wsStart'] : 0);
     $wsend = (!empty($options['basic_wsEnd']) ? $options['basic_wsEnd'] : 0);
 
-    if (in_array('accordion', $this->show)){
+    if (in_array('accordion', $this->show) || in_array('accordion_courses', $this->show)){
         $ret .= '[collapsibles hstart="' . $this->atts['hstart'] . '"]';
     }
 
     foreach ($data as $typ => $veranstaltungen){
-
         if (in_array('accordion', $this->show)){
             $ret .= '[collapse title="' . $typ . '" name="' . urlencode($typ) . '" color="' . $this->atts['color'] . '"]';
         }else{
@@ -34,6 +34,7 @@ if ($data){
 
         $ret .= '<ul>';
         foreach ($veranstaltungen as $veranstaltung){
+            $courseDates = '';
             $url = get_permalink() . 'lv_id/' . $veranstaltung['lecture_id'];
 			$ret .= '<li>';
             $ret .= '<h' . ($this->atts['hstart'] + 1) . '><a href="' . $url . '">';
@@ -87,8 +88,19 @@ if ($data){
             }
             $ret .= $infos . '</li>';
 
-			$courseDates = '<li class="termindaten">' . __('Date', 'rrze-univis') . ':';
-			$courseDates .= '<ul>';
+            if (in_array('accordion_courses', $this->show)){
+                if (in_array('accordion', $this->show)){
+                    if (empty($courseDates)){
+                        $courseDates = '[accordion hstart="' . ($this->atts['hstart'] + 1) . '"]';
+                    }
+                    $courseDates .= '[accordion-item title="' . __('Date', 'rrze-univis') . '" name="' . __('Date', 'rrze-univis') . '_' . urlencode($veranstaltung['title']) . '" color="' . $this->atts['color_courses'] . '"]';
+                }else{
+                    $courseDates = '[collapse title="' . __('Date', 'rrze-univis') . '" name="' . __('Date', 'rrze-univis') . '_' . urlencode($veranstaltung['title']) . '" color="' . $this->atts['color_courses'] . '"]';
+                }
+            }else{
+                $courseDates = '<li class="termindaten">' . __('Date', 'rrze-univis') . ':';
+            }
+            $courseDates .= '<ul>';
 
             if (isset($veranstaltung['courses'])){
                 foreach ($veranstaltung['courses'] as $course){
@@ -151,12 +163,28 @@ if ($data){
                             }
                             $t['time'] .= ',';
                             $term_formatted = implode(' ', $t);
-						    $courseDates .= '<li>' . $term_formatted . '</li>';
+                            $courseDates .= '<li>' . $term_formatted . '</li>';
                         }
                     }
                 }
+                if (in_array('accordion_courses', $this->show)){
+                    if (in_array('accordion', $this->show)){
+                        $courseDates .= '[/accordion-item]';
+                        $courseDates .= '[/accordion]';
+                    }else{
+                        $courseDates .= '[/collapse]';
+                    }
+                }
             }else{
-			    $courseDates .= '<li>' . __('Time and place on appointment', 'rrze-univis') . '</li>';
+                $courseDates .= '<li>' . __('Time and place on appointment', 'rrze-univis') . '</li>';
+                if (in_array('accordion_courses', $this->show)){
+                    if (in_array('accordion', $this->show)){
+                        $courseDates .= '[/accordion-item]';
+                        $courseDates .= '[/accordion]';
+                    }else{
+                        $courseDates .= '[/collapse]';
+                    }
+                }
             }
 		    $courseDates .= '</ul>';
 		    $courseDates .= '</li>';
@@ -169,7 +197,7 @@ if ($data){
         }
     }
 
-    if (in_array('accordion', $this->show)){
+    if (in_array('accordion', $this->show) || in_array('accordion_courses', $this->show)){
         $ret .= '[/collapsibles]';
         $ret = do_shortcode($ret);
     }
