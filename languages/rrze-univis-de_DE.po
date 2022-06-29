@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: RRZE UnivIS\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2018-11-15 10:23+0000\n"
-"PO-Revision-Date: 2022-06-14 15:47+0000\n"
+"PO-Revision-Date: 2022-06-29 15:00+0000\n"
 "Last-Translator: RRZE Webteam <webmaster@fau.de>\n"
 "Language-Team: German\n"
 "Language: de_DE\n"
@@ -13,38 +13,42 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "X-Generator: Loco https://localise.biz/"
 
-#: includes/UnivISAPI.php:878
-msgid " Fr"
+#: includes/UnivISAPI.php:877
+#| msgid " Fr"
+msgid " Fry"
 msgstr "Fr"
 
-#: includes/UnivISAPI.php:874
-msgid " Mo"
+#: includes/UnivISAPI.php:873
+#| msgid " Mo"
+msgid " Mon"
 msgstr "Mo"
 
-#: includes/UnivISAPI.php:879
-msgid " Sa"
+#: includes/UnivISAPI.php:878
+#| msgid " Sa"
+msgid " Sat"
 msgstr "Sa"
 
-#: includes/UnivISAPI.php:873 includes/UnivISAPI.php:880
-msgid " Su"
+#: includes/UnivISAPI.php:872 includes/UnivISAPI.php:879
+#| msgid " Su"
+msgid " Sun"
 msgstr "So"
 
-#: includes/UnivISAPI.php:916
+#: includes/UnivISAPI.php:915
 msgid " SWS"
 msgstr "SWS"
 
-#: includes/UnivISAPI.php:877
-#| msgid "Thu"
+#: includes/UnivISAPI.php:876
+#| msgid " Th"
 msgid " Thu"
 msgstr "Do"
 
-#: includes/UnivISAPI.php:875
-#| msgid "Tue"
+#: includes/UnivISAPI.php:874
+#| msgid " Tu"
 msgid " Tue"
 msgstr "Di"
 
-#: includes/UnivISAPI.php:876
-#| msgid "Wed"
+#: includes/UnivISAPI.php:875
+#| msgid " We"
 msgid " Wed"
 msgstr "Mi"
 
@@ -64,11 +68,11 @@ msgstr "<b><i>Univ</i>IS</b> - Informationssystem der FAU"
 msgid "<b><i>Univ</i>IS</b> OrgNr."
 msgstr "<b><i>Univ</i>IS</b> OrgNr."
 
-#: includes/UnivISAPI.php:858
+#: includes/UnivISAPI.php:857
 msgid "Accompanying seminar (BSEM)"
 msgstr "Begleitseminar (BSEM)"
 
-#: templates/lehrveranstaltungen-einzeln.php:194
+#: templates/lehrveranstaltungen-einzeln.php:161
 msgid "Additional information"
 msgstr "Zusätzliche Informationen"
 
@@ -76,11 +80,11 @@ msgstr "Zusätzliche Informationen"
 msgid "Address"
 msgstr "Adresse"
 
-#: includes/UnivISAPI.php:824
+#: includes/UnivISAPI.php:823
 msgid "Advanced course (AK)"
 msgstr "Aufbaukurs (AK)"
 
-#: includes/UnivISAPI.php:834
+#: includes/UnivISAPI.php:833
 msgid "Advanced seminar (AS)"
 msgstr "Aufbauseminar (AS)"
 
@@ -92,7 +96,7 @@ msgstr "Alle Mitarbeiter"
 msgid "All lectures"
 msgstr "Alle Lehrveranstaltungen"
 
-#: includes/UnivISAPI.php:34 includes/UnivISAPI.php:922
+#: includes/UnivISAPI.php:34 includes/UnivISAPI.php:921
 msgid "Allowed for guest students"
 msgstr "Für Gaststudenten zugelassen"
 
@@ -100,23 +104,23 @@ msgstr "Für Gaststudenten zugelassen"
 msgid "Area"
 msgstr "Bereich"
 
-#: includes/UnivISAPI.php:883
+#: includes/UnivISAPI.php:882
 msgid "Article in anthology"
 msgstr "Artikel im Sammelband"
 
-#: includes/UnivISAPI.php:885
+#: includes/UnivISAPI.php:884
 msgid "Article in magazine"
 msgstr "Artikel in Zeitschrift"
 
-#: includes/UnivISAPI.php:884
+#: includes/UnivISAPI.php:883
 msgid "Article in proceedings"
 msgstr "Artikel im Tagungsband"
 
-#: includes/UnivISAPI.php:807
+#: includes/UnivISAPI.php:806
 msgid "Bachelor"
 msgstr "Bakkalaureus"
 
-#: includes/UnivISAPI.php:900
+#: includes/UnivISAPI.php:899
 msgid "Bachelor thesis"
 msgstr "Bachelorarbeit"
 
@@ -124,95 +128,98 @@ msgstr "Bachelorarbeit"
 msgid "Back to overview"
 msgstr "Zurück zur Übersicht"
 
-#: includes/UnivISAPI.php:826
+#: includes/UnivISAPI.php:825
 msgid "Basic course (GK)"
 msgstr "Grundkurs (GK)"
 
-#: includes/UnivISAPI.php:832
+#: includes/UnivISAPI.php:831
 msgid "Basic seminar (GS)"
 msgstr "Grundseminar (GS)"
 
-#: includes/UnivISAPI.php:872
+#: includes/UnivISAPI.php:871
 msgid "block event"
 msgstr "Blockveranstaltung"
 
-#: includes/UnivISAPI.php:804
+#: includes/UnivISAPI.php:803
 msgid "Business Informatics"
 msgstr "Wirtschaftsinformatik"
 
-#: includes/UnivISAPI.php:917
+#: includes/UnivISAPI.php:916
 msgid "Certificate"
 msgstr "Schein"
 
-#: includes/UnivISAPI.php:838
+#: includes/UnivISAPI.php:837
 msgid "Clinical visit (KLV)"
 msgstr "Klinische Visite (KLV)"
 
-#: includes/UnivISAPI.php:859
+#: includes/UnivISAPI.php:858
 msgid "College (KOL)"
 msgstr "Kolleg (KOL)"
 
-#: includes/UnivISAPI.php:839
+#: includes/UnivISAPI.php:838
 msgid "Colloquium (KO)"
 msgstr "Kolloquium (KO)"
 
-#: includes/UnivISAPI.php:840
+#: includes/UnivISAPI.php:839
 msgid "Combined seminar (KS)"
 msgstr "Kombiseminar (KS)"
 
-#: includes/UnivISAPI.php:855
+#: includes/UnivISAPI.php:854
 msgid "Committee meeting (GSZ)"
 msgstr "Gremiensitzung (GSZ)"
 
-#: includes/UnivISAPI.php:803
+#: includes/UnivISAPI.php:802
 msgid "Computer Science"
 msgstr "Informatik"
 
-#: includes/UnivISAPI.php:890
+#: includes/UnivISAPI.php:889
 msgid "Conference volume (not published by the publisher)"
 msgstr "Tagungsband (nicht im Verlag erschienen)"
 
-#: templates/lehrveranstaltungen-einzeln.php:165
-#: templates/lehrveranstaltungen-einzeln.php:184
+#: templates/lehrveranstaltungen-einzeln.php:134
+#: templates/lehrveranstaltungen-einzeln.php:152
 msgid "Content"
 msgstr "Inhalt"
 
-#: templates/lehrveranstaltungen-alle.php:110
-#: templates/lehrveranstaltungen-einzeln.php:96
+#: templates/lehrveranstaltungen-alle.php:136
+#: templates/lehrveranstaltungen-einzeln.php:92
 msgid "Course"
 msgstr "Kurs"
 
-#: includes/UnivISAPI.php:823
+#: includes/UnivISAPI.php:822
 msgid "Course (KU)"
 msgstr "Course (KU)"
 
-#: templates/lehrveranstaltungen-einzeln.php:180
+#: templates/lehrveranstaltungen-einzeln.php:148
 msgid "Credits"
 msgstr "Credits"
 
-#: templates/lehrveranstaltungen-alle.php:73
-#: templates/lehrveranstaltungen-alle.php:132
-#: templates/lehrveranstaltungen-einzeln.php:118
+#: includes/Functions.php:183 includes/Functions.php:187
+#: templates/lehrveranstaltungen-alle.php:93
+#: templates/lehrveranstaltungen-alle.php:93
+#: templates/lehrveranstaltungen-alle.php:95
+#: templates/lehrveranstaltungen-alle.php:95
+#: templates/lehrveranstaltungen-alle.php:98
 msgid "Date"
 msgstr "Termin"
 
-#: includes/UnivISAPI.php:815
+#: includes/UnivISAPI.php:814
 msgid "Dentistry"
 msgstr "Zahnmedizin"
 
-#: templates/lehrveranstaltungen-einzeln.php:51
+#: templates/lehrveranstaltungen-einzeln.php:48
 msgid "Details"
 msgstr "Details"
 
-#: includes/UnivISAPI.php:802 includes/UnivISAPI.php:895
+#: includes/UnivISAPI.php:801 includes/UnivISAPI.php:894
 msgid "Diploma"
 msgstr "Diplom"
 
-#: includes/UnivISAPI.php:907
+#: includes/UnivISAPI.php:906
 msgid "Disclosure document"
 msgstr "Offenlegungsschrift"
 
-#: includes/UnivISAPI.php:902 includes/UnivISAPI.php:903
+#: includes/UnivISAPI.php:901 includes/UnivISAPI.php:902
 msgid "Discussion paper"
 msgstr "Diskussionspapier"
 
@@ -220,27 +227,27 @@ msgstr "Diskussionspapier"
 msgid "Displays a lecture, person or publication"
 msgstr "Zeigt eine Lehrveranstaltung, Person oder Publikation an"
 
-#: includes/UnivISAPI.php:894
+#: includes/UnivISAPI.php:893
 msgid "Dissertation"
 msgstr "Dissertation"
 
-#: includes/UnivISAPI.php:800
+#: includes/UnivISAPI.php:799
 msgid "Doctor"
 msgstr "Doktor"
 
-#: includes/UnivISAPI.php:921
+#: includes/UnivISAPI.php:920
 msgid "Early study"
 msgstr "Frühstudium"
 
-#: includes/UnivISAPI.php:919
+#: includes/UnivISAPI.php:918
 msgid "ECTS credits: "
 msgstr "ECTS credits: "
 
-#: templates/lehrveranstaltungen-einzeln.php:174
+#: templates/lehrveranstaltungen-einzeln.php:142
 msgid "ECTS information"
 msgstr "ECTS-Informationen"
 
-#: includes/UnivISAPI.php:918
+#: includes/UnivISAPI.php:917
 msgid "ECTS studies"
 msgstr "ECTS studies"
 
@@ -269,53 +276,53 @@ msgstr "Ende der Vorlesungszeit in diesem Sommersemester"
 msgid "End of the lecture period this winter semester"
 msgstr "Ende der Vorlesungszeit in diesem Wintersemester"
 
-#: includes/UnivISAPI.php:806
+#: includes/UnivISAPI.php:805
 msgid "Engineering"
 msgstr "Ingenieurwissenschaft"
 
-#: includes/UnivISAPI.php:923
+#: includes/UnivISAPI.php:922
 msgid "Evaluation"
 msgstr "Evaluation"
 
-#: includes/UnivISAPI.php:868
+#: includes/UnivISAPI.php:867
 msgid "Every fourth week"
 msgstr "Alle vier Wochen"
 
-#: includes/UnivISAPI.php:866
+#: includes/UnivISAPI.php:865
 msgid "Every other week"
 msgstr "Jede zweite Woche"
 
-#: includes/UnivISAPI.php:867
+#: includes/UnivISAPI.php:866
 msgid "Every third week"
 msgstr "Alle drei Wochen"
 
-#: includes/UnivISAPI.php:837
+#: includes/UnivISAPI.php:836
 msgid "Exam course (KK)"
 msgstr "Klausurenkurs (KK)"
 
-#: includes/UnivISAPI.php:828
+#: includes/UnivISAPI.php:827
 msgid "Exam seminar (ES)"
 msgstr "Examensseminar (ES)"
 
-#: includes/UnivISAPI.php:854
+#: includes/UnivISAPI.php:853
 msgid "Examination (PF)"
 msgstr "Prüfung (PF)"
 
-#: templates/lehrveranstaltungen-alle.php:107
-#: templates/lehrveranstaltungen-einzeln.php:92
+#: templates/lehrveranstaltungen-alle.php:133
+#: templates/lehrveranstaltungen-einzeln.php:89
 msgid "exclude"
 msgstr "außer"
 
-#: includes/UnivISAPI.php:825
+#: includes/UnivISAPI.php:824
 msgid "Excursion (EX)"
 msgstr "Exkursion (EX)"
 
-#: includes/UnivISAPI.php:851
+#: includes/UnivISAPI.php:850
 msgid "Exercise (UE)"
 msgstr "Übung (UE)"
 
-#: templates/lehrveranstaltungen-alle.php:44
-#: templates/lehrveranstaltungen-einzeln.php:199
+#: templates/lehrveranstaltungen-alle.php:60
+#: templates/lehrveranstaltungen-einzeln.php:166
 msgid "Expected participants"
 msgstr "Erwartete Teilnehmerzahl"
 
@@ -324,11 +331,11 @@ msgstr "Erwartete Teilnehmerzahl"
 msgid "Fax number"
 msgstr "Faxnummer"
 
-#: templates/lehrveranstaltungen-einzeln.php:133
+#: templates/lehrveranstaltungen-einzeln.php:110
 msgid "Fields of study"
 msgstr "Studienfächer / Studienrichtungen"
 
-#: includes/UnivISAPI.php:905
+#: includes/UnivISAPI.php:904
 msgid "Final report"
 msgstr "Abschlussbericht"
 
@@ -340,11 +347,11 @@ msgstr "Finde Lehrveranstaltungen ab dem Sommersemester"
 msgid "For more information"
 msgstr "Für mehr Information"
 
-#: templates/lehrveranstaltungen-einzeln.php:146
+#: templates/lehrveranstaltungen-einzeln.php:121
 msgid "from SEM"
 msgstr "ab Sem."
 
-#: includes/UnivISAPI.php:898
+#: includes/UnivISAPI.php:897
 msgid "Habilitation thesis"
 msgstr "Habilitationsschrift"
 
@@ -356,11 +363,11 @@ msgstr "Here comes the Context Help content."
 msgid "hide"
 msgstr "ausblenden"
 
-#: includes/UnivISAPI.php:857
+#: includes/UnivISAPI.php:856
 msgid "History of Languages Seminar (HIS)"
 msgstr "Sprachhistorisches Seminar (HIS)"
 
-#: includes/UnivISAPI.php:816
+#: includes/UnivISAPI.php:815
 msgid "honorary"
 msgstr "ehrenhalber"
 
@@ -372,14 +379,13 @@ msgstr "https://blogs.fau.de/webworking/"
 msgid "https://github.com/RRZE-Webteam/rrze-univis"
 msgstr "https://github.com/RRZE-Webteam/rrze-univis"
 
-#: includes/UnivISAPI.php:809
+#: includes/UnivISAPI.php:808
 msgid "Humanities"
 msgstr "Geisteswissenschaft"
 
-#: templates/lehrveranstaltungen-alle.php:132
-#: templates/lehrveranstaltungen-alle.php:133
-#: templates/lehrveranstaltungen-einzeln.php:118
-#: templates/lehrveranstaltungen-einzeln.php:119
+#: includes/Functions.php:183 includes/Functions.php:187
+#: templates/lehrveranstaltungen-alle.php:141
+#: templates/lehrveranstaltungen-einzeln.php:97
 msgid "ICS"
 msgstr "ICS"
 
@@ -387,32 +393,31 @@ msgstr "ICS"
 msgid "Ignore jobs - separate individual activities with | from each other."
 msgstr "Ignoriere Jobs - einzelne Tätigkeiten durch | voneinander trennen."
 
-#: templates/lehrveranstaltungen-alle.php:132
-#: templates/lehrveranstaltungen-einzeln.php:118
+#: includes/Functions.php:183 includes/Functions.php:187
 msgid "import to calendar"
 msgstr "in den Kalender importieren"
 
-#: includes/UnivISAPI.php:822
+#: includes/UnivISAPI.php:821
 msgid "Instructions for scientific work (AWA)"
 msgstr "Anleitung zu wiss. Arbeiten (AWA)"
 
-#: includes/UnivISAPI.php:901
+#: includes/UnivISAPI.php:900
 msgid "Internal Report"
 msgstr "Interner Bericht"
 
-#: includes/UnivISAPI.php:886
+#: includes/UnivISAPI.php:885
 msgid "Internal Report (Technical Report, Research Report)"
 msgstr "Interner Bericht (Technischer Bericht, Forschungsbericht)"
 
-#: includes/UnivISAPI.php:844
+#: includes/UnivISAPI.php:843
 msgid "Internship (PR)"
 msgstr "Internship (PR)"
 
-#: includes/UnivISAPI.php:841
+#: includes/UnivISAPI.php:840
 msgid "Introductory course (EK)"
 msgstr "Einführungskurs (EK)"
 
-#: includes/UnivISAPI.php:891
+#: includes/UnivISAPI.php:890
 msgid "IPR"
 msgstr "Schutzrecht"
 
@@ -424,7 +429,7 @@ msgstr "Tätigkeit"
 msgid "Keyword"
 msgstr "Suchbegriff"
 
-#: templates/lehrveranstaltungen-einzeln.php:196
+#: templates/lehrveranstaltungen-einzeln.php:163
 msgid "Keywords"
 msgstr "Schlagwörter"
 
@@ -440,7 +445,7 @@ msgstr "Sprache"
 msgid "Last name, first name"
 msgstr "Nachname, Vorname"
 
-#: includes/UnivISAPI.php:818
+#: includes/UnivISAPI.php:817
 msgid "law"
 msgstr "Recht"
 
@@ -449,24 +454,24 @@ msgstr "Recht"
 msgid "Lecture"
 msgstr "Lehrveranstaltung"
 
-#: includes/UnivISAPI.php:852
+#: includes/UnivISAPI.php:851
 msgid "Lecture (VORL)"
 msgstr "Vorlesung (VORL)"
 
-#: includes/UnivISAPI.php:850
+#: includes/UnivISAPI.php:849
 msgid "Lecture with exercise (V/UE)"
 msgstr "Vorlesung mit Übung (V/UE)"
 
-#: includes/UnivISAPI.php:914
+#: includes/UnivISAPI.php:913
 msgid "Lecture's language English"
 msgstr "Unterrichtssprache Englisch"
 
-#: includes/UnivISAPI.php:912 includes/UnivISAPI.php:913
-#: templates/lehrveranstaltungen-alle.php:67
+#: includes/UnivISAPI.php:911 includes/UnivISAPI.php:912
+#: templates/lehrveranstaltungen-alle.php:82
 msgid "Lecture's language German"
 msgstr "Unterrichtssprache Deutsch"
 
-#: templates/lehrveranstaltungen-einzeln.php:24
+#: templates/lehrveranstaltungen-einzeln.php:25
 msgid "Lecturers"
 msgstr "Dozent/in"
 
@@ -490,19 +495,19 @@ msgstr "Link zu <b><i>Univ</i>IS</b>"
 msgid "Link to UnivIS is missing."
 msgstr "Link zu UnivIS fehlt."
 
-#: templates/lehrveranstaltungen-einzeln.php:188
+#: templates/lehrveranstaltungen-einzeln.php:156
 msgid "Literature"
 msgstr "Literature"
 
-#: includes/UnivISAPI.php:808
+#: includes/UnivISAPI.php:807
 msgid "Magister Artium"
 msgstr "Magister "
 
-#: includes/UnivISAPI.php:853
+#: includes/UnivISAPI.php:852
 msgid "Main Lecture (HVL)"
 msgstr "Hauptvorlesung (HVL)"
 
-#: includes/UnivISAPI.php:835
+#: includes/UnivISAPI.php:834
 msgid "Main seminar (HS)"
 msgstr "Hauptseminar (HS)"
 
@@ -510,23 +515,23 @@ msgstr "Hauptseminar (HS)"
 msgid "Make phone numbers dialable"
 msgstr "Telefonnummern wählbar machen"
 
-#: includes/UnivISAPI.php:831
+#: includes/UnivISAPI.php:830
 msgid "Master seminar (MAS)"
 msgstr "Masterseminar (MAS)"
 
-#: includes/UnivISAPI.php:896 includes/UnivISAPI.php:899
+#: includes/UnivISAPI.php:895 includes/UnivISAPI.php:898
 msgid "Master's thesis"
 msgstr "Masterarbeit"
 
-#: includes/UnivISAPI.php:805
+#: includes/UnivISAPI.php:804
 msgid "Math"
 msgstr "Mathematik"
 
-#: includes/UnivISAPI.php:817
+#: includes/UnivISAPI.php:816
 msgid "medicine"
 msgstr "Medizin"
 
-#: includes/UnivISAPI.php:842
+#: includes/UnivISAPI.php:841
 msgid "Middle seminar (MS)"
 msgstr "Mittelseminar (MS)"
 
@@ -538,15 +543,15 @@ msgstr "Mittelseminar (MS)"
 msgid "Mobile number"
 msgstr "Mobilnummer"
 
-#: includes/UnivISAPI.php:889
+#: includes/UnivISAPI.php:888
 msgid "Monograph"
 msgstr "Monographie"
 
-#: includes/UnivISAPI.php:860
+#: includes/UnivISAPI.php:859
 msgid "MS (HS, PO 2020) (MHS)"
 msgstr "MS (HS, PO 2020) (MHS)"
 
-#: includes/UnivISAPI.php:811
+#: includes/UnivISAPI.php:810
 msgid "Natural Science"
 msgstr "Naturwissenschaft"
 
@@ -571,11 +576,11 @@ msgstr "Sprechzeiten"
 msgid "Organization"
 msgstr "Organisation"
 
-#: includes/UnivISAPI.php:506
+#: includes/UnivISAPI.php:505
 msgid "Other"
 msgstr "Andere"
 
-#: includes/UnivISAPI.php:848
+#: includes/UnivISAPI.php:847
 msgid "Other courses (SL)"
 msgstr "Sonstige Lehrveranstaltung (SL)"
 
@@ -587,11 +592,11 @@ msgstr "Importierte Lehrveranstaltungen ausgeben"
 msgid "Overview"
 msgstr "Übersicht"
 
-#: includes/UnivISAPI.php:908
+#: includes/UnivISAPI.php:907
 msgid "Patent application"
 msgstr "Patentanmeldung"
 
-#: includes/UnivISAPI.php:906
+#: includes/UnivISAPI.php:905
 msgid "Patent specification"
 msgstr "Patentschrift"
 
@@ -600,7 +605,7 @@ msgstr "Patentschrift"
 msgid "Person"
 msgstr "Person"
 
-#: includes/UnivISAPI.php:861
+#: includes/UnivISAPI.php:860
 msgid "PG Master Seminar (PGMAS)"
 msgstr "PG Masterseminar (PGMAS)"
 
@@ -621,35 +626,35 @@ msgstr "Bitte wählen Sie"
 msgid "Plugins: %1$s: %2$s"
 msgstr "Plugins: %1$s: %2$s"
 
-#: includes/UnivISAPI.php:810
+#: includes/UnivISAPI.php:809
 msgid "Political Science"
 msgstr "Politikwissenschaft"
 
-#: includes/UnivISAPI.php:845
+#: includes/UnivISAPI.php:844
 msgid "Practice seminar (PRS)"
 msgstr "Praxisseminar (PRS)"
 
-#: templates/lehrveranstaltungen-einzeln.php:157
+#: templates/lehrveranstaltungen-einzeln.php:130
 msgid "Prerequisites / Organizational information"
 msgstr "Voraussetzungen / Organisatorisches"
 
-#: includes/UnivISAPI.php:847
+#: includes/UnivISAPI.php:846
 msgid "Pro seminar (PS)"
 msgstr "Proseminar (PS)"
 
-#: includes/UnivISAPI.php:801
+#: includes/UnivISAPI.php:800
 msgid "Professor"
 msgstr "Professor"
 
-#: includes/UnivISAPI.php:846
+#: includes/UnivISAPI.php:845
 msgid "Project Seminar (PJS)"
 msgstr "Projektseminar (PJS)"
 
-#: includes/UnivISAPI.php:856
+#: includes/UnivISAPI.php:855
 msgid "Propaedeutic Exercise (PPU)"
 msgstr "Propädeutische Übung (PPU)"
 
-#: includes/UnivISAPI.php:862
+#: includes/UnivISAPI.php:861
 msgid "PS (MS, PO 2020) (PMS)"
 msgstr "PS (MS, PO 2020) (PMS)"
 
@@ -657,20 +662,20 @@ msgstr "PS (MS, PO 2020) (PMS)"
 msgid "Publications"
 msgstr "Publikationen"
 
-#: templates/lehrveranstaltungen-einzeln.php:170
+#: templates/lehrveranstaltungen-einzeln.php:138
 msgid "Recommended Literature"
 msgstr "Empfohlene Literatur"
 
-#: includes/UnivISAPI.php:836
+#: includes/UnivISAPI.php:835
 msgid "Repetitorium (RE)"
 msgstr "Repetitorium (RE)"
 
-#: includes/UnivISAPI.php:904
+#: includes/UnivISAPI.php:903
 msgid "Research report"
 msgstr "Forschungsbericht"
 
-#: templates/lehrveranstaltungen-alle.php:104
-#: templates/lehrveranstaltungen-einzeln.php:89
+#: templates/lehrveranstaltungen-alle.php:130
+#: templates/lehrveranstaltungen-einzeln.php:86
 #: templates/mitarbeiter-alle.php:96 templates/mitarbeiter-alle.php:100
 #: templates/mitarbeiter-einzeln.php:86 templates/mitarbeiter-einzeln.php:93
 #: templates/mitarbeiter-einzeln.php:115 templates/mitarbeiter-orga.php:96
@@ -712,7 +717,7 @@ msgstr "Semester"
 msgid "Semester f.e. 2020w"
 msgstr "Semester f.e. 2020w"
 
-#: includes/UnivISAPI.php:827
+#: includes/UnivISAPI.php:826
 msgid "Seminar (SEM)"
 msgstr "Seminar (SEM)"
 
@@ -748,7 +753,7 @@ msgstr "Nur für Gaststudium geeignet anzeigen"
 msgid "Show these jobs only"
 msgstr "Nur diese Jobs anzeigen"
 
-#: includes/UnivISAPI.php:871
+#: includes/UnivISAPI.php:870
 #| msgid "Single appointment on"
 msgid "single appointment on"
 msgstr "Einzeltermin am"
@@ -765,7 +770,7 @@ msgstr "Lehrveranstaltung einzeln"
 msgid "Size of heading where output starts"
 msgstr "Größe der Überschrift, ab der Ausgaben beginnen"
 
-#: includes/UnivISAPI.php:812
+#: includes/UnivISAPI.php:811
 msgid "Social Science"
 msgstr "Sozialwissenschaft"
 
@@ -777,15 +782,15 @@ msgstr "Sortierung nach Typ z.B. \"vorl,ueb\""
 msgid "SS"
 msgstr "SS"
 
-#: includes/UnivISAPI.php:897
+#: includes/UnivISAPI.php:896
 msgid "Study paper"
 msgstr "Studienarbeit"
 
-#: includes/UnivISAPI.php:920
+#: includes/UnivISAPI.php:919
 msgid "Suitable for beginners"
 msgstr "Für Anfänger geeignet"
 
-#: includes/UnivISAPI.php:813
+#: includes/UnivISAPI.php:812
 msgid "Technical Sciences"
 msgstr "technische Wissenschaften"
 
@@ -797,29 +802,29 @@ msgstr "Text für den UnivIS Link fehlt"
 msgid "Text to <b><i>Univ</i>IS</b> link"
 msgstr "Text für den <b><i>Univ</i>IS</b> Link"
 
-#: includes/UnivISAPI.php:829
+#: includes/UnivISAPI.php:828
 msgid "Theory Seminar (TS)"
 msgstr "Theorieseminar (TS)"
 
-#: includes/UnivISAPI.php:888
+#: includes/UnivISAPI.php:887
 msgid "Thesis (also published by the publisher)"
 msgstr "Hochschulschrift (auch im Verlag erschienen)"
 
-#: templates/lehrveranstaltungen-einzeln.php:57
+#: templates/lehrveranstaltungen-einzeln.php:54
 msgid "Time and place"
 msgstr "Zeit/Ort n.V."
 
-#: templates/lehrveranstaltungen-alle.php:144
-#: templates/lehrveranstaltungen-einzeln.php:128
+#: templates/lehrveranstaltungen-alle.php:158
+#: templates/lehrveranstaltungen-einzeln.php:105
 msgid "Time and place on appointment"
 msgstr "Zeit/Ort n.V."
 
-#: templates/lehrveranstaltungen-alle.php:101
-#: templates/lehrveranstaltungen-einzeln.php:86
+#: templates/lehrveranstaltungen-alle.php:127
+#: templates/lehrveranstaltungen-einzeln.php:83
 msgid "Time on appointment"
 msgstr "Zeit n.V."
 
-#: templates/lehrveranstaltungen-einzeln.php:176
+#: templates/lehrveranstaltungen-einzeln.php:144
 msgid "Title"
 msgstr "Titel"
 
@@ -827,11 +832,11 @@ msgstr "Titel"
 msgid "to"
 msgstr "bis"
 
-#: includes/UnivISAPI.php:833
+#: includes/UnivISAPI.php:832
 msgid "Training seminar (US)"
 msgstr "Übungsseminar (US)"
 
-#: includes/UnivISAPI.php:849
+#: includes/UnivISAPI.php:848
 msgid "Tutorial (TUT)"
 msgstr "Tutorium (TUT)"
 
@@ -843,7 +848,7 @@ msgstr "Typ"
 msgid "Type f.e. vorl (=lecture)"
 msgstr "Typ z.B. vorl (=Vorlesung)"
 
-#: includes/UnivISAPI.php:887
+#: includes/UnivISAPI.php:886
 msgid ""
 "University thesis (dissertation, habilitation thesis, diploma thesis etc.)"
 msgstr ""
@@ -875,15 +880,15 @@ msgstr "Einstellungen &rsaquo; UnivIS"
 msgid "UnivIS Widget"
 msgstr "UnivIS Widget"
 
-#: includes/UnivISAPI.php:843
+#: includes/UnivISAPI.php:842
 msgid "Upper seminar (OS)"
 msgstr "Oberseminar (OS)"
 
-#: includes/UnivISAPI.php:909
+#: includes/UnivISAPI.php:908
 msgid "Utility model"
 msgstr "Gebrauchsmuster"
 
-#: includes/UnivISAPI.php:814
+#: includes/UnivISAPI.php:813
 msgid "Veterinary Medicine"
 msgstr "Tiermedizin"
 
@@ -896,7 +901,7 @@ msgstr "Website"
 msgid "Working group"
 msgstr "Abteilung"
 
-#: includes/UnivISAPI.php:830
+#: includes/UnivISAPI.php:829
 msgid "Working group (AG)"
 msgstr "Arbeitsgemeinschaft (AG)"
 

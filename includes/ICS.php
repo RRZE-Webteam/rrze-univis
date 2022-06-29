@@ -159,6 +159,7 @@ class ICS
         unset($this->props['SSEND']);
         unset($this->props['WSSTART']);
         unset($this->props['WSEND']);
+        unset($this->props['MAP']);
 
         $props = array();
         foreach ($this->props as $k => $v) {

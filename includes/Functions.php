@@ -149,4 +149,45 @@ class Functions
         wp_send_json($response);
     }
 
+    public static function makeLinkToICS($type, $lecture, $term, $t){
+        $options = get_option('rrze-univis');
+        $ssstart = (!empty($options['basic_ssStart']) ? $options['basic_ssStart'] : 0);
+        $ssend = (!empty($options['basic_ssEnd']) ? $options['basic_ssEnd'] : 0);
+        $wsstart = (!empty($options['basic_wsStart']) ? $options['basic_wsStart'] : 0);
+        $wsend = (!empty($options['basic_wsEnd']) ? $options['basic_wsEnd'] : 0);
+
+        $props = [
+            'summary' => $lecture['title'],
+            'startdate' => (!empty($term['startdate']) ? $term['startdate'] : null),
+            'enddate' => (!empty($term['enddate']) ? $term['enddate'] : null),
+            'starttime' => (!empty($term['starttime']) ? $term['starttime'] : null),
+            'endtime' => (!empty($term['endtime']) ? $term['endtime'] : null),
+            'repeatNr' => (!empty($term['repeatNr']) ? $term['repeatNr'] : null),
+            'location' => (!empty($t['room']) ? $t['room'] : null),
+            'description' => (!empty($lecture['comment']) ? $lecture['comment'] : null),
+            'url' => get_permalink(),
+            'map' => (!empty($term['room']['north']) && !empty($term['room']['east']) ? 'https://karte.fau.de/api/v1/iframe/marker/' . $term['room']['north'] . ',' . $term['room']['east'] . '/zoom/16' : ''),
+            'filename' => sanitize_file_name($type),
+            'ssstart' => $ssstart,
+            'ssend' => $ssend,
+            'wsstart' => $wsstart,
+            'wsend' => $wsend,
+        ];
+
+        $propsEncoded = base64_encode(openssl_encrypt(json_encode($props), 'AES-256-CBC', hash('sha256', AUTH_KEY), 0, substr(hash('sha256', AUTH_SALT), 0, 16)));
+        $linkParams = [
+            'v' => $propsEncoded,
+            'h' => hash('sha256', $propsEncoded),
+        ];
+
+        $screenReaderTxt = __('ICS', 'rrze-univis') . ': ' . __('Date', 'rrze-univis') . ' ' . (!empty($t['repeat']) ? $t['repeat'] : '') . ' ' . (!empty($t['date']) ? $t['date'] . ' ' : '') . $t['time'] . ' ' . __('import to calendar', 'rrze-univis');
+
+        return [
+            'link' => wp_nonce_url(plugin_dir_url(__DIR__) . 'ics.php?' . http_build_query($linkParams), 'createICS', 'ics_nonce'),
+            'linkTxt' => __('ICS', 'rrze-univis') . ': ' . __('Date', 'rrze-univis') . ' ' . (!empty($t['repeat']) ? $t['repeat'] : '') . ' ' . (!empty($t['date']) ? $t['date'] . ' ' : '') . $t['time'] . ' ' . __('import to calendar', 'rrze-univis'),
+        ];
+    }
+
+
+
 }

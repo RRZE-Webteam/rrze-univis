@@ -1,14 +1,12 @@
 <?php 
 
+namespace RRZE\UnivIS;
+
 echo '<div class="rrze-univis">';
 
 if ($lecture){
     $lang = get_locale();
-    $options = get_option('rrze-univis');
-    $ssstart = (!empty($options['basic_ssStart']) ? $options['basic_ssStart'] : 0);
-    $ssend = (!empty($options['basic_ssEnd']) ? $options['basic_ssEnd'] : 0);
-    $wsstart = (!empty($options['basic_wsStart']) ? $options['basic_wsStart'] : 0);
-    $wsend = (!empty($options['basic_wsEnd']) ? $options['basic_wsEnd'] : 0);
+    $type = $lecture['lecture_type_long'];
 
     echo '<div itemscope itemtype="https://schema.org/Course">';
 
@@ -95,26 +93,8 @@ if ($lecture){
                 }
                 // ICS
                 if (in_array('ics', $this->show) && !in_array('ics', $this->hide)) {
-                    $props = [
-                        'summary' => $lecture['title'],
-                        'startdate' => (!empty($term['startdate']) ? $term['startdate'] : null),
-                        'enddate' => (!empty($term['enddate']) ? $term['enddate'] : null),
-                        'starttime' => (!empty($term['starttime']) ? $term['starttime'] : null),
-                        'endtime' => (!empty($term['endtime']) ? $term['endtime'] : null),
-                        'repeat' => (!empty($term['repeat']) ? $term['repeat'] : null),
-                        'location' => (!empty($t['room']) ? $t['room'] : null),
-                        'description' => (!empty($lecture['comment']) ? $lecture['comment'] : null),
-                        'url' => get_permalink(),
-                        'map' => (!empty($term['room']['north']) && !empty($term['room']['east']) ? 'https://karte.fau.de/api/v1/iframe/marker/' . $term['room']['north'] . ',' . $term['room']['east'] . '/zoom/16' : ''),
-                        'filename' => sanitize_file_name($lecture['lecture_type_long']),
-                        'ssstart' => $ssstart,
-                        'ssend' => $ssend,
-                        'wsstart' => $wsstart,
-                        'wsend' => $wsend,
-                    ];
-
-                    $screenReaderTxt = __('ICS', 'rrze-univis') . ': ' . __('Date', 'rrze-univis') . ' ' . (!empty($t['repeat']) ? $t['repeat'] : '') . ' ' . (!empty($t['date']) ? $t['date'] . ' ' : '') . $t['time'] . ' ' . __('import to calendar', 'rrze-univis');
-                    $t['ics'] = '<span class="lecture-info-ics" itemprop="ics"><a href="' . wp_nonce_url(plugin_dir_url(__DIR__) . 'ics.php?' . http_build_query($props), 'createICS', 'ics_nonce') . '" aria-label="' . $screenReaderTxt . '">' . __('ICS', 'rrze-univis') . '</a></span>';
+                    $aIcsLink = Functions::makeLinkToICS($type, $lecture, $term, $t);
+                    $t['ics'] = '<span class="lecture-info-ics" itemprop="ics"><a href="' . $aIcsLink['link'] . '" aria-label="' . $aIcsLink['linkTxt'] . '">' . __('ICS', 'rrze-univis') . '</a></span>';
                 }
                 $t['time'] .= ',';
                 $term_formatted = implode(' ', $t);
