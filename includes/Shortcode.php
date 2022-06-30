@@ -53,7 +53,7 @@ class Shortcode
     public function onLoaded()
     {
         add_action('wp_enqueue_scripts', [$this, 'enqueueScripts']);
-        add_shortcode('univis', [$this, 'shortcodeOutput'], 10, 2);
+        add_shortcode('univis', [$this, 'shortcodeOutput']);
     }
 
     public function enqueueScripts()
