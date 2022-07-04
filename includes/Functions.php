@@ -193,6 +193,10 @@ class Functions
         }
 
 
+        // 2DO: 
+        // - Uhrzeiten starttime und endtime auch bei $semStart nutzen
+        // - Freq stimmt nicht
+
         if (empty($term['startdate'])){
             $props['DTSTART'] = date('Ymd\THis', strtotime(date('Ymd', strtotime($semStart)) . date('Hi', strtotime('00:00'))));
         }else{

@@ -33,26 +33,20 @@ if (!empty($input['v']) && !empty($input['h']) && (hash('sha256', $input['v']) =
         '0' => 'SU',
     ];
 
-    if (!empty($aProps['repeatNr'])) {
-        $aParts = explode(' ', $aProps['repeatNr']);
+    if (!empty($aProps['REPEATNR'])) {
+        $aParts = explode(' ', $aProps['REPEATNR']);
         if (!empty($aFreq[$aParts[0]])){
-            $aProps['freq'] = $aFreq[$aParts[0]];
+            $aProps['FREQ'] = $aFreq[$aParts[0]];
             $aDays = explode(',', $aParts[1]);
-            $aProps['repeat'] = '';
+            $aProps['REPEAT'] = '';
             foreach($aDay as $nr => $val){
                 if (in_array($nr, $aDays)){
-                    $aProps['repeat'] .= $val . ',';
+                    $aProps['REPEAT'] .= $val . ',';
                 }
             }
-            $aProps['repeat'] = rtrim($aProps['repeat'], ',');
+            $aProps['REPEAT'] = rtrim($aProps['REPEAT'], ',');
         }
-
-        // $aProps['freq'] = implode(';', array_intersect($aFreq, str_replace(array_keys($aFreq), array_values($aFreq), explode(' ', strtolower($aProps['repeatNr'])))));
-        // $aProps['repeat'] = implode(',', array_intersect($aDay, str_replace(array_keys($aDay), array_values($aDay), preg_split('/(\,| )/', strtolower($aProps['repeatNr'])))));
-        // if (empty($aProps['freq'])) {
-        //     $aProps['freq'] = 'WEEKLY;INTERVAL=1';
-        // }
-        unset($aProps['repeatNr']);
+        unset($aProps['REPEATNR']);
     }
 
 
