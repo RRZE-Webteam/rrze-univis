@@ -34,17 +34,18 @@ if (!empty($input['v']) && !empty($input['h']) && (hash('sha256', $input['v']) =
     ];
 
     if (!empty($aProps['repeatNr'])) {
-
         $aParts = explode(' ', $aProps['repeatNr']);
-        $aProps['freq'] = $aFreq[$aParts[0]];
-        $aDays = explode(',', $aParts[1]);
-        $aProps['repeat'] = '';
-        foreach($aDay as $nr => $val){
-            if (in_array($nr, $aDays)){
-                $aProps['repeat'] .= $val . ',';
+        if (!empty($aFreq[$aParts[0]])){
+            $aProps['freq'] = $aFreq[$aParts[0]];
+            $aDays = explode(',', $aParts[1]);
+            $aProps['repeat'] = '';
+            foreach($aDay as $nr => $val){
+                if (in_array($nr, $aDays)){
+                    $aProps['repeat'] .= $val . ',';
+                }
             }
+            $aProps['repeat'] = rtrim($aProps['repeat'], ',');
         }
-        $aProps['repeat'] = rtrim($aProps['repeat'], ',');
 
         // $aProps['freq'] = implode(';', array_intersect($aFreq, str_replace(array_keys($aFreq), array_values($aFreq), explode(' ', strtolower($aProps['repeatNr'])))));
         // $aProps['repeat'] = implode(',', array_intersect($aDay, str_replace(array_keys($aDay), array_values($aDay), preg_split('/(\,| )/', strtolower($aProps['repeatNr'])))));
@@ -54,12 +55,19 @@ if (!empty($input['v']) && !empty($input['h']) && (hash('sha256', $input['v']) =
         unset($aProps['repeatNr']);
     }
 
+
+    // echo '<pre>';
+    // var_dump($aProps);
+    // exit;
+
     $ics = new ICS($aProps);
 
     // Output ICS
     header('Content-Type: text/calendar; charset=utf-8');
-    header('Content-Disposition: attachment; filename=' . $aProps['filename'] . '.ics');
+    header('Content-Disposition: attachment; filename=' . $aProps['FILENAME'] . '.ics');
     echo $ics->toString();
+    // echo '<pre>';
+    // var_dump($ics); // TEST
 } else {
     // Output Forbidden
     header('HTTP/1.0 403 Forbidden');

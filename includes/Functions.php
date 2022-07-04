@@ -4,6 +4,8 @@ namespace RRZE\UnivIS;
 
 defined('ABSPATH') || exit;
 
+use function RRZE\UnivIS\Config\getFields;
+
 class Functions
 {
 
@@ -150,29 +152,62 @@ class Functions
     }
 
     public static function makeLinkToICS($type, $lecture, $term, $t){
-        $options = get_option('rrze-univis');
-        $ssstart = (!empty($options['basic_ssStart']) ? $options['basic_ssStart'] : 0);
-        $ssend = (!empty($options['basic_ssEnd']) ? $options['basic_ssEnd'] : 0);
-        $wsstart = (!empty($options['basic_wsStart']) ? $options['basic_wsStart'] : 0);
-        $wsend = (!empty($options['basic_wsEnd']) ? $options['basic_wsEnd'] : 0);
-
         $props = [
-            'summary' => $lecture['title'],
-            'startdate' => (!empty($term['startdate']) ? $term['startdate'] : null),
-            'enddate' => (!empty($term['enddate']) ? $term['enddate'] : null),
-            'starttime' => (!empty($term['starttime']) ? $term['starttime'] : null),
-            'endtime' => (!empty($term['endtime']) ? $term['endtime'] : null),
-            'repeatNr' => (!empty($term['repeatNr']) ? $term['repeatNr'] : null),
-            'location' => (!empty($t['room']) ? $t['room'] : null),
-            'description' => (!empty($lecture['comment']) ? $lecture['comment'] : null),
-            'url' => get_permalink(),
-            'map' => (!empty($term['room']['north']) && !empty($term['room']['east']) ? 'https://karte.fau.de/api/v1/iframe/marker/' . $term['room']['north'] . ',' . $term['room']['east'] . '/zoom/16' : ''),
-            'filename' => sanitize_file_name($type),
-            'ssstart' => $ssstart,
-            'ssend' => $ssend,
-            'wsstart' => $wsstart,
-            'wsend' => $wsend,
+            'SUMMARY' => $lecture['title'],
+            'REPEATNR' => (!empty($term['repeatNr']) ? $term['repeatNr'] : null),
+            'LOCATION' => (!empty($t['room']) ? $t['room'] : null),
+            'DESCRIPTION' => (!empty($lecture['comment']) ? $lecture['comment'] : null),
+            'URL' => get_permalink(),
+            'MAP' => (!empty($term['room']['north']) && !empty($term['room']['east']) ? 'https://karte.fau.de/api/v1/iframe/marker/' . $term['room']['north'] . ',' . $term['room']['east'] . '/zoom/16' : ''),
+            'FILENAME' => sanitize_file_name($type),
         ];
+
+        if (empty($term['startdate']) || empty($term['enddate'])){
+            $thisMonth = date('m');
+        
+            if ($thisMonth > 2 && $thisMonth < 8){
+                $sem = 'ss';
+            }else{
+                $sem = 'ws';
+            }
+    
+            $options = get_option('rrze-univis');
+            $semStart = (!empty($options['basic_' . $sem . 'Start']) ? $options['basic_' . $sem . 'Start'] : null);
+            $semEnd = (!empty($options['basic_' . $sem . 'End']) ? $options['basic_' . $sem . 'End'] : null);
+
+            if (empty($semStart) || empty($semEnd)){
+                $defaults = getFields();
+                foreach($defaults['basic'] as $nr => $aVal){
+                    if ($aVal['name'] == $sem . 'Start'){
+                        $semStart = $aVal['default'];
+                        break;
+                    }elseif ($aVal['name'] == $sem . 'End'){
+                        $semEnd = $aVal['default'];
+                        break;
+                    }
+                }
+
+                $semStart = (!empty($semStart) ? $semStart : $defaults['basic'][$sem . 'Start']['default']);
+                $semEnd = (!empty($semEnd) ? $semEnd : $defaults['basic'][$sem . 'End']['default']);
+            }
+        }
+
+
+        if (empty($term['startdate'])){
+            $props['DTSTART'] = date('Ymd\THis', strtotime(date('Ymd', strtotime($semStart)) . date('Hi', strtotime('00:00'))));
+        }else{
+            $props['DTSTART'] = date('Ymd\THis', strtotime(date('Ymd', strtotime($term['startdate'])) . date('Hi', strtotime($term['starttime']))));
+        }
+
+        if (empty($term['enddate'])){
+            $props['DTEND'] = date('Ymd\THis', strtotime(date('Ymd', strtotime($semEnd)) . date('Hi', strtotime('00:00'))));
+        }else{
+            $props['DTEND'] = date('Ymd\THis', strtotime(date('Ymd', strtotime($term['enddate'])) . date('Hi', strtotime($term['endtime']))));
+        }
+
+        // echo '<pre>';
+        // var_dump($props);
+        // exit;
 
         $propsEncoded = base64_encode(openssl_encrypt(json_encode($props), 'AES-256-CBC', hash('sha256', AUTH_KEY), 0, substr(hash('sha256', AUTH_SALT), 0, 16)));
         $linkParams = [
