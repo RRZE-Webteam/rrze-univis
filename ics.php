@@ -12,42 +12,42 @@ if (!empty($input['v']) && !empty($input['h']) && (hash('sha256', $input['v']) =
 
     $aProps = json_decode(openssl_decrypt(base64_decode($input['v']), 'AES-256-CBC', hash('sha256', AUTH_KEY), 0, substr(hash('sha256', AUTH_SALT), 0, 16)), true);
 
-    $aFreq = [
-        "w1" => 'WEEKLY;INTERVAL=1',
-        "w2" => 'WEEKLY;INTERVAL=2',
-        "w3" => 'WEEKLY;INTERVAL=3',
-        "w4" => 'WEEKLY;INTERVAL=4',
-        "m1" => 'MONTHLY;INTERVAL=1',
-        "m2" => 'MONTHLY;INTERVAL=2',
-        "m3" => 'MONTHLY;INTERVAL=3',
-        "m4" => 'MONTHLY;INTERVAL=4',
-    ];
+    // $aFreq = [
+    //     "w1" => 'WEEKLY;INTERVAL=1',
+    //     "w2" => 'WEEKLY;INTERVAL=2',
+    //     "w3" => 'WEEKLY;INTERVAL=3',
+    //     "w4" => 'WEEKLY;INTERVAL=4',
+    //     "m1" => 'MONTHLY;INTERVAL=1',
+    //     "m2" => 'MONTHLY;INTERVAL=2',
+    //     "m3" => 'MONTHLY;INTERVAL=3',
+    //     "m4" => 'MONTHLY;INTERVAL=4',
+    // ];
 
-    $aDay = [
-        '1' => 'MO',
-        '2' => 'TU',
-        '3' => 'WE',
-        '4' => 'TH',
-        '5' => 'FR',
-        '6' => 'SA',
-        '0' => 'SU',
-    ];
+    // $aDay = [
+    //     '1' => 'MO',
+    //     '2' => 'TU',
+    //     '3' => 'WE',
+    //     '4' => 'TH',
+    //     '5' => 'FR',
+    //     '6' => 'SA',
+    //     '0' => 'SU',
+    // ];
 
-    if (!empty($aProps['REPEATNR'])) {
-        $aParts = explode(' ', $aProps['REPEATNR']);
-        if (!empty($aFreq[$aParts[0]])){
-            $aProps['FREQ'] = $aFreq[$aParts[0]];
-            $aDays = explode(',', $aParts[1]);
-            $aProps['REPEAT'] = '';
-            foreach($aDay as $nr => $val){
-                if (in_array($nr, $aDays)){
-                    $aProps['REPEAT'] .= $val . ',';
-                }
-            }
-            $aProps['REPEAT'] = rtrim($aProps['REPEAT'], ',');
-        }
-        unset($aProps['REPEATNR']);
-    }
+    // if (!empty($aProps['REPEATNR'])) {
+    //     $aParts = explode(' ', $aProps['REPEATNR']);
+    //     if (!empty($aFreq[$aParts[0]])){
+    //         $aProps['FREQ'] = $aFreq[$aParts[0]];
+    //         $aDays = explode(',', $aParts[1]);
+    //         $aProps['REPEAT'] = '';
+    //         foreach($aDay as $nr => $val){
+    //             if (in_array($nr, $aDays)){
+    //                 $aProps['REPEAT'] .= $val . ',';
+    //             }
+    //         }
+    //         $aProps['REPEAT'] = rtrim($aProps['REPEAT'], ',');
+    //     }
+    //     unset($aProps['REPEATNR']);
+    // }
 
 
     // echo '<pre>';

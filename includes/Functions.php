@@ -152,9 +152,8 @@ class Functions
     }
 
     public static function makeLinkToICS($type, $lecture, $term, $t){
-        $props = [
+        $aProps = [
             'SUMMARY' => $lecture['title'],
-            'REPEATNR' => (!empty($term['repeatNr']) ? $term['repeatNr'] : null),
             'LOCATION' => (!empty($t['room']) ? $t['room'] : null),
             'DESCRIPTION' => (!empty($lecture['comment']) ? $lecture['comment'] : null),
             'URL' => get_permalink(),
@@ -194,26 +193,58 @@ class Functions
 
 
         // 2DO: 
-        // - Uhrzeiten starttime und endtime auch bei $semStart nutzen
+        // - DTSTART stimmt nicht -> muss mit FREQ berechnet werden, falls nicht gleicher Wochentag
         // - Freq stimmt nicht
 
-        if (empty($term['startdate'])){
-            $props['DTSTART'] = date('Ymd\THis', strtotime(date('Ymd', strtotime($semStart)) . date('Hi', strtotime('00:00'))));
-        }else{
-            $props['DTSTART'] = date('Ymd\THis', strtotime(date('Ymd', strtotime($term['startdate'])) . date('Hi', strtotime($term['starttime']))));
-        }
+        $tStart = (empty($term['starttime']) ? '00:00' : $term['starttime']);
+        $tEnd = (empty($term['endtime']) ? '23:59' : $term['endtime']);
+        $dStart = (empty($term['startdate']) ? $semStart : $term['startdate']);
+        $dEnd = (empty($term['startdate']) ? $semEnd : $term['enddate']);
+        $aProps['DTSTART'] = date('Ymd\THis', strtotime(date('Ymd', strtotime($dStart)) . date('Hi', strtotime($tStart))));
+        $aProps['DTEND'] = date('Ymd\THis', strtotime(date('Ymd', strtotime($dStart)) . date('Hi', strtotime($tEnd))));
+        $aProps['UNTIL'] = date('Ymd\THis', strtotime(date('Ymd', strtotime($dEnd)) . date('Hi', strtotime($tEnd))));
 
-        if (empty($term['enddate'])){
-            $props['DTEND'] = date('Ymd\THis', strtotime(date('Ymd', strtotime($semEnd)) . date('Hi', strtotime('00:00'))));
-        }else{
-            $props['DTEND'] = date('Ymd\THis', strtotime(date('Ymd', strtotime($term['enddate'])) . date('Hi', strtotime($term['endtime']))));
+        $aFreq = [
+            "w1" => 'WEEKLY;INTERVAL=1',
+            "w2" => 'WEEKLY;INTERVAL=2',
+            "w3" => 'WEEKLY;INTERVAL=3',
+            "w4" => 'WEEKLY;INTERVAL=4',
+            "m1" => 'MONTHLY;INTERVAL=1',
+            "m2" => 'MONTHLY;INTERVAL=2',
+            "m3" => 'MONTHLY;INTERVAL=3',
+            "m4" => 'MONTHLY;INTERVAL=4',
+        ];
+    
+        $aDay = [
+            '1' => 'MO',
+            '2' => 'TU',
+            '3' => 'WE',
+            '4' => 'TH',
+            '5' => 'FR',
+            '6' => 'SA',
+            '0' => 'SU',
+        ];
+    
+        if (!empty($term['repeatNr'])) {
+            $aParts = explode(' ', $term['repeatNr']);
+            if (!empty($aFreq[$aParts[0]])){
+                $aProps['FREQ'] = $aFreq[$aParts[0]];
+                $aDays = explode(',', $aParts[1]);
+                $aProps['REPEAT'] = '';
+                foreach($aDay as $nr => $val){
+                    if (in_array($nr, $aDays)){
+                        $aProps['REPEAT'] .= $val . ',';
+                    }
+                }
+                $aProps['REPEAT'] = rtrim($aProps['REPEAT'], ',');
+            }
         }
-
+    
         // echo '<pre>';
         // var_dump($props);
         // exit;
 
-        $propsEncoded = base64_encode(openssl_encrypt(json_encode($props), 'AES-256-CBC', hash('sha256', AUTH_KEY), 0, substr(hash('sha256', AUTH_SALT), 0, 16)));
+        $propsEncoded = base64_encode(openssl_encrypt(json_encode($aProps), 'AES-256-CBC', hash('sha256', AUTH_KEY), 0, substr(hash('sha256', AUTH_SALT), 0, 16)));
         $linkParams = [
             'v' => $propsEncoded,
             'h' => hash('sha256', $propsEncoded),

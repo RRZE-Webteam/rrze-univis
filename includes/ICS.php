@@ -12,6 +12,7 @@ class ICS
         'SUMMARY',
         'DTSTART',
         'DTEND',
+        'UNTIL',
         'FREQ',
         'REPEAT',
         'RRULE',
@@ -86,11 +87,12 @@ class ICS
             $this->props['FREQ'] = 'WEEKLY;INTERVAL=1';
         }
 
-        $this->props['RRULE'] = 'FREQ=' . $this->props['FREQ'] . ';UNTIL=' . $this->props['DTEND'] . ';WKST=MO;BYDAY=' . $this->props['REPEAT'];
+        $this->props['RRULE'] = 'FREQ=' . $this->props['FREQ'] . ';UNTIL=' . $this->props['UNTIL'] . ';WKST=MO;BYDAY=' . $this->props['REPEAT'];
 
         // delete everything ICS does not understand
-        unset($this->props['REPEAT']);
         unset($this->props['FREQ']);
+        unset($this->props['UNTIL']);
+        unset($this->props['REPEAT']);
         unset($this->props['URL']); // allthough URL is defined in https://www.kanzaki.com/docs/ical/url.html an error occurs using iCal, therefore it is added to DESCRIPTION
         unset($this->props['MAP']);
 
@@ -117,12 +119,12 @@ class ICS
     private function sanitizeVal($val, $key = false)
     {
         switch ($key) {
-            case 'dtend':
-            case 'dtstart':
+            case 'DTEND':
+            case 'DTSTART':
                 $val = $this->formatTimestamp($val); // hier fehlt wohl noch die Uhrzeit
                 break;
-            case 'repeat':
-            case 'freq':
+            case 'REPEAT':
+            case 'FREQ':
                 // do not beautifyString
                 break;
             default:
