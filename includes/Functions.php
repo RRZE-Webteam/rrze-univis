@@ -191,19 +191,6 @@ class Functions
             }
         }
 
-
-        // 2DO: 
-        // - DTSTART stimmt nicht -> muss mit FREQ berechnet werden, falls nicht gleicher Wochentag
-        // - Freq stimmt nicht
-
-        $tStart = (empty($term['starttime']) ? '00:00' : $term['starttime']);
-        $tEnd = (empty($term['endtime']) ? '23:59' : $term['endtime']);
-        $dStart = (empty($term['startdate']) ? $semStart : $term['startdate']);
-        $dEnd = (empty($term['startdate']) ? $semEnd : $term['enddate']);
-        $aProps['DTSTART'] = date('Ymd\THis', strtotime(date('Ymd', strtotime($dStart)) . date('Hi', strtotime($tStart))));
-        $aProps['DTEND'] = date('Ymd\THis', strtotime(date('Ymd', strtotime($dStart)) . date('Hi', strtotime($tEnd))));
-        $aProps['UNTIL'] = date('Ymd\THis', strtotime(date('Ymd', strtotime($dEnd)) . date('Hi', strtotime($tEnd))));
-
         $aFreq = [
             "w1" => 'WEEKLY;INTERVAL=1',
             "w2" => 'WEEKLY;INTERVAL=2',
@@ -215,7 +202,7 @@ class Functions
             "m4" => 'MONTHLY;INTERVAL=4',
         ];
     
-        $aDay = [
+        $aDayDic = [
             '1' => 'MO',
             '2' => 'TU',
             '3' => 'WE',
@@ -225,13 +212,15 @@ class Functions
             '0' => 'SU',
         ];
     
+        $aDays = [];
+
         if (!empty($term['repeatNr'])) {
             $aParts = explode(' ', $term['repeatNr']);
             if (!empty($aFreq[$aParts[0]])){
                 $aProps['FREQ'] = $aFreq[$aParts[0]];
                 $aDays = explode(',', $aParts[1]);
                 $aProps['REPEAT'] = '';
-                foreach($aDay as $nr => $val){
+                foreach($aDayDic as $nr => $val){
                     if (in_array($nr, $aDays)){
                         $aProps['REPEAT'] .= $val . ',';
                     }
@@ -239,6 +228,46 @@ class Functions
                 $aProps['REPEAT'] = rtrim($aProps['REPEAT'], ',');
             }
         }
+
+
+        $tStart = (empty($term['starttime']) ? '00:00' : $term['starttime']);
+        $tEnd = (empty($term['endtime']) ? '23:59' : $term['endtime']);
+        $dStart = (empty($term['startdate']) ? $semStart : $term['startdate']);
+        $dEnd = (empty($term['startdate']) ? $semEnd : $term['enddate']);
+        $aProps['DTSTART'] = date('Ymd\THis', strtotime(date('Ymd', strtotime($dStart)) . date('Hi', strtotime($tStart))));
+        $aProps['DTEND'] = date('Ymd\THis', strtotime(date('Ymd', strtotime($dStart)) . date('Hi', strtotime($tEnd))));
+        $aProps['UNTIL'] = date('Ymd\THis', strtotime(date('Ymd', strtotime($dEnd)) . date('Hi', strtotime($tEnd))));
+
+
+        if (!empty($aDays)){
+            // check if day of week of DTSTART is a member of the REPEAT days
+            $weekdayStart = date('N', $aProps['DTSTART']);
+            if (!in_array($weekdayStart, array_keys($aDayDic))){
+                // move to next possible date
+                $aDic = [
+                    'Monday',
+                    'Tuesday',
+                    'Wednesday',
+                    'Thursday',
+                    'Friday',
+                    'Saturday',
+                    'Sunday',
+                ];
+                // find out which weekday we've got to use
+                
+                // foreach ($dic as $short => $long) {
+                //     $d = new DateTime($aProps['DTSTART']);
+                //     $d->modify( 'next ' . $long);                    
+                //     $nextPossibleDay = strtotime('next ' . $long);
+                //     if (in_array($short, $allowedDays) && $nextPossibleDay > $tsStart) {
+                //         $start = date('Ymd', $nextPossibleDay);
+                //         break 1;
+                //     }
+                // }
+            }
+
+        }
+
     
         // echo '<pre>';
         // var_dump($props);
