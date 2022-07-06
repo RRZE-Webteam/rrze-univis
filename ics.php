@@ -16,7 +16,7 @@ if (!empty($input['v']) && !empty($input['h']) && (hash('sha256', $input['v']) =
 
     // Output ICS
     header('Content-Type: text/calendar; charset=utf-8');
-    header('Content-Disposition: attachment; filename=' . $aProps['FILENAME'] . '.ics');
+    header('Content-Disposition: attachment; filename=' . sanitize_file_name($aProps['FILENAME'] . '.ics'));
     echo $ics->toString();
 } else {
     // Output Forbidden
