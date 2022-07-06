@@ -82,12 +82,12 @@ class ICS
             . (!empty($this->props['URL']) ? 'Information: ' . $this->props['URL'] . '\n\n' : '')
             . (!empty($this->props['MAP']) ? 'Map: ' . $this->props['MAP'] : '');
 
-        if (empty($this->props['REPEAT'])) {
-            $this->props['REPEAT'] = 'MO,TU,WE,TH,FR';
-            $this->props['FREQ'] = 'WEEKLY;INTERVAL=1';
-        }
 
-        $this->props['RRULE'] = 'FREQ=' . $this->props['FREQ'] . ';UNTIL=' . $this->props['UNTIL'] . ';WKST=MO;BYDAY=' . $this->props['REPEAT'];
+        if (!empty($this->props['REPEAT'])){
+            $this->props['RRULE'] = 'FREQ=' . $this->props['FREQ'] . ';UNTIL=' . $this->props['UNTIL'] . ';WKST=MO;BYDAY=' . $this->props['REPEAT'];
+        }else{
+            unset($this->props['RRULE']);
+        }
 
         // delete everything ICS does not understand
         unset($this->props['FREQ']);

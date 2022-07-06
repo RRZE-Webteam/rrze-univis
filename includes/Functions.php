@@ -151,7 +151,8 @@ class Functions
         wp_send_json($response);
     }
 
-    public static function makeLinkToICS($type, $lecture, $term, $t){
+    public static function makeLinkToICS($type, $lecture, $term, $t)
+    {
         $aProps = [
             'SUMMARY' => $lecture['title'],
             'LOCATION' => (!empty($t['room']) ? $t['room'] : null),
@@ -161,26 +162,26 @@ class Functions
             'FILENAME' => sanitize_file_name($type),
         ];
 
-        if (empty($term['startdate']) || empty($term['enddate'])){
+        if (empty($term['startdate']) || empty($term['enddate'])) {
             $thisMonth = date('m');
-        
-            if ($thisMonth > 2 && $thisMonth < 8){
+
+            if ($thisMonth > 2 && $thisMonth < 8) {
                 $sem = 'ss';
-            }else{
+            } else {
                 $sem = 'ws';
             }
-    
+
             $options = get_option('rrze-univis');
             $semStart = (!empty($options['basic_' . $sem . 'Start']) ? $options['basic_' . $sem . 'Start'] : null);
             $semEnd = (!empty($options['basic_' . $sem . 'End']) ? $options['basic_' . $sem . 'End'] : null);
 
-            if (empty($semStart) || empty($semEnd)){
+            if (empty($semStart) || empty($semEnd)) {
                 $defaults = getFields();
-                foreach($defaults['basic'] as $nr => $aVal){
-                    if ($aVal['name'] == $sem . 'Start'){
+                foreach ($defaults['basic'] as $nr => $aVal) {
+                    if ($aVal['name'] == $sem . 'Start') {
                         $semStart = $aVal['default'];
                         break;
-                    }elseif ($aVal['name'] == $sem . 'End'){
+                    } elseif ($aVal['name'] == $sem . 'End') {
                         $semEnd = $aVal['default'];
                         break;
                     }
@@ -201,34 +202,46 @@ class Functions
             "m3" => 'MONTHLY;INTERVAL=3',
             "m4" => 'MONTHLY;INTERVAL=4',
         ];
-    
-        $aDayDic = [
-            '1' => 'MO',
-            '2' => 'TU',
-            '3' => 'WE',
-            '4' => 'TH',
-            '5' => 'FR',
-            '6' => 'SA',
-            '0' => 'SU',
+
+        $aWeekdays = [
+            '1' => [
+                'short' => 'MO',
+                'long' => 'Monday',
+            ],
+            '2' => [
+                'short' => 'TU',
+                'long' => 'Tuesday',
+            ],
+            '3' => [
+                'short' => 'WE',
+                'long' => 'Wednesday',
+            ],
+            '4' => [
+                'short' => 'TH',
+                'long' => 'Thursday',
+            ],
+            '5' => [
+                'short' => 'FR',
+                'long' => 'Friday',
+            ],
         ];
-    
-        $aDays = [];
+
+        $aGivenDays = [];
 
         if (!empty($term['repeatNr'])) {
             $aParts = explode(' ', $term['repeatNr']);
-            if (!empty($aFreq[$aParts[0]])){
+            if (!empty($aFreq[$aParts[0]])) {
                 $aProps['FREQ'] = $aFreq[$aParts[0]];
-                $aDays = explode(',', $aParts[1]);
+                $aGivenDays = explode(',', $aParts[1]);
                 $aProps['REPEAT'] = '';
-                foreach($aDayDic as $nr => $val){
-                    if (in_array($nr, $aDays)){
-                        $aProps['REPEAT'] .= $val . ',';
+                foreach ($aWeekdays as $nr => $val) {
+                    if (in_array($nr, $aGivenDays)) {
+                        $aProps['REPEAT'] .= $val['short'] . ',';
                     }
                 }
                 $aProps['REPEAT'] = rtrim($aProps['REPEAT'], ',');
             }
         }
-
 
         $tStart = (empty($term['starttime']) ? '00:00' : $term['starttime']);
         $tEnd = (empty($term['endtime']) ? '23:59' : $term['endtime']);
@@ -238,40 +251,23 @@ class Functions
         $aProps['DTEND'] = date('Ymd\THis', strtotime(date('Ymd', strtotime($dStart)) . date('Hi', strtotime($tEnd))));
         $aProps['UNTIL'] = date('Ymd\THis', strtotime(date('Ymd', strtotime($dEnd)) . date('Hi', strtotime($tEnd))));
 
-
-        if (!empty($aDays)){
+        if (!empty($aGivenDays)) {
             // check if day of week of DTSTART is a member of the REPEAT days
-            $weekdayStart = date('N', $aProps['DTSTART']);
-            if (!in_array($weekdayStart, array_keys($aDayDic))){
+            $givenWeekday = date('N', strtotime($aProps['DTSTART']));
+            if (!in_array($givenWeekday, $aGivenDays)) {
                 // move to next possible date
-                $aDic = [
-                    'Monday',
-                    'Tuesday',
-                    'Wednesday',
-                    'Thursday',
-                    'Friday',
-                    'Saturday',
-                    'Sunday',
-                ];
-                // find out which weekday we've got to use
-                
-                // foreach ($dic as $short => $long) {
-                //     $d = new DateTime($aProps['DTSTART']);
-                //     $d->modify( 'next ' . $long);                    
-                //     $nextPossibleDay = strtotime('next ' . $long);
-                //     if (in_array($short, $allowedDays) && $nextPossibleDay > $tsStart) {
-                //         $start = date('Ymd', $nextPossibleDay);
-                //         break 1;
-                //     }
-                // }
+                while(!in_array($givenWeekday, $aGivenDays)){
+                    $givenWeekday++;
+                    $givenWeekday = ($givenWeekday > 5 ? 1 : $givenWeekday);
+                    if (in_array($givenWeekday, $aGivenDays)){
+                        $aProps['DTSTART'] = date('Ymd', strtotime("next " . $aWeekdays[$givenWeekday]['long'], strtotime($aProps['DTSTART'])));
+                        $aProps['DTEND'] = $aProps['DTSTART'] . date('\THis', strtotime($tEnd));
+                        $aProps['DTSTART'] .= date('\THis', strtotime($tStart));
+                        break;
+                    }
+                }
             }
-
         }
-
-    
-        // echo '<pre>';
-        // var_dump($props);
-        // exit;
 
         $propsEncoded = base64_encode(openssl_encrypt(json_encode($aProps), 'AES-256-CBC', hash('sha256', AUTH_KEY), 0, substr(hash('sha256', AUTH_SALT), 0, 16)));
         $linkParams = [
@@ -286,7 +282,5 @@ class Functions
             'linkTxt' => __('ICS', 'rrze-univis') . ': ' . __('Date', 'rrze-univis') . ' ' . (!empty($t['repeat']) ? $t['repeat'] : '') . ' ' . (!empty($t['date']) ? $t['date'] . ' ' : '') . $t['time'] . ' ' . __('import to calendar', 'rrze-univis'),
         ];
     }
-
-
 
 }
