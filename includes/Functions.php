@@ -4,6 +4,8 @@ namespace RRZE\UnivIS;
 
 defined('ABSPATH') || exit;
 
+use function RRZE\UnivIS\Config\getFields;
+
 class Functions
 {
 
@@ -147,6 +149,138 @@ class Functions
         $inputs = filter_input(INPUT_POST, 'data', FILTER_SANITIZE_STRING, FILTER_REQUIRE_ARRAY);
         $response = $this->getSelectHTML($this->getUnivISData($inputs['univisOrgID'], $inputs['dataType']));
         wp_send_json($response);
+    }
+
+    public static function makeLinkToICS($type, $lecture, $term, $t)
+    {
+        $aProps = [
+            'SUMMARY' => $lecture['title'],
+            'LOCATION' => (!empty($t['room']) ? $t['room'] : null),
+            'DESCRIPTION' => (!empty($lecture['comment']) ? $lecture['comment'] : null),
+            'URL' => get_permalink(),
+            'MAP' => (!empty($term['room']['north']) && !empty($term['room']['east']) ? 'https://karte.fau.de/api/v1/iframe/marker/' . $term['room']['north'] . ',' . $term['room']['east'] . '/zoom/16' : ''),
+            'FILENAME' => sanitize_file_name($type),
+        ];
+
+        if (empty($term['startdate']) || empty($term['enddate'])) {
+            $thisMonth = date('m');
+
+            if ($thisMonth > 2 && $thisMonth < 8) {
+                $sem = 'ss';
+            } else {
+                $sem = 'ws';
+            }
+
+            $options = get_option('rrze-univis');
+            $semStart = (!empty($options['basic_' . $sem . 'Start']) ? $options['basic_' . $sem . 'Start'] : null);
+            $semEnd = (!empty($options['basic_' . $sem . 'End']) ? $options['basic_' . $sem . 'End'] : null);
+
+            if (empty($semStart) || empty($semEnd)) {
+                $defaults = getFields();
+                foreach ($defaults['basic'] as $nr => $aVal) {
+                    if ($aVal['name'] == $sem . 'Start') {
+                        $semStart = $aVal['default'];
+                        break;
+                    } elseif ($aVal['name'] == $sem . 'End') {
+                        $semEnd = $aVal['default'];
+                        break;
+                    }
+                }
+
+                $semStart = (!empty($semStart) ? $semStart : $defaults['basic'][$sem . 'Start']['default']);
+                $semEnd = (!empty($semEnd) ? $semEnd : $defaults['basic'][$sem . 'End']['default']);
+            }
+        }
+
+        $aFreq = [
+            "w1" => 'WEEKLY;INTERVAL=1',
+            "w2" => 'WEEKLY;INTERVAL=2',
+            "w3" => 'WEEKLY;INTERVAL=3',
+            "w4" => 'WEEKLY;INTERVAL=4',
+            "m1" => 'MONTHLY;INTERVAL=1',
+            "m2" => 'MONTHLY;INTERVAL=2',
+            "m3" => 'MONTHLY;INTERVAL=3',
+            "m4" => 'MONTHLY;INTERVAL=4',
+        ];
+
+        $aWeekdays = [
+            '1' => [
+                'short' => 'MO',
+                'long' => 'Monday',
+            ],
+            '2' => [
+                'short' => 'TU',
+                'long' => 'Tuesday',
+            ],
+            '3' => [
+                'short' => 'WE',
+                'long' => 'Wednesday',
+            ],
+            '4' => [
+                'short' => 'TH',
+                'long' => 'Thursday',
+            ],
+            '5' => [
+                'short' => 'FR',
+                'long' => 'Friday',
+            ],
+        ];
+
+        $aGivenDays = [];
+
+        if (!empty($term['repeatNr'])) {
+            $aParts = explode(' ', $term['repeatNr']);
+            if (!empty($aFreq[$aParts[0]])) {
+                $aProps['FREQ'] = $aFreq[$aParts[0]];
+                $aGivenDays = explode(',', $aParts[1]);
+                $aProps['REPEAT'] = '';
+                foreach ($aWeekdays as $nr => $val) {
+                    if (in_array($nr, $aGivenDays)) {
+                        $aProps['REPEAT'] .= $val['short'] . ',';
+                    }
+                }
+                $aProps['REPEAT'] = rtrim($aProps['REPEAT'], ',');
+            }
+        }
+
+        $tStart = (empty($term['starttime']) ? '00:00' : $term['starttime']);
+        $tEnd = (empty($term['endtime']) ? '23:59' : $term['endtime']);
+        $dStart = (empty($term['startdate']) ? $semStart : $term['startdate']);
+        $dEnd = (empty($term['startdate']) ? $semEnd : $term['enddate']);
+        $aProps['DTSTART'] = date('Ymd\THis', strtotime(date('Ymd', strtotime($dStart)) . date('Hi', strtotime($tStart))));
+        $aProps['DTEND'] = date('Ymd\THis', strtotime(date('Ymd', strtotime($dStart)) . date('Hi', strtotime($tEnd))));
+        $aProps['UNTIL'] = date('Ymd\THis', strtotime(date('Ymd', strtotime($dEnd)) . date('Hi', strtotime($tEnd))));
+
+        if (!empty($aGivenDays)) {
+            // check if day of week of DTSTART is a member of the REPEAT days
+            $givenWeekday = date('N', strtotime($aProps['DTSTART']));
+            if (!in_array($givenWeekday, $aGivenDays)) {
+                // move to next possible date
+                while(!in_array($givenWeekday, $aGivenDays)){
+                    $givenWeekday++;
+                    $givenWeekday = ($givenWeekday > 5 ? 1 : $givenWeekday);
+                    if (in_array($givenWeekday, $aGivenDays)){
+                        $aProps['DTSTART'] = date('Ymd', strtotime("next " . $aWeekdays[$givenWeekday]['long'], strtotime($aProps['DTSTART'])));
+                        $aProps['DTEND'] = $aProps['DTSTART'] . date('\THis', strtotime($tEnd));
+                        $aProps['DTSTART'] .= date('\THis', strtotime($tStart));
+                        break;
+                    }
+                }
+            }
+        }
+
+        $propsEncoded = base64_encode(openssl_encrypt(json_encode($aProps), 'AES-256-CBC', hash('sha256', AUTH_KEY), 0, substr(hash('sha256', AUTH_SALT), 0, 16)));
+        $linkParams = [
+            'v' => $propsEncoded,
+            'h' => hash('sha256', $propsEncoded),
+        ];
+
+        $screenReaderTxt = __('ICS', 'rrze-univis') . ': ' . __('Date', 'rrze-univis') . ' ' . (!empty($t['repeat']) ? $t['repeat'] : '') . ' ' . (!empty($t['date']) ? $t['date'] . ' ' : '') . $t['time'] . ' ' . __('import to calendar', 'rrze-univis');
+
+        return [
+            'link' => wp_nonce_url(plugin_dir_url(__DIR__) . 'ics.php?' . http_build_query($linkParams), 'createICS', 'ics_nonce'),
+            'linkTxt' => __('ICS', 'rrze-univis') . ': ' . __('Date', 'rrze-univis') . ' ' . (!empty($t['repeat']) ? $t['repeat'] : '') . ' ' . (!empty($t['date']) ? $t['date'] . ' ' : '') . $t['time'] . ' ' . __('import to calendar', 'rrze-univis'),
+        ];
     }
 
 }

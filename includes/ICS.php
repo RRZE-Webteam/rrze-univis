@@ -9,24 +9,17 @@ class ICS
 
     protected $props = array();
     private $availableProps = array(
-        'summary',
-        'starttime',
-        'endtime',
-        'startdate',
-        'enddate',
-        'dtend',
-        'dtstart',
-        'freq',
-        'repeat',
-        'rrule',
-        'location',
-        'description',
-        'url',
-        'map',
-        'ssstart',
-        'ssend',
-        'wsstart',
-        'wsend',
+        'SUMMARY',
+        'DTSTART',
+        'DTEND',
+        'UNTIL',
+        'FREQ',
+        'REPEAT',
+        'RRULE',
+        'LOCATION',
+        'DESCRIPTION',
+        'URL',
+        'MAP',
     );
 
     public function __construct($props)
@@ -42,7 +35,7 @@ class ICS
             }
         } else {
             if (in_array($key, $this->availableProps)) {
-                $this->props[strtoupper($key)] = $this->sanitizeVal($val, $key);
+                $this->props[$key] = $this->sanitizeVal($val, $key);
             }
         }
     }
@@ -88,77 +81,20 @@ class ICS
         $this->props['DESCRIPTION'] .= (!empty($this->props['DESCRIPTION']) ? '\n\n' : '')
             . (!empty($this->props['URL']) ? 'Information: ' . $this->props['URL'] . '\n\n' : '')
             . (!empty($this->props['MAP']) ? 'Map: ' . $this->props['MAP'] : '');
-        $this->props['DTSTART'] = (!empty($this->props['STARTDATE']) ? $this->props['STARTDATE'] : $this->props['DTSTART']);
-        $this->props['DTEND'] = (!empty($this->props['ENDDATE']) ? $this->props['ENDDATE'] : $this->props['DTSTART']);
-        $this->props['STARTTIME'] = (!empty($this->props['STARTTIME']) ? $this->props['STARTTIME'] : '00:00');
-        $this->props['ENDTIME'] = (!empty($this->props['ENDTIME']) ? $this->props['ENDTIME'] : '00:00');
 
-        if (empty($this->props['STARTDATE']) && empty($this->props['REPEAT'])) {
-            $this->props['REPEAT'] = 'MO,TU,WE,TH,FR';
-            $this->props['FREQ'] = 'WEEKLY;INTERVAL=1';
-        }
 
-        $start = '';
-        $bRule = false;
-        if (!empty($this->props['REPEAT'])) {
-            $tsStart = strtotime($this->props['DTSTART']);
-            $start = date('Ymd', $tsStart);
-            $day = date('Ymd', $start);
-            $allowedDays = explode(',', $this->props['REPEAT']);
-            if (!in_array($day, $allowedDays)) {
-                // move to next possible date
-                $dic = [
-                    'MO' => 'Monday',
-                    'TU' => 'Tuesday',
-                    'WE' => 'Wednesday',
-                    'TH' => 'Thursday',
-                    'FR' => 'Friday',
-                    'SA' => 'Saturday',
-                    'SU' => 'Sunday',
-                ];
-                foreach ($dic as $short => $long) {
-                    $nextPossibleDay = strtotime('next ' . $long);
-                    if (in_array($short, $allowedDays) && $nextPossibleDay > $tsStart) {
-                        $start = date('Ymd', $nextPossibleDay);
-                        break 1;
-                    }
-                }
-            }
-
-            if (empty($this->props['ENDDATE'])) {
-                // find enddate: either in winters' or summers' semester or if between +1 month
-                if ($start >= $this->props['SSSTART']) {
-                    $this->props['ENDDATE'] = $this->formatTimestamp($this->props['SSEND']);
-                } elseif ($start <= $this->props['WSEND']) {
-                    $this->props['ENDDATE'] = $this->formatTimestamp($this->props['WSEND']);
-                } else {
-                    $this->props['ENDDATE'] = $this->formatTimestamp('1 month');
-                }
-            }
-            $bRule = true;
-        }
-
-        $start = (!empty($start) ? $start : $this->props['STARTDATE']);
-        $this->props['DTSTART'] = date(self::DT_FORMAT, strtotime(date('Ymd', strtotime($start)) . date('Hi', strtotime($this->props['STARTTIME']))));
-        $this->props['DTEND'] = date(self::DT_FORMAT, strtotime(date('Ymd', strtotime($this->props['DTSTART'])) . date('Hi', strtotime($this->props['ENDTIME']))));
-        $this->props['ENDDATE'] = date(self::DT_FORMAT, strtotime(date('Ymd', strtotime($this->props['ENDDATE'])) . date('Hi', strtotime($this->props['ENDTIME']))));
-
-        if ($bRule) {
-            $this->props['RRULE'] = 'FREQ=' . $this->props['FREQ'] . ';UNTIL=' . $this->props['ENDDATE'] . ';WKST=MO;BYDAY=' . $this->props['REPEAT'];
+        if (!empty($this->props['REPEAT'])){
+            $this->props['RRULE'] = 'FREQ=' . $this->props['FREQ'] . ';UNTIL=' . $this->props['UNTIL'] . ';WKST=MO;BYDAY=' . $this->props['REPEAT'];
+        }else{
+            unset($this->props['RRULE']);
         }
 
         // delete everything ICS does not understand
-        unset($this->props['REPEAT']);
         unset($this->props['FREQ']);
-        unset($this->props['STARTTIME']);
-        unset($this->props['ENDTIME']);
-        unset($this->props['STARTDATE']);
-        unset($this->props['ENDDATE']);
+        unset($this->props['UNTIL']);
+        unset($this->props['REPEAT']);
         unset($this->props['URL']); // allthough URL is defined in https://www.kanzaki.com/docs/ical/url.html an error occurs using iCal, therefore it is added to DESCRIPTION
-        unset($this->props['SSSTART']);
-        unset($this->props['SSEND']);
-        unset($this->props['WSSTART']);
-        unset($this->props['WSEND']);
+        unset($this->props['MAP']);
 
         $props = array();
         foreach ($this->props as $k => $v) {
@@ -183,14 +119,12 @@ class ICS
     private function sanitizeVal($val, $key = false)
     {
         switch ($key) {
-            case 'dtend':
-            case 'dtstart':
-            case 'startdate':
-            case 'enddate':
+            case 'DTEND':
+            case 'DTSTART':
                 $val = $this->formatTimestamp($val); // hier fehlt wohl noch die Uhrzeit
                 break;
-            case 'repeat':
-            case 'freq':
+            case 'REPEAT':
+            case 'FREQ':
                 // do not beautifyString
                 break;
             default:

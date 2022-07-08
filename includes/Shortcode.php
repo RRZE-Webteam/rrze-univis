@@ -53,7 +53,7 @@ class Shortcode
     public function onLoaded()
     {
         add_action('wp_enqueue_scripts', [$this, 'enqueueScripts']);
-        add_shortcode('univis', [$this, 'shortcodeOutput'], 10, 2);
+        add_shortcode('univis', [$this, 'shortcodeOutput']);
     }
 
     public function enqueueScripts()
@@ -167,7 +167,7 @@ class Shortcode
                     $data = $this->getData('lectureByLecturerID', $this->atts['id']);
                 }
                 if ($data) {
-                    $veranstaltung = $data[array_key_first($data)][0];
+                    $lecture = $data[array_key_first($data)][0];
                 }
                 break;
             case 'lehrveranstaltungen-alle':

@@ -32,7 +32,6 @@ class UnivISAPI
         $this->showJobs = (!empty($this->atts['zeige_jobs']) ? explode('|', $this->atts['zeige_jobs']) : []);
         $this->hideJobs = (!empty($this->atts['ignoriere_jobs']) ? explode('|', $this->atts['ignoriere_jobs']) : []);
         $this->gast = (!empty($this->atts['gast']) ? __('Allowed for guest students', 'rrze-univis') : '');
-        //  $this->hideJobs = (!empty($this->showJobs) && !empty($this->hideJobs) ? array_diff($this->showJobs, $this->hideJobs) : $this->hideJobs);
     }
 
     private function setAPI($api)
@@ -870,14 +869,14 @@ class UnivISAPI
                 "m1" => "",
                 "s1" => __('single appointment on', 'rrze-univis'),
                 "bd" => __('block event', 'rrze-univis'),
-                '0' => __(' Su', 'rrze-univis'),
-                '1' => __(' Mo', 'rrze-univis'),
+                '0' => __(' Sun', 'rrze-univis'),
+                '1' => __(' Mon', 'rrze-univis'),
                 '2' => __(' Tue', 'rrze-univis'),
                 '3' => __(' Wed', 'rrze-univis'),
                 '4' => __(' Thu', 'rrze-univis'),
-                '5' => __(' Fr', 'rrze-univis'),
-                '6' => __(' Sa', 'rrze-univis'),
-                '7' => __(' Su', 'rrze-univis'),
+                '5' => __(' Fry', 'rrze-univis'),
+                '6' => __(' Sat', 'rrze-univis'),
+                '7' => __(' Sun', 'rrze-univis'),
             ],
             'publication_type' => [
                 "artmono" => __('Article in anthology', 'rrze-univis'),
@@ -946,6 +945,7 @@ class UnivISAPI
                         foreach ($data[$nr]['courses'] as $c_nr => $course) {
                             foreach ($course['term'] as $m_nr => $meeting) {
                                 if (isset($data[$nr]['courses'][$c_nr]['term'][$m_nr]['repeat'])) {
+                                    $data[$nr]['courses'][$c_nr]['term'][$m_nr]['repeatNr'] = $data[$nr]['courses'][$c_nr]['term'][$m_nr]['repeat'];
                                     $data[$nr]['courses'][$c_nr]['term'][$m_nr]['repeat'] = str_replace(array_keys($values), array_values($values), $data[$nr]['courses'][$c_nr]['term'][$m_nr]['repeat']);
                                 }
                             }
@@ -953,6 +953,7 @@ class UnivISAPI
                     } elseif (isset($data[$nr]['officehours'])) {
                         foreach ($data[$nr]['officehours'] as $c_nr => $entry) {
                             if (isset($data[$nr]['officehours'][$c_nr]['repeat'])) {
+                                $data[$nr]['officehours'][$c_nr]['repeatNr'] = $data[$nr]['officehours'][$c_nr]['repeat'];
                                 $data[$nr]['officehours'][$c_nr]['repeat'] = trim(str_replace(array_keys($values), array_values($values), $data[$nr]['officehours'][$c_nr]['repeat']));
                             }
                         }
