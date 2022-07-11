@@ -92,10 +92,10 @@ if ($lecture){
                     $t['coursename'] = '(' . __('Course', 'rrze-univis') . ' ' . $course['coursename'] . ')';
                 }
                 // ICS
-                if (in_array('ics', $this->show) && !in_array('ics', $this->hide)) {
-                    $aIcsLink = Functions::makeLinkToICS($type, $lecture, $term, $t);
-                    $t['ics'] = '<span class="lecture-info-ics" itemprop="ics"><a href="' . $aIcsLink['link'] . '" aria-label="' . $aIcsLink['linkTxt'] . '">' . __('ICS', 'rrze-univis') . '</a></span>';
-                }
+                // if (in_array('ics', $this->show) && !in_array('ics', $this->hide)) {
+                //     $aIcsLink = Functions::makeLinkToICS($type, $lecture, $term, $t);
+                //     $t['ics'] = '<span class="lecture-info-ics" itemprop="ics"><a href="' . $aIcsLink['link'] . '" aria-label="' . $aIcsLink['linkTxt'] . '">' . __('ICS', 'rrze-univis') . '</a></span>';
+                // }
                 $t['time'] .= ',';
                 $term_formatted = implode(' ', $t);
                 echo '<li>' . $term_formatted . '</li>';
