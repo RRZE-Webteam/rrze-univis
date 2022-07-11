@@ -25,6 +25,19 @@ class ICS
     public function __construct($props)
     {
         $this->set($props);
+        add_action( 'wp_ajax_generateICS', [$this, 'generateICS'] );
+    }
+
+    public function generateICS(){
+        $input = filter_input_array(INPUT_GET, FILTER_SANITIZE_STRING);
+        $aProps = json_decode(openssl_decrypt(base64_decode($input['v']), 'AES-256-CBC', hash('sha256', AUTH_KEY), 0, substr(hash('sha256', AUTH_SALT), 0, 16)), true);
+
+        $ics = new ICS($aProps);
+    
+        // Output ICS
+        header('Content-Type: text/calendar; charset=utf-8');
+        header('Content-Disposition: attachment; filename=' . sanitize_file_name($aProps['FILENAME'] . '.ics'));
+        echo $ics->toString();
     }
 
     public function set($key, $val = false)

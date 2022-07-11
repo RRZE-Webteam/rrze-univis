@@ -18,11 +18,26 @@ class Functions
 
     public function onLoaded()
     {
+        add_action('wp_enqueue_scripts', [$this, 'enqueueScripts']);
         add_action('admin_enqueue_scripts', [$this, 'adminEnqueueScripts']);
         add_action('wp_ajax_GetUnivISData', [$this, 'ajaxGetUnivISData']);
         add_action('wp_ajax_nopriv_GetUnivISData', [$this, 'ajaxGetUnivISData']);
         add_action('wp_ajax_GetUnivISDataForBlockelements', [$this, 'ajaxGetUnivISDataForBlockelements']);
         add_action('wp_ajax_nopriv_GetUnivISDataForBlockelements', [$this, 'ajaxGetUnivISDataForBlockelements']);
+    }
+
+    public function enqueueScripts(){
+        wp_enqueue_script(
+            'rrze-unvis-ajax-frontend',
+            plugins_url('src/js/rrze-univis-frontend.js', plugin_basename($this->pluginFile)),
+            ['jquery'],
+            null
+        );
+
+        wp_localize_script('rrze-unvis-ajax-frontend', 'univis_ajax', [
+            'ajax_url' => admin_url('admin-ajax.php'),
+            'nonce' => wp_create_nonce('univis-ajax-nonce'),
+        ]);
     }
 
     public function adminEnqueueScripts()
@@ -38,7 +53,6 @@ class Functions
             'ajax_url' => admin_url('admin-ajax.php'),
             'nonce' => wp_create_nonce('univis-ajax-nonce'),
         ]);
-
     }
 
     public function getTableHTML($aIn)
@@ -278,7 +292,8 @@ class Functions
         $screenReaderTxt = __('ICS', 'rrze-univis') . ': ' . __('Date', 'rrze-univis') . ' ' . (!empty($t['repeat']) ? $t['repeat'] : '') . ' ' . (!empty($t['date']) ? $t['date'] . ' ' : '') . $t['time'] . ' ' . __('import to calendar', 'rrze-univis');
 
         return [
-            'link' => wp_nonce_url(plugin_dir_url(__DIR__) . 'ics.php?' . http_build_query($linkParams), 'createICS', 'ics_nonce'),
+            // 'link' => wp_nonce_url(plugin_dir_url(__DIR__) . 'ics.php?' . http_build_query($linkParams), 'createICS', 'ics_nonce'),
+            'link' => http_build_query($linkParams),
             'linkTxt' => __('ICS', 'rrze-univis') . ': ' . __('Date', 'rrze-univis') . ' ' . (!empty($t['repeat']) ? $t['repeat'] : '') . ' ' . (!empty($t['date']) ? $t['date'] . ' ' : '') . $t['time'] . ' ' . __('import to calendar', 'rrze-univis'),
         ];
     }
