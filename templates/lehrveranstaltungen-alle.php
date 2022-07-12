@@ -15,6 +15,7 @@ $this->atts['color_courses'] = explode('_', implode('', array_intersect($this->s
 $this->atts['color_courses'] = $this->atts['color_courses'][0];
 
 $ret = '<div class="rrze-univis">';
+
 if ($data){
     $lang = get_locale();
 
@@ -136,10 +137,10 @@ if ($data){
                                 $t['coursename'] = '(' . __('Course', 'rrze-univis') . ' ' . $course['coursename'] . ')';
                             }
                             // ICS
-                            // if (in_array('ics', $this->show) && !in_array('ics', $this->hide)) {
-                            //     $aIcsLink = Functions::makeLinkToICS($type, $lecture, $term, $t);
-                            //     $t['ics'] = '<span class="lecture-info-ics" itemprop="ics"><a href="' . $aIcsLink['link'] . '" aria-label="' . $aIcsLink['linkTxt'] . '">' . __('ICS', 'rrze-univis') . '</a></span>';
-                            // }
+                            if (in_array('ics', $this->show) && !in_array('ics', $this->hide)) {
+                                $aIcsLink = Functions::makeLinkToICS($type, $lecture, $term, $t);
+                                $t['ics'] = '<span class="lecture-info-ics" itemprop="ics"><a href="#?' . $aIcsLink['link'] . '" class="linkToICS" aria-label="' . $aIcsLink['linkTxt'] . '">' . __('ICS', 'rrze-univis') . '</a></span>';
+                            }
                             $t['time'] .= ',';
                             $term_formatted = implode(' ', $t);
                             $courseDates .= '<li>' . $term_formatted . '</li>';

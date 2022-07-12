@@ -4,12 +4,12 @@ jQuery(document).ready(function($){
     var $loading = $('div#loading').hide();
 
     $(document)
-      .ajaxStart(function () {
+        .ajaxStart(function () {
             $loading.show();
-      })
-    .ajaxStop(function () {
+        })
+        .ajaxStop(function () {
          $loading.hide();
-     });
+        });
 
      $('#searchUnivisID').click(getUnivISData);
     });
