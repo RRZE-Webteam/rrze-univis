@@ -15,6 +15,7 @@ $this->atts['color_courses'] = explode('_', implode('', array_intersect($this->s
 $this->atts['color_courses'] = $this->atts['color_courses'][0];
 
 $ret = '<div class="rrze-univis">';
+
 if ($data){
     $lang = get_locale();
 
