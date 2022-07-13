@@ -37,7 +37,7 @@ class Functions
         $ics = new ICS($aProps);
         $response = [
             'icsData' => $ics->toString(),
-            'filename' => sanitize_file_name($aProps['FILENAME'] . '.ics')
+            'filename' => $aProps['FILENAME']
         ];
 
         wp_send_json($response);
@@ -46,13 +46,13 @@ class Functions
     public function enqueueScripts(){
         wp_enqueue_script(
             'rrze-unvis-ajax-frontend',
-            plugins_url('js/rrze-univis-frontend.js', plugin_basename($this->pluginFile)),
+            plugins_url('src/js/rrze-univis-frontend.js', plugin_basename($this->pluginFile)),
             ['jquery'],
             null
         );
 
-        wp_localize_script('rrze-unvis-ajax-frontend', 'univis_ajax', [
-            'ajax_url' => admin_url('admin-ajax.php'),
+        wp_localize_script('rrze-unvis-ajax-frontend', 'univis_frontend_ajax', [
+            'ajax_frontend_url' => admin_url('admin-ajax.php'),
             'ics_nonce' => wp_create_nonce('univis-ajax-ics-nonce'),
         ]);
     }
@@ -190,7 +190,7 @@ class Functions
             'DESCRIPTION' => (!empty($lecture['comment']) ? $lecture['comment'] : null),
             'URL' => get_permalink(),
             'MAP' => (!empty($term['room']['north']) && !empty($term['room']['east']) ? 'https://karte.fau.de/api/v1/iframe/marker/' . $term['room']['north'] . ',' . $term['room']['east'] . '/zoom/16' : ''),
-            'FILENAME' => sanitize_file_name($type),
+            'FILENAME' => sanitize_file_name($type . '.ics'),
         ];
 
         if (empty($term['startdate']) || empty($term['enddate'])) {
