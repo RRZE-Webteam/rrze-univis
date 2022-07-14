@@ -9,40 +9,22 @@ jQuery(document).ready(function ($) {
 
     function generateICS() {
         var url = this.href;
-
-        var SUMMARY = getURLParameter(url, 'SUMMARY');
-        var LOCATION = getURLParameter(url, 'LOCATION');
-        var DESCRIPTION = getURLParameter(url, 'DESCRIPTION');
-        var FILENAME = getURLParameter(url, 'FILENAME');
-        var FREQ = getURLParameter(url, 'FREQ');
-        var REPEAT = getURLParameter(url, 'REPEAT');
-        var DTSTART = getURLParameter(url, 'DTSTART');
-        var DTEND = getURLParameter(url, 'DTEND');
-        var UNTIL = getURLParameter(url, 'UNTIL');
+        var v = getURLParameter(url, 'v');
         var h = getURLParameter(url, 'h');
 
-        jQuery.getJSON(univis_frontend_ajax.ajax_frontend_url, {
+        jQuery.get(univis_frontend_ajax.ajax_frontend_url, {
             _ajax_nonce: univis_frontend_ajax.ics_nonce,
             action: 'GenerateICS',
             data: {
-                'SUMMARY': SUMMARY,
-                'LOCATION': LOCATION,
-                'DESCRIPTION': DESCRIPTION,
-                'FILENAME': FILENAME,
-                'FREQ': FREQ,
-                'REPEAT': REPEAT,
-                'DTSTART': DTSTART,
-                'DTEND': DTEND,
-                'UNTIL': UNTIL,
-                'h': h,
-                },
+                'v': v,
+                'h': h
+            },
         }, function (response) {
-            console.log('1. filename = ' + response['filename']);
             const blob = new Blob([response['icsData']], { type: 'text/calendar' });
             const downloadUrl = URL.createObjectURL(blob);
             const a = document.createElement("a");
             a.href = downloadUrl;
-            a.download = response['filename'];
+            a.download = response[['filename']];
             document.body.appendChild(a);
             a.click();
         });

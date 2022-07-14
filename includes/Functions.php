@@ -6,8 +6,6 @@ defined('ABSPATH') || exit;
 
 use function RRZE\UnivIS\Config\getFields;
 use RRZE\UnivIS\ICS;
-define( 'LOGFILE', plugin_dir_path( __FILE__) . 'rrze-univis.log' );
-
 
 class Functions
 {
@@ -30,11 +28,20 @@ class Functions
         add_action('wp_ajax_nopriv_GenerateICS', [$this, 'ajaxGenerateICS']);
     }
 
-    public function logIt( $msg ){
-        $content = file_get_contents( LOGFILE );
-        file_put_contents( LOGFILE, $content . "\n" . date("Y-m-d H:i:s") . ': ' . $msg, LOCK_EX);
+    public function ajaxGenerateICS(){
+        check_ajax_referer('univis-ajax-ics-nonce', 'ics_nonce');
+        $inputs = filter_input(INPUT_GET, 'data', FILTER_SANITIZE_STRING, FILTER_REQUIRE_ARRAY);
+        $aProps = json_decode(openssl_decrypt(base64_decode($inputs['v']), 'AES-256-CBC', hash('sha256', AUTH_KEY), 0, substr(hash('sha256', AUTH_SALT), 0, 16)), true);
+
+        $ics = new ICS($aProps);
+        $response = [
+            'icsData' => $ics->toString(),
+            'filename' => $aProps['FILENAME']
+        ];
+
+        wp_send_json($response);
     }
-      
+
     public function enqueueScripts(){
         wp_enqueue_script(
             'rrze-unvis-ajax-frontend',
@@ -290,35 +297,17 @@ class Functions
             }
         }
 
-        $aProps['h'] = hash('sha256', implode($aProps));
+        $propsEncoded = base64_encode(openssl_encrypt(json_encode($aProps), 'AES-256-CBC', hash('sha256', AUTH_KEY), 0, substr(hash('sha256', AUTH_SALT), 0, 16)));
+
+        $linkParams = [
+            'v' => $propsEncoded,
+            'h' => hash('sha256', $propsEncoded),
+        ];
 
         return [
-            'link' => http_build_query($aProps),
+            'link' => http_build_query($linkParams),
             'linkTxt' => __('ICS', 'rrze-univis') . ': ' . __('Date', 'rrze-univis') . ' ' . (!empty($t['repeat']) ? $t['repeat'] : '') . ' ' . (!empty($t['date']) ? $t['date'] . ' ' : '') . $t['time'] . ' ' . __('import to calendar', 'rrze-univis'),
         ];
     }
 
-    public function ajaxGenerateICS(){
-        check_ajax_referer('univis-ajax-ics-nonce', 'ics_nonce');
-        $aInput = filter_input(INPUT_GET, 'data', FILTER_SANITIZE_STRING, FILTER_REQUIRE_ARRAY);
-
-        foreach($aInput as $k => $v){
-            $aInput[$k] = urldecode($v);
-        }
-    
-        $h_original = $aInput['h']; 
-        unset($aInput['h']);
-        $h_proof = hash('sha256', implode($aInput));
-        if ($h_proof == $h_original){
-            $ics = new ICS($aInput);
-            $response = [
-                'icsData' => $ics->toString(),
-                'filename' => $aInput['FILENAME']
-            ];
-    
-            wp_send_json($response);
-        }
-    }
-
 }
-
