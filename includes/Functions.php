@@ -9,7 +9,6 @@ use RRZE\UnivIS\ICS;
 
 class Functions
 {
-
     protected $pluginFile;
 
     public function __construct($pluginFile)
@@ -186,10 +185,8 @@ class Functions
     {
         $aProps = [
             'SUMMARY' => $lecture['title'],
-            'LOCATION' => (!empty($t['room']) ? $t['room'] : null),
-            'DESCRIPTION' => (!empty($lecture['comment']) ? $lecture['comment'] : null),
-            'URL' => get_permalink(),
-            'MAP' => (!empty($term['room']['north']) && !empty($term['room']['east']) ? 'https://karte.fau.de/api/v1/iframe/marker/' . $term['room']['north'] . ',' . $term['room']['east'] . '/zoom/16' : ''),
+            'LOCATION' => (!empty($t['room']) ? $t['room'] : ''),
+            'DESCRIPTION' => (!empty($lecture['comment']) ? $lecture['comment'] . '\n\n' : '') . 'Information: ' . get_permalink() . '\n\n' . (!empty($term['room']['north']) && !empty($term['room']['east']) ? 'Map: https://karte.fau.de/api/v1/iframe/marker/' . $term['room']['north'] . ',' . $term['room']['east'] . '/zoom/16 \n\n' : ''),
             'FILENAME' => sanitize_file_name($type . '.ics'),
         ];
 
@@ -301,6 +298,7 @@ class Functions
         }
 
         $propsEncoded = base64_encode(openssl_encrypt(json_encode($aProps), 'AES-256-CBC', hash('sha256', AUTH_KEY), 0, substr(hash('sha256', AUTH_SALT), 0, 16)));
+
         $linkParams = [
             'v' => $propsEncoded,
             'h' => hash('sha256', $propsEncoded),

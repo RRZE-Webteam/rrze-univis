@@ -18,8 +18,6 @@ class ICS
         'RRULE',
         'LOCATION',
         'DESCRIPTION',
-        'URL',
-        'MAP',
     );
 
     public function __construct($props)
@@ -78,11 +76,6 @@ class ICS
             'UID:' . uniqid() . '@fau.de',
         ];
 
-        $this->props['DESCRIPTION'] .= (!empty($this->props['DESCRIPTION']) ? '\n\n' : '')
-            . (!empty($this->props['URL']) ? 'Information: ' . $this->props['URL'] . '\n\n' : '')
-            . (!empty($this->props['MAP']) ? 'Map: ' . $this->props['MAP'] : '');
-
-
         if (!empty($this->props['REPEAT'])){
             $this->props['RRULE'] = 'FREQ=' . $this->props['FREQ'] . ';UNTIL=' . $this->props['UNTIL'] . ';WKST=MO;BYDAY=' . $this->props['REPEAT'];
         }else{
@@ -93,8 +86,6 @@ class ICS
         unset($this->props['FREQ']);
         unset($this->props['UNTIL']);
         unset($this->props['REPEAT']);
-        unset($this->props['URL']); // allthough URL is defined in https://www.kanzaki.com/docs/ical/url.html an error occurs using iCal, therefore it is added to DESCRIPTION
-        unset($this->props['MAP']);
 
         $props = array();
         foreach ($this->props as $k => $v) {
