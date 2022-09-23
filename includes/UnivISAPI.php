@@ -47,7 +47,8 @@ class UnivISAPI
         if ($logType == 'DB') {
             global $wpdb;
             do_action('rrze.log.error', $pre . '$wpdb->last_result= ' . json_encode($wpdb->last_result) . '| $wpdb->last_query= ' . json_encode($wpdb->last_query . '| $wpdb->last_error= ' . json_encode($wpdb->last_error)));
-        } else {
+        }
+        else {
             do_action('rrze.log.' . $logType, __NAMESPACE__ . ' ' . $method . '() : ' . $msg);
         }
     }
@@ -354,17 +355,20 @@ class UnivISAPI
                         if (is_int($v[1])) {
                             if (isset($data[$map['node']][$nr][$v[0]][$v[1]])) {
                                 $ret[$nr][$k] = $data[$map['node']][$nr][$v[0]][$v[1]];
-                            } elseif (isset($data[$map['node']][$nr][$v[0]][0])) {
+                            }
+                            elseif (isset($data[$map['node']][$nr][$v[0]][0])) {
                                 $ret[$nr][$k] = $data[$map['node']][$nr][$v[0]][0];
                             }
-                        } else {
+                        }
+                        else {
                             $y = 0;
                             while (isset($data[$map['node']][$nr][$v[0]][$y][$v[1]])) {
                                 $ret[$nr][$k] = $data[$map['node']][$nr][$v[0]][$y][$v[1]];
                                 $y++;
                             }
                         }
-                    } else {
+                    }
+                    else {
                         if (isset($data[$map['node']][$nr][$v])) {
                             $ret[$nr][$k] = $data[$map['node']][$nr][$v];
                         }
@@ -446,7 +450,8 @@ class UnivISAPI
                             }
                         }
                         unset($ret[$e_nr]['course_keys']);
-                    } elseif (isset($entry['courses'])) {
+                    }
+                    elseif (isset($entry['courses'])) {
                         unset($ret[$e_nr]['courses']);
                         $ret[$e_nr]['courses'][] = ['term' => $entry['courses']];
                     }
@@ -503,7 +508,8 @@ class UnivISAPI
                                     if (!empty($this->atts['lang'])) {
                                         $this->atts['lang'] = strtolower($this->atts['lang']);
                                         $desc = !empty($orgaDetails['description_' . $this->atts['lang']]) ? $orgaDetails['description_' . $this->atts['lang']] : __('Other', 'rrze-univis');
-                                    } else {
+                                    }
+                                    else {
                                         $desc = $orgaDetails['description'];
                                     }
                                     $persons['Person.' . $personKey]['orga_position'] = $desc;
@@ -586,7 +592,7 @@ class UnivISAPI
 
             // filter by attribute "since"
             if (!empty($this->atts['since'])) {
-                $since = (int) $this->atts['since'];
+                $since = (int)$this->atts['since'];
                 foreach ($data as $key => $entry) {
                     if ($entry["year"] < $since) {
                         unset($data[$key]);
@@ -604,7 +610,8 @@ class UnivISAPI
                 $show = $this->showPosition($position);
                 if (!$show) {
                     unset($data[$position]);
-                } else {
+                }
+                else {
                     usort($members, [$this, 'sortByLastname']);
                     $data[$position] = $members;
                 }
@@ -704,6 +711,7 @@ class UnivISAPI
             if (!preg_match('/\+49 [1-9][0-9]{1,4} [1-9][0-9]+/', $phone)) {
                 $phone_data = preg_replace('/\D/', '', $phone);
                 $vorwahl_erl = '+49 9131 85-';
+                $vorwahl_erl_p1_p6 = '+49 9131 81146-'; // see: https://github.com/RRZE-Webteam/fau-person/issues/353
                 $vorwahl_nbg = '+49 911 5302-';
 
                 switch (strlen($phone_data)) {
@@ -745,6 +753,13 @@ class UnivISAPI
                             if (strlen($durchwahl[1]) === 5) {
                                 $phone = $vorwahl_erl . $durchwahl[1];
                             }
+                            break;
+                        }
+
+                        // see: https://github.com/RRZE-Webteam/fau-person/issues/353
+                        if (strpos($phone_data, '913181146') !== FALSE) {
+                            $durchwahl = explode('913181146', $phone_data);
+                            $phone = $vorwahl_erl_p1_p6 . $durchwahl[1];
                             break;
                         }
 
@@ -888,7 +903,7 @@ class UnivISAPI
                 "monogr" => __('Monograph', 'rrze-univis'),
                 "tagband" => __('Conference volume (not published by the publisher)', 'rrze-univis'),
                 "schutzr" => __('IPR', 'rrze-univis'),
-                ],
+            ],
             'hstype' => [
                 "diss" => __('Dissertation', 'rrze-univis'),
                 "dipl" => __('Diploma', 'rrze-univis'),
@@ -906,12 +921,12 @@ class UnivISAPI
                 "offenleg" => __('Disclosure document', 'rrze-univis'),
                 "patanmel" => __('Patent application', 'rrze-univis'),
                 "gebrmust" => __('Utility model', 'rrze-univis'),
-                ],
+            ],
             'leclanguage' => [
                 0 => __('Lecture\'s language German', 'rrze-univis'),
                 "D" => __('Lecture\'s language German', 'rrze-univis'),
                 "E" => __('Lecture\'s language English', 'rrze-univis'),
-                ],
+            ],
             'sws' => __(' SWS', 'rrze-univis'),
             'schein' => __('Certificate', 'rrze-univis'),
             'ects' => __('ECTS studies', 'rrze-univis'),
@@ -922,7 +937,7 @@ class UnivISAPI
             'evaluation' => __('Evaluation', 'rrze-univis'),
             'locations' => '',
             'organizational' => '',
-            ];
+        ];
 
         foreach ($data as $nr => $row) {
             foreach ($fields as $field => $values) {
@@ -940,7 +955,8 @@ class UnivISAPI
                             $data[$nr]['locations'][$l_nr]['mobile_call'] = '+' . self::getInt($data[$nr]['locations'][$l_nr]['mobile']);
                         }
                     }
-                } elseif ($field == 'repeat') {
+                }
+                elseif ($field == 'repeat') {
                     if (isset($data[$nr]['courses'])) {
                         foreach ($data[$nr]['courses'] as $c_nr => $course) {
                             foreach ($course['term'] as $m_nr => $meeting) {
@@ -950,7 +966,8 @@ class UnivISAPI
                                 }
                             }
                         }
-                    } elseif (isset($data[$nr]['officehours'])) {
+                    }
+                    elseif (isset($data[$nr]['officehours'])) {
                         foreach ($data[$nr]['officehours'] as $c_nr => $entry) {
                             if (isset($data[$nr]['officehours'][$c_nr]['repeat'])) {
                                 $data[$nr]['officehours'][$c_nr]['repeatNr'] = $data[$nr]['officehours'][$c_nr]['repeat'];
@@ -958,24 +975,30 @@ class UnivISAPI
                             }
                         }
                     }
-                } elseif ($field == 'organizational') {
+                }
+                elseif ($field == 'organizational') {
                     if (isset($data[$nr][$field])) {
                         $data[$nr][$field] = self::formatUnivIS($data[$nr][$field]);
                     }
-                } elseif (isset($data[$nr][$field])) {
+                }
+                elseif (isset($data[$nr][$field])) {
                     if (in_array($field, ['title'])) {
                         // multi replace
                         $data[$nr][$field . '_long'] = str_replace(array_keys($values), array_values($values), $data[$nr][$field]);
-                    } else {
+                    }
+                    else {
                         if (!is_array($values)) {
                             if ($field == 'sws') {
                                 $data[$nr][$field] .= $values;
-                            } elseif ($field == 'ects_cred') {
+                            }
+                            elseif ($field == 'ects_cred') {
                                 $data[$nr][$field] = $values . $data[$nr][$field];
-                            } else {
+                            }
+                            else {
                                 $data[$nr][$field] = $values;
                             }
-                        } else {
+                        }
+                        else {
                             if (isset($row[$field]) && isset($values[$row[$field]])) {
                                 $data[$nr][$field . '_long'] = $values[$row[$field]];
                                 if ($field == 'lecture_type') {
