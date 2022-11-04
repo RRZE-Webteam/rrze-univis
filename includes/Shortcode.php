@@ -486,17 +486,18 @@ class Shortcode
     public function getData($dataType, $univisParam = null)
     {
         $sAtts = (!empty($this->atts) && is_array($this->atts) ? implode('-', $this->atts) : '');
+        $transient = sha1(self::TRANSIENT_PREFIX . $dataType . $sAtts . $this->UnivISOrgNr . $univisParam);
         if ($this->noCache) {
             $data = $this->univis->getData($dataType, $univisParam);
-            set_transient(self::TRANSIENT_PREFIX . $dataType . $sAtts . $this->UnivISOrgNr . $univisParam, $data, self::TRANSIENT_EXPIRATION);
+            set_transient($transient, $data, self::TRANSIENT_EXPIRATION);
             return $data;
         }
-        $data = get_transient(self::TRANSIENT_PREFIX . $dataType . $sAtts . $this->UnivISOrgNr . $univisParam);
+        $data = get_transient($transient);
         if ($data && $data != __('No matching records found.', 'rrze-univis')) {
             return $data;
         } else {
             $data = $this->univis->getData($dataType, $univisParam);
-            set_transient(self::TRANSIENT_PREFIX . $dataType . $sAtts . $this->UnivISOrgNr . $univisParam, $data, self::TRANSIENT_EXPIRATION);
+            set_transient($transient, $data, self::TRANSIENT_EXPIRATION);
             return $data;
         }
     }
