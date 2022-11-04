@@ -253,7 +253,7 @@ function getShortcodeSettings()
                 'type' => 'string',
             ],
             'ignoriere_jobs' => [
-                'default' => 'Sicherheitsbeauftragter|IT-Sicherheits-Beauftragter|Webmaster|Postmaster|IT-Betreuer|UnivIS-Beauftragte',
+                'default' => 'Sicherheitsbeauftragter|IT-Sicherheits-Beauftragter|Webmaster|Postmaster|IT-Betreuer|UnivIS-Beauftragte|Security commissary|IT-security commissary|Local UnivIS administration',
                 'field_type' => 'text',
                 'label' => __('Ignore jobs - separate individual activities with | from each other.', 'rrze-univis'), 
                 'type' => 'string',
