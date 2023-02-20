@@ -125,6 +125,13 @@ function getFields()
                 'sanitize_callback' => 'sanitize_text_field',
             ],
             [
+                'name' => 'public_visiblity_required_hosts',
+                'label' => __('Required hosts for nonpublic data', 'rrze-jobs'),
+                'desc' => __('Nonpublic persons\'s data will be displayed only on hosts from the given hostnames', 'rrze-jobs'),
+                'type' => 'textarea',
+                'default' => 'uni-erlangen.de, fau.de',
+            ],
+            [
                 'name' => 'semesterMin',
                 'label' => __('Find Lectures from the soúmmer semester', 'rrze-univis'), 
                 'desc' => __('', 'rrze-univis'),

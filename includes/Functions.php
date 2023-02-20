@@ -28,6 +28,31 @@ class Functions
         add_action('wp_ajax_nopriv_GenerateICS', [$this, 'ajaxGenerateICS']);
     }
 
+    public static function isInternAllowed()
+    {
+        $remoteIP = $_SERVER['REMOTE_ADDR'];
+        $remoteAdr = gethostbyaddr($remoteIP);
+
+        $options = get_option('rrze-univis');
+
+        // if user surfs within our network (hosts are defined in settings)
+        if (!empty($options['basic_public_visiblity_required_hosts'])) {
+            $required_hosts = trim($options['basic_public_visiblity_required_hosts']);
+            $aAllowedHosts = preg_split("/[\s,\n]+/", $required_hosts);
+            $ret = false;
+            foreach ($aAllowedHosts as $host) {
+                if ((strpos($remoteAdr, $host) !== false)) {
+                    $ret = true;
+                    break;
+                }
+            }
+
+            return $ret;
+        }
+
+        return false;
+    }
+
     public function ajaxGenerateICS(){
         check_ajax_referer('univis-ajax-ics-nonce', 'ics_nonce');
         $inputs = filter_input(INPUT_GET, 'data', FILTER_SANITIZE_STRING, FILTER_REQUIRE_ARRAY);
