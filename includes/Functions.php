@@ -7,8 +7,10 @@ defined('ABSPATH') || exit;
 use function RRZE\UnivIS\Config\getFields;
 use RRZE\UnivIS\ICS;
 
+
 class Functions
 {
+
     protected $pluginFile;
 
     public function __construct($pluginFile)
@@ -28,12 +30,12 @@ class Functions
         add_action('wp_ajax_nopriv_GenerateICS', [$this, 'ajaxGenerateICS']);
     }
 
-    public static function isInternAllowed()
+    public static function isInternAllowed($settings)
     {
         $remoteIP = $_SERVER['REMOTE_ADDR'];
         $remoteAdr = gethostbyaddr($remoteIP);
 
-        $options = get_option('rrze-univis');
+        $options = $settings->options;
 
         // if user surfs within our network (hosts are defined in settings)
         if (!empty($options['basic_public_visiblity_required_hosts'])) {

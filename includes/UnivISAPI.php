@@ -22,9 +22,13 @@ class UnivISAPI
     protected $hideJobs;
     protected $sem;
     protected $gast;
+    protected $settings;
 
-    public function __construct($api, $orgID, $atts)
+
+
+    public function __construct($settings, $api, $orgID, $atts)
     {
+        $this->settings = $settings;
         $this->setAPI($api);
         $this->orgID = $orgID;
         $this->atts = $atts;
@@ -630,7 +634,8 @@ class UnivISAPI
 
     private function filterVisibility($arr){
         $ret = [];
-        $isAllowed = Functions::isInternAllowed();
+
+        $isAllowed = Functions::isInternAllowed($this->settings);
 
         foreach ($arr as $key => $val) {
             if (!empty($val['pub_visible'])) {

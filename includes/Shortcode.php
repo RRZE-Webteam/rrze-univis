@@ -26,7 +26,8 @@ class Shortcode
     protected $noCache = false;
     const TRANSIENT_PREFIX = 'rrze_univis_cache_';
     const TRANSIENT_EXPIRATION = DAY_IN_SECONDS;
-    private $settings = '';
+    private $shortcodeSettings = '';
+    private $settings;
 
     /**
      * Variablen Werte zuweisen.
@@ -35,7 +36,8 @@ class Shortcode
     public function __construct($pluginFile, $settings)
     {
         $this->pluginFile = $pluginFile;
-        $this->settings = getShortcodeSettings();
+        $this->settings = $settings;
+        $this->shortcodeSettings = getShortcodeSettings();
         $this->options = get_option('rrze-univis');
         $this->UnivISOrgNr = (!empty($this->options['basic_UnivISOrgNr']) ? $this->options['basic_UnivISOrgNr'] : 0);
         $this->UnivISURL = (!empty($this->options['basic_univis_url']) ? $this->options['basic_univis_url'] : 'https://univis.uni-erlangen.de');
@@ -69,7 +71,7 @@ class Shortcode
      */
     public function shortcodeOutput($atts)
     {
-        $this->settings = getShortcodeSettings();
+        $this->shortcodeSettings = getShortcodeSettings();
 
         if (empty($atts)) {
             return $this->UnivISLink;
@@ -97,14 +99,14 @@ class Shortcode
             case 'mitarbeiter-orga':
             case 'mitarbeiter-telefonbuch':
             case 'mitarbeiter-alle':
-                $this->settings = $this->settings['mitarbeiter'];
+                $this->shortcodeSettings = $this->shortcodeSettings['mitarbeiter'];
                 break;
             case 'lehrveranstaltungen-einzeln':
             case 'lehrveranstaltungen-alle':
-                $this->settings = $this->settings['lehrveranstaltungen'];
+                $this->shortcodeSettings = $this->shortcodeSettings['lehrveranstaltungen'];
                 break;
             case 'publikationen':
-                $this->settings = $this->settings['publikationen'];
+                $this->shortcodeSettings = $this->shortcodeSettings['publikationen'];
                 break;
             default:
                 return;
@@ -112,7 +114,7 @@ class Shortcode
 
         // merge given attributes with default ones
         $atts_default = array();
-        foreach ($this->settings as $k => $v) {
+        foreach ($this->shortcodeSettings as $k => $v) {
             if ($k != 'block') {
                 $atts_default[$k] = $v['default'];
             }
@@ -121,7 +123,8 @@ class Shortcode
         $this->atts = $this->normalize(shortcode_atts($atts_default, $atts));
 
         $data = '';
-        $this->univis = new UnivISAPI($this->UnivISURL, $this->UnivISOrgNr, $this->atts);
+
+        $this->univis = new UnivISAPI($this->settings, $this->UnivISURL, $this->UnivISOrgNr, $this->atts);
 
         switch ($this->atts['task']) {
             case 'mitarbeiter-einzeln':
@@ -332,7 +335,7 @@ class Shortcode
 
     public function fillGutenbergOptions($aSettings)
     {
-        $this->univis = new UnivISAPI($this->UnivISURL, $this->UnivISOrgNr, null);
+        $this->univis = new UnivISAPI($this->settings, $this->UnivISURL, $this->UnivISOrgNr, null);
 
         foreach ($aSettings as $task => $settings) {
             $settings['number']['default'] = $this->UnivISOrgNr;
@@ -418,7 +421,7 @@ class Shortcode
             return;
         }
         // get prefills for dropdowns
-        $aSettings = $this->fillGutenbergOptions($this->settings);
+        $aSettings = $this->fillGutenbergOptions($this->shortcodeSettings);
 
         foreach ($aSettings as $task => $settings) {
             // register js-script to inject php config to call gutenberg lib
