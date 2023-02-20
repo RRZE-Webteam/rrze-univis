@@ -66,8 +66,10 @@ class UnivISAPI
             UnivISAPI::log('getData', 'error', "no data returned using $url");
             return false;
         }
+
         $data = json_decode($data, true);
         $data = $this->mapIt($dataType, $data);
+        $data = $this->filterVisibility($data);
         $data = $this->dict($data);
         $data = $this->sortGroup($dataType, $data);
         return $data;
@@ -172,6 +174,7 @@ class UnivISAPI
                     'fields' => [
                         'person_id' => 'id',
                         'key' => 'key',
+                        'pub_visible' => 'pub_visible',
                         'title' => 'title',
                         'atitle' => 'atitle',
                         'firstname' => 'firstname',
@@ -623,6 +626,24 @@ class UnivISAPI
         }
 
         return $data;
+    }
+
+    private function filterVisibility($arr){
+        $ret = [];
+        $isAllowed = Functions::isInternAllowed();
+
+        foreach ($arr as $key => $val) {
+            if (!empty($val['pub_visible'])) {
+                if (($val['pub_visible'] == 'ja')){
+                    $ret[$key] = $val;
+                }elseif ($isAllowed){
+                    $ret[$key] = $val;
+                }
+            }else{
+                $ret[$key] = $val;
+            }
+        }
+        return $ret;
     }
 
     private function filterByGast($arr)
