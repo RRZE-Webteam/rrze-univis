@@ -31,7 +31,7 @@ class Settings
      * Einstellungsoptionen
      * @var array
      */
-    protected $options;
+    public $options;
 
     /**
      * Settings-Menü
