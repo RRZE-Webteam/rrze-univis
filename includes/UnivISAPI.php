@@ -73,7 +73,7 @@ class UnivISAPI
 
         $data = json_decode($data, true);
         $data = $this->mapIt($dataType, $data);
-        $data = $this->filterVisibility($data);
+        // $data = $this->filterVisibility($data);
         $data = $this->dict($data);
         $data = $this->sortGroup($dataType, $data);
         return $data;
