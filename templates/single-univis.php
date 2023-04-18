@@ -15,25 +15,15 @@ use RRZE\UnivIS\Main;
 $thisThemeGroup = Main::getThemeGroup();
 
 get_header();
-if ($thisThemeGroup == 'fauthemes') {?>
+if ($thisThemeGroup == 'fauthemes') {
+    $currentTheme = wp_get_theme();		
+    $vers = $currentTheme->get( 'Version' );
+      if (version_compare($vers, "2.3", '<')) {      
+        get_template_part('template-parts/hero', 'small'); 
+      }
+?>
 
-    <section id="hero" class="hero-small">
-	<div class="container hero-content">
-		<div class="row">
-		    <div class="col-xs-12">
-			<?php
-fau_breadcrumb();
-    ?>
-
-		    </div>
-		</div>
-		<div class="row" aria-hidden="true" role="presentation">
-		    <div class="col-xs-12">
-			<p class="presentationtitle"><?php _e('UnivIS', 'rrze-univis');?></p>
-		    </div>
-		</div>
-	</div>
-    </section>
+   
 
 	<div id="content">
 		<div class="content-container">
