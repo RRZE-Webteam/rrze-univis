@@ -78,7 +78,6 @@ if ($thisThemeGroup == 'fauthemes') {?>
     </div>
 
     <?php
-get_template_part('template-parts/footer', 'social');
 
 } elseif ($thisThemeGroup == 'rrzethemes') {?>
 
