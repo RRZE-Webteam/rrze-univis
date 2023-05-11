@@ -57,9 +57,10 @@ class UnivISAPI
         }
     }
 
-    public function getData($dataType, $univisParam = null)
-    {
-        $this->univisParam = urlencode($univisParam);
+    public function getData($dataType, $univisParam = null) {
+        if (!empty($univisParam)) {
+            $this->univisParam = urlencode($univisParam);
+        }
         $url = $this->getUrl($dataType) . $this->univisParam;
 
         if (!$url) {

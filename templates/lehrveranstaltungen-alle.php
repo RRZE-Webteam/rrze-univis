@@ -7,7 +7,7 @@ $aAllowedColors = [
     'nat',
     'rw',
     'phil',
-    'tk',
+    'tf',
 ];
 
 $this->atts['color'] = implode('', array_intersect($this->show, $aAllowedColors));

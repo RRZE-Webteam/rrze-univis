@@ -78,7 +78,7 @@ if ($lecture){
                     $time['endtime'] = $term['endtime'];
                 }
                 if (!empty($time)){
-                    $t['time'] = $time['starttime'] . '-' . $time['endtime'];
+                    $t['time'] = $time['starttime'] . ' - ' . $time['endtime'];
                 }else{
                     $t['time'] = __('Time on appointment', 'rrze-univis');
                 }

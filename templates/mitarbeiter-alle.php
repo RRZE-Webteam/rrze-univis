@@ -12,7 +12,7 @@ foreach ($data as $position => $persons):
 				        <li>
 				        <?php
         if (!empty($person['title'])):
-            $name['title'] = '<span itemprop="honorificPrefix"><acronym title="' . $person['title_long'] . '">' . $person['title'] . '</acronym></span>';
+            $name['title'] = '<span itemprop="honorificPrefix"><abbr title="' . $person['title_long'] . '">' . $person['title'] . '</abbr></span>';
         endif;
         if (!empty($person['lastname'])):
             $p['lastname'] = '<span itemprop="familyName">' . $person['lastname'] . '</span>';
@@ -41,7 +41,7 @@ foreach ($data as $position => $persons):
         endif;
         $pers['fullname'] = implode(' ', $name);
         if (!empty($person['atitle'])):
-            $pers['atitle'] = '<span itemprop="honorificSuffix"><acronym title="' . $person['atitle'] . '">' . $person['atitle'] . '</acronym></span>';
+            $pers['atitle'] = '<span itemprop="honorificSuffix"><abbr title="' . $person['atitle'] . '">' . $person['atitle'] . '</abbr></span>';
         endif;
 
         if (!empty($person['locations'])) {
