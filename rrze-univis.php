@@ -4,7 +4,7 @@
  * Plugin Name:     RRZE UnivIS
  * Plugin URI:      https://github.com/RRZE-Webteam/rrze-univis
  * Description:     Einbindung von Daten aus UnivIS
- * Version:         3.7.0
+ * Version:         3.7.2
  * Requires at least: 6.1
  * Requires PHP:      8.0
  * Author:          RRZE-Webteam

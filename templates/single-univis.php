@@ -16,12 +16,12 @@ $thisThemeGroup = Main::getThemeGroup();
 
 get_header();
 if ($thisThemeGroup == 'fauthemes') {
-    $currentTheme = wp_get_theme();		
+    $currentTheme = wp_get_theme();		  
     $vers = $currentTheme->get( 'Version' );
-      if (version_compare($vers, "2.3", '<')) {      
+    if (version_compare($vers, "2.3", '<')) {      
         get_template_part('template-parts/hero', 'small'); 
       }
-?>
+    ?>
 
    
 
@@ -62,7 +62,7 @@ echo $data;
 ?>
 <nav class="rrze-univis navigation">
     <div class="nav-previous">
-        <a href="<?php echo get_permalink(); ?>"><span class="meta-nav">&laquo;</span> <?php _e('Back to overview', 'rrze-univis');?></a>
+        <a href="<?php echo get_permalink(); ?>"><?php _e('Back to overview', 'rrze-univis');?></a>
     </div>
 </nav>
 

@@ -232,13 +232,13 @@ class Functions
 
             if (empty($semStart) || empty($semEnd)) {
                 $defaults = getFields();
-                foreach ($defaults['basic'] as $nr => $aVal) {
-                    if ($aVal['name'] == $sem . 'Start') {
+               
+                foreach ($defaults['basic'] as $nr => $aVal) {  
+                    if ((empty($semStart)) && ($aVal['name'] == $sem . 'Start')) {
                         $semStart = $aVal['default'];
-                        break;
-                    } elseif ($aVal['name'] == $sem . 'End') {
+                    }
+                    if ((empty($semEnd)) && ($aVal['name'] == $sem . 'End')) {
                         $semEnd = $aVal['default'];
-                        break;
                     }
                 }
 
