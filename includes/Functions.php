@@ -143,7 +143,7 @@ class Functions
         $univisOrgID = (!empty($univisOrgID) ? $univisOrgID : (!empty($options['basic_UnivISOrgNr']) ? $options['basic_UnivISOrgNr'] : 0));
 
         if ($UnivISURL) {
-            $univis = new UnivISAPI($UnivISURL, $univisOrgID, null);
+            $univis = new UnivISAPI(null, $UnivISURL, $univisOrgID, null);
             $data = $univis->getData($dataType, $keyword);
         } elseif (!$UnivISURL) {
             $ret = __('Link to UnivIS is missing.', 'rrze-univis');
