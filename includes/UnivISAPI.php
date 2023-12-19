@@ -66,11 +66,13 @@ class UnivISAPI
         if (!$url) {
             return 'Set UnivIS Org ID in settings.';
         }
+
         $data = file_get_contents($url);
         if (!$data) {
             UnivISAPI::log('getData', 'error', "no data returned using $url");
             return false;
         }
+
 
         $data = json_decode($data, true);
         $data = $this->mapIt($dataType, $data);
@@ -540,7 +542,7 @@ class UnivISAPI
             return [];
         }
         // sort
-        if (in_array($dataType, ['personByID', 'personByOrga', 'personByName', 'personByOrgaPhonebook'])) {
+        if (in_array($dataType, ['personByID', 'personByOrga', 'personByName', ''])) {
             usort($data, [$this, 'sortByLastname']);
         }
 
