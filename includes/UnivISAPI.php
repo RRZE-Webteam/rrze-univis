@@ -716,7 +716,7 @@ class UnivISAPI
     private function sortByLastname($a, $b)
     {
         // 2024-01-10 (lapmk) quickfix sorting of German umlaute
-        return strcasecmp(replaceUmlauteForSort($a["lastname"]), replaceUmlauteForSort($b["lastname"]));
+        return strcasecmp(self::replaceUmlauteForSort($a["lastname"]), self::replaceUmlauteForSort($b["lastname"]));
     }
 
     private function sortByName($a, $b)
