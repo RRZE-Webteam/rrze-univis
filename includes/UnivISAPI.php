@@ -708,7 +708,7 @@ class UnivISAPI
     }
 
     // 2024-01-10 (lapmk) function to replace German umlaute for sorting, i.e. ä->ae, ß->ss, ... (used in function sortByLastname)
-    private function replaceUmlauteForSort($a)
+    private static function replaceUmlauteForSort($a)
     {
         return str_replace(array('Ä', 'ä', 'Ö', 'ö', 'Ü', 'ü', 'ß'), array('Ae', 'ae', 'Oe', 'oe', 'Ue', 'ue', 'ss'), $a);
     }
@@ -823,7 +823,7 @@ class UnivISAPI
         return implode('', $matches[0]);
     }
 
-    public function formatUnivIS($txt)
+    public static function formatUnivIS($txt)
     {
         $subs = array(
             '/^\-+\s+(.*)?/mi' => '<ul><li>$1</li></ul>', // list
