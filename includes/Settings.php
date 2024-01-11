@@ -13,8 +13,7 @@ use function RRZE\UnivIS\Config\getSections;
 /**
  * Settings-Klasse
  */
-class Settings
-{
+class Settings {
     /**
      * Der vollständige Pfad- und Dateiname der Plugin-Datei.
      * @var string
@@ -32,7 +31,8 @@ class Settings
      * @var array
      */
     public $options;
-
+    public $optionsPage;
+    
     /**
      * Settings-Menü
      * @var array
@@ -428,8 +428,7 @@ class Settings
      * Hinzufügen der Optionen-Seite
      * @return void
      */
-    public function adminMenu()
-    {
+    public function adminMenu() {
         $this->optionsPage = add_options_page(
             $this->settingsMenu['page_title'],
             $this->settingsMenu['menu_title'],

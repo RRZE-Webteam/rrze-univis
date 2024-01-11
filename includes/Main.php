@@ -11,15 +11,15 @@ use RRZE\UnivIS\Shortcode;
 /**
  * Hauptklasse (Main)
  */
-class Main
-{
+class Main {
     /**
      * Der vollständige Pfad- und Dateiname der Plugin-Datei.
      * @var string
      */
     protected $pluginFile;
     protected $widget;
-
+    protected $settings;
+    
     public function __construct($pluginFile)
     {
         $this->pluginFile = $pluginFile;
@@ -107,7 +107,11 @@ class Main
         } else {
             return;
         }
-
+        
+        // TODO: Hier den Titel der Seite aus dem erzeugten Content noch setzen und so setzen, dass wp_title diesen nutzen kann:
+        // global $post;
+        // $post->post_title = $title;
+        
         include plugin_dir_path($this->pluginFile) . 'templates/single-univis.php';
         exit;
     }

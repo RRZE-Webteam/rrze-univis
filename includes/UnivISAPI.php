@@ -542,7 +542,8 @@ class UnivISAPI
             return [];
         }
         // sort
-        if (in_array($dataType, ['personByID', 'personByOrga', 'personByName', ''])) {
+        // 2024-01-10 (lapmk) fix mitarbeiter-telefonbuch: missing sorting by lastname
+        if (in_array($dataType, ['personByID', 'personByOrga', 'personByName', 'personByOrgaPhonebook', ''])) {
             usort($data, [$this, 'sortByLastname']);
         }
 
@@ -706,9 +707,16 @@ class UnivISAPI
         return $ret;
     }
 
+    // 2024-01-10 (lapmk) function to replace German umlaute for sorting, i.e. ä->ae, ß->ss, ... (used in function sortByLastname)
+    private function replaceUmlauteForSort($a)
+    {
+        return str_replace(array('Ä', 'ä', 'Ö', 'ö', 'Ü', 'ü', 'ß'), array('Ae', 'ae', 'Oe', 'oe', 'Ue', 'ue', 'ss'), $a);
+    }
+
     private function sortByLastname($a, $b)
     {
-        return strcasecmp($a["lastname"], $b["lastname"]);
+        // 2024-01-10 (lapmk) quickfix sorting of German umlaute
+        return strcasecmp(replaceUmlauteForSort($a["lastname"]), replaceUmlauteForSort($b["lastname"]));
     }
 
     private function sortByName($a, $b)
