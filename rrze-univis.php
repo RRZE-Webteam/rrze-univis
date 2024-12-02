@@ -4,7 +4,7 @@
  * Plugin Name:     RRZE UnivIS
  * Plugin URI:      https://github.com/RRZE-Webteam/rrze-univis
  * Description:     Einbindung von Daten aus UnivIS
- * Version:         3.7.6
+ * Version:         3.7.7
  * Requires at least: 6.1
  * Requires PHP:      8.0
  * Author:          RRZE-Webteam
@@ -46,6 +46,8 @@ spl_autoload_register(function ($class) {
 const RRZE_PHP_VERSION = '8.0';
 const RRZE_WP_VERSION = '6.1';
 
+// Load the plugin's text domain for localization.
+add_action('init', fn() => load_plugin_textdomain('rrze-univis', false, dirname(plugin_basename(__FILE__)) . '/languages'));
 // Registriert die Plugin-Funktion, die bei Aktivierung des Plugins ausgeführt werden soll.
 register_activation_hook(__FILE__, __NAMESPACE__ . '\activation');
 // Registriert die Plugin-Funktion, die ausgeführt werden soll, wenn das Plugin deaktiviert wird.
@@ -53,13 +55,6 @@ register_deactivation_hook(__FILE__, __NAMESPACE__ . '\deactivation');
 // Wird aufgerufen, sobald alle aktivierten Plugins geladen wurden.
 add_action('plugins_loaded', __NAMESPACE__ . '\loaded');
 
-/**
- * Einbindung der Sprachdateien.
- */
-function loadTextDomain()
-{
-    load_plugin_textdomain('rrze-univis', false, sprintf('%s/languages/', dirname(plugin_basename(__FILE__))));
-}
 
 /**
  * Überprüft die Systemvoraussetzungen.
@@ -80,8 +75,7 @@ function systemRequirements(): string
  */
 function activation()
 {
-    // Sprachdateien werden eingebunden.
-    loadTextDomain();
+
 
     // Überprüft die minimal erforderliche PHP- u. WP-Version.
     // Wenn die Überprüfung fehlschlägt, dann wird das Plugin automatisch deaktiviert.
@@ -117,8 +111,6 @@ function deactivation()
  */
 function loaded()
 {
-    // Sprachdateien werden eingebunden.
-    loadTextDomain();
 
     // Überprüft die Systemvoraussetzungen.
     if ($error = systemRequirements()) {
