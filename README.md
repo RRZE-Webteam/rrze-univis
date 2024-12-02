@@ -1,10 +1,24 @@
 # RRZE-UnivIS
 
+[![Aktuelle Version](https://img.shields.io/github/package-json/v/rrze-webteam/rrze-univis/master?label=Version)](https://github.com/RRZE-Webteam/rrze-univis)
+[![Release Version](https://img.shields.io/github/v/release/rrze-webteam/rrze-univis?label=Release+Version)](https://github.com/rrze-webteam/rrze-univis/releases/)
+[![GitHub License](https://img.shields.io/github/license/rrze-webteam/rrze-univis)](https://github.com/RRZE-Webteam/rrze-univis)
+[![GitHub issues](https://img.shields.io/github/issues/RRZE-Webteam/rrze-univis)](https://github.com/RRZE-Webteam/frrze-univis/issues)
+
 Darstellung von Lehrveranstaltungen und organisatorischen Daten aus UnivIS.
+
+
+## Achtung
+
+Dieses Plugin wird nicht mehr weiterentwickelt. 
+- Für die Darstellung von Lehrveranstaltungen soll zukünftig nur noch das RRZE-Lectures Plugin verwendet werden: https://github.com/RRZE-Webteam/rrze-lectures
+- Für die Darstellung von Forschungsinformationen, Publikationen, Projekten etc. verwenden Sie bitte das FAU-CRIS Plugin: https://github.com/RRZE-Webteam/fau-cris
+- Für die Darstellung von Personen verwendeten Sie zukünftig das FAUdir Plugin:  https://github.com/RRZE-Webteam/rrze-faudir
+
 
 ## Download 
 
-GITHub-Repo: https://github.com/RRZE-Webteam/rrze-univis
+GitHub-Repo: https://github.com/RRZE-Webteam/rrze-univis
 
 
 ## Autor 
