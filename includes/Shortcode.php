@@ -256,13 +256,7 @@ class Shortcode
                 $atts['hide'] .= ',sprungmarken';
             }
         }
-        if (isset($atts['ics'])) {
-            if ($atts['ics']) {
-                $atts['show'] .= ',ics';
-            } else {
-                $atts['hide'] .= ',ics';
-            }
-        }
+      
         if (isset($atts['call'])) {
             if ($atts['call']) {
                 $atts['show'] .= ',call';

@@ -47,11 +47,6 @@ if ($thisThemeGroup == 'fauthemes') {
 
 <?php } else {?>
 
-    <div id="sidebar" class="sidebar">
-
-	<?php get_sidebar();?>
-
-    </div>
     <div id="primary" class="content-area">
 	<main id="main" class="site-main">
 

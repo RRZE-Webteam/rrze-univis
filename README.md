@@ -8,12 +8,14 @@
 Darstellung von Lehrveranstaltungen und organisatorischen Daten aus UnivIS.
 
 
-## Achtung
-
-Dieses Plugin wird nicht mehr weiterentwickelt. 
-- Für die Darstellung von Lehrveranstaltungen soll zukünftig nur noch das RRZE-Lectures Plugin verwendet werden: https://github.com/RRZE-Webteam/rrze-lectures
-- Für die Darstellung von Forschungsinformationen, Publikationen, Projekten etc. verwenden Sie bitte das FAU-CRIS Plugin: https://github.com/RRZE-Webteam/fau-cris
-- Für die Darstellung von Personen verwendeten Sie zukünftig das FAUdir Plugin:  https://github.com/RRZE-Webteam/rrze-faudir
+> ## Achtung
+> 
+> Dieses Plugin wird nicht mehr weiterentwickelt. 
+> - Für die Darstellung von Lehrveranstaltungen soll zukünftig nur noch das RRZE-Lectures Plugin verwendet werden: https://github.com/RRZE-Webteam/rrze-lectures
+> - Für die Darstellung von Forschungsinformationen, Publikationen, Projekten etc. verwenden Sie bitte das FAU-CRIS Plugin: https://github.com/RRZE-Webteam/fau-cris
+> - Für die Darstellung von Personen verwendeten Sie zukünftig das FAUdir Plugin:  https://github.com/RRZE-Webteam/rrze-faudir
+>  
+>  
 
 
 ## Download 
@@ -91,10 +93,7 @@ Einstellungen › RRZE-UnivIS
 
 ##### Filterung nach Lehrveranstaltungstyp möglich
 
-- Gibt alle Vorlesungen der Org-Nr. 123456789 aus. Zu den Terminen werden .ics Dateien angeboten, um diese in den eigenen Kalender einzutragen. Bei type müssen die Kürzel wie im Vorlesungsverzeichnis angegeben werden (vorl, ueb, tut, ...)
-```
-[univis task="lehrveranstaltungen-alle" id="123456789" type="vorl" show="ics"]
-```
+
 - Bindet die Daten der einen Person ein. Die Person muss dabei der Organisationseinheit angehören, die in Einstellungen - UnivIS eingegeben wurde
 ```
 [univis task="mitarbeiter-einzeln" firstname="Max" lastname="Mustermann"]
