@@ -8,12 +8,14 @@
 Darstellung von Lehrveranstaltungen und organisatorischen Daten aus UnivIS.
 
 
-## Achtung
-
-Dieses Plugin wird nicht mehr weiterentwickelt. 
-- Für die Darstellung von Lehrveranstaltungen soll zukünftig nur noch das RRZE-Lectures Plugin verwendet werden: https://github.com/RRZE-Webteam/rrze-lectures
-- Für die Darstellung von Forschungsinformationen, Publikationen, Projekten etc. verwenden Sie bitte das FAU-CRIS Plugin: https://github.com/RRZE-Webteam/fau-cris
-- Für die Darstellung von Personen verwendeten Sie zukünftig das FAUdir Plugin:  https://github.com/RRZE-Webteam/rrze-faudir
+> ## Achtung
+> 
+> Dieses Plugin wird nicht mehr weiterentwickelt. 
+> - Für die Darstellung von Lehrveranstaltungen soll zukünftig nur noch das RRZE-Lectures Plugin verwendet werden: https://github.com/RRZE-Webteam/rrze-lectures
+> - Für die Darstellung von Forschungsinformationen, Publikationen, Projekten etc. verwenden Sie bitte das FAU-CRIS Plugin: https://github.com/RRZE-Webteam/fau-cris
+> - Für die Darstellung von Personen verwendeten Sie zukünftig das FAUdir Plugin:  https://github.com/RRZE-Webteam/rrze-faudir
+>  
+>  
 
 
 ## Download 
