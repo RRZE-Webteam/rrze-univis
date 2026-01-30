@@ -91,10 +91,7 @@ Einstellungen › RRZE-UnivIS
 
 ##### Filterung nach Lehrveranstaltungstyp möglich
 
-- Gibt alle Vorlesungen der Org-Nr. 123456789 aus. Zu den Terminen werden .ics Dateien angeboten, um diese in den eigenen Kalender einzutragen. Bei type müssen die Kürzel wie im Vorlesungsverzeichnis angegeben werden (vorl, ueb, tut, ...)
-```
-[univis task="lehrveranstaltungen-alle" id="123456789" type="vorl" show="ics"]
-```
+
 - Bindet die Daten der einen Person ein. Die Person muss dabei der Organisationseinheit angehören, die in Einstellungen - UnivIS eingegeben wurde
 ```
 [univis task="mitarbeiter-einzeln" firstname="Max" lastname="Mustermann"]
