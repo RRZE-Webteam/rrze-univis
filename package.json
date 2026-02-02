@@ -1,0 +1,23 @@
+{
+  "name": "rrze-univis",
+  "version": "3.7.8",
+  "description": "Einbindung von Daten aus UnivIS",
+  "main": "rrze-univis.php",
+  "textdomain": "rrze-univis",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/RRZE-Webteam/rrze-univis",
+    "issues": "https://github.com/RRZE-Webteam/rrze-univis/issues",
+    "clone": "git+https://github.com/RRZE-Webteam/rrze-univis.git"
+  },
+  "supports": {
+    "email": "webmaster@fau.de",
+    "docs": "https://www.wordpress.rrze.fau.de/plugins/fau-und-rrze-plugins/rrze-univis/"
+  },
+  "author": {
+    "name": "RRZE-Webteam <webmaster@fau.de>",
+    "url": "https://www.wordpress.rrze.fau.de/person/webmaster"
+  },
+  "license": "GNU General Public License v3"
+ 
+}
