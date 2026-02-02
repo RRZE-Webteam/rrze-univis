@@ -11,12 +11,10 @@
     "clone": "git+https://github.com/RRZE-Webteam/rrze-univis.git"
   },
   "supports": {
-    "email": "webmaster@fau.de",
-    "docs": "https://www.wordpress.rrze.fau.de/plugins/fau-und-rrze-plugins/rrze-univis/"
+    "email": "webmaster@fau.de"
   },
   "author": {
-    "name": "RRZE-Webteam <webmaster@fau.de>",
-    "url": "https://www.wordpress.rrze.fau.de/person/webmaster"
+    "name": "RRZE-Webteam <webmaster@fau.de>"
   },
   "license": "GNU General Public License v3"
  
