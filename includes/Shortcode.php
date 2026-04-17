@@ -23,8 +23,6 @@ class Shortcode
     protected $atts;
     protected $univis;
     protected $noCache = false;
-    const TRANSIENT_PREFIX = 'rrze_univis_cache_';
-    const TRANSIENT_EXPIRATION = DAY_IN_SECONDS;
     private $shortcodeSettings = '';
     private $settings;
     private $config;
@@ -448,11 +446,12 @@ class Shortcode
 
     public function getData($dataType, $univisParam = null)
     {
+        $cacheConfig = $this->config->get('constants.cache', []);
         $sAtts = (!empty($this->atts) && is_array($this->atts) ? implode('-', $this->atts) : '');
-        $transient = sha1(self::TRANSIENT_PREFIX . $dataType . $sAtts . $this->UnivISOrgNr . $univisParam);
+        $transient = sha1($cacheConfig['transient_prefix'] . $dataType . $sAtts . $this->UnivISOrgNr . $univisParam);
         if ($this->noCache) {
             $data = $this->univis->getData($dataType, $univisParam);
-            set_transient($transient, $data, self::TRANSIENT_EXPIRATION);
+            set_transient($transient, $data, $cacheConfig['transient_expiration']);
             return $data;
         }
         $data = get_transient($transient);
@@ -460,7 +459,7 @@ class Shortcode
             return $data;
         } else {
             $data = $this->univis->getData($dataType, $univisParam);
-            set_transient($transient, $data, self::TRANSIENT_EXPIRATION);
+            set_transient($transient, $data, $cacheConfig['transient_expiration']);
             return $data;
         }
     }

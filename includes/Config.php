@@ -63,6 +63,10 @@ class Config
                     'admin_script_path' => 'js/rrze-univis.js',
                     'admin_script_object' => 'univis_ajax',
                 ],
+                'cache' => [
+                    'transient_prefix' => 'rrze_univis_cache_',
+                    'transient_expiration' => DAY_IN_SECONDS,
+                ],
                 'widget' => [
                     'id_base' => 'univis_widget',
                     'description' => __('Displays a lecture, person or publication', 'rrze-univis'),
