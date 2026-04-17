@@ -3,7 +3,6 @@
 namespace RRZE\UnivIS;
 
 defined('ABSPATH') || exit;
-use function RRZE\UnivIS\Config\getShortcodeSettings;
 
 /**
  * Shortcode
@@ -28,6 +27,7 @@ class Shortcode
     const TRANSIENT_EXPIRATION = DAY_IN_SECONDS;
     private $shortcodeSettings = '';
     private $settings;
+    private $config;
 
     /**
      * Variablen Werte zuweisen.
@@ -37,15 +37,14 @@ class Shortcode
     {
         $this->pluginFile = $pluginFile;
         $this->settings = $settings;
-        $this->shortcodeSettings = getShortcodeSettings();
+        $this->config = new Config();
+        $this->shortcodeSettings = $this->config->getShortcodeSettings();
         $this->options = get_option('rrze-univis');
+        $constants = $this->config->getConstants();
         $this->UnivISOrgNr = (!empty($this->options['basic_UnivISOrgNr']) ? $this->options['basic_UnivISOrgNr'] : 0);
-        $this->UnivISURL = (!empty($this->options['basic_univis_url']) ? $this->options['basic_univis_url'] : 'https://univis.uni-erlangen.de');
+        $this->UnivISURL = (!empty($this->options['basic_univis_url']) ? $this->options['basic_univis_url'] : $constants['defaults']['univis_url']);
         $this->UnivISLink = sprintf('<a href="%1$s">%2$s</a>', $this->UnivISURL, (!empty($this->options['basic_univis_linktxt']) ? $this->options['basic_univis_linktxt'] : __('Text for UnivIS link is missing', 'rrze-univis')));
-        add_action('admin_enqueue_scripts', [$this, 'enqueueGutenberg']);
         add_action('init', [$this, 'initGutenberg']);
-        add_action('enqueue_block_assets', [$this, 'enqueueBlockAssets']);
-        add_filter('mce_external_plugins', [$this, 'addMCEButtons']);
     }
 
     /**
@@ -71,7 +70,7 @@ class Shortcode
      */
     public function shortcodeOutput($atts)
     {
-        $this->shortcodeSettings = getShortcodeSettings();
+        $this->shortcodeSettings = $this->config->getShortcodeSettings();
 
         if (empty($atts)) {
             return $this->UnivISLink;
@@ -124,7 +123,7 @@ class Shortcode
 
         $data = '';
 
-        $this->univis = new UnivISAPI($this->settings, $this->UnivISURL, $this->UnivISOrgNr, $this->atts);
+        $this->univis = new API($this->settings, $this->UnivISURL, $this->UnivISOrgNr, $this->atts);
 
         switch ($this->atts['task']) {
             case 'mitarbeiter-einzeln':
@@ -329,7 +328,7 @@ class Shortcode
 
     public function fillGutenbergOptions($aSettings)
     {
-        $this->univis = new UnivISAPI($this->settings, $this->UnivISURL, $this->UnivISOrgNr, null);
+        $this->univis = new API($this->settings, $this->UnivISURL, $this->UnivISOrgNr, null);
 
         foreach ($aSettings as $task => $settings) {
             $settings['number']['default'] = $this->UnivISOrgNr;
@@ -411,73 +410,40 @@ class Shortcode
 
     public function initGutenberg()
     {
+        $editorScript = 'rrze-univis-blocksupport';
+
         if (!$this->isGutenberg() || empty($this->UnivISURL) || empty($this->UnivISOrgNr)) {
             return;
         }
         // get prefills for dropdowns
         $aSettings = $this->fillGutenbergOptions($this->shortcodeSettings);
 
-        foreach ($aSettings as $task => $settings) {
-            // register js-script to inject php config to call gutenberg lib
-            $editor_script = $settings['block']['blockname'] . '-block';
-            $js = '../js/' . $editor_script . '.js';
-
-            wp_register_script(
-                $editor_script,
-                plugins_url($js, __FILE__),
-                array(
-                    'RRZE-Gutenberg',
-                ),
-                null
-            );
-
-            wp_localize_script($editor_script, $settings['block']['blockname'] . 'Config', $settings);
-
-            // register block
-            register_block_type($settings['block']['blocktype'], array(
-                'editor_script' => $editor_script,
-                'render_callback' => [$this, 'shortcodeOutput'],
-                'attributes' => $settings,
-            )
-            );
-        }
-    }
-
-    public function enqueueGutenberg()
-    {
-        if (!$this->isGutenberg()) {
-            return;
-        }
-
-        wp_dequeue_script('RRZE-Gutenberg');
-        // include gutenberg lib
-        wp_enqueue_script(
-            'RRZE-Gutenberg',
-            plugins_url('../js/gutenberg.js', __FILE__),
+        wp_register_script(
+            $editorScript,
+            plugins_url('../js/rrze-univis-blocksupport.js', __FILE__),
             array(
+                'jquery',
                 'wp-blocks',
                 'wp-i18n',
                 'wp-element',
                 'wp-components',
                 'wp-editor',
+                'wp-server-side-render',
             ),
             null
         );
-    }
 
-    public function enqueueBlockAssets()
-    {
-        wp_dequeue_script('RRZE-UnivIS-BlockJS');
-        // include blockeditor JS
-        wp_enqueue_script(
-            'RRZE-UnivIS-BlockJS',
-            plugins_url('../js/rrze-univis-blockeditor.js', __FILE__),
-            array(
-                'jquery',
-                'RRZE-Gutenberg',
-            ),
-            null
-        );
+        wp_localize_script($editorScript, 'rrzeUnivisBlockConfigs', $aSettings);
+
+        foreach ($aSettings as $task => $settings) {
+            // register block
+            register_block_type($settings['block']['blocktype'], array(
+                'editor_script' => $editorScript,
+                'render_callback' => [$this, 'shortcodeOutput'],
+                'attributes' => $settings,
+            )
+            );
+        }
     }
 
     public function getData($dataType, $univisParam = null)
@@ -499,11 +465,4 @@ class Shortcode
         }
     }
 
-    public function addMCEButtons($pluginArray)
-    {
-        if (current_user_can('edit_posts') && current_user_can('edit_pages')) {
-            $pluginArray['rrze_univis_shortcode'] = plugins_url('../js/tinymce-shortcodes.js', plugin_basename(__FILE__));
-        }
-        return $pluginArray;
-    }
 }

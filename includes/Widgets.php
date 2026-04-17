@@ -6,22 +6,23 @@ defined('ABSPATH') || exit;
 
 require_once ABSPATH . 'wp-includes/class-wp-widget.php';
 
-class UnivISWidget extends \WP_Widget
+class Widgets extends \WP_Widget
 {
 
     protected $pluginFile;
     protected $settings;
+    protected $config;
 
     public function __construct($pluginFile, $settings)
     {
-
         $this->pluginFile = $pluginFile;
         $this->settings = $settings;
+        $this->config = new Config();
 
         parent::__construct(
-            'univis_widget',
+            $this->config->get('constants.widget.id_base'),
             __('UnivIS Widget', 'rrze-univis'),
-            array('description' => __('Displays a lecture, person or publication', 'rrze-univis'))
+            array('description' => $this->config->get('constants.widget.description'))
         );
     }
 
@@ -29,24 +30,22 @@ class UnivISWidget extends \WP_Widget
     public function widget($args, $instance)
     {
         $atts = '';
+        $task = (!empty($instance['task']) ? $instance['task'] : '');
         $atts .= (!empty($instance['show']) ? ' show=' . $instance['show'] : '');
         $atts .= (!empty($instance['hide']) ? ' hide=' . $instance['hide'] : '');
-        $field = ($instance['task'] == 'lehrveranstaltungen-einzeln' ? 'lv_id' : 'univisid');
+        $field = $this->config->get('constants.widget.task_field_map.' . $task, $this->config->get('constants.widget.task_field_map.default'));
 
         $shortcode = new Shortcode($this->pluginFile, $this->settings);
         $shortcode->onLoaded();
 
         echo $args['before_widget'];
-        echo do_shortcode('[univis task="' . $instance['task'] . '" ' . $field . '=' . $instance['univisid'] . $atts . ']');
+        echo do_shortcode('[univis task="' . $task . '" ' . $field . '=' . $instance['univisid'] . $atts . ']');
         echo $args['after_widget'];
     }
 
     public function getSelectHTML($name, $selectedID = 0)
     {
-        $aOptions = [
-            'lehrveranstaltungen-einzeln' => __('Lecture', 'rrze-univis'),
-            'mitarbeiter-einzeln' => __('Person', 'rrze-univis'),
-        ];
+        $aOptions = $this->config->get('constants.widget.tasks', []);
         $output = "<select id='{$this->get_field_id($name)}' name='{$this->get_field_name($name)}' class='widefat'>";
         foreach ($aOptions as $ID => $txt) {
             $sSelected = selected($selectedID, $ID, false);

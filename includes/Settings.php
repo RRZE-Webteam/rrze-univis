@@ -4,12 +4,6 @@ namespace RRZE\UnivIS;
 
 defined('ABSPATH') || exit;
 
-use function RRZE\UnivIS\Config\getFields;
-use function RRZE\UnivIS\Config\getHelpTab;
-use function RRZE\UnivIS\Config\getMenuSettings;
-use function RRZE\UnivIS\Config\getOptionName;
-use function RRZE\UnivIS\Config\getSections;
-
 /**
  * Settings-Klasse
  */
@@ -74,6 +68,7 @@ class Settings {
      * @var string
      */
     protected $settingsPrefix;
+    protected $config;
 
     /**
      * Variablen Werte zuweisen.
@@ -82,6 +77,7 @@ class Settings {
     public function __construct($pluginFile)
     {
         $this->pluginFile = $pluginFile;
+        $this->config = new Config();
         $this->settingsPrefix = dirname(plugin_basename($this->pluginFile)) . '-';
 
         // einmalig alte Parameter holen
@@ -92,7 +88,8 @@ class Settings {
                 $oldOptions['basic_' . $k] = $v;
             }
             if (empty($oldOptions['basic_univis_url'])) {
-                $oldOptions['basic_univis_url'] = 'https://univis.uni-erlangen.de';
+                $constants = $this->config->getConstants();
+                $oldOptions['basic_univis_url'] = $constants['defaults']['univis_url'];
             }
             update_option('rrze-univis', $oldOptions);
             update_option('univis-updated', 1);
@@ -105,15 +102,17 @@ class Settings {
      */
     public function onLoaded()
     {
+        $constants = $this->config->getConstants();
+
         $this->setMenu();
         $this->setSections();
         $this->setFields();
         $this->setTabs();
 
-        $this->optionName = getOptionName();
+        $this->optionName = $this->config->getOptionName();
         $this->options = $this->getOptions();
 
-        // Save options if they haven't been saved at least once because we need them for ICS (see https://github.com/RRZE-Webteam/rrze-univis/issues/180)
+        // Save options if they haven't been saved at least once.
         $storedOptions = get_option('rrze-univis');
         if (empty($storedOptions)) {
             update_option('rrze-univis', $this->options);
@@ -122,13 +121,13 @@ class Settings {
         add_action('admin_init', [$this, 'adminInit']);
         add_action('admin_menu', [$this, 'adminMenu']);
         add_action('admin_enqueue_scripts', [$this, 'adminEnqueueScripts']);
-        add_action('wp_ajax_GetUnivISData', [$this, 'ajaxGetUnivISData']);
-        add_action('wp_ajax_nopriv_GetUnivISData', [$this, 'ajaxGetUnivISData']);
+        add_action('wp_ajax_' . $constants['ajax']['search_action'], [$this, 'ajaxGetUnivISData']);
+        add_action('wp_ajax_nopriv_' . $constants['ajax']['search_action'], [$this, 'ajaxGetUnivISData']);
     }
 
     protected function setMenu()
     {
-        $this->settingsMenu = getmenuSettings();
+        $this->settingsMenu = $this->config->getMenuSettings();
     }
 
     /**
@@ -136,7 +135,7 @@ class Settings {
      */
     protected function setSections()
     {
-        $this->settingsSections = getSections();
+        $this->settingsSections = $this->config->getSections();
     }
 
     /**
@@ -153,7 +152,7 @@ class Settings {
      */
     protected function setFields()
     {
-        $this->settingsFields = getFields();
+        $this->settingsFields = $this->config->getFields();
     }
 
     /**
@@ -345,7 +344,7 @@ class Settings {
             return;
         }
 
-        $helpTab = getHelpTab();
+        $helpTab = $this->config->getHelpTab();
 
         if (empty($helpTab)) {
             return;
@@ -457,31 +456,6 @@ class Settings {
 
     public function adminEnqueueScripts()
     {
-        wp_register_script('wp-color-picker-settings', plugins_url('js/wp-color-picker.js', plugin_basename($this->pluginFile)));
-        wp_register_script('wp-media-settings', plugins_url('js/wp-media.js', plugin_basename($this->pluginFile)));
-    }
-
-    /**
-     * Enqueue WP-Color-Picker-Skripte.
-     * @return [type] [description]
-     */
-    public function colorEnqueueScripts()
-    {
-        wp_enqueue_style('wp-color-picker');
-        wp_enqueue_script('wp-color-picker');
-        wp_enqueue_script('wp-color-picker-settings');
-        wp_enqueue_script('jquery');
-    }
-
-    /**
-     * Enqueue WP-Media-Skripte.
-     * @return [type] [description]
-     */
-    public function fileEnqueueScripts()
-    {
-        wp_enqueue_media();
-        wp_enqueue_script('wp-media-settings');
-        wp_enqueue_script('jquery');
     }
 
     /**
@@ -880,6 +854,7 @@ class Settings {
 
     public function getUnivISSearchPage()
     {
+        $constants = $this->config->getConstants();
         ?>
         <br><br>
         <div class="wrap">
@@ -891,9 +866,9 @@ class Settings {
                             <th scope="row"><?php echo __('Area', 'rrze-univis'); ?></th>
                             <td>
                                 <select name="dataType" id="dataType" class="cmb2_select" required="required">
-                                    <option value="departmentByName"><?php echo __('Organization', 'rrze-univis'); ?></option>
-                                    <option value="personByName"><?php echo __('Person', 'rrze-univis'); ?></option>
-                                    <option value="lectureByName"><?php echo __('Lecture', 'rrze-univis'); ?></option>
+                                    <?php foreach ($constants['search_types'] as $value => $label) { ?>
+                                        <option value="<?php echo esc_attr($value); ?>"><?php echo esc_html($label); ?></option>
+                                    <?php } ?>
                                 </select>
                             </td>
                         </tr>

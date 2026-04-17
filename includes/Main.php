@@ -4,10 +4,6 @@ namespace RRZE\UnivIS;
 
 defined('ABSPATH') || exit;
 
-use function RRZE\UnivIS\Config\getConstants;
-use RRZE\UnivIS\Settings;
-use RRZE\UnivIS\Shortcode;
-
 /**
  * Hauptklasse (Main)
  */
@@ -19,10 +15,12 @@ class Main {
     protected $pluginFile;
     protected $widget;
     protected $settings;
+    protected $config;
     
     public function __construct($pluginFile)
     {
         $this->pluginFile = $pluginFile;
+        $this->config = new Config();
         add_action('init', 'RRZE\UnivIS\add_endpoint');
         add_action('template_redirect', [$this, 'getSingleEntry']);
     }
@@ -44,7 +42,7 @@ class Main {
         $shortcode->onLoaded();
 
         // Widget
-        $this->widget = new UnivISWidget($this->pluginFile, $settings);
+        $this->widget = new Widgets($this->pluginFile, $settings);
         add_action('widgets_init', [$this, 'loadWidget']);
         add_theme_support('widgets-block-editor');
         apply_filters('gutenberg_use_widgets_block_editor', get_theme_support('widgets-block-editor'));
@@ -57,23 +55,31 @@ class Main {
 
     public function addMetaboxes()
     {
-        $aPosttypes = ['post', 'page', 'faq', 'glossary', 'synonym'];
-        foreach ($aPosttypes as $posttype) {
-            add_meta_box('get_univis_ids', __('Suche nach UnivIS IDs'), [$this, 'fillMetabox'], $posttype, 'side', 'core');
+        $constants = $this->config->getConstants();
+        foreach ($constants['metabox']['posttypes'] as $posttype) {
+            add_meta_box(
+                $constants['metabox']['id'],
+                __('Suche nach UnivIS IDs'),
+                [$this, 'fillMetabox'],
+                $posttype,
+                $constants['metabox']['context'],
+                $constants['metabox']['priority']
+            );
         }
     }
 
     public function fillMetabox()
     {
+        $constants = $this->config->getConstants();
         ?>
             <div class="tagsdiv" id="univis">
                 <div class="jaxtag">
                     <form method="post">
                     <div class="ajaxtag hide-if-no-js">
                         <select name="dataType" id="dataType" class="univisSelect" required="required">
-                            <option value="departmentByName"><?php echo __('Organization', 'rrze-univis'); ?></option>
-                            <option value="personByName"><?php echo __('Person', 'rrze-univis'); ?></option>
-                            <option value="lectureByName"><?php echo __('Lecture', 'rrze-univis'); ?></option>
+                            <?php foreach ($constants['search_types'] as $value => $label) { ?>
+                                <option value="<?php echo esc_attr($value); ?>"><?php echo esc_html($label); ?></option>
+                            <?php } ?>
                         </select>
                     </div>
                     <div class="ajaxtag hide-if-no-js">
@@ -118,7 +124,8 @@ class Main {
 
     public static function getThemeGroup()
     {
-        $constants = getConstants();
+        $config = new Config();
+        $constants = $config->getConstants();
         $ret = '';
         $active_theme = wp_get_theme();
         $active_theme = $active_theme->get('Name');

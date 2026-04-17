@@ -11,7 +11,7 @@ if (!function_exists('__')) {
     }
 }
 
-class UnivISAPI
+class API
 {
 
     protected $api;
@@ -44,20 +44,8 @@ class UnivISAPI
         $this->api = preg_replace('/^((http|https):\/\/)?([^?\/]*)([\/?]*)/i', 'https://$3/prg?show=json&search=', $api, 1);
     }
 
-    private static function log(string $method, string $logType = 'error', string $msg = '')
+    public function getData($dataType, $univisParam = null)
     {
-        // uses plugin rrze-log
-        $pre = __NAMESPACE__ . ' ' . $method . '() : ';
-        if ($logType == 'DB') {
-            global $wpdb;
-            do_action('rrze.log.error', $pre . '$wpdb->last_result= ' . json_encode($wpdb->last_result) . '| $wpdb->last_query= ' . json_encode($wpdb->last_query . '| $wpdb->last_error= ' . json_encode($wpdb->last_error)));
-        }
-        else {
-            do_action('rrze.log.' . $logType, __NAMESPACE__ . ' ' . $method . '() : ' . $msg);
-        }
-    }
-
-    public function getData($dataType, $univisParam = null) {
         if (!empty($univisParam)) {
             $this->univisParam = urlencode($univisParam);
         }
@@ -69,7 +57,7 @@ class UnivISAPI
 
         $data = file_get_contents($url);
         if (!$data) {
-            UnivISAPI::log('getData', 'error', "no data returned using $url");
+            do_action('rrze.log.error', 'UnivIS\\API (getData): no data returned using ' . $url);
             return false;
         }
 
@@ -161,7 +149,7 @@ class UnivISAPI
                 $url .= 'departments';
                 break;
             default:
-                UnivISAPI::log('getUrl', 'error', 'unknown dataType ' . $dataType);
+                do_action('rrze.log.error', 'UnivIS\\API (getUrl): unknown dataType ' . $dataType);
         }
         return $url;
     }

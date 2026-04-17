@@ -4,30 +4,27 @@ namespace RRZE\UnivIS;
 
 defined('ABSPATH') || exit;
 
-use function RRZE\UnivIS\Config\getFields;
-use RRZE\UnivIS\ICS;
-
-
 class Functions
 {
 
     protected $pluginFile;
+    protected $config;
 
     public function __construct($pluginFile)
     {
         $this->pluginFile = $pluginFile;
+        $this->config = new Config();
     }
 
     public function onLoaded()
     {
-        add_action('wp_enqueue_scripts', [$this, 'enqueueScripts']);
+        $constants = $this->config->getConstants();
+
         add_action('admin_enqueue_scripts', [$this, 'adminEnqueueScripts']);
-        add_action('wp_ajax_GetUnivISData', [$this, 'ajaxGetUnivISData']);
-        add_action('wp_ajax_nopriv_GetUnivISData', [$this, 'ajaxGetUnivISData']);
-        add_action('wp_ajax_GetUnivISDataForBlockelements', [$this, 'ajaxGetUnivISDataForBlockelements']);
-        add_action('wp_ajax_nopriv_GetUnivISDataForBlockelements', [$this, 'ajaxGetUnivISDataForBlockelements']);
-        add_action('wp_ajax_GenerateICS', [$this, 'ajaxGenerateICS'] );
-        add_action('wp_ajax_nopriv_GenerateICS', [$this, 'ajaxGenerateICS']);
+        add_action('wp_ajax_' . $constants['ajax']['search_action'], [$this, 'ajaxGetUnivISData']);
+        add_action('wp_ajax_nopriv_' . $constants['ajax']['search_action'], [$this, 'ajaxGetUnivISData']);
+        add_action('wp_ajax_' . $constants['ajax']['block_elements_action'], [$this, 'ajaxGetUnivISDataForBlockelements']);
+        add_action('wp_ajax_nopriv_' . $constants['ajax']['block_elements_action'], [$this, 'ajaxGetUnivISDataForBlockelements']);
     }
 
     public static function isInternAllowed($settings)
@@ -55,46 +52,20 @@ class Functions
         return false;
     }
 
-    public function ajaxGenerateICS(){
-        check_ajax_referer('univis-ajax-ics-nonce', 'ics_nonce');
-        $inputs = filter_input(INPUT_GET, 'data', FILTER_SANITIZE_STRING, FILTER_REQUIRE_ARRAY);
-        $aProps = json_decode(openssl_decrypt(base64_decode($inputs['v']), 'AES-256-CBC', hash('sha256', AUTH_KEY), 0, substr(hash('sha256', AUTH_SALT), 0, 16)), true);
-
-        $ics = new ICS($aProps);
-        $response = [
-            'icsData' => $ics->toString(),
-            'filename' => $aProps['FILENAME']
-        ];
-
-        wp_send_json($response);
-    }
-
-    public function enqueueScripts(){
-        wp_enqueue_script(
-            'rrze-unvis-ajax-frontend',
-            plugins_url('src/js/rrze-univis-frontend.js', plugin_basename($this->pluginFile)),
-            ['jquery'],
-            null
-        );
-
-        wp_localize_script('rrze-unvis-ajax-frontend', 'univis_frontend_ajax', [
-            'ajax_frontend_url' => admin_url('admin-ajax.php'),
-            'ics_nonce' => wp_create_nonce('univis-ajax-ics-nonce'),
-        ]);
-    }
-
     public function adminEnqueueScripts()
     {
+        $constants = $this->config->getConstants();
+
         wp_enqueue_script(
-            'rrze-unvis-ajax',
-            plugins_url('js/rrze-univis.js', plugin_basename($this->pluginFile)),
+            $constants['ajax']['admin_script_handle'],
+            plugins_url($constants['ajax']['admin_script_path'], plugin_basename($this->pluginFile)),
             ['jquery'],
             null
         );
 
-        wp_localize_script('rrze-unvis-ajax', 'univis_ajax', [
+        wp_localize_script($constants['ajax']['admin_script_handle'], $constants['ajax']['admin_script_object'], [
             'ajax_url' => admin_url('admin-ajax.php'),
-            'nonce' => wp_create_nonce('univis-ajax-nonce'),
+            'nonce' => wp_create_nonce($constants['ajax']['nonce_action']),
         ]);
     }
 
@@ -113,7 +84,8 @@ class Functions
 
     public function ajaxGetUnivISData()
     {
-        check_ajax_referer('univis-ajax-nonce', 'nonce');
+        $constants = $this->config->getConstants();
+        check_ajax_referer($constants['ajax']['nonce_action'], $constants['ajax']['nonce_name']);
         $inputs = filter_input(INPUT_POST, 'data', FILTER_SANITIZE_STRING, FILTER_REQUIRE_ARRAY);
         $response = $this->getTableHTML($this->getUnivISData(null, $inputs['dataType'], $inputs['keyword']));
         wp_send_json($response);
@@ -138,12 +110,13 @@ class Functions
         $ret = __('No matching entries found.', 'rrze-univis'); // Keine passenden Einträge gefunden.
 
         $options = get_option('rrze-univis');
+        $constants = $this->config->getConstants();
         $data = 0;
-        $UnivISURL = (!empty($options['basic_univis_url']) ? $options['basic_univis_url'] : 'https://univis.uni-erlangen.de');
+        $UnivISURL = (!empty($options['basic_univis_url']) ? $options['basic_univis_url'] : $constants['defaults']['univis_url']);
         $univisOrgID = (!empty($univisOrgID) ? $univisOrgID : (!empty($options['basic_UnivISOrgNr']) ? $options['basic_UnivISOrgNr'] : 0));
 
         if ($UnivISURL) {
-            $univis = new UnivISAPI(null, $UnivISURL, $univisOrgID, null);
+            $univis = new API(null, $UnivISURL, $univisOrgID, null);
             $data = $univis->getData($dataType, $keyword);
         } elseif (!$UnivISURL) {
             $ret = __('Link to UnivIS is missing.', 'rrze-univis');
@@ -202,7 +175,8 @@ class Functions
 
     public function ajaxGetUnivISDataForBlockelements()
     {
-        check_ajax_referer('univis-ajax-nonce', 'nonce');
+        $constants = $this->config->getConstants();
+        check_ajax_referer($constants['ajax']['nonce_action'], $constants['ajax']['nonce_name']);
         $inputs = filter_input(INPUT_POST, 'data', FILTER_SANITIZE_STRING, FILTER_REQUIRE_ARRAY);
         $response = $this->getSelectHTML($this->getUnivISData($inputs['univisOrgID'], $inputs['dataType']));
         wp_send_json($response);

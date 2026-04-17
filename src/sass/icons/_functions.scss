@@ -2,11 +2,15 @@
 /* Functions for icons
 /*-----------------------------------------------------------------------------------*/
 
+@use "sass:color";
+@use "sass:meta";
+@use "sass:string";
+
 // Translate colors
 @function encodecolor($string) {
-   @if type-of($string) == 'color' and str-index(#{$string}, '#') == 1 {
-    $hex: str-slice(ie-hex-str($string), 4);
-    $string: unquote('#{$hex}');
+  @if meta.type-of($string) == 'color' and string.index(#{$string}, '#') == 1 {
+    $hex: string.slice(color.ie-hex-str($string), 4);
+    $string: string.unquote('#{$hex}');
 
     @return '%23' + $string;
   }
@@ -45,7 +49,7 @@
     line-height: 1rem;
     font-size: 0.6rem;
 
-    background-image: svg-bookmark();
+    background-image: none;
     background-repeat: no-repeat;
     display: inline-block;
     content: ' ';

@@ -1,1 +1,32 @@
-"use strict";function getUnivISData(){var a=jQuery("#dataType").val(),i=jQuery("input#keyword"),n=i.val(),t=jQuery("div#univis-search-result");n&&(t.html(""),i.val(""),jQuery.post(univis_ajax.ajax_url,{_ajax_nonce:univis_ajax.nonce,action:"GetUnivISData",data:{keyword:n,dataType:a}},function(a){t.html(a),jQuery("div#loading").hide()}))}jQuery(document).ready(function(a){var i=a("div#loading").hide();a(document).ajaxStart(function(){i.show()}).ajaxStop(function(){i.hide()}),a("#searchUnivisID").click(getUnivISData)});
+"use strict";
+(() => {
+  // src/js/rrze-univis.js
+  jQuery(document).ready(function($) {
+    var $loading = $("div#loading").hide();
+    $(document).ajaxStart(function() {
+      $loading.show();
+    }).ajaxStop(function() {
+      $loading.hide();
+    });
+    $("#searchUnivisID").click(getUnivISData);
+  });
+  function getUnivISData() {
+    var $dataType = jQuery("#dataType").val();
+    var $keyword = jQuery("input#keyword");
+    var $keywordVal = $keyword.val();
+    var $resultTab = jQuery("div#univis-search-result");
+    if ($keywordVal) {
+      $resultTab.html("");
+      $keyword.val("");
+      jQuery.post(univis_ajax.ajax_url, {
+        _ajax_nonce: univis_ajax.nonce,
+        action: "GetUnivISData",
+        data: { "keyword": $keywordVal, "dataType": $dataType }
+      }, function(result) {
+        $resultTab.html(result);
+        jQuery("div#loading").hide();
+      });
+    }
+  }
+})();
+//# sourceMappingURL=rrze-univis.js.map

@@ -2,6 +2,8 @@
 /* Default SVG Icons
 /*-----------------------------------------------------------------------------------*/
 
+@use "functions" as *;
+@use "iconlib" as *;
 
 .rrze-univis {
 
@@ -30,4 +32,3 @@
     background-image: svg-icon-ics();
     }
 }
-

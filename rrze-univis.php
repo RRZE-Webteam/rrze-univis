@@ -19,10 +19,8 @@ namespace RRZE\UnivIS;
 
 defined('ABSPATH') || exit;
 
+use RRZE\UnivIS\Config;
 use RRZE\UnivIS\Main;
-
-// Laden der Konfigurationsdatei
-require_once __DIR__ . '/config/config.php';
 
 // Automatische Laden von Klassen.
 // Autoloader (PSR-4)
@@ -43,8 +41,8 @@ spl_autoload_register(function ($class) {
     }
 });
 
-const RRZE_PHP_VERSION = '8.0';
-const RRZE_WP_VERSION = '6.1';
+const RRZE_PHP_VERSION = '8.3';
+const RRZE_WP_VERSION = '6.9.4';
 
 // Load the plugin's text domain for localization.
 add_action('init', fn() => load_plugin_textdomain('rrze-univis', false, dirname(plugin_basename(__FILE__)) . '/languages'));
@@ -91,8 +89,11 @@ function activation()
 
 function add_endpoint()
 {
-    add_rewrite_endpoint('univisid', EP_PERMALINK | EP_PAGES);
-    add_rewrite_endpoint('lv_id', EP_PERMALINK | EP_PAGES);
+    $config = new Config();
+    $constants = $config->getConstants();
+
+    add_rewrite_endpoint($constants['endpoints']['person'], EP_PERMALINK | EP_PAGES);
+    add_rewrite_endpoint($constants['endpoints']['lecture'], EP_PERMALINK | EP_PAGES);
 }
 
 /**
