@@ -4,20 +4,16 @@ namespace RRZE\UnivIS;
 
 defined('ABSPATH') || exit;
 
-class Functions
-{
-
+class Ajax {
     protected $pluginFile;
     protected $config;
 
-    public function __construct($pluginFile)
-    {
+    public function __construct($pluginFile) {
         $this->pluginFile = $pluginFile;
         $this->config = new Config();
     }
 
-    public function onLoaded()
-    {
+    public function onLoaded() {
         $constants = $this->config->getConstants();
 
         add_action('admin_enqueue_scripts', [$this, 'adminEnqueueScripts']);
@@ -27,33 +23,7 @@ class Functions
         add_action('wp_ajax_nopriv_' . $constants['ajax']['block_elements_action'], [$this, 'ajaxGetUnivISDataForBlockelements']);
     }
 
-    public static function isInternAllowed($settings)
-    {
-        $remoteIP = $_SERVER['REMOTE_ADDR'];
-        $remoteAdr = gethostbyaddr($remoteIP);
-
-        $options = $settings->options;
-
-        // if user surfs within our network (hosts are defined in settings)
-        if (!empty($options['basic_public_visiblity_required_hosts'])) {
-            $required_hosts = trim($options['basic_public_visiblity_required_hosts']);
-            $aAllowedHosts = preg_split("/[\s,\n]+/", $required_hosts);
-            $ret = false;
-            foreach ($aAllowedHosts as $host) {
-                if ((strpos($remoteAdr, $host) !== false)) {
-                    $ret = true;
-                    break;
-                }
-            }
-
-            return $ret;
-        }
-
-        return false;
-    }
-
-    public function adminEnqueueScripts()
-    {
+    public function adminEnqueueScripts() {
         $constants = $this->config->getConstants();
 
         wp_enqueue_script(
@@ -69,11 +39,11 @@ class Functions
         ]);
     }
 
-    public function getTableHTML($aIn)
-    {
+    public function getTableHTML($aIn) {
         if (!is_array($aIn)) {
             return $aIn;
         }
+
         $ret = '<table class="wp-list-table widefat striped"><thead><tr><td><b><i>Univ</i>IS</b> ID</td><td><strong>Name</strong></td></tr></thead>';
         foreach ($aIn as $ID => $val) {
             $ret .= "<tr><td>$ID</td><td style='word-wrap: break-word;'>$val</td></tr>";
@@ -82,8 +52,7 @@ class Functions
         return $ret;
     }
 
-    public function ajaxGetUnivISData()
-    {
+    public function ajaxGetUnivISData() {
         $constants = $this->config->getConstants();
         check_ajax_referer($constants['ajax']['nonce_action'], $constants['ajax']['nonce_name']);
         $inputs = filter_input(INPUT_POST, 'data', FILTER_SANITIZE_STRING, FILTER_REQUIRE_ARRAY);
@@ -91,11 +60,11 @@ class Functions
         wp_send_json($response);
     }
 
-    public function getSelectHTML($aIn)
-    {
+    public function getSelectHTML($aIn) {
         if (!is_array($aIn)) {
             return "<option value=''>$aIn</option>";
         }
+
         $ret = '<option value="">' . __('-- All --', 'rrze-univis') . '</option>';
         natsort($aIn);
         foreach ($aIn as $ID => $val) {
@@ -104,8 +73,7 @@ class Functions
         return $ret;
     }
 
-    public function getUnivISData($univisOrgID = null, $dataType = '', $keyword = null)
-    {
+    public function getUnivISData($univisOrgID = null, $dataType = '', $keyword = null) {
         $data = false;
         $ret = __('No matching entries found.', 'rrze-univis'); // Keine passenden Einträge gefunden.
 
@@ -173,15 +141,11 @@ class Functions
         return $ret;
     }
 
-    public function ajaxGetUnivISDataForBlockelements()
-    {
+    public function ajaxGetUnivISDataForBlockelements() {
         $constants = $this->config->getConstants();
         check_ajax_referer($constants['ajax']['nonce_action'], $constants['ajax']['nonce_name']);
         $inputs = filter_input(INPUT_POST, 'data', FILTER_SANITIZE_STRING, FILTER_REQUIRE_ARRAY);
         $response = $this->getSelectHTML($this->getUnivISData($inputs['univisOrgID'], $inputs['dataType']));
         wp_send_json($response);
     }
-
-    
-
 }

@@ -7,8 +7,7 @@ defined('ABSPATH') || exit;
 /**
  * Hauptklasse (Main)
  */
-class Main
-{
+class Main {
     /**
      * Der vollständige Pfad- und Dateiname der Plugin-Datei.
      * @var string
@@ -18,18 +17,16 @@ class Main
     protected $settings;
     protected $config;
     
-    public function __construct($pluginFile)
-    {
+    public function __construct($pluginFile) {
         $this->pluginFile = $pluginFile;
         $this->config = new Config();
         add_action('init', 'RRZE\UnivIS\add_endpoint');
         add_action('template_redirect', [$this, 'getSingleEntry']);
     }
 
-    public function onLoaded()
-    {
-        $functions = new Functions($this->pluginFile);
-        $functions->onLoaded();
+    public function onLoaded() {
+        $ajax = new Ajax($this->pluginFile);
+        $ajax->onLoaded();
 
         $settings = new Settings($this->pluginFile);
         $settings->onLoaded();
@@ -49,13 +46,11 @@ class Main
         apply_filters('gutenberg_use_widgets_block_editor', get_theme_support('widgets-block-editor'));
     }
 
-    public function loadWidget()
-    {
+    public function loadWidget() {
         register_widget($this->widget);
     }
 
-    public function getSingleEntry()
-    {
+    public function getSingleEntry() {
         global $wp_query;
 
         if (isset($wp_query->query_vars['lv_id'])) {
@@ -80,8 +75,7 @@ class Main
         exit;
     }
 
-    public static function getThemeGroup()
-    {
+    public static function getThemeGroup() {
         $config = new Config();
         $constants = $config->getConstants();
         $ret = '';
@@ -95,5 +89,4 @@ class Main
         }
         return $ret;
     }
-
 }

@@ -4,22 +4,18 @@ namespace RRZE\UnivIS;
 
 defined('ABSPATH') || exit;
 
-class Metabox
-{
+class Metabox {
     protected $config;
 
-    public function __construct()
-    {
+    public function __construct() {
         $this->config = new Config();
     }
 
-    public function onLoaded()
-    {
+    public function onLoaded() {
         add_action('add_meta_boxes', [$this, 'addMetaboxes']);
     }
 
-    public function addMetaboxes()
-    {
+    public function addMetaboxes() {
         $constants = $this->config->getConstants();
         foreach ($constants['metabox']['posttypes'] as $posttype) {
             add_meta_box(
@@ -33,8 +29,7 @@ class Metabox
         }
     }
 
-    public function fillMetabox()
-    {
+    public function fillMetabox() {
         $constants = $this->config->getConstants();
         ?>
             <div class="tagsdiv" id="univis">
