@@ -5,10 +5,11 @@ namespace RRZE\UnivIS;
 defined('ABSPATH') || exit;
 
 class Utils {
-    public static function isInternAllowed($settings) {
+    public static function isInternAllowed(): bool {
         $remoteIP = $_SERVER['REMOTE_ADDR'];
         $remoteAdr = gethostbyaddr($remoteIP);
-        $options = $settings->options;
+        $config = new Config();
+        $options = get_option($config->getOptionName(), []);
 
         // if user surfs within our network (hosts are defined in settings)
         if (!empty($options['basic_public_visiblity_required_hosts'])) {
@@ -28,11 +29,11 @@ class Utils {
         return false;
     }
 
-    public static function checkSemester($sem) {
-        return preg_match('/[12]\d{3}[ws]/', $sem);
+    public static function checkSemester(string $sem): bool {
+        return (bool)preg_match('/[12]\d{3}[ws]/', $sem);
     }
 
-    public static function correctPhone($phone) {
+    public static function correctPhone(string $phone): string {
         if ((strpos($phone, '+49 9131 85-') !== 0) && (strpos($phone, '+49 911 5302-') !== 0)) {
             if (!preg_match('/\+49 [1-9][0-9]{1,4} [1-9][0-9]+/', $phone)) {
                 $phone_data = preg_replace('/\D/', '', $phone);
@@ -107,12 +108,12 @@ class Utils {
         return $phone;
     }
 
-    public static function getInt($str) {
+    public static function getInt(string $str): string {
         preg_match_all('/\d+/', $str, $matches);
         return implode('', $matches[0]);
     }
 
-    public static function formatUnivIS($txt) {
+    public static function formatUnivIS(string $txt): string {
         $subs = array(
             '/^\-+\s+(.*)?/mi' => '<ul><li>$1</li></ul>', // list
             '/(<\/ul>\n(.*)<ul>*)+/' => '', // list

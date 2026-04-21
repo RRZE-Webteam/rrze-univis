@@ -11,11 +11,11 @@ class Metabox {
         $this->config = new Config();
     }
 
-    public function onLoaded() {
+    public function onLoaded(): void {
         add_action('add_meta_boxes', [$this, 'addMetaboxes']);
     }
 
-    public function addMetaboxes() {
+    public function addMetaboxes(): void {
         $constants = $this->config->getConstants();
         foreach ($constants['metabox']['posttypes'] as $posttype) {
             add_meta_box(
@@ -29,7 +29,7 @@ class Metabox {
         }
     }
 
-    public function fillMetabox() {
+    public function fillMetabox(): void {
         $constants = $this->config->getConstants();
         ?>
             <div class="tagsdiv" id="univis">

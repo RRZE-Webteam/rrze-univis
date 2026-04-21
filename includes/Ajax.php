@@ -5,15 +5,15 @@ namespace RRZE\UnivIS;
 defined('ABSPATH') || exit;
 
 class Ajax {
-    protected $pluginFile;
+    protected $plugin;
     protected $config;
 
-    public function __construct($pluginFile) {
-        $this->pluginFile = $pluginFile;
+    public function __construct(Plugin $plugin) {
+        $this->plugin = $plugin;
         $this->config = new Config();
     }
 
-    public function onLoaded() {
+    public function onLoaded(): void {
         $constants = $this->config->getConstants();
 
         add_action('admin_enqueue_scripts', [$this, 'adminEnqueueScripts']);
@@ -23,12 +23,12 @@ class Ajax {
         add_action('wp_ajax_nopriv_' . $constants['ajax']['block_elements_action'], [$this, 'ajaxGetUnivISDataForBlockelements']);
     }
 
-    public function adminEnqueueScripts() {
+    public function adminEnqueueScripts(): void {
         $constants = $this->config->getConstants();
 
         wp_enqueue_script(
             $constants['ajax']['admin_script_handle'],
-            plugins_url($constants['ajax']['admin_script_path'], plugin_basename($this->pluginFile)),
+            $this->plugin->getUrl($constants['ajax']['admin_script_path']),
             ['jquery'],
             null
         );
@@ -39,7 +39,7 @@ class Ajax {
         ]);
     }
 
-    public function getTableHTML($aIn) {
+    public function getTableHTML(mixed $aIn): mixed {
         if (!is_array($aIn)) {
             return $aIn;
         }
@@ -52,7 +52,7 @@ class Ajax {
         return $ret;
     }
 
-    public function ajaxGetUnivISData() {
+    public function ajaxGetUnivISData(): void {
         $constants = $this->config->getConstants();
         check_ajax_referer($constants['ajax']['nonce_action'], $constants['ajax']['nonce_name']);
         $inputs = filter_input(INPUT_POST, 'data', FILTER_SANITIZE_STRING, FILTER_REQUIRE_ARRAY);
@@ -60,7 +60,7 @@ class Ajax {
         wp_send_json($response);
     }
 
-    public function getSelectHTML($aIn) {
+    public function getSelectHTML(mixed $aIn): string {
         if (!is_array($aIn)) {
             return "<option value=''>$aIn</option>";
         }
@@ -73,7 +73,7 @@ class Ajax {
         return $ret;
     }
 
-    public function getUnivISData($univisOrgID = null, $dataType = '', $keyword = null) {
+    public function getUnivISData(mixed $univisOrgID = null, string $dataType = '', ?string $keyword = null): mixed {
         $data = false;
         $ret = __('No matching entries found.', 'rrze-univis'); // Keine passenden Einträge gefunden.
 
@@ -84,7 +84,7 @@ class Ajax {
         $univisOrgID = (!empty($univisOrgID) ? $univisOrgID : (!empty($options['basic_UnivISOrgNr']) ? $options['basic_UnivISOrgNr'] : 0));
 
         if ($UnivISURL) {
-            $univis = new API(null, $UnivISURL, $univisOrgID, null);
+            $univis = new Cache($UnivISURL, $univisOrgID, null);
             $data = $univis->getData($dataType, $keyword);
         } elseif (!$UnivISURL) {
             $ret = __('Link to UnivIS is missing.', 'rrze-univis');
@@ -141,7 +141,7 @@ class Ajax {
         return $ret;
     }
 
-    public function ajaxGetUnivISDataForBlockelements() {
+    public function ajaxGetUnivISDataForBlockelements(): void {
         $constants = $this->config->getConstants();
         check_ajax_referer($constants['ajax']['nonce_action'], $constants['ajax']['nonce_name']);
         $inputs = filter_input(INPUT_POST, 'data', FILTER_SANITIZE_STRING, FILTER_REQUIRE_ARRAY);

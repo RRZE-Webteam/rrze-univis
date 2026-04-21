@@ -7,13 +7,12 @@ defined('ABSPATH') || exit;
 /**
  * Shortcode
  */
-class Shortcode
-{
+class Shortcode {
     /**
      * Der vollständige Pfad- und Dateiname der Plugin-Datei.
      * @var string
      */
-    protected $pluginFile;
+    protected $plugin;
     protected $UnivISOrgNr;
     protected $UnivISURL;
     protected $UnivISLink;
@@ -21,20 +20,26 @@ class Shortcode
     protected $show = [];
     protected $hide = [];
     protected $atts;
-    protected $univis;
+    protected $cache;
     protected $noCache = false;
     private $shortcodeSettings = '';
-    private $settings;
     private $config;
+    private $taskMap = [
+        'mitarbeiter-einzeln' => ['settings' => 'mitarbeiter', 'handler' => 'getSingleEmployeeData'],
+        'mitarbeiter-orga' => ['settings' => 'mitarbeiter', 'handler' => 'getEmployeeOrganizationData'],
+        'mitarbeiter-telefonbuch' => ['settings' => 'mitarbeiter', 'handler' => 'getEmployeePhonebookData'],
+        'mitarbeiter-alle' => ['settings' => 'mitarbeiter', 'handler' => 'getAllEmployeesData'],
+        'lehrveranstaltungen-einzeln' => ['settings' => 'lehrveranstaltungen', 'handler' => 'getSingleLectureData'],
+        'lehrveranstaltungen-alle' => ['settings' => 'lehrveranstaltungen', 'handler' => 'getAllLecturesData'],
+        'publikationen' => ['settings' => 'publikationen', 'handler' => 'getPublicationData'],
+    ];
 
     /**
      * Variablen Werte zuweisen.
-     * @param string $pluginFile Pfad- und Dateiname der Plugin-Datei
+     * @param Plugin $plugin Plugin object
      */
-    public function __construct($pluginFile, $settings)
-    {
-        $this->pluginFile = $pluginFile;
-        $this->settings = $settings;
+    public function __construct(Plugin $plugin) {
+        $this->plugin = $plugin;
         $this->config = new Config();
         $this->shortcodeSettings = $this->config->getShortcodeSettings();
         $this->options = get_option('rrze-univis');
@@ -49,15 +54,13 @@ class Shortcode
      * Er wird ausgeführt, sobald die Klasse instanziiert wird.
      * @return void
      */
-    public function onLoaded()
-    {
+    public function onLoaded(): void {
         add_action('wp_enqueue_scripts', [$this, 'enqueueScripts']);
         add_shortcode('univis', [$this, 'shortcodeOutput']);
     }
 
-    public function enqueueScripts()
-    {
-        wp_register_style('rrze-univis', plugins_url('css/rrze-univis.css', plugin_basename($this->pluginFile)));
+    public function enqueueScripts(): void {
+        wp_register_style('rrze-univis', $this->plugin->getUrl('css') . 'rrze-univis.css');
         wp_enqueue_style('rrze-univis');
     }
 
@@ -66,16 +69,16 @@ class Shortcode
      * @param  array   $atts Shortcode-Attribute
      * @return string Gib den Inhalt zurück
      */
-    public function shortcodeOutput($atts)
-    {
+    public function shortcodeOutput(mixed $atts): string {
         $this->shortcodeSettings = $this->config->getShortcodeSettings();
+        $this->noCache = is_array($atts) && !empty($atts['nocache']);
 
         if (empty($atts)) {
             return $this->UnivISLink;
         }
 
-        if (!empty($atts['nocache'])) {
-            $this->noCache = true;
+        if (!is_array($atts)) {
+            return '';
         }
 
         // lv_id is not in config (=> id)
@@ -90,24 +93,12 @@ class Shortcode
             $atts['task'] = 'mitarbeiter-alle';
         }
 
-        // get settings
-        switch ($atts['task']) {
-            case 'mitarbeiter-einzeln':
-            case 'mitarbeiter-orga':
-            case 'mitarbeiter-telefonbuch':
-            case 'mitarbeiter-alle':
-                $this->shortcodeSettings = $this->shortcodeSettings['mitarbeiter'];
-                break;
-            case 'lehrveranstaltungen-einzeln':
-            case 'lehrveranstaltungen-alle':
-                $this->shortcodeSettings = $this->shortcodeSettings['lehrveranstaltungen'];
-                break;
-            case 'publikationen':
-                $this->shortcodeSettings = $this->shortcodeSettings['publikationen'];
-                break;
-            default:
-                return;
+        if (empty($this->taskMap[$atts['task']])) {
+            return '';
         }
+
+        $taskConfig = $this->taskMap[$atts['task']];
+        $this->shortcodeSettings = $this->shortcodeSettings[$taskConfig['settings']];
 
         // merge given attributes with default ones
         $atts_default = array();
@@ -121,96 +112,128 @@ class Shortcode
 
         $data = '';
 
-        $this->univis = new API($this->settings, $this->UnivISURL, $this->UnivISOrgNr, $this->atts);
-
-        switch ($this->atts['task']) {
-            case 'mitarbeiter-einzeln':
-                if (!in_array('telefon', $this->hide) && !in_array('telefon', $this->show)) {
-                    $this->show[] = 'telefon';
-                }
-                if (!in_array('mail', $this->hide) && !in_array('mail', $this->show)) {
-                    $this->show[] = 'mail';
-                }
-                if (!empty($atts['univisid'])) {
-                    $data = $this->getData('personByID', $this->atts['univisid']);
-                    if ($data) {
-                        $this->atts['name'] = $data[0]['lastname'] . ',' . $data[0]['firstname'];
-                    }
-                } elseif (!empty($this->atts['name'])) {
-                    $data = $this->getData('personByName', $this->atts['name']);
-                }
-                if ($data && !empty($this->atts['name'])) {
-                    $person = $data[0];
-                    $person['lectures'] = $this->getData('lectureByLecturer', $this->atts['name']);
-                }
-                break;
-            case 'mitarbeiter-orga':
-                $data = $this->getData('personByOrga');
-                break;
-            case 'mitarbeiter-telefonbuch':
-                $data = $this->getData('personByOrgaPhonebook');
-                break;
-            case 'mitarbeiter-alle':
-                if (!in_array('telefon', $this->hide) && !in_array('telefon', $this->show)) {
-                    $this->show[] = 'telefon';
-                }
-                $data = $this->getData('personAll', null);
-                break;
-            case 'lehrveranstaltungen-einzeln':
-                if (!empty($this->atts['id'])) {
-                    $data = $this->getData('lectureByID', $this->atts['id']);
-                } elseif (!empty($this->atts['name'])) {
-                    $data = $this->getData('lectureByLecturer', $this->atts['name']);
-                } elseif (!empty($this->atts['univisid'])) {
-                    $data = $this->getData('lectureByLecturerID', $this->atts['univisid']);
-                } elseif (!empty($this->atts['id'])) {
-                    $data = $this->getData('lectureByLecturerID', $this->atts['id']);
-                }
-                if ($data) {
-                    $lecture = $data[array_key_first($data)][0];
-                }
-                break;
-            case 'lehrveranstaltungen-alle':
-                if (!empty($this->atts['name'])) {
-                    $data = $this->getData('lectureByLecturer', $this->atts['name']);
-                } elseif (!empty($this->atts['univisid'])) {
-                    $data = $this->getData('lectureByLecturerID', $this->atts['univisid']);
-                } elseif (!empty($this->atts['id'])) {
-                    $data = $this->getData('lectureByLecturerID', $this->atts['id']);
-                } else {
-                    $data = $this->getData('lectureByDepartment');
-                }
-                break;
-            case 'publikationen':
-                if (!empty($atts['name'])) {
-                    $data = $this->getData('publicationByAuthor', $this->atts['name']);
-                } elseif (!empty($this->atts['univisid'])) {
-                    $data = $this->getData('publicationByAuthorID', $this->atts['univisid']);
-                } else {
-                    $data = $this->getData('publicationByDepartment');
-                }
-                break;
-        }
+        $this->cache = new Cache($this->UnivISURL, $this->UnivISOrgNr, $this->atts, $this->noCache);
+        $data = $this->{$taskConfig['handler']}($atts);
+        $person = $this->getTemplatePerson($data);
+        $lecture = $this->getTemplateLecture($data);
 
         if ($data && is_array($data)) {
             // $data = '<pre>' . json_encode($data, JSON_PRETTY_PRINT) . '</pre>';
             // var_dump($data);
             // exit;
 
-            $filename = trailingslashit(dirname(__FILE__)) . '../templates/' . $this->atts['task'] . '.php';
+            $filename = $this->plugin->getPath('templates') . $this->atts['task'] . '.php';
 
             if (is_file($filename)) {
                 ob_start();
                 include $filename;
                 return str_replace("\n", " ", ob_get_clean());
             }
+            return '';
         } else {
             return __('No matching records found.', 'rrze-univis'); // Keine passenden Datensätze gefunden.
         }
     }
 
-    public function normalize($atts)
-    {
+    private function getTemplatePerson(mixed $data): ?array {
+        if ($this->atts['task'] != 'mitarbeiter-einzeln' || empty($data[0])) {
+            return null;
+        }
+
+        return $data[0];
+    }
+
+    private function getTemplateLecture(mixed $data): ?array {
+        if ($this->atts['task'] != 'lehrveranstaltungen-einzeln' || empty($data) || !is_array($data)) {
+            return null;
+        }
+
+        return $data[array_key_first($data)][0] ?? null;
+    }
+
+    private function ensureVisible(string $field): void {
+        if (!in_array($field, $this->hide) && !in_array($field, $this->show)) {
+            $this->show[] = $field;
+        }
+    }
+
+    private function getSingleEmployeeData(array $atts): mixed {
+        $this->ensureVisible('telefon');
+        $this->ensureVisible('mail');
+        $data = '';
+
+        if (!empty($atts['univisid'])) {
+            $data = $this->cache->getData('personByID', $this->atts['univisid']);
+            if ($data) {
+                $this->atts['name'] = $data[0]['lastname'] . ',' . $data[0]['firstname'];
+            }
+        } elseif (!empty($this->atts['name'])) {
+            $data = $this->cache->getData('personByName', $this->atts['name']);
+        }
+
+        if ($data && !empty($this->atts['name'])) {
+            $data[0]['lectures'] = $this->cache->getData('lectureByLecturer', $this->atts['name']);
+        }
+
+        return $data;
+    }
+
+    private function getEmployeeOrganizationData(array $atts): mixed {
+        return $this->cache->getData('personByOrga');
+    }
+
+    private function getEmployeePhonebookData(array $atts): mixed {
+        return $this->cache->getData('personByOrgaPhonebook');
+    }
+
+    private function getAllEmployeesData(array $atts): mixed {
+        $this->ensureVisible('telefon');
+        return $this->cache->getData('personAll', null);
+    }
+
+    private function getSingleLectureData(array $atts): mixed {
+        $data = '';
+
+        if (!empty($this->atts['id'])) {
+            $data = $this->cache->getData('lectureByID', $this->atts['id']);
+        } elseif (!empty($this->atts['name'])) {
+            $data = $this->cache->getData('lectureByLecturer', $this->atts['name']);
+        } elseif (!empty($this->atts['univisid'])) {
+            $data = $this->cache->getData('lectureByLecturerID', $this->atts['univisid']);
+        }
+
+        return $data;
+    }
+
+    private function getAllLecturesData(array $atts): mixed {
+        if (!empty($this->atts['name'])) {
+            return $this->cache->getData('lectureByLecturer', $this->atts['name']);
+        }
+
+        if (!empty($this->atts['univisid'])) {
+            return $this->cache->getData('lectureByLecturerID', $this->atts['univisid']);
+        }
+
+        if (!empty($this->atts['id'])) {
+            return $this->cache->getData('lectureByLecturerID', $this->atts['id']);
+        }
+
+        return $this->cache->getData('lectureByDepartment');
+    }
+
+    private function getPublicationData(array $atts): mixed {
+        if (!empty($atts['name'])) {
+            return $this->cache->getData('publicationByAuthor', $this->atts['name']);
+        }
+
+        if (!empty($this->atts['univisid'])) {
+            return $this->cache->getData('publicationByAuthorID', $this->atts['univisid']);
+        }
+
+        return $this->cache->getData('publicationByDepartment');
+    }
+
+    public function normalize(array $atts): array {
         // normalize given attributes according to rrze-univis version 2
         if (!empty($atts['number'])) {
             $this->UnivISOrgNr = $atts['number'];
@@ -282,8 +305,7 @@ class Shortcode
         return $atts;
     }
 
-    public function isGutenberg()
-    {
+    public function isGutenberg(): bool {
         $postID = get_the_ID();
         if ($postID && !use_block_editor_for_post($postID)) {
             return false;
@@ -291,8 +313,7 @@ class Shortcode
         return true;
     }
 
-    private function makeDropdown($id, $label, $aData, $all = null)
-    {
+    private function makeDropdown(string $id, string $label, array $aData, ?string $all = null): array {
         $ret = [
             'id' => $id,
             'label' => $label,
@@ -313,8 +334,7 @@ class Shortcode
         return $ret;
     }
 
-    private function makeToggle($label)
-    {
+    private function makeToggle(string $label): array {
         return [
             'label' => $label,
             'field_type' => 'toggle',
@@ -324,9 +344,8 @@ class Shortcode
         ];
     }
 
-    public function fillGutenbergOptions($aSettings)
-    {
-        $this->univis = new API($this->settings, $this->UnivISURL, $this->UnivISOrgNr, null);
+    public function fillGutenbergOptions(array $aSettings): array {
+        $this->cache = new Cache($this->UnivISURL, $this->UnivISOrgNr, null);
 
         foreach ($aSettings as $task => $settings) {
             $settings['number']['default'] = $this->UnivISOrgNr;
@@ -338,7 +357,7 @@ class Shortcode
                     unset($settings['id']);
                 }
                 $aPersons = [];
-                $data = $this->getData('personAll');
+                $data = $this->cache->getData('personAll');
                 foreach ($data as $position => $persons) {
                     foreach ($persons as $person) {
                         $aPersons[$person['person_id']] = $person['lastname'] . (!empty($person['firstname']) ? ', ' . $person['firstname'] : '');
@@ -354,7 +373,7 @@ class Shortcode
                 $aLectures = [];
                 $aLectureTypes = [];
                 $aLectureLanguages = [];
-                $data = $this->getData('lectureByDepartment');
+                $data = $this->cache->getData('lectureByDepartment');
 
                 foreach ($data as $type => $lecs) {
                     foreach ($lecs as $lecture) {
@@ -406,8 +425,7 @@ class Shortcode
         return $aSettings;
     }
 
-    public function initGutenberg()
-    {
+    public function initGutenberg(): void {
         $editorScript = 'rrze-univis-blocksupport';
 
         if (!$this->isGutenberg() || empty($this->UnivISURL) || empty($this->UnivISOrgNr)) {
@@ -418,7 +436,7 @@ class Shortcode
 
         wp_register_script(
             $editorScript,
-            plugins_url('../js/rrze-univis-blocksupport.js', __FILE__),
+            $this->plugin->getUrl('js') . 'rrze-univis-blocksupport.js',
             array(
                 'jquery',
                 'wp-blocks',
@@ -441,26 +459,6 @@ class Shortcode
                 'attributes' => $settings,
             )
             );
-        }
-    }
-
-    public function getData($dataType, $univisParam = null)
-    {
-        $cacheConfig = $this->config->get('constants.cache', []);
-        $sAtts = (!empty($this->atts) && is_array($this->atts) ? implode('-', $this->atts) : '');
-        $transient = sha1($cacheConfig['transient_prefix'] . $dataType . $sAtts . $this->UnivISOrgNr . $univisParam);
-        if ($this->noCache) {
-            $data = $this->univis->getData($dataType, $univisParam);
-            set_transient($transient, $data, $cacheConfig['transient_expiration']);
-            return $data;
-        }
-        $data = get_transient($transient);
-        if ($data && $data != __('No matching records found.', 'rrze-univis')) {
-            return $data;
-        } else {
-            $data = $this->univis->getData($dataType, $univisParam);
-            set_transient($transient, $data, $cacheConfig['transient_expiration']);
-            return $data;
         }
     }
 

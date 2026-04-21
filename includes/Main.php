@@ -12,45 +12,56 @@ class Main {
      * Der vollständige Pfad- und Dateiname der Plugin-Datei.
      * @var string
      */
-    protected $pluginFile;
+    protected $plugin;
     protected $widget;
     protected $settings;
     protected $config;
     
-    public function __construct($pluginFile) {
-        $this->pluginFile = $pluginFile;
+    public function __construct(Plugin $plugin) {
+        $this->plugin = $plugin;
         $this->config = new Config();
-        add_action('init', 'RRZE\UnivIS\add_endpoint');
+        add_action('init', [Endpoints::class, 'add']);
         add_action('template_redirect', [$this, 'getSingleEntry']);
     }
 
-    public function onLoaded() {
-        $ajax = new Ajax($this->pluginFile);
+    public function onLoaded(): void {
+        $ajax = new Ajax($this->plugin);
         $ajax->onLoaded();
 
-        $settings = new Settings($this->pluginFile);
+        $settings = new Settings($this->plugin);
         $settings->onLoaded();
 
         $this->settings = $settings;
 
-        $shortcode = new Shortcode($this->pluginFile, $settings);
+        $shortcode = new Shortcode($this->plugin);
         $shortcode->onLoaded();
 
-        $metabox = new Metabox();
-        $metabox->onLoaded();
+        if ($this->metaboxEnabled($settings)) {
+            $metabox = new Metabox();
+            $metabox->onLoaded();
+        }
 
-        // Widget
-        $this->widget = new Widgets($this->pluginFile, $settings);
-        add_action('widgets_init', [$this, 'loadWidget']);
-        add_theme_support('widgets-block-editor');
-        apply_filters('gutenberg_use_widgets_block_editor', get_theme_support('widgets-block-editor'));
+        if ($this->widgetsEnabled($settings)) {
+            $this->widget = new Widgets($this->plugin);
+            add_action('widgets_init', [$this, 'loadWidget']);
+            add_theme_support('widgets-block-editor');
+            apply_filters('gutenberg_use_widgets_block_editor', get_theme_support('widgets-block-editor'));
+        }
     }
 
-    public function loadWidget() {
+    public function loadWidget(): void {
         register_widget($this->widget);
     }
 
-    public function getSingleEntry() {
+    private function widgetsEnabled(Settings $settings): bool {
+        return !empty($settings->options['basic_enable_widgets']) && $settings->options['basic_enable_widgets'] === true;
+    }
+
+    private function metaboxEnabled(Settings $settings): bool {
+        return !empty($settings->options['basic_enable_metabox']) && $settings->options['basic_enable_metabox'] === true;
+    }
+
+    public function getSingleEntry(): void {
         global $wp_query;
 
         if (isset($wp_query->query_vars['lv_id'])) {
@@ -71,11 +82,11 @@ class Main {
         // global $post;
         // $post->post_title = $title;
         
-        include plugin_dir_path($this->pluginFile) . 'templates/single-univis.php';
+        include $this->plugin->getPath('templates') . 'single-univis.php';
         exit;
     }
 
-    public static function getThemeGroup() {
+    public static function getThemeGroup(): string {
         $config = new Config();
         $constants = $config->getConstants();
         $ret = '';

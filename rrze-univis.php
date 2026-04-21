@@ -19,12 +19,15 @@ namespace RRZE\UnivIS;
 
 defined('ABSPATH') || exit;
 
-use RRZE\UnivIS\Config;
+use RRZE\UnivIS\Lifecycle;
 use RRZE\UnivIS\Main;
+use RRZE\UnivIS\Plugin;
 
 // Automatische Laden von Klassen.
 // Autoloader (PSR-4)
-spl_autoload_register(function ($class) {
+spl_autoload_register(__NAMESPACE__ . '\autoload');
+
+function autoload(string $class): void {
     $prefix = __NAMESPACE__;
     $base_dir = __DIR__ . '/includes/';
 
@@ -39,13 +42,13 @@ spl_autoload_register(function ($class) {
     if (file_exists($file)) {
         require $file;
     }
-});
+}
 
 const RRZE_PHP_VERSION = '8.3';
 const RRZE_WP_VERSION = '6.9.4';
 
 // Load the plugin's text domain for localization.
-add_action('init', fn() => load_plugin_textdomain('rrze-univis', false, dirname(plugin_basename(__FILE__)) . '/languages'));
+add_action('init', __NAMESPACE__ . '\loadTextdomain');
 // Registriert die Plugin-Funktion, die bei Aktivierung des Plugins ausgeführt werden soll.
 register_activation_hook(__FILE__, __NAMESPACE__ . '\activation');
 // Registriert die Plugin-Funktion, die ausgeführt werden soll, wenn das Plugin deaktiviert wird.
@@ -57,8 +60,11 @@ add_action('plugins_loaded', __NAMESPACE__ . '\loaded');
 /**
  * Überprüft die Systemvoraussetzungen.
  */
-function systemRequirements(): string
-{
+function loadTextdomain(): void {
+    load_plugin_textdomain('rrze-univis', false, dirname(plugin_basename(__FILE__)) . '/languages');
+}
+
+function systemRequirements(): string {
     $error = '';
     if (version_compare(PHP_VERSION, RRZE_PHP_VERSION, '<')) {
         $error = sprintf(__('The server is running PHP version %1$s. The Plugin requires at least PHP version %2$s.', 'rrze-rsvp'), PHP_VERSION, RRZE_PHP_VERSION);
@@ -71,10 +77,7 @@ function systemRequirements(): string
 /**
  * Wird nach der Aktivierung des Plugins ausgeführt.
  */
-function activation()
-{
-
-
+function activation(): void {
     // Überprüft die minimal erforderliche PHP- u. WP-Version.
     // Wenn die Überprüfung fehlschlägt, dann wird das Plugin automatisch deaktiviert.
     if ($error = systemRequirements()) {
@@ -82,56 +85,52 @@ function activation()
         wp_die($error);
     }
 
-    // Endpoint hinzufügen
-    add_endpoint(true);
-    flush_rewrite_rules();
-}
-
-function add_endpoint()
-{
-    $config = new Config();
-    $constants = $config->getConstants();
-
-    add_rewrite_endpoint($constants['endpoints']['person'], EP_PERMALINK | EP_PAGES);
-    add_rewrite_endpoint($constants['endpoints']['lecture'], EP_PERMALINK | EP_PAGES);
+    Lifecycle::activate();
 }
 
 /**
  * Wird durchgeführt, nachdem das Plugin deaktiviert wurde.
  */
-function deactivation()
-{
-    // Hier können die Funktionen hinzugefügt werden, die
-    // bei der Deaktivierung des Plugins aufgerufen werden müssen.
-    // Bspw. delete_option, wp_clear_scheduled_hook, flush_rewrite_rules, etc.
+function deactivation(): void {
+    Lifecycle::deactivate();
 }
 
 /**
  * Wird durchgeführt, nachdem das WP-Grundsystem hochgefahren
  * und alle Plugins eingebunden wurden.
  */
-function loaded()
-{
+function loaded(): void {
 
     // Überprüft die Systemvoraussetzungen.
     if ($error = systemRequirements()) {
-        add_action('admin_init', function () use ($error) {
-            $pluginData = get_plugin_data(__FILE__);
-            $pluginName = $pluginData['Name'];
-            $tag = is_plugin_active_for_network(plugin_basename(__FILE__)) ? 'network_admin_notices' : 'admin_notices';
-            add_action($tag, function () use ($pluginName, $error) {
-                printf(
-                    '<div class="notice notice-error"><p>' . __('Plugins: %1$s: %2$s', 'rrze-univis') . '</p></div>',
-                    esc_html($pluginName),
-                    esc_html($error)
-                );
-            });
-        });
+        $GLOBALS['rrze_univis_system_requirement_error'] = $error;
+        add_action('admin_init', __NAMESPACE__ . '\registerSystemRequirementNotice');
         // Das Plugin wird nicht mehr ausgeführt.
         return;
     }
 
     // Hauptklasse (Main) wird instanziiert.
-    $main = new Main(__FILE__);
+    $plugin = new Plugin(__FILE__);
+    $plugin->loaded();
+
+    $main = new Main($plugin);
     $main->onLoaded();
+}
+
+function registerSystemRequirementNotice(): void {
+    $pluginData = get_plugin_data(__FILE__);
+    $GLOBALS['rrze_univis_system_requirement_plugin_name'] = $pluginData['Name'];
+    $tag = is_plugin_active_for_network(plugin_basename(__FILE__)) ? 'network_admin_notices' : 'admin_notices';
+    add_action($tag, __NAMESPACE__ . '\showSystemRequirementNotice');
+}
+
+function showSystemRequirementNotice(): void {
+    $pluginName = (string)($GLOBALS['rrze_univis_system_requirement_plugin_name'] ?? '');
+    $error = (string)($GLOBALS['rrze_univis_system_requirement_error'] ?? '');
+
+    printf(
+        '<div class="notice notice-error"><p>' . __('Plugins: %1$s: %2$s', 'rrze-univis') . '</p></div>',
+        esc_html($pluginName),
+        esc_html($error)
+    );
 }

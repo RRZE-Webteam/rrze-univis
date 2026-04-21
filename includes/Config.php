@@ -63,7 +63,37 @@ class Config {
                 ],
                 'cache' => [
                     'transient_prefix' => 'rrze_univis_cache_',
-                    'transient_expiration' => DAY_IN_SECONDS,
+                    'transient_jitter_minutes' => 30,
+                    'transient_times' => [
+                        'default' => 1440,
+                        'persons' => 1440,
+                        'departments' => 1440,
+                        'publications' => 1440,
+                        'lectures' => 720,
+                        'positions' => 360,
+                        'rooms' => 1440,
+                    ],
+                    'data_types' => [
+                        'personByID' => 'persons',
+                        'personByName' => 'persons',
+                        'personAll' => 'departments',
+                        'personByOrga' => 'persons',
+                        'personByOrgaPhonebook' => 'persons',
+                        'publicationByAuthorID' => 'publications',
+                        'publicationByAuthor' => 'publications',
+                        'publicationByDepartment' => 'publications',
+                        'lectureByID' => 'lectures',
+                        'lectureByDepartment' => 'lectures',
+                        'lectureByLecturer' => 'lectures',
+                        'lectureByLecturerID' => 'lectures',
+                        'lectureByName' => 'lectures',
+                        'jobByID' => 'positions',
+                        'jobAll' => 'positions',
+                        'roomByID' => 'rooms',
+                        'roomByName' => 'rooms',
+                        'departmentByName' => 'departments',
+                        'departmentAll' => 'departments',
+                    ],
                 ],
                 'dictionary_fields' => [
                     'title' => [
@@ -333,8 +363,7 @@ class Config {
         ];
     }
 
-    public function get(string $key, $default = null)
-    {
+    public function get(string $key, mixed $default = null): mixed {
         $segments = explode('.', $key);
         $value = $this->config;
 
@@ -349,8 +378,7 @@ class Config {
         return $value;
     }
 
-    public function set(string $key, $newValue): void
-    {
+    public function set(string $key, mixed $newValue): void {
         $segments = explode('.', $key);
         $value = &$this->config;
 
@@ -365,33 +393,27 @@ class Config {
         $value = $newValue;
     }
 
-    public function getOptionName(): string
-    {
+    public function getOptionName(): string {
         return $this->get('option_name', 'rrze-univis');
     }
 
-    public function getConstants(): array
-    {
+    public function getConstants(): array {
         return $this->get('constants', []);
     }
 
-    public function getMenuSettings(): array
-    {
+    public function getMenuSettings(): array {
         return $this->get('menu_settings', []);
     }
 
-    public function getHelpTab(): array
-    {
+    public function getHelpTab(): array {
         return $this->get('help_tab', []);
     }
 
-    public function getSections(): array
-    {
+    public function getSections(): array {
         return $this->get('sections', []);
     }
 
-    public function getFields(): array
-    {
+    public function getFields(): array {
         return [
             'basic' => [
                 ['name' => 'univis_url', 'label' => __('Link to <b><i>Univ</i>IS</b>', 'rrze-univis'), 'desc' => __('', 'rrze-univis'), 'placeholder' => __('', 'rrze-univis'), 'type' => 'text', 'default' => $this->get('constants.defaults.univis_url'), 'sanitize_callback' => 'sanitize_url'],
@@ -404,12 +426,13 @@ class Config {
                 ['name' => 'ssStart', 'label' => __('Lectures begin this summer semester', 'rrze-univis'), 'desc' => __('', 'rrze-univis'), 'placeholder' => '', 'type' => 'date', 'default' => date('Y') . '-04-12', 'sanitize_callback' => 'date'],
                 ['name' => 'ssEnd', 'label' => __('End of the lecture period this summer semester', 'rrze-univis'), 'desc' => __('', 'rrze-univis'), 'placeholder' => '', 'type' => 'date', 'default' => date('Y') . '-07-16', 'sanitize_callback' => 'date'],
                 ['name' => 'hstart', 'label' => __('Size of heading where output starts', 'rrze-univis'), 'desc' => __('', 'rrze-univis'), 'min' => 2, 'max' => 10, 'step' => '1', 'type' => 'number', 'default' => '2', 'sanitize_callback' => 'floatval'],
+                ['name' => 'enable_metabox', 'label' => __('Enable UnivIS ID metabox', 'rrze-univis'), 'desc' => __('Enable the legacy UnivIS ID search metabox in the editor.', 'rrze-univis'), 'type' => 'checkbox', 'default' => false],
+                ['name' => 'enable_widgets', 'label' => __('Enable classic widgets', 'rrze-univis'), 'desc' => __('Enable the legacy UnivIS widget for classic themes or classic widget areas.', 'rrze-univis'), 'type' => 'checkbox', 'default' => false],
             ],
         ];
     }
 
-    public function getShortcodeSettings(): array
-    {
+    public function getShortcodeSettings(): array {
         return $this->get('shortcode_settings', []);
     }
 }
