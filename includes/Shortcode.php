@@ -456,10 +456,30 @@ class Shortcode {
             register_block_type($settings['block']['blocktype'], array(
                 'editor_script' => $editorScript,
                 'render_callback' => [$this, 'shortcodeOutput'],
-                'attributes' => $settings,
+                'attributes' => $this->getBlockAttributes($settings),
             )
             );
         }
+    }
+
+    private function getBlockAttributes(array $settings): array {
+        $attributes = [];
+
+        foreach ($settings as $name => $setting) {
+            if ($name === 'block' || !is_array($setting) || empty($setting['type'])) {
+                continue;
+            }
+
+            $attributes[$name] = [
+                'type' => $setting['type'],
+            ];
+
+            if (array_key_exists('default', $setting) && $setting['default'] !== null) {
+                $attributes[$name]['default'] = $setting['default'];
+            }
+        }
+
+        return $attributes;
     }
 
 }
