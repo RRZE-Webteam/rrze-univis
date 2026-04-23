@@ -86,6 +86,7 @@ function replaceInFile(filePath, replacer) {
 
 function setReadmeTxtVersion(pluginRoot, newVersion) {
     var filePath = path.join(pluginRoot, 'readme.txt');
+    var replacements = 0;
 
     if (!fs.existsSync(filePath)) {
         return;
@@ -95,6 +96,7 @@ function setReadmeTxtVersion(pluginRoot, newVersion) {
         content = content.replace(
             /^(Stable tag:\s*)(.+)$/m,
             function (match, p1) {
+                replacements++;
                 return p1 + newVersion;
             }
         );
@@ -102,12 +104,17 @@ function setReadmeTxtVersion(pluginRoot, newVersion) {
         content = content.replace(
             /^(Version:\s*)(.+)$/m,
             function (match, p1) {
+                replacements++;
                 return p1 + newVersion;
             }
         );
 
         return content;
     });
+
+    if (replacements === 0) {
+        throw new Error('No version field found in readme.txt');
+    }
 }
 
 function setPluginVersion(pluginRoot, pkg, newVersion) {
@@ -116,6 +123,7 @@ function setPluginVersion(pluginRoot, pkg, newVersion) {
     }
 
     var filePath = path.join(pluginRoot, pkg.main);
+    var replacements = 0;
 
     if (!fs.existsSync(filePath)) {
         throw new Error('Plugin main file not found: ' + filePath);
@@ -123,14 +131,19 @@ function setPluginVersion(pluginRoot, pkg, newVersion) {
 
     replaceInFile(filePath, function (content) {
         content = content.replace(
-            /^(Version:\s*)(.+)$/m,
+            /^(\s*\*\s*Version:\s*)(.+)$/m,
             function (match, p1) {
+                replacements++;
                 return p1 + newVersion;
             }
         );
 
         return content;
     });
+
+    if (replacements === 0) {
+        throw new Error('No plugin header version field found in ' + pkg.main);
+    }
 }
 
 function setPluginCompatibility(pluginRoot, pkg) {
