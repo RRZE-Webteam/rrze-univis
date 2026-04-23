@@ -7,7 +7,7 @@
 	                    <span>
 	                        <?php foreach ($entry['authors'] as $author):
                                 if (isset($author['person_id'])):
-                                    $url = get_permalink() . 'univisid/' . $author['person_id'];
+                                    $url = trailingslashit(get_permalink()) . 'univisid/' . $author['person_id'];
                                     echo '<a href="' . $url . '">' . $author['lastname'] . (isset($author['firstname']) ? ', ' . $author['firstname'] : '') . '</a>; ';
                                 else:
                                     echo $author['lastname'] . (isset($author['firstname']) ? ', ' . $author['firstname'] : '') . '; ';

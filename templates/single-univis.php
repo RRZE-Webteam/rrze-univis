@@ -16,11 +16,6 @@ $thisThemeGroup = Main::getThemeGroup();
 
 get_header();
 if ($thisThemeGroup == 'fauthemes') {
-    $currentTheme = wp_get_theme();		  
-    $vers = $currentTheme->get( 'Version' );
-    if (version_compare($vers, "2.3", '<')) {      
-        get_template_part('template-parts/hero', 'small'); 
-      }
     ?>
 
    

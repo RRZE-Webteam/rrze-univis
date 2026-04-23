@@ -33,7 +33,7 @@ if ($data){
         $ret .= '<ul>';
         foreach ($lectures as $lecture){
             $courseDates = '';
-            $url = get_permalink() . 'lv_id/' . $lecture['lecture_id'];
+            $url = trailingslashit(get_permalink()) . 'lv_id/' . $lecture['lecture_id'];
 			$ret .= '<li>';
             $ret .= '<h' . ($this->atts['hstart'] + 1) . '><a href="' . $url . '">';
             if ($lang != 'de_DE' && $lang != 'de_DE_formal' && !empty($lecture['ects_name'])) {
@@ -86,54 +86,56 @@ if ($data){
             }
             $ret .= $infos . '</li>';
 
-            if (in_array('accordion_courses', $this->show)){
-                if (in_array('accordion', $this->show)){
-                    if (empty($courseDates)){
+            $hasCourseAccordion = in_array('accordion_courses', $this->show);
+            if ($hasCourseAccordion) {
+                $ret .= '</ul>';
+                if (in_array('accordion', $this->show)) {
+                    if (empty($courseDates)) {
                         $courseDates = '[accordion hstart="' . ($this->atts['hstart'] + 1) . '"]';
                     }
                     $courseDates .= '[accordion-item title="' . __('Date', 'rrze-univis') . '" name="' . __('Date', 'rrze-univis') . '_' . urlencode($lecture['title']) . '" color="' . $this->atts['color_courses'] . '"]';
-                }else{
+                } else {
                     $courseDates = '[collapse title="' . __('Date', 'rrze-univis') . '" name="' . __('Date', 'rrze-univis') . '_' . urlencode($lecture['title']) . '" color="' . $this->atts['color_courses'] . '"]';
                 }
-            }else{
+            } else {
                 $courseDates = '<li class="termindaten">' . __('Date', 'rrze-univis') . ':';
             }
             $courseDates .= '<ul>';
 
-            if (isset($lecture['courses'])){
-                foreach ($lecture['courses'] as $course){
+            if (isset($lecture['courses'])) {
+                foreach ($lecture['courses'] as $course) {
                     if ((empty($lecture['lecturer_key']) || empty($course['doz'])) || (!empty($lecture['lecturer_key']) && !empty($course['doz']) && (in_array($lecture['lecturer_key'], $course['doz'])))) {
-                        foreach ($course['term'] as $term){
+                        foreach ($course['term'] as $term) {
                             $t = array();
                             $time = array();
-                            if (!empty($term['repeat'])){
+                            if (!empty($term['repeat'])) {
                                 $t['repeat'] = $term['repeat'];
                             }
-                            if (!empty($term['startdate'])){
-                                if (!empty($term['enddate']) && $term['startdate'] != $term['enddate']){
+                            if (!empty($term['startdate'])) {
+                                if (!empty($term['enddate']) && $term['startdate'] != $term['enddate']) {
                                     $t['date'] = date("d.m.Y", strtotime($term['startdate'])) . '-' . date("d.m.Y", strtotime($term['enddate']));
-                                }else{
+                                } else {
                                     $t['date'] = date("d.m.Y", strtotime($term['startdate']));
                                 }
                             }
-                            if (!empty($term['starttime'])){
+                            if (!empty($term['starttime'])) {
                                 $time['starttime'] = $term['starttime'];
                             }
-                            if (!empty($term['endtime'])){
+                            if (!empty($term['endtime'])) {
                                 $time['endtime'] = $term['endtime'];
                             }
-                            if (!empty($time)){
+                            if (!empty($time)) {
                                 $t['time'] = $time['starttime'] . '-' . $time['endtime'];
-                            }else{
+                            } else {
                                 $t['time'] = __('Time on appointment', 'rrze-univis');
                             }
-                            if (!empty($term['room']['short'])){
+                            if (!empty($term['room']['short'])) {
                                 $t['room'] = __('Room', 'rrze-univis') . ' ' . $term['room']['short'];
                             }
-                            if (!empty($term['exclude'])){
+                            if (!empty($term['exclude'])) {
                                 $t['exclude'] = '(' . __('exclude', 'rrze-univis') . ' ' . $term['exclude'] . ')';
                             }
-                            if (!empty($course['coursename'])){
+                            if (!empty($course['coursename'])) {
                                 $t['coursename'] = '(' . __('Course', 'rrze-univis') . ' ' . $course['coursename'] . ')';
                             }
 
@@ -144,28 +146,21 @@ if ($data){
                         }
                     }
                 }
-                if (in_array('accordion_courses', $this->show)){
-                    if (in_array('accordion', $this->show)){
-                        $courseDates .= '[/accordion-item]';
-                        $courseDates .= '[/accordion]';
-                    }else{
-                        $courseDates .= '[/collapse]';
-                    }
-                }
-            }else{
+            } else {
                 $courseDates .= '<li>' . __('Time and place on appointment', 'rrze-univis') . '</li>';
-                if (in_array('accordion_courses', $this->show)){
-                    if (in_array('accordion', $this->show)){
-                        $courseDates .= '[/accordion-item]';
-                        $courseDates .= '[/accordion]';
-                    }else{
-                        $courseDates .= '[/collapse]';
-                    }
-                }
             }
-		    $courseDates .= '</ul>';
-		    $courseDates .= '</li>';
-		    $ret .= $courseDates. '</li>';
+            $courseDates .= '</ul>';
+            if ($hasCourseAccordion) {
+                if (in_array('accordion', $this->show)) {
+                    $courseDates .= '[/accordion-item]';
+                    $courseDates .= '[/accordion]';
+                } else {
+                    $courseDates .= '[/collapse]';
+                }
+            } else {
+                $courseDates .= '</li></ul>';
+            }
+            $ret .= $courseDates . '</li>';
         }
         $ret .= '</ul>';
 

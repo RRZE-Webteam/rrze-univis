@@ -37,7 +37,7 @@ if ($lecture){
             }
             $fullname = implode(' ', $name);
             if (!empty($doz['person_id'])){
-                $url = '<a href="' . get_permalink() . 'univisid/' . $doz['person_id'] . '">' . $fullname . '</a>';
+                $url = '<a href="' . trailingslashit(get_permalink()) . 'univisid/' . $doz['person_id'] . '">' . $fullname . '</a>';
             }else{
                 $url = $fullname;
             }

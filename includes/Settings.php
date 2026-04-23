@@ -4,12 +4,6 @@ namespace RRZE\UnivIS;
 
 defined('ABSPATH') || exit;
 
-use function RRZE\UnivIS\Config\getFields;
-use function RRZE\UnivIS\Config\getHelpTab;
-use function RRZE\UnivIS\Config\getMenuSettings;
-use function RRZE\UnivIS\Config\getOptionName;
-use function RRZE\UnivIS\Config\getSections;
-
 /**
  * Settings-Klasse
  */
@@ -18,7 +12,7 @@ class Settings {
      * Der vollständige Pfad- und Dateiname der Plugin-Datei.
      * @var string
      */
-    protected $pluginFile;
+    protected $plugin;
 
     /**
      * Optionsname
@@ -74,15 +68,17 @@ class Settings {
      * @var string
      */
     protected $settingsPrefix;
+    protected $config;
+    protected $sectionDescriptions = [];
 
     /**
      * Variablen Werte zuweisen.
-     * @param string $pluginFile [description]
+     * @param Plugin $plugin Plugin object
      */
-    public function __construct($pluginFile)
-    {
-        $this->pluginFile = $pluginFile;
-        $this->settingsPrefix = dirname(plugin_basename($this->pluginFile)) . '-';
+    public function __construct(Plugin $plugin) {
+        $this->plugin = $plugin;
+        $this->config = new Config();
+        $this->settingsPrefix = $this->plugin->getSlug() . '-';
 
         // einmalig alte Parameter holen
         $oldOptions = get_option('_rrze_univis');
@@ -92,7 +88,8 @@ class Settings {
                 $oldOptions['basic_' . $k] = $v;
             }
             if (empty($oldOptions['basic_univis_url'])) {
-                $oldOptions['basic_univis_url'] = 'https://univis.uni-erlangen.de';
+                $constants = $this->config->getConstants();
+                $oldOptions['basic_univis_url'] = $constants['defaults']['univis_url'];
             }
             update_option('rrze-univis', $oldOptions);
             update_option('univis-updated', 1);
@@ -103,17 +100,18 @@ class Settings {
      * Er wird ausgeführt, sobald die Klasse instanziiert wird.
      * @return void
      */
-    public function onLoaded()
-    {
+    public function onLoaded(): void {
+        $constants = $this->config->getConstants();
+
         $this->setMenu();
         $this->setSections();
         $this->setFields();
         $this->setTabs();
 
-        $this->optionName = getOptionName();
+        $this->optionName = $this->config->getOptionName();
         $this->options = $this->getOptions();
 
-        // Save options if they haven't been saved at least once because we need them for ICS (see https://github.com/RRZE-Webteam/rrze-univis/issues/180)
+        // Save options if they haven't been saved at least once.
         $storedOptions = get_option('rrze-univis');
         if (empty($storedOptions)) {
             update_option('rrze-univis', $this->options);
@@ -122,38 +120,32 @@ class Settings {
         add_action('admin_init', [$this, 'adminInit']);
         add_action('admin_menu', [$this, 'adminMenu']);
         add_action('admin_enqueue_scripts', [$this, 'adminEnqueueScripts']);
-        add_action('wp_ajax_GetUnivISData', [$this, 'ajaxGetUnivISData']);
-        add_action('wp_ajax_nopriv_GetUnivISData', [$this, 'ajaxGetUnivISData']);
     }
 
-    protected function setMenu()
-    {
-        $this->settingsMenu = getmenuSettings();
+    protected function setMenu(): void {
+        $this->settingsMenu = $this->config->getMenuSettings();
     }
 
     /**
      * Einstellungsbereiche einstellen.
      */
-    protected function setSections()
-    {
-        $this->settingsSections = getSections();
+    protected function setSections(): void {
+        $this->settingsSections = $this->config->getSections();
     }
 
     /**
      * Einen einzelnen Einstellungsbereich hinzufügen.
      * @param array   $section
      */
-    protected function addSection($section)
-    {
+    protected function addSection(array $section): void {
         $this->settingsSections[] = $section;
     }
 
     /**
      * Einstellungsfelder einstellen.
      */
-    protected function setFields()
-    {
-        $this->settingsFields = getFields();
+    protected function setFields(): void {
+        $this->settingsFields = $this->config->getFields();
     }
 
     /**
@@ -161,8 +153,7 @@ class Settings {
      * @param [type] $section [description]
      * @param [type] $field   [description]
      */
-    protected function addField($section, $field)
-    {
+    protected function addField(string $section, array $field): void {
         $defaults = array(
             'name' => '',
             'label' => '',
@@ -178,8 +169,7 @@ class Settings {
      * Gibt die Standardeinstellungen zurück.
      * @return array
      */
-    protected function defaultOptions()
-    {
+    protected function defaultOptions(): array {
         $options = [];
 
         foreach ($this->settingsFields as $section => $field) {
@@ -197,13 +187,17 @@ class Settings {
      * Gibt die Einstellungen zurück.
      * @return array
      */
-    public function getOptions()
-    {
+    public function getOptions(): array {
         $defaults = $this->defaultOptions();
 
         $options = (array) get_option($this->optionName);
         $options = wp_parse_args($options, $defaults);
         $options = array_intersect_key($options, $defaults);
+        foreach ($options as $key => $value) {
+            if ($this->isCheckboxOption($key)) {
+                $options[$key] = $this->sanitizeBoolean($value);
+            }
+        }
 
         return $options;
     }
@@ -215,8 +209,7 @@ class Settings {
      * @param string  $default default text if it's not found
      * @return string
      */
-    public function getOption($section, $name, $default = '')
-    {
+    public function getOption(string $section, string $name, mixed $default = ''): mixed {
         $option = $section . '_' . $name;
 
         if (isset($this->options[$option])) {
@@ -230,14 +223,13 @@ class Settings {
      * Sanitize-Callback für die Optionen.
      * @return mixed
      */
-    public function sanitizeOptions($options)
-    {
+    public function sanitizeOptions(mixed $options): mixed {
         if (!$options) {
             return $options;
         }
 
         foreach ($options as $key => $value) {
-            $this->options[$key] = $value;
+            $this->options[$key] = $this->isCheckboxOption($key) ? $this->sanitizeBoolean($value) : $value;
             $sanitizeCallback = $this->getSanitizeCallback($key);
             if ($sanitizeCallback) {
                 $this->options[$key] = call_user_func($sanitizeCallback, $value);
@@ -247,13 +239,32 @@ class Settings {
         return $this->options;
     }
 
+    protected function sanitizeBoolean(mixed $value): bool {
+        return in_array($value, [true, 1, '1', 'true', 'on', 'yes'], true);
+    }
+
+    protected function isCheckboxOption(string $key): bool {
+        return $this->getFieldType($key) === 'checkbox';
+    }
+
+    protected function getFieldType(string $key): string {
+        foreach ($this->settingsFields as $section => $options) {
+            foreach ($options as $option) {
+                if ($section . '_' . $option['name'] == $key) {
+                    return $option['type'] ?? 'text';
+                }
+            }
+        }
+
+        return '';
+    }
+
     /**
      * Gibt die Sanitize-Callback-Funktion für die angegebene Option-Key.
      * @param string $key Option-Key
      * @return mixed string oder (bool) false
      */
-    protected function getSanitizeCallback($key = '')
-    {
+    protected function getSanitizeCallback(string $key = ''): callable|false {
         if (empty($key)) {
             return false;
         }
@@ -275,8 +286,7 @@ class Settings {
      * Einstellungsbereiche als Registerkarte anzeigen.
      * Zeigt alle Beschriftungen der Einstellungsbereiche als Registerkarte an.
      */
-    public function showTabs()
-    {
+    public function showTabs(): void {
         $html = '<h1>' . $this->settingsMenu['title'] . '</h1>' . PHP_EOL;
 
         if (count($this->settingsSections) < 2) {
@@ -305,8 +315,7 @@ class Settings {
      * Anzeigen der Einstellungsbereiche.
      * Zeigt für jeden Einstellungsbereich das entsprechende Formular an.
      */
-    public function showSections()
-    {
+    public function showSections(): void {
         foreach ($this->settingsSections as $section) {
             if ($this->settingsPrefix . $section['id'] != $this->currentTab) {
                 continue;
@@ -326,8 +335,7 @@ class Settings {
     /**
      * Optionen Seitenausgabe
      */
-    public function pageOutput()
-    {
+    public function pageOutput(): void {
         echo '<div class="wrap">', PHP_EOL;
         $this->showTabs();
         $this->showSections();
@@ -337,15 +345,14 @@ class Settings {
     /**
      * Erstellt die Kontexthilfe der Einstellungsseite.
      */
-    public function adminHelpTab()
-    {
+    public function adminHelpTab(): void {
         $screen = get_current_screen();
 
         if (!method_exists($screen, 'add_help_tab') || $screen->id != $this->optionsPage) {
             return;
         }
 
-        $helpTab = getHelpTab();
+        $helpTab = $this->config->getHelpTab();
 
         if (empty($helpTab)) {
             return;
@@ -366,22 +373,20 @@ class Settings {
     /**
      * Initialisierung und Registrierung der Bereiche und Felder.
      */
-    public function adminInit()
-    {
+    public function adminInit(): void {
         // Hinzufügen von Einstellungsbereichen
         foreach ($this->settingsSections as $section) {
+            $sectionId = $this->settingsPrefix . $section['id'];
             if (isset($section['desc']) && !empty($section['desc'])) {
-                $section['desc'] = '<div class="inside">' . $section['desc'] . '</div>';
-                $callback = function () use ($section) {
-                    echo str_replace('"', '\"', $section['desc']);
-                };
+                $this->sectionDescriptions[$sectionId] = '<div class="inside">' . $section['desc'] . '</div>';
+                $callback = [$this, 'callbackSectionDescription'];
             } elseif (isset($section['callback'])) {
                 $callback = $section['callback'];
             } else {
                 $callback = null;
             }
 
-            add_settings_section($this->settingsPrefix . $section['id'], $section['title'], $callback, $this->settingsPrefix . $section['id']);
+            add_settings_section($sectionId, $section['title'], $callback, $sectionId);
         }
 
         // Hinzufügen von Einstellungsfelder
@@ -424,11 +429,20 @@ class Settings {
         }
     }
 
+    public function callbackSectionDescription(array $section): void {
+        $sectionId = (string)($section['id'] ?? '');
+        if (empty($this->sectionDescriptions[$sectionId])) {
+            return;
+        }
+
+        echo str_replace('"', '\"', $this->sectionDescriptions[$sectionId]);
+    }
+
     /**
      * Hinzufügen der Optionen-Seite
      * @return void
      */
-    public function adminMenu() {
+    public function adminMenu(): void {
         $this->optionsPage = add_options_page(
             $this->settingsMenu['page_title'],
             $this->settingsMenu['menu_title'],
@@ -443,8 +457,7 @@ class Settings {
     /**
      * Registerkarten einstellen
      */
-    protected function setTabs()
-    {
+    protected function setTabs(): void {
         foreach ($this->settingsSections as $key => $val) {
             if ($key == 0) {
                 $this->defaultTab = $this->settingsPrefix . $val['id'];
@@ -455,41 +468,14 @@ class Settings {
         $this->currentTab = array_key_exists('current-tab', $_GET) && in_array($_GET['current-tab'], $this->allTabs) ? $_GET['current-tab'] : $this->defaultTab;
     }
 
-    public function adminEnqueueScripts()
-    {
-        wp_register_script('wp-color-picker-settings', plugins_url('js/wp-color-picker.js', plugin_basename($this->pluginFile)));
-        wp_register_script('wp-media-settings', plugins_url('js/wp-media.js', plugin_basename($this->pluginFile)));
-    }
-
-    /**
-     * Enqueue WP-Color-Picker-Skripte.
-     * @return [type] [description]
-     */
-    public function colorEnqueueScripts()
-    {
-        wp_enqueue_style('wp-color-picker');
-        wp_enqueue_script('wp-color-picker');
-        wp_enqueue_script('wp-color-picker-settings');
-        wp_enqueue_script('jquery');
-    }
-
-    /**
-     * Enqueue WP-Media-Skripte.
-     * @return [type] [description]
-     */
-    public function fileEnqueueScripts()
-    {
-        wp_enqueue_media();
-        wp_enqueue_script('wp-media-settings');
-        wp_enqueue_script('jquery');
+    public function adminEnqueueScripts(): void {
     }
 
     /**
      * Gibt die Feldbeschreibung des Einstellungsfelds zurück.
      * @param array   $args Argumente des Einstellungsfelds
      */
-    public function getFieldDescription($args)
-    {
+    public function getFieldDescription(array $args): string {
         if (!empty($args['desc'])) {
             $desc = sprintf('<p class="description">%s</p>', $args['desc']);
         } else {
@@ -503,8 +489,7 @@ class Settings {
      * Zeigt ein Textfeld für ein Einstellungsfeld an.
      * @param array   $args Argumente des Einstellungsfelds
      */
-    public function callbackText($args)
-    {
+    public function callbackText(array $args): void {
         $value = esc_attr($this->getOption($args['section'], $args['id'], $args['default']));
         $size = isset($args['size']) && !is_null($args['size']) ? $args['size'] : 'regular';
         $type = isset($args['type']) ? $args['type'] : 'text';
@@ -529,8 +514,7 @@ class Settings {
      * Zeigt ein Zahlenfeld für ein Einstellungsfeld an.
      * @param array   $args Argumente des Einstellungsfelds
      */
-    public function callbackNumber($args)
-    {
+    public function callbackNumber(array $args): void {
         $value = esc_attr($this->getOption($args['section'], $args['id'], $args['default']));
         $size = isset($args['size']) && !is_null($args['size']) ? $args['size'] : 'regular';
         $type = isset($args['type']) ? $args['type'] : 'number';
@@ -561,9 +545,8 @@ class Settings {
      * Zeigt ein Kontrollkästchen (Checkbox) für ein Einstellungsfeld an.
      * @param array   $args Argumente des Einstellungsfelds
      */
-    public function callbackCheckbox($args)
-    {
-        $value = esc_attr($this->getOption($args['section'], $args['id'], $args['default']));
+    public function callbackCheckbox(array $args): void {
+        $value = (bool)$this->getOption($args['section'], $args['id'], $args['default']);
 
         $html = '<fieldset>';
         $html .= sprintf(
@@ -572,17 +555,17 @@ class Settings {
             $args['id']
         );
         $html .= sprintf(
-            '<input type="hidden" name="%1$s[%2$s_%3$s]" value="off">',
+            '<input type="hidden" name="%1$s[%2$s_%3$s]" value="0">',
             $this->optionName,
             $args['section'],
             $args['id']
         );
         $html .= sprintf(
-            '<input type="checkbox" class="checkbox" id="%2$s-%3$s" name="%1$s[%2$s_%3$s]" value="on" %4$s>',
+            '<input type="checkbox" class="checkbox" id="%2$s-%3$s" name="%1$s[%2$s_%3$s]" value="1" %4$s>',
             $this->optionName,
             $args['section'],
             $args['id'],
-            checked($value, 'on', false)
+            checked($value, true, false)
         );
         $html .= sprintf(
             '%1$s</label>',
@@ -597,8 +580,7 @@ class Settings {
      * Zeigt ein Multicheckbox für ein Einstellungsfeld an.
      * @param array   $args Argumente des Einstellungsfelds
      */
-    public function callbackMulticheck($args)
-    {
+    public function callbackMulticheck(array $args): void {
         $value = $this->getOption($args['section'], $args['id'], $args['default']);
         $html = '<fieldset>';
         $html .= sprintf(
@@ -636,8 +618,7 @@ class Settings {
      * Zeigt einen Auswahlknopf (Radio-Button) für ein Einstellungsfeld an.
      * @param array   $args Argumente des Einstellungsfelds
      */
-    public function callbackRadio($args)
-    {
+    public function callbackRadio(array $args): void {
         $value = $this->getOption($args['section'], $args['id'], $args['default']);
         $html = '<fieldset>';
 
@@ -672,8 +653,7 @@ class Settings {
      * Zeigt eine Auswahlliste (Selectbox) für ein Einstellungsfeld an.
      * @param array   $args Argumente des Einstellungsfelds
      */
-    public function callbackSelect($args)
-    {
+    public function callbackSelect(array $args): void {
         $value = esc_attr($this->getOption($args['section'], $args['id'], $args['default']));
         $size = isset($args['size']) && !is_null($args['size']) ? $args['size'] : 'regular';
         $html = sprintf(
@@ -703,8 +683,7 @@ class Settings {
      * Zeigt eine Multi-Auswahlliste (Selectbox) für ein Einstellungsfeld an.
      * @param array   $args Argumente des Einstellungsfelds
      */
-    public function callbackMultiSelect($args)
-    {
+    public function callbackMultiSelect(array $args): void {
         $value = $this->getOption($args['section'], $args['id'], $args['default']);
         $size = isset($args['size']) && !is_null($args['size']) ? $args['size'] : 'regular';
         $html = sprintf(
@@ -734,8 +713,7 @@ class Settings {
      * Zeigt ein Textfeld für ein Einstellungsfeld an.
      * @param array   $args Argumente des Einstellungsfelds
      */
-    public function callbackTextarea($args)
-    {
+    public function callbackTextarea(array $args): void {
         $value = esc_textarea($this->getOption($args['section'], $args['id'], $args['default']));
         $size = isset($args['size']) && !is_null($args['size']) ? $args['size'] : 'regular';
         $placeholder = empty($args['placeholder']) ? '' : ' placeholder="' . $args['placeholder'] . '"';
@@ -758,8 +736,7 @@ class Settings {
      * Zeigt ein Rich-Text-Textfeld (WP-Editor) für ein Einstellungsfeld an.
      * @param array   $args Argumente des Einstellungsfelds
      */
-    public function callbackWysiwyg($args)
-    {
+    public function callbackWysiwyg(array $args): void {
         $value = $this->getOption($args['section'], $args['id'], $args['default']);
         $size = isset($args['size']) && !is_null($args['size']) ? $args['size'] : '500px';
 
@@ -786,8 +763,7 @@ class Settings {
      * Zeigt ein Datei-Upload-Feld für ein Einstellungsfeld an.
      * @param array   $args Argumente des Einstellungsfelds
      */
-    public function callbackFile($args)
-    {
+    public function callbackFile(array $args): void {
         $value = esc_attr($this->getOption($args['section'], $args['id'], $args['default']));
         $size = isset($args['size']) && !is_null($args['size']) ? $args['size'] : 'regular';
         $id = $args['section'] . '[' . $args['id'] . ']';
@@ -811,8 +787,7 @@ class Settings {
      * Zeigt ein Passwortfeld für ein Einstellungsfeld an.
      * @param array   $args Argumente des Einstellungsfelds
      */
-    public function callbackPassword($args)
-    {
+    public function callbackPassword(array $args): void {
         $value = esc_attr($this->getOption($args['section'], $args['id'], $args['default']));
         $size = isset($args['size']) && !is_null($args['size']) ? $args['size'] : 'regular';
 
@@ -833,8 +808,7 @@ class Settings {
      * Zeigt ein Farbauswahlfeld (WP-Color-Picker) für ein Einstellungsfeld an.
      * @param array   $args Argumente des Einstellungsfelds
      */
-    public function callbackColor($args)
-    {
+    public function callbackColor(array $args): void {
         $value = esc_attr($this->getOption($args['section'], $args['id'], $args['default']));
         $size = isset($args['size']) && !is_null($args['size']) ? $args['size'] : 'regular';
 
@@ -856,8 +830,7 @@ class Settings {
      * Zeigt ein Textfeld mit Datepicker für ein Einstellungsfeld an.
      * @param array   $args Argumente des Einstellungsfelds
      */
-    public function callbackDate($args)
-    {
+    public function callbackDate(array $args): void {
         $value = esc_attr($this->getOption($args['section'], $args['id'], $args['default']));
         $size = isset($args['size']) && !is_null($args['size']) ? $args['size'] : 'regular';
         $type = 'date';
@@ -878,8 +851,8 @@ class Settings {
         echo $html;
     }
 
-    public function getUnivISSearchPage()
-    {
+    public function getUnivISSearchPage(): void {
+        $constants = $this->config->getConstants();
         ?>
         <br><br>
         <div class="wrap">
@@ -891,9 +864,9 @@ class Settings {
                             <th scope="row"><?php echo __('Area', 'rrze-univis'); ?></th>
                             <td>
                                 <select name="dataType" id="dataType" class="cmb2_select" required="required">
-                                    <option value="departmentByName"><?php echo __('Organization', 'rrze-univis'); ?></option>
-                                    <option value="personByName"><?php echo __('Person', 'rrze-univis'); ?></option>
-                                    <option value="lectureByName"><?php echo __('Lecture', 'rrze-univis'); ?></option>
+                                    <?php foreach ($constants['search_types'] as $value => $label) { ?>
+                                        <option value="<?php echo esc_attr($value); ?>"><?php echo esc_html($label); ?></option>
+                                    <?php } ?>
                                 </select>
                             </td>
                         </tr>

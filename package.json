@@ -1,21 +1,54 @@
 {
   "name": "rrze-univis",
-  "version": "3.7.8",
+  "version": "3.7.9",
   "description": "Einbindung von Daten aus UnivIS",
   "main": "rrze-univis.php",
   "textdomain": "rrze-univis",
+  "textDomain": "rrze-univis",
+  "private": true,
+  "scripts": {
+    "readme": "node scripts/build-readme.js",
+    "version:dev": "node scripts/build-version.js dev",
+    "version:prod": "node scripts/build-version.js prod",
+    "version:release": "node scripts/build-version.js release",
+    "dev": "node scripts/build-assets.js dev && npm run version:dev && npm run readme",
+    "build": "node scripts/build-assets.js prod && npm run version:prod && npm run readme",
+    "prod": "npm run build",
+    "release": "node scripts/build-assets.js prod && npm run version:release && npm run readme"
+  },
   "repository": {
     "type": "git",
     "url": "https://github.com/RRZE-Webteam/rrze-univis",
     "issues": "https://github.com/RRZE-Webteam/rrze-univis/issues",
     "clone": "git+https://github.com/RRZE-Webteam/rrze-univis.git"
   },
+  "compatibility": {
+    "wprequires": "6.9.4",
+    "wptestedup": "6.9.4",
+    "phprequires": "8.3"
+  },
   "supports": {
     "email": "webmaster@fau.de"
   },
   "author": {
-    "name": "RRZE-Webteam <webmaster@fau.de>"
+    "name": "RRZE-Webteam <webmaster@fau.de>",
+    "url": "https://www.wordpress.rrze.fau.de"
   },
-  "license": "GNU General Public License v3"
- 
+  "source": {
+    "js": "./src/js/",
+    "css": "./src/sass/"
+  },
+  "target": {
+    "js": "./js/",
+    "css": "./css/"
+  },
+  "license": "GNU General Public License v3",
+  "licenseurl": "http://www.gnu.org/licenses/gpl-3.0.html",
+  "tags": "Plugin, WordPress, RRZE-UnivIS, FAU, RRZE",
+  "devDependencies": {
+    "sass": "^1.94.2"
+  },
+  "dependencies": {
+    "esbuild": "^0.27.3"
+  }
 }

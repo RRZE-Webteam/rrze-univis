@@ -3,18 +3,16 @@
 namespace RRZE\UnivIS;
 
 defined('ABSPATH') || exit;
-use function RRZE\UnivIS\Config\getShortcodeSettings;
 
 /**
  * Shortcode
  */
-class Shortcode
-{
+class Shortcode {
     /**
      * Der vollständige Pfad- und Dateiname der Plugin-Datei.
      * @var string
      */
-    protected $pluginFile;
+    protected $plugin;
     protected $UnivISOrgNr;
     protected $UnivISURL;
     protected $UnivISLink;
@@ -22,45 +20,49 @@ class Shortcode
     protected $show = [];
     protected $hide = [];
     protected $atts;
-    protected $univis;
+    protected $cache;
+    protected $template;
     protected $noCache = false;
-    const TRANSIENT_PREFIX = 'rrze_univis_cache_';
-    const TRANSIENT_EXPIRATION = DAY_IN_SECONDS;
     private $shortcodeSettings = '';
-    private $settings;
+    private $config;
+    private $taskMap = [
+        'mitarbeiter-einzeln' => ['settings' => 'mitarbeiter', 'handler' => 'getSingleEmployeeData'],
+        'mitarbeiter-orga' => ['settings' => 'mitarbeiter', 'handler' => 'getEmployeeOrganizationData'],
+        'mitarbeiter-telefonbuch' => ['settings' => 'mitarbeiter', 'handler' => 'getEmployeePhonebookData'],
+        'mitarbeiter-alle' => ['settings' => 'mitarbeiter', 'handler' => 'getAllEmployeesData'],
+        'lehrveranstaltungen-einzeln' => ['settings' => 'lehrveranstaltungen', 'handler' => 'getSingleLectureData'],
+        'lehrveranstaltungen-alle' => ['settings' => 'lehrveranstaltungen', 'handler' => 'getAllLecturesData'],
+        'publikationen' => ['settings' => 'publikationen', 'handler' => 'getPublicationData'],
+    ];
 
     /**
      * Variablen Werte zuweisen.
-     * @param string $pluginFile Pfad- und Dateiname der Plugin-Datei
+     * @param Plugin $plugin Plugin object
      */
-    public function __construct($pluginFile, $settings)
-    {
-        $this->pluginFile = $pluginFile;
-        $this->settings = $settings;
-        $this->shortcodeSettings = getShortcodeSettings();
+    public function __construct(Plugin $plugin) {
+        $this->plugin = $plugin;
+        $this->config = new Config();
+        $this->template = new Template($this->config, $this->plugin->getPath('templates'));
+        $this->shortcodeSettings = $this->config->getShortcodeSettings();
         $this->options = get_option('rrze-univis');
+        $constants = $this->config->getConstants();
         $this->UnivISOrgNr = (!empty($this->options['basic_UnivISOrgNr']) ? $this->options['basic_UnivISOrgNr'] : 0);
-        $this->UnivISURL = (!empty($this->options['basic_univis_url']) ? $this->options['basic_univis_url'] : 'https://univis.uni-erlangen.de');
+        $this->UnivISURL = (!empty($this->options['basic_univis_url']) ? $this->options['basic_univis_url'] : $constants['defaults']['univis_url']);
         $this->UnivISLink = sprintf('<a href="%1$s">%2$s</a>', $this->UnivISURL, (!empty($this->options['basic_univis_linktxt']) ? $this->options['basic_univis_linktxt'] : __('Text for UnivIS link is missing', 'rrze-univis')));
-        add_action('admin_enqueue_scripts', [$this, 'enqueueGutenberg']);
         add_action('init', [$this, 'initGutenberg']);
-        add_action('enqueue_block_assets', [$this, 'enqueueBlockAssets']);
-        add_filter('mce_external_plugins', [$this, 'addMCEButtons']);
     }
 
     /**
      * Er wird ausgeführt, sobald die Klasse instanziiert wird.
      * @return void
      */
-    public function onLoaded()
-    {
+    public function onLoaded(): void {
         add_action('wp_enqueue_scripts', [$this, 'enqueueScripts']);
         add_shortcode('univis', [$this, 'shortcodeOutput']);
     }
 
-    public function enqueueScripts()
-    {
-        wp_register_style('rrze-univis', plugins_url('css/rrze-univis.css', plugin_basename($this->pluginFile)));
+    public function enqueueScripts(): void {
+        wp_register_style('rrze-univis', $this->plugin->getUrl('css') . 'rrze-univis.css');
         wp_enqueue_style('rrze-univis');
     }
 
@@ -69,16 +71,16 @@ class Shortcode
      * @param  array   $atts Shortcode-Attribute
      * @return string Gib den Inhalt zurück
      */
-    public function shortcodeOutput($atts)
-    {
-        $this->shortcodeSettings = getShortcodeSettings();
+    public function shortcodeOutput(mixed $atts): string {
+        $this->shortcodeSettings = $this->config->getShortcodeSettings();
+        $this->noCache = is_array($atts) && !empty($atts['nocache']);
 
         if (empty($atts)) {
             return $this->UnivISLink;
         }
 
-        if (!empty($atts['nocache'])) {
-            $this->noCache = true;
+        if (!is_array($atts)) {
+            return '';
         }
 
         // lv_id is not in config (=> id)
@@ -93,24 +95,12 @@ class Shortcode
             $atts['task'] = 'mitarbeiter-alle';
         }
 
-        // get settings
-        switch ($atts['task']) {
-            case 'mitarbeiter-einzeln':
-            case 'mitarbeiter-orga':
-            case 'mitarbeiter-telefonbuch':
-            case 'mitarbeiter-alle':
-                $this->shortcodeSettings = $this->shortcodeSettings['mitarbeiter'];
-                break;
-            case 'lehrveranstaltungen-einzeln':
-            case 'lehrveranstaltungen-alle':
-                $this->shortcodeSettings = $this->shortcodeSettings['lehrveranstaltungen'];
-                break;
-            case 'publikationen':
-                $this->shortcodeSettings = $this->shortcodeSettings['publikationen'];
-                break;
-            default:
-                return;
+        if (empty($this->taskMap[$atts['task']])) {
+            return '';
         }
+
+        $taskConfig = $this->taskMap[$atts['task']];
+        $this->shortcodeSettings = $this->shortcodeSettings[$taskConfig['settings']];
 
         // merge given attributes with default ones
         $atts_default = array();
@@ -124,96 +114,121 @@ class Shortcode
 
         $data = '';
 
-        $this->univis = new UnivISAPI($this->settings, $this->UnivISURL, $this->UnivISOrgNr, $this->atts);
-
-        switch ($this->atts['task']) {
-            case 'mitarbeiter-einzeln':
-                if (!in_array('telefon', $this->hide) && !in_array('telefon', $this->show)) {
-                    $this->show[] = 'telefon';
-                }
-                if (!in_array('mail', $this->hide) && !in_array('mail', $this->show)) {
-                    $this->show[] = 'mail';
-                }
-                if (!empty($atts['univisid'])) {
-                    $data = $this->getData('personByID', $this->atts['univisid']);
-                    if ($data) {
-                        $this->atts['name'] = $data[0]['lastname'] . ',' . $data[0]['firstname'];
-                    }
-                } elseif (!empty($this->atts['name'])) {
-                    $data = $this->getData('personByName', $this->atts['name']);
-                }
-                if ($data && !empty($this->atts['name'])) {
-                    $person = $data[0];
-                    $person['lectures'] = $this->getData('lectureByLecturer', $this->atts['name']);
-                }
-                break;
-            case 'mitarbeiter-orga':
-                $data = $this->getData('personByOrga');
-                break;
-            case 'mitarbeiter-telefonbuch':
-                $data = $this->getData('personByOrgaPhonebook');
-                break;
-            case 'mitarbeiter-alle':
-                if (!in_array('telefon', $this->hide) && !in_array('telefon', $this->show)) {
-                    $this->show[] = 'telefon';
-                }
-                $data = $this->getData('personAll', null);
-                break;
-            case 'lehrveranstaltungen-einzeln':
-                if (!empty($this->atts['id'])) {
-                    $data = $this->getData('lectureByID', $this->atts['id']);
-                } elseif (!empty($this->atts['name'])) {
-                    $data = $this->getData('lectureByLecturer', $this->atts['name']);
-                } elseif (!empty($this->atts['univisid'])) {
-                    $data = $this->getData('lectureByLecturerID', $this->atts['univisid']);
-                } elseif (!empty($this->atts['id'])) {
-                    $data = $this->getData('lectureByLecturerID', $this->atts['id']);
-                }
-                if ($data) {
-                    $lecture = $data[array_key_first($data)][0];
-                }
-                break;
-            case 'lehrveranstaltungen-alle':
-                if (!empty($this->atts['name'])) {
-                    $data = $this->getData('lectureByLecturer', $this->atts['name']);
-                } elseif (!empty($this->atts['univisid'])) {
-                    $data = $this->getData('lectureByLecturerID', $this->atts['univisid']);
-                } elseif (!empty($this->atts['id'])) {
-                    $data = $this->getData('lectureByLecturerID', $this->atts['id']);
-                } else {
-                    $data = $this->getData('lectureByDepartment');
-                }
-                break;
-            case 'publikationen':
-                if (!empty($atts['name'])) {
-                    $data = $this->getData('publicationByAuthor', $this->atts['name']);
-                } elseif (!empty($this->atts['univisid'])) {
-                    $data = $this->getData('publicationByAuthorID', $this->atts['univisid']);
-                } else {
-                    $data = $this->getData('publicationByDepartment');
-                }
-                break;
-        }
+        $this->cache = new Cache($this->UnivISURL, $this->UnivISOrgNr, $this->atts, $this->noCache);
+        $data = $this->{$taskConfig['handler']}($atts);
+        $person = $this->getTemplatePerson($data);
+        $lecture = $this->getTemplateLecture($data);
 
         if ($data && is_array($data)) {
-            // $data = '<pre>' . json_encode($data, JSON_PRETTY_PRINT) . '</pre>';
-            // var_dump($data);
-            // exit;
-
-            $filename = trailingslashit(dirname(__FILE__)) . '../templates/' . $this->atts['task'] . '.php';
-
-            if (is_file($filename)) {
-                ob_start();
-                include $filename;
-                return str_replace("\n", " ", ob_get_clean());
-            }
+            return str_replace("\n", " ", $this->template->render($this->atts['task'], [
+                'data' => $data,
+                'person' => $person,
+                'lecture' => $lecture,
+            ], $this));
         } else {
             return __('No matching records found.', 'rrze-univis'); // Keine passenden Datensätze gefunden.
         }
     }
 
-    public function normalize($atts)
-    {
+    private function getTemplatePerson(mixed $data): ?array {
+        if ($this->atts['task'] != 'mitarbeiter-einzeln' || empty($data[0])) {
+            return null;
+        }
+
+        return $data[0];
+    }
+
+    private function getTemplateLecture(mixed $data): ?array {
+        if ($this->atts['task'] != 'lehrveranstaltungen-einzeln' || empty($data) || !is_array($data)) {
+            return null;
+        }
+
+        return $data[array_key_first($data)][0] ?? null;
+    }
+
+    private function ensureVisible(string $field): void {
+        if (!in_array($field, $this->hide) && !in_array($field, $this->show)) {
+            $this->show[] = $field;
+        }
+    }
+
+    private function getSingleEmployeeData(array $atts): mixed {
+        $this->ensureVisible('telefon');
+        $this->ensureVisible('mail');
+        $data = '';
+
+        if (!empty($atts['univisid'])) {
+            $data = $this->cache->getData('personByID', $this->atts['univisid']);
+            if ($data) {
+                $this->atts['name'] = $data[0]['lastname'] . ',' . $data[0]['firstname'];
+            }
+        } elseif (!empty($this->atts['name'])) {
+            $data = $this->cache->getData('personByName', $this->atts['name']);
+        }
+
+        if ($data && !empty($this->atts['name'])) {
+            $data[0]['lectures'] = $this->cache->getData('lectureByLecturer', $this->atts['name']);
+        }
+
+        return $data;
+    }
+
+    private function getEmployeeOrganizationData(array $atts): mixed {
+        return $this->cache->getData('personByOrga');
+    }
+
+    private function getEmployeePhonebookData(array $atts): mixed {
+        return $this->cache->getData('personByOrgaPhonebook');
+    }
+
+    private function getAllEmployeesData(array $atts): mixed {
+        $this->ensureVisible('telefon');
+        return $this->cache->getData('personAll', null);
+    }
+
+    private function getSingleLectureData(array $atts): mixed {
+        $data = '';
+
+        if (!empty($this->atts['id'])) {
+            $data = $this->cache->getData('lectureByID', $this->atts['id']);
+        } elseif (!empty($this->atts['name'])) {
+            $data = $this->cache->getData('lectureByLecturer', $this->atts['name']);
+        } elseif (!empty($this->atts['univisid'])) {
+            $data = $this->cache->getData('lectureByLecturerID', $this->atts['univisid']);
+        }
+
+        return $data;
+    }
+
+    private function getAllLecturesData(array $atts): mixed {
+        if (!empty($this->atts['name'])) {
+            return $this->cache->getData('lectureByLecturer', $this->atts['name']);
+        }
+
+        if (!empty($this->atts['univisid'])) {
+            return $this->cache->getData('lectureByLecturerID', $this->atts['univisid']);
+        }
+
+        if (!empty($this->atts['id'])) {
+            return $this->cache->getData('lectureByLecturerID', $this->atts['id']);
+        }
+
+        return $this->cache->getData('lectureByDepartment');
+    }
+
+    private function getPublicationData(array $atts): mixed {
+        if (!empty($atts['name'])) {
+            return $this->cache->getData('publicationByAuthor', $this->atts['name']);
+        }
+
+        if (!empty($this->atts['univisid'])) {
+            return $this->cache->getData('publicationByAuthorID', $this->atts['univisid']);
+        }
+
+        return $this->cache->getData('publicationByDepartment');
+    }
+
+    public function normalize(array $atts): array {
         // normalize given attributes according to rrze-univis version 2
         if (!empty($atts['number'])) {
             $this->UnivISOrgNr = $atts['number'];
@@ -274,7 +289,7 @@ class Shortcode
             if (is_int($atts['sem'])) {
                 $year = date("Y") + $atts['sem'];
                 $thisSeason = (in_array(date('n'), [10, 11, 12, 1]) ? 'w' : 's');
-                $season = ($thisSeason = 's' ? 'w' : 's');
+                $season = ($thisSeason === 's' ? 'w' : 's');
                 $atts['sem'] = $year . $season;
             }
         }
@@ -285,8 +300,7 @@ class Shortcode
         return $atts;
     }
 
-    public function isGutenberg()
-    {
+    public function isGutenberg(): bool {
         $postID = get_the_ID();
         if ($postID && !use_block_editor_for_post($postID)) {
             return false;
@@ -294,8 +308,7 @@ class Shortcode
         return true;
     }
 
-    private function makeDropdown($id, $label, $aData, $all = null)
-    {
+    private function makeDropdown(string $id, string $label, array $aData, ?string $all = null): array {
         $ret = [
             'id' => $id,
             'label' => $label,
@@ -316,8 +329,7 @@ class Shortcode
         return $ret;
     }
 
-    private function makeToggle($label)
-    {
+    private function makeToggle(string $label): array {
         return [
             'label' => $label,
             'field_type' => 'toggle',
@@ -327,9 +339,8 @@ class Shortcode
         ];
     }
 
-    public function fillGutenbergOptions($aSettings)
-    {
-        $this->univis = new UnivISAPI($this->settings, $this->UnivISURL, $this->UnivISOrgNr, null);
+    public function fillGutenbergOptions(array $aSettings): array {
+        $this->cache = new Cache($this->UnivISURL, $this->UnivISOrgNr, null);
 
         foreach ($aSettings as $task => $settings) {
             $settings['number']['default'] = $this->UnivISOrgNr;
@@ -341,10 +352,12 @@ class Shortcode
                     unset($settings['id']);
                 }
                 $aPersons = [];
-                $data = $this->getData('personAll');
-                foreach ($data as $position => $persons) {
-                    foreach ($persons as $person) {
-                        $aPersons[$person['person_id']] = $person['lastname'] . (!empty($person['firstname']) ? ', ' . $person['firstname'] : '');
+                $data = $this->cache->getData('personAll');
+                if (is_array($data)) {
+                    foreach ($data as $position => $persons) {
+                        foreach ($persons as $person) {
+                            $aPersons[$person['person_id']] = $person['lastname'] . (!empty($person['firstname']) ? ', ' . $person['firstname'] : '');
+                        }
                     }
                 }
                 asort($aPersons);
@@ -357,16 +370,18 @@ class Shortcode
                 $aLectures = [];
                 $aLectureTypes = [];
                 $aLectureLanguages = [];
-                $data = $this->getData('lectureByDepartment');
+                $data = $this->cache->getData('lectureByDepartment');
 
-                foreach ($data as $type => $lecs) {
-                    foreach ($lecs as $lecture) {
-                        $aLectureTypes[$lecture['lecture_type']] = $type;
-                        if (!empty($lecture['leclanguage_long'])) {
-                            $parts = explode(' ', $lecture['leclanguage_long']);
-                            $aLectureLanguages[$lecture['leclanguage']] = $parts[1];
+                if (is_array($data)) {
+                    foreach ($data as $type => $lecs) {
+                        foreach ($lecs as $lecture) {
+                            $aLectureTypes[$lecture['lecture_type']] = $type;
+                            if (!empty($lecture['leclanguage_long'])) {
+                                $parts = explode(' ', $lecture['leclanguage_long']);
+                                $aLectureLanguages[$lecture['leclanguage']] = $parts[1] ?? $lecture['leclanguage_long'];
+                            }
+                            $aLectures[$lecture['lecture_id']] = $lecture['name'];
                         }
-                        $aLectures[$lecture['lecture_id']] = $lecture['name'];
                     }
                 }
 
@@ -383,7 +398,7 @@ class Shortcode
                 if (isset($settings['sem'])) {
                     $settings['sem'] = $this->makeDropdown('sem', __('Semester', 'rrze-univis'), [], __('-- Current semester --', 'rrze-univis'));
                     $thisSeason = (in_array(date('n'), [10, 11, 12, 1]) ? 'w' : 's');
-                    $season = ($thisSeason = 's' ? 'w' : 's');
+                    $season = ($thisSeason === 's' ? 'w' : 's');
                     $nextYear = date("Y") + 1;
                     $settings['sem']['values'][] = ['id' => $nextYear . $season, 'val' => $nextYear . $season];
                     $lastYear = $nextYear - 2;
@@ -409,101 +424,61 @@ class Shortcode
         return $aSettings;
     }
 
-    public function initGutenberg()
-    {
+    public function initGutenberg(): void {
+        $editorScript = 'rrze-univis-blocksupport';
+
         if (!$this->isGutenberg() || empty($this->UnivISURL) || empty($this->UnivISOrgNr)) {
             return;
         }
         // get prefills for dropdowns
         $aSettings = $this->fillGutenbergOptions($this->shortcodeSettings);
 
-        foreach ($aSettings as $task => $settings) {
-            // register js-script to inject php config to call gutenberg lib
-            $editor_script = $settings['block']['blockname'] . '-block';
-            $js = '../js/' . $editor_script . '.js';
-
-            wp_register_script(
-                $editor_script,
-                plugins_url($js, __FILE__),
-                array(
-                    'RRZE-Gutenberg',
-                ),
-                null
-            );
-
-            wp_localize_script($editor_script, $settings['block']['blockname'] . 'Config', $settings);
-
-            // register block
-            register_block_type($settings['block']['blocktype'], array(
-                'editor_script' => $editor_script,
-                'render_callback' => [$this, 'shortcodeOutput'],
-                'attributes' => $settings,
-            )
-            );
-        }
-    }
-
-    public function enqueueGutenberg()
-    {
-        if (!$this->isGutenberg()) {
-            return;
-        }
-
-        wp_dequeue_script('RRZE-Gutenberg');
-        // include gutenberg lib
-        wp_enqueue_script(
-            'RRZE-Gutenberg',
-            plugins_url('../js/gutenberg.js', __FILE__),
+        wp_register_script(
+            $editorScript,
+            $this->plugin->getUrl('js') . 'rrze-univis-blocksupport.js',
             array(
+                'jquery',
                 'wp-blocks',
                 'wp-i18n',
                 'wp-element',
                 'wp-components',
                 'wp-editor',
+                'wp-server-side-render',
             ),
             null
         );
-    }
 
-    public function enqueueBlockAssets()
-    {
-        wp_dequeue_script('RRZE-UnivIS-BlockJS');
-        // include blockeditor JS
-        wp_enqueue_script(
-            'RRZE-UnivIS-BlockJS',
-            plugins_url('../js/rrze-univis-blockeditor.js', __FILE__),
-            array(
-                'jquery',
-                'RRZE-Gutenberg',
-            ),
-            null
-        );
-    }
+        wp_localize_script($editorScript, 'rrzeUnivisBlockConfigs', $aSettings);
 
-    public function getData($dataType, $univisParam = null)
-    {
-        $sAtts = (!empty($this->atts) && is_array($this->atts) ? implode('-', $this->atts) : '');
-        $transient = sha1(self::TRANSIENT_PREFIX . $dataType . $sAtts . $this->UnivISOrgNr . $univisParam);
-        if ($this->noCache) {
-            $data = $this->univis->getData($dataType, $univisParam);
-            set_transient($transient, $data, self::TRANSIENT_EXPIRATION);
-            return $data;
-        }
-        $data = get_transient($transient);
-        if ($data && $data != __('No matching records found.', 'rrze-univis')) {
-            return $data;
-        } else {
-            $data = $this->univis->getData($dataType, $univisParam);
-            set_transient($transient, $data, self::TRANSIENT_EXPIRATION);
-            return $data;
+        foreach ($aSettings as $task => $settings) {
+            // register block
+            register_block_type($settings['block']['blocktype'], array(
+                'editor_script' => $editorScript,
+                'render_callback' => [$this, 'shortcodeOutput'],
+                'attributes' => $this->getBlockAttributes($settings),
+            )
+            );
         }
     }
 
-    public function addMCEButtons($pluginArray)
-    {
-        if (current_user_can('edit_posts') && current_user_can('edit_pages')) {
-            $pluginArray['rrze_univis_shortcode'] = plugins_url('../js/tinymce-shortcodes.js', plugin_basename(__FILE__));
+    private function getBlockAttributes(array $settings): array {
+        $attributes = [];
+
+        foreach ($settings as $name => $setting) {
+            if ($name === 'block' || !is_array($setting) || empty($setting['type'])) {
+                continue;
+            }
+
+            $attributes[$name] = [
+                'type' => $setting['type'],
+            ];
+
+            if (array_key_exists('default', $setting) && $setting['default'] !== null) {
+                $attributes[$name]['default'] = $setting['default'];
+            }
         }
-        return $pluginArray;
+
+        return $attributes;
     }
+
 }

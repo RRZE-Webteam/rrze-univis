@@ -4,10 +4,6 @@ namespace RRZE\UnivIS;
 
 defined('ABSPATH') || exit;
 
-use function RRZE\UnivIS\Config\getConstants;
-use RRZE\UnivIS\Settings;
-use RRZE\UnivIS\Shortcode;
-
 /**
  * Hauptklasse (Main)
  */
@@ -16,94 +12,73 @@ class Main {
      * Der vollständige Pfad- und Dateiname der Plugin-Datei.
      * @var string
      */
-    protected $pluginFile;
+    protected $plugin;
     protected $widget;
     protected $settings;
+    protected $config;
+    protected $template;
     
-    public function __construct($pluginFile)
-    {
-        $this->pluginFile = $pluginFile;
-        add_action('init', 'RRZE\UnivIS\add_endpoint');
+    public function __construct(Plugin $plugin) {
+        $this->plugin = $plugin;
+        $this->config = new Config();
+        $this->template = new Template($this->config, $this->plugin->getPath('templates'));
+        add_action('init', [Endpoints::class, 'add']);
         add_action('template_redirect', [$this, 'getSingleEntry']);
     }
 
-    public function onLoaded()
-    {
-        // add_action('admin_enqueue_scripts', [$this, 'enqueueAdminScripts']);
-        add_action('add_meta_boxes', [$this, 'addMetaboxes']);
+    public function onLoaded(): void {
+        $ajax = new Ajax($this->plugin);
+        $ajax->onLoaded();
 
-        $functions = new Functions($this->pluginFile);
-        $functions->onLoaded();
-
-        $settings = new Settings($this->pluginFile);
+        $settings = new Settings($this->plugin);
         $settings->onLoaded();
 
         $this->settings = $settings;
 
-        $shortcode = new Shortcode($this->pluginFile, $settings);
+        $shortcode = new Shortcode($this->plugin);
         $shortcode->onLoaded();
 
-        // Widget
-        $this->widget = new UnivISWidget($this->pluginFile, $settings);
-        add_action('widgets_init', [$this, 'loadWidget']);
-        add_theme_support('widgets-block-editor');
-        apply_filters('gutenberg_use_widgets_block_editor', get_theme_support('widgets-block-editor'));
-    }
+        if ($this->metaboxEnabled($settings)) {
+            $metabox = new Metabox();
+            $metabox->onLoaded();
+        }
 
-    public function loadWidget()
-    {
-        register_widget($this->widget);
-    }
-
-    public function addMetaboxes()
-    {
-        $aPosttypes = ['post', 'page', 'faq', 'glossary', 'synonym'];
-        foreach ($aPosttypes as $posttype) {
-            add_meta_box('get_univis_ids', __('Suche nach UnivIS IDs'), [$this, 'fillMetabox'], $posttype, 'side', 'core');
+        if ($this->widgetsEnabled($settings)) {
+            $this->widget = new Widgets($this->plugin);
+            add_action('widgets_init', [$this, 'loadWidget']);
+            add_theme_support('widgets-block-editor');
+            apply_filters('gutenberg_use_widgets_block_editor', get_theme_support('widgets-block-editor'));
         }
     }
 
-    public function fillMetabox()
-    {
-        ?>
-            <div class="tagsdiv" id="univis">
-                <div class="jaxtag">
-                    <form method="post">
-                    <div class="ajaxtag hide-if-no-js">
-                        <select name="dataType" id="dataType" class="univisSelect" required="required">
-                            <option value="departmentByName"><?php echo __('Organization', 'rrze-univis'); ?></option>
-                            <option value="personByName"><?php echo __('Person', 'rrze-univis'); ?></option>
-                            <option value="lectureByName"><?php echo __('Lecture', 'rrze-univis'); ?></option>
-                        </select>
-                    </div>
-                    <div class="ajaxtag hide-if-no-js">
-                        <input type="text" name="keyword" id="keyword" value="">
-                        <input type="button" class="button tagadd" id="searchUnivisID" value="Search">
-            	    </div>
-                    <div class="ajaxtag hide-if-no-js">
-                        <div id="univis-search-result"></div>
-                        <div id="loading" class="loading"><i class="fa fa-refresh fa-spin fa-2x"></i></div>
-            	    </div>
-                    </form>
-                </div>
-            </div>
-        <?php
-}
+    public function loadWidget(): void {
+        register_widget($this->widget);
+    }
 
-    public function getSingleEntry()
-    {
+    private function widgetsEnabled(Settings $settings): bool {
+        return !empty($settings->options['basic_enable_widgets']) && $settings->options['basic_enable_widgets'] === true;
+    }
+
+    private function metaboxEnabled(Settings $settings): bool {
+        return !empty($settings->options['basic_enable_metabox']) && $settings->options['basic_enable_metabox'] === true;
+    }
+
+    public function getSingleEntry(): void {
         global $wp_query;
 
         if (isset($wp_query->query_vars['lv_id'])) {
-            $data = do_shortcode('[univis task="lehrveranstaltungen-einzeln" lv_id="' . $wp_query->query_vars['lv_id'] . '" ]');
+            $lectureId = sanitize_text_field((string)$wp_query->query_vars['lv_id']);
+            $data = do_shortcode('[univis task="lehrveranstaltungen-einzeln" lv_id="' . esc_attr($lectureId) . '" ]');
         } elseif (isset($wp_query->query_vars['univisid'])) {
             $sShortcodeParams = '';
-            $aParts = explode('_', $wp_query->query_vars['univisid']);
+            $aParts = explode('_', sanitize_text_field((string)$wp_query->query_vars['univisid']));
             if (!empty($aParts[1])) {
                 parse_str($aParts[1], $aParams);
-                $sShortcodeParams = 'show="' . $aParams['show'] . '" hide="' . $aParams['hide'] . '"';
+                $show = !empty($aParams['show']) ? sanitize_text_field((string)$aParams['show']) : '';
+                $hide = !empty($aParams['hide']) ? sanitize_text_field((string)$aParams['hide']) : '';
+                $sShortcodeParams = 'show="' . esc_attr($show) . '" hide="' . esc_attr($hide) . '"';
             }
-            $data = do_shortcode('[univis task="mitarbeiter-einzeln" univisid="' . $aParts[0] . '" ' . $sShortcodeParams . ']');
+            $data = do_shortcode('[univis task="mitarbeiter-einzeln" univisid="' . esc_attr($aParts[0]) . '" ' . $sShortcodeParams . ']');
         } else {
             return;
         }
@@ -112,13 +87,15 @@ class Main {
         // global $post;
         // $post->post_title = $title;
         
-        include plugin_dir_path($this->pluginFile) . 'templates/single-univis.php';
+        echo $this->template->render('single-univis', [
+            'data' => $data,
+        ], $this);
         exit;
     }
 
-    public static function getThemeGroup()
-    {
-        $constants = getConstants();
+    public static function getThemeGroup(): string {
+        $config = new Config();
+        $constants = $config->getConstants();
         $ret = '';
         $active_theme = wp_get_theme();
         $active_theme = $active_theme->get('Name');
@@ -130,5 +107,4 @@ class Main {
         }
         return $ret;
     }
-
 }
