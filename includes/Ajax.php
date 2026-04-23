@@ -18,9 +18,7 @@ class Ajax {
 
         add_action('admin_enqueue_scripts', [$this, 'adminEnqueueScripts']);
         add_action('wp_ajax_' . $constants['ajax']['search_action'], [$this, 'ajaxGetUnivISData']);
-        add_action('wp_ajax_nopriv_' . $constants['ajax']['search_action'], [$this, 'ajaxGetUnivISData']);
         add_action('wp_ajax_' . $constants['ajax']['block_elements_action'], [$this, 'ajaxGetUnivISDataForBlockelements']);
-        add_action('wp_ajax_nopriv_' . $constants['ajax']['block_elements_action'], [$this, 'ajaxGetUnivISDataForBlockelements']);
     }
 
     public function adminEnqueueScripts(): void {
@@ -55,7 +53,10 @@ class Ajax {
     public function ajaxGetUnivISData(): void {
         $constants = $this->config->getConstants();
         check_ajax_referer($constants['ajax']['nonce_action'], $constants['ajax']['nonce_name']);
-        $inputs = filter_input(INPUT_POST, 'data', FILTER_SANITIZE_STRING, FILTER_REQUIRE_ARRAY);
+        $inputs = $this->getAjaxData();
+        if (empty($inputs['dataType']) || empty($inputs['keyword'])) {
+            wp_send_json($this->getTableHTML(__('No matching entries found.', 'rrze-univis')));
+        }
         $response = $this->getTableHTML($this->getUnivISData(null, $inputs['dataType'], $inputs['keyword']));
         wp_send_json($response);
     }
@@ -144,8 +145,22 @@ class Ajax {
     public function ajaxGetUnivISDataForBlockelements(): void {
         $constants = $this->config->getConstants();
         check_ajax_referer($constants['ajax']['nonce_action'], $constants['ajax']['nonce_name']);
-        $inputs = filter_input(INPUT_POST, 'data', FILTER_SANITIZE_STRING, FILTER_REQUIRE_ARRAY);
+        $inputs = $this->getAjaxData();
+        if (empty($inputs['univisOrgID']) || empty($inputs['dataType'])) {
+            wp_send_json($this->getSelectHTML(__('No matching entries found.', 'rrze-univis')));
+        }
         $response = $this->getSelectHTML($this->getUnivISData($inputs['univisOrgID'], $inputs['dataType']));
         wp_send_json($response);
+    }
+
+    private function getAjaxData(): array {
+        $data = isset($_POST['data']) && is_array($_POST['data']) ? wp_unslash($_POST['data']) : [];
+        $sanitized = [];
+
+        foreach ($data as $key => $value) {
+            $sanitized[(string)$key] = sanitize_text_field((string)$value);
+        }
+
+        return $sanitized;
     }
 }

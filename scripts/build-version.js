@@ -154,6 +154,13 @@ function setPluginCompatibility(pluginRoot, pkg) {
 
         if (typeof compatibility.phprequires === 'string' && compatibility.phprequires.trim() !== '') {
             updated = updated.replace(
+                /^( \* Requires PHP:\s*)(.+)$/m,
+                function (match, p1) {
+                    return p1 + compatibility.phprequires.trim();
+                }
+            );
+
+            updated = updated.replace(
                 /const\s+RRZE_PHP_VERSION\s*=\s*['"][^'"]*['"]\s*;/,
                 function () {
                     return "const RRZE_PHP_VERSION = '" + compatibility.phprequires.trim() + "';";
@@ -162,6 +169,13 @@ function setPluginCompatibility(pluginRoot, pkg) {
         }
 
         if (typeof compatibility.wprequires === 'string' && compatibility.wprequires.trim() !== '') {
+            updated = updated.replace(
+                /^( \* Requires at least:\s*)(.+)$/m,
+                function (match, p1) {
+                    return p1 + compatibility.wprequires.trim();
+                }
+            );
+
             updated = updated.replace(
                 /const\s+RRZE_WP_VERSION\s*=\s*['"][^'"]*['"]\s*;/,
                 function () {

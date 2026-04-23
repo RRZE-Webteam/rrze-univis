@@ -16,10 +16,12 @@ class Main {
     protected $widget;
     protected $settings;
     protected $config;
+    protected $template;
     
     public function __construct(Plugin $plugin) {
         $this->plugin = $plugin;
         $this->config = new Config();
+        $this->template = new Template($this->config, $this->plugin->getPath('templates'));
         add_action('init', [Endpoints::class, 'add']);
         add_action('template_redirect', [$this, 'getSingleEntry']);
     }
@@ -65,15 +67,18 @@ class Main {
         global $wp_query;
 
         if (isset($wp_query->query_vars['lv_id'])) {
-            $data = do_shortcode('[univis task="lehrveranstaltungen-einzeln" lv_id="' . $wp_query->query_vars['lv_id'] . '" ]');
+            $lectureId = sanitize_text_field((string)$wp_query->query_vars['lv_id']);
+            $data = do_shortcode('[univis task="lehrveranstaltungen-einzeln" lv_id="' . esc_attr($lectureId) . '" ]');
         } elseif (isset($wp_query->query_vars['univisid'])) {
             $sShortcodeParams = '';
-            $aParts = explode('_', $wp_query->query_vars['univisid']);
+            $aParts = explode('_', sanitize_text_field((string)$wp_query->query_vars['univisid']));
             if (!empty($aParts[1])) {
                 parse_str($aParts[1], $aParams);
-                $sShortcodeParams = 'show="' . $aParams['show'] . '" hide="' . $aParams['hide'] . '"';
+                $show = !empty($aParams['show']) ? sanitize_text_field((string)$aParams['show']) : '';
+                $hide = !empty($aParams['hide']) ? sanitize_text_field((string)$aParams['hide']) : '';
+                $sShortcodeParams = 'show="' . esc_attr($show) . '" hide="' . esc_attr($hide) . '"';
             }
-            $data = do_shortcode('[univis task="mitarbeiter-einzeln" univisid="' . $aParts[0] . '" ' . $sShortcodeParams . ']');
+            $data = do_shortcode('[univis task="mitarbeiter-einzeln" univisid="' . esc_attr($aParts[0]) . '" ' . $sShortcodeParams . ']');
         } else {
             return;
         }
@@ -82,7 +87,9 @@ class Main {
         // global $post;
         // $post->post_title = $title;
         
-        include $this->plugin->getPath('templates') . 'single-univis.php';
+        echo $this->template->render('single-univis', [
+            'data' => $data,
+        ], $this);
         exit;
     }
 

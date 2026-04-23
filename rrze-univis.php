@@ -4,9 +4,9 @@
  * Plugin Name:     RRZE UnivIS
  * Plugin URI:      https://github.com/RRZE-Webteam/rrze-univis
  * Description:     Einbindung von Daten aus UnivIS
- * Version:         3.7.8
- * Requires at least: 6.1
- * Requires PHP:      8.0
+ * Version:         3.7.8-6
+ * Requires at least: 6.9.4
+ * Requires PHP:      8.3
  * Author:          RRZE-Webteam
  * Author URI:      https://blogs.fau.de/webworking/
  * License:         GNU General Public License v3
@@ -67,9 +67,9 @@ function loadTextdomain(): void {
 function systemRequirements(): string {
     $error = '';
     if (version_compare(PHP_VERSION, RRZE_PHP_VERSION, '<')) {
-        $error = sprintf(__('The server is running PHP version %1$s. The Plugin requires at least PHP version %2$s.', 'rrze-rsvp'), PHP_VERSION, RRZE_PHP_VERSION);
+        $error = sprintf(__('The server is running PHP version %1$s. The Plugin requires at least PHP version %2$s.', 'rrze-univis'), PHP_VERSION, RRZE_PHP_VERSION);
     } elseif (version_compare($GLOBALS['wp_version'], RRZE_WP_VERSION, '<')) {
-        $error = sprintf(__('The server is running WordPress version %1$s. The Plugin requires at least WordPress version %2$s.', 'rrze-rsvp'), $GLOBALS['wp_version'], RRZE_WP_VERSION);
+        $error = sprintf(__('The server is running WordPress version %1$s. The Plugin requires at least WordPress version %2$s.', 'rrze-univis'), $GLOBALS['wp_version'], RRZE_WP_VERSION);
     }
     return $error;
 }

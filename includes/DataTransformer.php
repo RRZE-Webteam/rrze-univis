@@ -24,6 +24,10 @@ class DataTransformer {
     }
 
     public function transform(string $dataType, mixed &$data): mixed {
+        if (!is_array($data)) {
+            return [];
+        }
+
         $data = $this->mapIt($dataType, $data);
         $data = $this->dict($data);
         return $this->sortGroup($dataType, $data);
@@ -31,6 +35,34 @@ class DataTransformer {
 
     private function getData(string $dataType, mixed $univisParam = null): mixed {
         return call_user_func($this->getDataCallback, $dataType, $univisParam);
+    }
+
+    private function asArray(mixed $value): array {
+        return is_array($value) ? $value : [];
+    }
+
+    private function atts(): array {
+        return $this->asArray($this->atts);
+    }
+
+    private function stringValue(array $row, string $key, string $default = ''): string {
+        if (!isset($row[$key]) || !is_scalar($row[$key])) {
+            return $default;
+        }
+
+        return (string)$row[$key];
+    }
+
+    private function recordsFromNode(array $data, string $node): array {
+        if (!isset($data[$node]) || !is_array($data[$node])) {
+            return [];
+        }
+
+        if (array_is_list($data[$node])) {
+            return $data[$node];
+        }
+
+        return [$data[$node]];
     }
 
     private function getMap(string $dataType): array {
@@ -221,31 +253,34 @@ class DataTransformer {
 
         $ret = [];
         $show = true;
+        $records = $this->recordsFromNode($data, $map['node']);
 
-        if (isset($data[$map['node']])) {
-            foreach ($data[$map['node']] as $nr => $entry) {
-                foreach ($map['fields'] as $k => $v) {
-                    if (is_array($v)) {
-                        if (is_int($v[1])) {
-                            if (isset($data[$map['node']][$nr][$v[0]][$v[1]])) {
-                                $ret[$nr][$k] = $data[$map['node']][$nr][$v[0]][$v[1]];
-                            }
-                            elseif (isset($data[$map['node']][$nr][$v[0]][0])) {
-                                $ret[$nr][$k] = $data[$map['node']][$nr][$v[0]][0];
-                            }
+        foreach ($records as $nr => $entry) {
+            if (!is_array($entry)) {
+                continue;
+            }
+
+            foreach ($map['fields'] as $k => $v) {
+                if (is_array($v)) {
+                    if (is_int($v[1])) {
+                        if (isset($entry[$v[0]][$v[1]])) {
+                            $ret[$nr][$k] = $entry[$v[0]][$v[1]];
                         }
-                        else {
-                            $y = 0;
-                            while (isset($data[$map['node']][$nr][$v[0]][$y][$v[1]])) {
-                                $ret[$nr][$k] = $data[$map['node']][$nr][$v[0]][$y][$v[1]];
-                                $y++;
-                            }
+                        elseif (isset($entry[$v[0]][0])) {
+                            $ret[$nr][$k] = $entry[$v[0]][0];
                         }
                     }
                     else {
-                        if (isset($data[$map['node']][$nr][$v])) {
-                            $ret[$nr][$k] = $data[$map['node']][$nr][$v];
+                        $y = 0;
+                        while (isset($entry[$v[0]][$y][$v[1]])) {
+                            $ret[$nr][$k] = $entry[$v[0]][$y][$v[1]];
+                            $y++;
                         }
+                    }
+                }
+                else {
+                    if (isset($entry[$v])) {
+                        $ret[$nr][$k] = $entry[$v];
                     }
                 }
             }
@@ -255,10 +290,18 @@ class DataTransformer {
             case 'jobByID':
             case 'jobAll':
                 // add person details
-                $persons = $this->mapIt('personByID', $data);
+                $persons = $this->asArray($this->mapIt('personByID', $data));
                 foreach ($ret as $e_nr => $entry) {
+                    if (!is_array($entry)) {
+                        continue;
+                    }
+
                     foreach ($persons as $person) {
-                        if (isset($entry['person_key']) && $entry['person_key'] == $person['key']) {
+                        if (!is_array($person)) {
+                            continue;
+                        }
+
+                        if (isset($entry['person_key'], $person['key']) && $entry['person_key'] == $person['key']) {
                             unset($person['person_id']);
                             $ret[$e_nr] = array_merge_recursive($entry, $person);
                             unset($ret[$e_nr]['person_key']);
@@ -271,11 +314,23 @@ class DataTransformer {
             case 'publicationByAuthor':
             case 'publicationByDepartment':
                 // add person details
-                $persons = $this->mapIt('personByID', $data);
+                $persons = $this->asArray($this->mapIt('personByID', $data));
                 foreach ($ret as $e_nr => $entry) {
+                    if (empty($entry['author']) || !is_array($entry['author'])) {
+                        continue;
+                    }
+
                     foreach ($entry['author'] as $details) {
+                        if (!is_array($details)) {
+                            continue;
+                        }
+
                         foreach ($persons as $p_nr => $person) {
-                            if ($person['key'] == $details['pkey']) {
+                            if (!is_array($person)) {
+                                continue;
+                            }
+
+                            if (isset($person['key'], $details['pkey']) && $person['key'] == $details['pkey']) {
                                 unset($person['key']);
                                 $ret[$e_nr]['authors'][] = $person;
                                 unset($person[$p_nr]);
@@ -287,36 +342,46 @@ class DataTransformer {
                 break;
             case 'lectureByLecturerID':
                 // $lecturer_key is used in template to filter courses that are not by this lecturer
-                $lecturer = $this->getData('personByID', $this->univisParam);
+                $lecturer = $this->asArray($this->getData('personByID', $this->univisParam));
                 if (isset($lecturer[0]['key'])) {
                     $subs = explode('Person.', $lecturer[0]['key']);
                 }
                 $lecturer_key = (isset($subs[1]) ? $subs[1] : '');
+                // Fall through: lectures need the same lecturer and course enrichment below.
             case 'lectureByLecturer':
                 // $lecturer_key is used in template to filter courses that are not by this lecturer
-                $lecturer = $this->getData('personByName', $this->univisParam);
+                $lecturer = $this->asArray($this->getData('personByName', $this->univisParam));
                 if (isset($lecturer[0]['key'])) {
                     $subs = explode('Person.', $lecturer[0]['key']);
                 }
                 $lecturer_key = (isset($subs[1]) ? $subs[1] : '');
+                // Fall through: lectures need the same course, lecturer and room enrichment below.
             case 'lectureByID':
             case 'lectureByDepartment':
                 // add details
-                $courses = $this->mapIt('courses', $data);
-                $persons = $this->mapIt('personByID', $data);
+                $courses = $this->asArray($this->mapIt('courses', $data));
+                $persons = $this->asArray($this->mapIt('personByID', $data));
                 $delNr = [];
                 foreach ($ret as $e_nr => $entry) {
+                    if (!is_array($entry)) {
+                        continue;
+                    }
+
                     $ret[$e_nr]['lecturer_key'] = (!empty($lecturer_key) ? $lecturer_key : '');
                     // add course details
-                    if (isset($entry['course_keys'])) {
+                    if (isset($entry['course_keys']) && is_array($entry['course_keys'])) {
                         foreach ($entry['course_keys'] as $course_key) {
                             foreach ($courses as $c_nr => $course) {
-                                if (($course['course_key'] == 'Lecture.' . $course_key) && (isset($course['term']))) {
+                                if (!is_array($course)) {
+                                    continue;
+                                }
+
+                                if (isset($course['course_key'], $course['term']) && ($course['course_key'] == 'Lecture.' . $course_key)) {
                                     unset($course['course_key']);
                                     $ret[$e_nr]['courses'][] = $course;
                                     // delete entry of this course
                                     foreach ($ret as $nr => $val) {
-                                        if ($val['key'] == 'Lecture.' . $course_key) {
+                                        if (is_array($val) && isset($val['key']) && $val['key'] == 'Lecture.' . $course_key) {
                                             $delNr[] = $nr;
                                         }
                                     }
@@ -330,10 +395,14 @@ class DataTransformer {
                         $ret[$e_nr]['courses'][] = ['term' => $entry['courses']];
                     }
                     // add person details
-                    if (isset($entry['doz'])) {
+                    if (isset($entry['doz']) && is_array($entry['doz'])) {
                         foreach ($entry['doz'] as $doz_key) {
                             foreach ($persons as $p_nr => $person) {
-                                if ($person['key'] == 'Person.' . $doz_key) {
+                                if (!is_array($person)) {
+                                    continue;
+                                }
+
+                                if (isset($person['key']) && $person['key'] == 'Person.' . $doz_key) {
                                     // unset($person['key']);
                                     $ret[$e_nr]['lecturers'][] = $person;
                                     unset($person[$p_nr]);
@@ -347,13 +416,21 @@ class DataTransformer {
                     unset($ret[$nr]);
                 }
                 // add room details
-                $rooms = $this->mapIt('roomByID', $data);
+                $rooms = $this->asArray($this->mapIt('roomByID', $data));
                 foreach ($ret as $nr => $entry) {
-                    if (isset($entry['courses'])) {
+                    if (isset($entry['courses']) && is_array($entry['courses'])) {
                         foreach ($entry['courses'] as $c_nr => $course) {
+                            if (!is_array($course) || empty($course['term']) || !is_array($course['term'])) {
+                                continue;
+                            }
+
                             foreach ($course['term'] as $t_nr => $term) {
+                                if (!is_array($term)) {
+                                    continue;
+                                }
+
                                 foreach ($rooms as $room) {
-                                    if (isset($term['room']) && $term['room'] == $room['key']) {
+                                    if (is_array($room) && isset($term['room'], $room['key']) && $term['room'] == $room['key']) {
                                         $ret[$nr]['courses'][$c_nr]['term'][$t_nr]['room'] = $room;
                                     }
                                 }
@@ -364,30 +441,38 @@ class DataTransformer {
                 break;
             case 'personAll':
                 // add orga details
-                $orga = $this->mapIt('orga', $data);
+                $orga = $this->asArray($this->mapIt('orga', $data));
                 $persons = [];
                 foreach ($ret as $entry) {
+                    if (!is_array($entry) || empty($entry['key'])) {
+                        continue;
+                    }
+
                     $persons[$entry['key']] = $entry;
                 }
 
-                if (!empty($orga[0]['orga_positions'])) {
+                if (!empty($orga[0]['orga_positions']) && is_array($orga[0]['orga_positions'])) {
                     $orgaPositions = $orga[0]['orga_positions'];
                     foreach ($orgaPositions as $orgaDetails) {
-                        if (isset($orgaDetails['per'])) {
+                        if (is_array($orgaDetails) && isset($orgaDetails['per']) && is_array($orgaDetails['per'])) {
                             foreach ($orgaDetails['per'] as $personKey) {
+                                if (!is_scalar($personKey)) {
+                                    continue;
+                                }
+
                                 if (!empty($persons['Person.' . $personKey])) {
                                     if (!empty($persons['Person.' . $personKey]['orga_position'])) {
                                         $persons[] = $persons['Person.' . $personKey];
                                     }
-                                    if (!empty($this->atts['lang'])) {
-                                        $this->atts['lang'] = strtolower($this->atts['lang']);
-                                        $desc = !empty($orgaDetails['description_' . $this->atts['lang']]) ? $orgaDetails['description_' . $this->atts['lang']] : __('Other', 'rrze-univis');
+                                    $lang = strtolower($this->stringValue($this->atts(), 'lang'));
+                                    if ($lang !== '') {
+                                        $desc = $this->stringValue($orgaDetails, 'description_' . $lang, __('Other', 'rrze-univis'));
                                     }
                                     else {
-                                        $desc = $orgaDetails['description'];
+                                        $desc = $this->stringValue($orgaDetails, 'description', __('Other', 'rrze-univis'));
                                     }
                                     $persons['Person.' . $personKey]['orga_position'] = $desc;
-                                    $persons['Person.' . $personKey]['orga_position_order'] = $orgaDetails['joborder'];
+                                    $persons['Person.' . $personKey]['orga_position_order'] = $this->stringValue($orgaDetails, 'joborder');
                                 }
                             }
                         }
@@ -401,9 +486,12 @@ class DataTransformer {
     }
 
     private function sortGroup(string $dataType, mixed &$data): mixed {
-        if (empty($data)) {
+        if (empty($data) || !is_array($data)) {
             return [];
         }
+
+        $atts = $this->atts();
+
         // sort
         // 2024-01-10 (lapmk) fix mitarbeiter-telefonbuch: missing sorting by lastname
         if (in_array($dataType, ['personByID', 'personByOrga', 'personByName', 'personByOrgaPhonebook', ''])) {
@@ -418,7 +506,11 @@ class DataTransformer {
         // group by lastname's first letter
         if ($dataType == 'personByOrgaPhonebook') {
             foreach ($data as $nr => $entry) {
-                $data[$nr]['letter'] = mb_substr($entry['lastname'], 0, 1);
+                if (!is_array($entry)) {
+                    continue;
+                }
+
+                $data[$nr]['letter'] = mb_substr($this->stringValue($entry, 'lastname'), 0, 1);
             }
             $data = $this->groupBy($data, 'letter');
         }
@@ -426,30 +518,34 @@ class DataTransformer {
         if (in_array($dataType, ['lectureByID', 'lectureByLecturerID', 'lectureByLecturer', 'lectureByDepartment'])) {
 
             // 2021-09-23 quickfix because there is a bug in UnivIS-API's filtering by language
-            if (!empty($this->atts['lang'])) {
+            if (!empty($atts['lang'])) {
                 $data = $this->filterByLang($data);
             }
 
             // 2021-10-01 quickfix because there is a bug in UnivIS-API's filtering by type
-            if (!empty($this->atts['type'])) {
+            if (!empty($atts['type'])) {
                 $data = $this->filterByType($data);
             }
 
             // 2022-01-13 UnivIS-API's does not support filtering by gast ("für Gaststudium geeignet")
-            if (!empty($this->atts['gast'])) {
+            if (!empty($atts['gast'])) {
                 $data = $this->filterByGast($data);
             }
 
             $data = $this->groupBy($data, 'lecture_type_long');
 
             // sort by attribute "order"
-            if (!empty($this->atts['order'])) {
-                $aOrder = explode(',', $this->atts['order']);
+            if (!empty($atts['order']) && !is_array($atts['order'])) {
+                $aOrder = explode(',', (string)$atts['order']);
                 $sortedData = [];
                 foreach ($aOrder as $order) {
                     foreach ($data as $lecture_type_long => $lectures) {
+                        if (!is_array($lectures)) {
+                            continue;
+                        }
+
                         foreach ($lectures as $lecture) {
-                            if ($lecture['lecture_type'] == trim($order)) {
+                            if (is_array($lecture) && $this->stringValue($lecture, 'lecture_type') == trim($order)) {
                                 $sortedData[$lecture_type_long] = $data[$lecture_type_long];
                                 unset($data[$lecture_type_long]);
                                 break 1;
@@ -465,10 +561,10 @@ class DataTransformer {
             usort($data, [$this, 'sortByYear']);
 
             // filter by attribute "since"
-            if (!empty($this->atts['since'])) {
-                $since = (int)$this->atts['since'];
+            if (!empty($atts['since'])) {
+                $since = (int)$atts['since'];
                 foreach ($data as $key => $entry) {
-                    if ($entry["year"] < $since) {
+                    if (is_array($entry) && (int)$this->stringValue($entry, 'year', '0') < $since) {
                         unset($data[$key]);
                     }
                 }
@@ -505,6 +601,10 @@ class DataTransformer {
         $isAllowed = Utils::isInternAllowed();
 
         foreach ($arr as $key => $val) {
+            if (!is_array($val)) {
+                continue;
+            }
+
             if (!empty($val['pub_visible'])) {
                 if (($val['pub_visible'] == 'ja')) {
                     $ret[$key] = $val;
@@ -521,6 +621,10 @@ class DataTransformer {
     private function filterByGast(array $arr): array {
         $ret = [];
         foreach ($arr as $key => $val) {
+            if (!is_array($val)) {
+                continue;
+            }
+
             if (!empty($val['gast']) && ($val['gast'] == $this->gast)) {
                 $ret[$key] = $val;
             }
@@ -530,8 +634,14 @@ class DataTransformer {
 
     private function filterByLang(array $arr): array {
         $ret = [];
+        $lang = $this->stringValue($this->atts(), 'lang');
+
         foreach ($arr as $key => $val) {
-            if (!empty($val['leclanguage']) && ($val['leclanguage'] == $this->atts['lang'])) {
+            if (!is_array($val)) {
+                continue;
+            }
+
+            if (!empty($val['leclanguage']) && ($val['leclanguage'] == $lang)) {
                 $ret[$key] = $val;
             }
         }
@@ -544,9 +654,13 @@ class DataTransformer {
 
     private function filterByType(array $arr): array {
         $ret = [];
-        $aTypes = array_map([$this, 'multiMap'], explode(',', $this->atts['type']));
+        $aTypes = array_map([$this, 'multiMap'], explode(',', $this->stringValue($this->atts(), 'type')));
 
         foreach ($arr as $key => $val) {
+            if (!is_array($val)) {
+                continue;
+            }
+
             if (!empty($val['lecture_type']) && in_array($val['lecture_type'], $aTypes)) {
                 $ret[$key] = $val;
             }
@@ -558,6 +672,10 @@ class DataTransformer {
     private function groupBy(array $arr, string $key): array {
         $ret = [];
         foreach ($arr as $val) {
+            if (!is_array($val)) {
+                continue;
+            }
+
             if (!empty($val[$key])) {
                 $ret[$val[$key]][] = $val;
             }
@@ -572,76 +690,107 @@ class DataTransformer {
 
     private function sortByLastname(array $a, array $b): int {
         // 2024-01-10 (lapmk) quickfix sorting of German umlaute
-        return strcasecmp(self::replaceUmlauteForSort($a["lastname"]), self::replaceUmlauteForSort($b["lastname"]));
+        return strcasecmp(self::replaceUmlauteForSort($this->stringValue($a, 'lastname')), self::replaceUmlauteForSort($this->stringValue($b, 'lastname')));
     }
 
     private function sortByName(array $a, array $b): int {
-        return strcasecmp($a["name"], $b["name"]);
+        return strcasecmp($this->stringValue($a, 'name'), $this->stringValue($b, 'name'));
     }
 
     private function sortByYear(array $a, array $b): int {
-        return strcasecmp($b["year"], $a["year"]);
+        return strcasecmp($this->stringValue($b, 'year'), $this->stringValue($a, 'year'));
     }
 
     private function sortByPositionorder(array $a, array $b): int {
-        if (empty($a["orga_position_order"]) || empty($b["orga_position_order"])) {
+        $positionOrderA = $this->stringValue($a, 'orga_position_order');
+        $positionOrderB = $this->stringValue($b, 'orga_position_order');
+
+        if ($positionOrderA === '' || $positionOrderB === '') {
             return 0;
         }
-        return strnatcmp($a["orga_position_order"], $b["orga_position_order"]);
+        return strnatcmp($positionOrderA, $positionOrderB);
     }
 
     private function dict(mixed &$data): mixed {
+        if (!is_array($data)) {
+            return $data;
+        }
+
         $fields = $this->config->get('constants.dictionary_fields', []);
 
         foreach ($data as $nr => $row) {
+            if (!is_array($row)) {
+                continue;
+            }
+
             foreach ($fields as $field => $values) {
-                if (isset($data[$nr][$field]) && ($field == 'locations')) {
+                if (isset($data[$nr][$field]) && ($field == 'locations') && is_array($data[$nr]['locations'])) {
                     foreach ($data[$nr]['locations'] as $l_nr => $location) {
-                        if (!empty($location['tel'])) {
-                            $data[$nr]['locations'][$l_nr]['tel'] = Utils::correctPhone($data[$nr]['locations'][$l_nr]['tel']);
+                        if (!is_array($location)) {
+                            continue;
+                        }
+
+                        if (!empty($location['tel']) && is_scalar($location['tel'])) {
+                            $data[$nr]['locations'][$l_nr]['tel'] = Utils::correctPhone((string)$data[$nr]['locations'][$l_nr]['tel']);
                             $data[$nr]['locations'][$l_nr]['tel_call'] = '+' . Utils::getInt($data[$nr]['locations'][$l_nr]['tel']);
                         }
-                        if (!empty($location['fax'])) {
-                            $data[$nr]['locations'][$l_nr]['fax'] = Utils::correctPhone($data[$nr]['locations'][$l_nr]['fax']);
+                        if (!empty($location['fax']) && is_scalar($location['fax'])) {
+                            $data[$nr]['locations'][$l_nr]['fax'] = Utils::correctPhone((string)$data[$nr]['locations'][$l_nr]['fax']);
                         }
-                        if (!empty($location['mobile'])) {
-                            $data[$nr]['locations'][$l_nr]['mobile'] = Utils::correctPhone($data[$nr]['locations'][$l_nr]['mobile']);
+                        if (!empty($location['mobile']) && is_scalar($location['mobile'])) {
+                            $data[$nr]['locations'][$l_nr]['mobile'] = Utils::correctPhone((string)$data[$nr]['locations'][$l_nr]['mobile']);
                             $data[$nr]['locations'][$l_nr]['mobile_call'] = '+' . Utils::getInt($data[$nr]['locations'][$l_nr]['mobile']);
                         }
                     }
                 }
                 elseif ($field == 'repeat') {
-                    if (isset($data[$nr]['courses'])) {
+                    if (isset($data[$nr]['courses']) && is_array($data[$nr]['courses'])) {
                         foreach ($data[$nr]['courses'] as $c_nr => $course) {
+                            if (!is_array($course) || empty($course['term']) || !is_array($course['term'])) {
+                                continue;
+                            }
+
                             foreach ($course['term'] as $m_nr => $meeting) {
-                                if (isset($data[$nr]['courses'][$c_nr]['term'][$m_nr]['repeat'])) {
+                                if (!is_array($meeting)) {
+                                    continue;
+                                }
+
+                                if (isset($data[$nr]['courses'][$c_nr]['term'][$m_nr]['repeat']) && is_scalar($data[$nr]['courses'][$c_nr]['term'][$m_nr]['repeat'])) {
                                     $data[$nr]['courses'][$c_nr]['term'][$m_nr]['repeatNr'] = $data[$nr]['courses'][$c_nr]['term'][$m_nr]['repeat'];
-                                    $data[$nr]['courses'][$c_nr]['term'][$m_nr]['repeat'] = str_replace(array_keys($values), array_values($values), $data[$nr]['courses'][$c_nr]['term'][$m_nr]['repeat']);
+                                    $data[$nr]['courses'][$c_nr]['term'][$m_nr]['repeat'] = str_replace(array_keys($values), array_values($values), (string)$data[$nr]['courses'][$c_nr]['term'][$m_nr]['repeat']);
                                 }
                             }
                         }
                     }
-                    elseif (isset($data[$nr]['officehours'])) {
+                    elseif (isset($data[$nr]['officehours']) && is_array($data[$nr]['officehours'])) {
                         foreach ($data[$nr]['officehours'] as $c_nr => $entry) {
-                            if (isset($data[$nr]['officehours'][$c_nr]['repeat'])) {
+                            if (!is_array($entry)) {
+                                continue;
+                            }
+
+                            if (isset($data[$nr]['officehours'][$c_nr]['repeat']) && is_scalar($data[$nr]['officehours'][$c_nr]['repeat'])) {
                                 $data[$nr]['officehours'][$c_nr]['repeatNr'] = $data[$nr]['officehours'][$c_nr]['repeat'];
-                                $data[$nr]['officehours'][$c_nr]['repeat'] = trim(str_replace(array_keys($values), array_values($values), $data[$nr]['officehours'][$c_nr]['repeat']));
+                                $data[$nr]['officehours'][$c_nr]['repeat'] = trim(str_replace(array_keys($values), array_values($values), (string)$data[$nr]['officehours'][$c_nr]['repeat']));
                             }
                         }
                     }
                 }
                 elseif ($field == 'organizational') {
-                    if (isset($data[$nr][$field])) {
-                        $data[$nr][$field] = Utils::formatUnivIS($data[$nr][$field]);
+                    if (isset($data[$nr][$field]) && is_scalar($data[$nr][$field])) {
+                        $data[$nr][$field] = Utils::formatUnivIS((string)$data[$nr][$field]);
                     }
                 }
                 elseif (isset($data[$nr][$field])) {
-                    if (in_array($field, ['title'])) {
+                    if (in_array($field, ['title']) && is_scalar($data[$nr][$field])) {
                         // multi replace
-                        $data[$nr][$field . '_long'] = str_replace(array_keys($values), array_values($values), $data[$nr][$field]);
+                        $data[$nr][$field . '_long'] = str_replace(array_keys($values), array_values($values), (string)$data[$nr][$field]);
                     }
                     else {
                         if (!is_array($values)) {
+                            if (!is_scalar($data[$nr][$field])) {
+                                continue;
+                            }
+
                             if ($field == 'sws') {
                                 $data[$nr][$field] .= $values;
                             }
@@ -656,7 +805,8 @@ class DataTransformer {
                             if (isset($row[$field]) && isset($values[$row[$field]])) {
                                 $data[$nr][$field . '_long'] = $values[$row[$field]];
                                 if ($field == 'lecture_type') {
-                                    $data[$nr][$field . '_short'] = trim(substr($values[$row[$field]], 0, strpos($values[$row[$field]], '(')));
+                                    $position = strpos($values[$row[$field]], '(');
+                                    $data[$nr][$field . '_short'] = $position !== false ? trim(substr($values[$row[$field]], 0, $position)) : $values[$row[$field]];
                                 }
                             }
                         }

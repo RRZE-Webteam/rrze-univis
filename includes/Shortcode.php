@@ -21,6 +21,7 @@ class Shortcode {
     protected $hide = [];
     protected $atts;
     protected $cache;
+    protected $template;
     protected $noCache = false;
     private $shortcodeSettings = '';
     private $config;
@@ -41,6 +42,7 @@ class Shortcode {
     public function __construct(Plugin $plugin) {
         $this->plugin = $plugin;
         $this->config = new Config();
+        $this->template = new Template($this->config, $this->plugin->getPath('templates'));
         $this->shortcodeSettings = $this->config->getShortcodeSettings();
         $this->options = get_option('rrze-univis');
         $constants = $this->config->getConstants();
@@ -118,18 +120,11 @@ class Shortcode {
         $lecture = $this->getTemplateLecture($data);
 
         if ($data && is_array($data)) {
-            // $data = '<pre>' . json_encode($data, JSON_PRETTY_PRINT) . '</pre>';
-            // var_dump($data);
-            // exit;
-
-            $filename = $this->plugin->getPath('templates') . $this->atts['task'] . '.php';
-
-            if (is_file($filename)) {
-                ob_start();
-                include $filename;
-                return str_replace("\n", " ", ob_get_clean());
-            }
-            return '';
+            return str_replace("\n", " ", $this->template->render($this->atts['task'], [
+                'data' => $data,
+                'person' => $person,
+                'lecture' => $lecture,
+            ], $this));
         } else {
             return __('No matching records found.', 'rrze-univis'); // Keine passenden Datensätze gefunden.
         }
@@ -294,7 +289,7 @@ class Shortcode {
             if (is_int($atts['sem'])) {
                 $year = date("Y") + $atts['sem'];
                 $thisSeason = (in_array(date('n'), [10, 11, 12, 1]) ? 'w' : 's');
-                $season = ($thisSeason = 's' ? 'w' : 's');
+                $season = ($thisSeason === 's' ? 'w' : 's');
                 $atts['sem'] = $year . $season;
             }
         }
@@ -358,9 +353,11 @@ class Shortcode {
                 }
                 $aPersons = [];
                 $data = $this->cache->getData('personAll');
-                foreach ($data as $position => $persons) {
-                    foreach ($persons as $person) {
-                        $aPersons[$person['person_id']] = $person['lastname'] . (!empty($person['firstname']) ? ', ' . $person['firstname'] : '');
+                if (is_array($data)) {
+                    foreach ($data as $position => $persons) {
+                        foreach ($persons as $person) {
+                            $aPersons[$person['person_id']] = $person['lastname'] . (!empty($person['firstname']) ? ', ' . $person['firstname'] : '');
+                        }
                     }
                 }
                 asort($aPersons);
@@ -375,14 +372,16 @@ class Shortcode {
                 $aLectureLanguages = [];
                 $data = $this->cache->getData('lectureByDepartment');
 
-                foreach ($data as $type => $lecs) {
-                    foreach ($lecs as $lecture) {
-                        $aLectureTypes[$lecture['lecture_type']] = $type;
-                        if (!empty($lecture['leclanguage_long'])) {
-                            $parts = explode(' ', $lecture['leclanguage_long']);
-                            $aLectureLanguages[$lecture['leclanguage']] = $parts[1];
+                if (is_array($data)) {
+                    foreach ($data as $type => $lecs) {
+                        foreach ($lecs as $lecture) {
+                            $aLectureTypes[$lecture['lecture_type']] = $type;
+                            if (!empty($lecture['leclanguage_long'])) {
+                                $parts = explode(' ', $lecture['leclanguage_long']);
+                                $aLectureLanguages[$lecture['leclanguage']] = $parts[1] ?? $lecture['leclanguage_long'];
+                            }
+                            $aLectures[$lecture['lecture_id']] = $lecture['name'];
                         }
-                        $aLectures[$lecture['lecture_id']] = $lecture['name'];
                     }
                 }
 
@@ -399,7 +398,7 @@ class Shortcode {
                 if (isset($settings['sem'])) {
                     $settings['sem'] = $this->makeDropdown('sem', __('Semester', 'rrze-univis'), [], __('-- Current semester --', 'rrze-univis'));
                     $thisSeason = (in_array(date('n'), [10, 11, 12, 1]) ? 'w' : 's');
-                    $season = ($thisSeason = 's' ? 'w' : 's');
+                    $season = ($thisSeason === 's' ? 'w' : 's');
                     $nextYear = date("Y") + 1;
                     $settings['sem']['values'][] = ['id' => $nextYear . $season, 'val' => $nextYear . $season];
                     $lastYear = $nextYear - 2;

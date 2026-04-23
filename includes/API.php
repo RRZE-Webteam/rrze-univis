@@ -40,14 +40,34 @@ class API {
             return 'Set UnivIS Org ID in settings.';
         }
 
-        $data = file_get_contents($url);
-        if (!$data) {
+        $response = wp_remote_get($url, [
+            'timeout' => 15,
+            'redirection' => 3,
+        ]);
+
+        if (is_wp_error($response)) {
+            do_action('rrze.log.error', 'UnivIS\\API (getData): request failed using ' . $url, $response);
+            return false;
+        }
+
+        $statusCode = (int)wp_remote_retrieve_response_code($response);
+        if ($statusCode < 200 || $statusCode >= 300) {
+            do_action('rrze.log.error', 'UnivIS\\API (getData): unexpected response status ' . $statusCode . ' using ' . $url);
+            return false;
+        }
+
+        $data = wp_remote_retrieve_body($response);
+        if ($data === '') {
             do_action('rrze.log.error', 'UnivIS\\API (getData): no data returned using ' . $url);
             return false;
         }
 
-
         $data = json_decode($data, true);
+        if (!is_array($data)) {
+            do_action('rrze.log.error', 'UnivIS\\API (getData): invalid JSON returned using ' . $url);
+            return false;
+        }
+
         $transformer = new DataTransformer(
             $this->atts,
             $this->univisParam,

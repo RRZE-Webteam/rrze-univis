@@ -1,5 +1,5 @@
 <?php if ($person): ?>
-	<div class="person rrze-univis liste-person" itemscope itemtype="http://schema.org/Person">
+	<div class="rrze-univis liste-person" itemscope itemtype="http://schema.org/Person">
         <div class="page">
             <?php
             if (!empty($person['title'])):
@@ -139,7 +139,7 @@ foreach ($person['lectures'] as $lec_type => $lectures):
                             <?php echo '<h' . ($this->atts['hstart'] + 2) . '>' . $lec_type . '</h' . ($this->atts['hstart'] + 2) . '>'; ?>
                             <ul>
                             <?php foreach ($lectures as $lecture) {
-    echo '<li><a href="' . get_permalink() . 'lv_id/' . $lecture['lecture_id'] . '">' . $lecture['name'] . '</a></li>';
+    echo '<li><a href="' . trailingslashit(get_permalink()) . 'lv_id/' . $lecture['lecture_id'] . '">' . $lecture['name'] . '</a></li>';
 }
 ?>
                             </ul>
