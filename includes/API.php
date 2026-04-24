@@ -30,6 +30,53 @@ class API {
         $this->api = preg_replace('/^((http|https):\/\/)?([^?\/]*)([\/?]*)/i', 'https://$3/prg?show=json&search=', $api, 1);
     }
 
+    private function isHtmlResponse(string $body, string $contentType): bool {
+        if ($contentType !== '' && stripos($contentType, 'text/html') !== false) {
+            return true;
+        }
+
+        $trimmed = ltrim($body);
+
+        return stripos($trimmed, '<!doctype html') === 0 || stripos($trimmed, '<html') === 0;
+    }
+
+    private function isNoResultHtml(string $body): bool {
+        $plain = wp_strip_all_tags($body);
+        $plain = html_entity_decode($plain, ENT_QUOTES | ENT_HTML5, 'UTF-8');
+        $plain = strtolower(preg_replace('/\s+/', ' ', $plain));
+
+        $needles = [
+            'keine passenden datens',
+            'keine daten gefunden',
+            'keine treffer',
+            'no matching record',
+            'no matching records',
+            'no data found',
+            'no entries found',
+            'nothing found',
+        ];
+
+        foreach ($needles as $needle) {
+            if (strpos($plain, $needle) !== false) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    private function getResponsePreview(string $body): string {
+        $plain = wp_strip_all_tags($body);
+        $plain = html_entity_decode($plain, ENT_QUOTES | ENT_HTML5, 'UTF-8');
+        $plain = preg_replace('/\s+/', ' ', trim($plain));
+
+        if ($plain === '') {
+            return '';
+        }
+
+        return mb_substr($plain, 0, 180);
+    }
+
     public function getData(string $dataType, mixed $univisParam = null): mixed {
         if (!empty($univisParam)) {
             $this->univisParam = urlencode($univisParam);
@@ -56,15 +103,26 @@ class API {
             return false;
         }
 
-        $data = wp_remote_retrieve_body($response);
-        if ($data === '') {
+        $body = wp_remote_retrieve_body($response);
+        if ($body === '') {
             do_action('rrze.log.error', 'UnivIS\\API (getData): no data returned using ' . $url);
             return false;
         }
 
-        $data = json_decode($data, true);
+        $contentType = (string)wp_remote_retrieve_header($response, 'content-type');
+        $data = json_decode($body, true);
         if (!is_array($data)) {
-            do_action('rrze.log.error', 'UnivIS\\API (getData): invalid JSON returned using ' . $url);
+            if ($this->isHtmlResponse($body, $contentType) && $this->isNoResultHtml($body)) {
+                return [];
+            }
+
+            do_action(
+                'rrze.log.error',
+                'UnivIS\\API (getData): expected JSON but received ' . ($contentType !== '' ? $contentType : 'unknown content type') . ' using ' . $url,
+                [
+                    'preview' => $this->getResponsePreview($body),
+                ]
+            );
             return false;
         }
 
