@@ -89,7 +89,16 @@ class Plugin {
      * @return string The filesystem directory path
      */
     public function getPath(string $path = ''): string {
-        return $this->directory . ($path ? trim($path, '/') . '/' : '');
+        $path = trim($path, '/');
+        if ($path === '') {
+            return $this->directory;
+        }
+
+        if (pathinfo($path, PATHINFO_EXTENSION) !== '') {
+            return $this->directory . $path;
+        }
+
+        return $this->directory . $path . '/';
     }
 
     /**
@@ -99,7 +108,16 @@ class Plugin {
      * @return string The URL directory path
      */
     public function getUrl(string $path = ''): string {
-        return $this->url . ($path ? trim($path, '/') . '/' : '');
+        $path = trim($path, '/');
+        if ($path === '') {
+            return $this->url;
+        }
+
+        if (pathinfo($path, PATHINFO_EXTENSION) !== '') {
+            return $this->url . $path;
+        }
+
+        return $this->url . $path . '/';
     }
 
     /**
