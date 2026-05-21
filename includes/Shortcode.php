@@ -453,6 +453,7 @@ class Shortcode {
         foreach ($aSettings as $task => $settings) {
             // register block
             register_block_type($settings['block']['blocktype'], array(
+                'api_version' => 3,
                 'editor_script' => $editorScript,
                 'render_callback' => [$this, 'shortcodeOutput'],
                 'attributes' => $this->getBlockAttributes($settings),
