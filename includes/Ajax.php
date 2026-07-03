@@ -74,6 +74,61 @@ class Ajax {
         return $ret;
     }
 
+    public function getBlockEditorOptions(mixed $univisOrgID = null): array {
+        $ret = [
+            'persons' => [],
+            'lectures' => [],
+            'lectureTypes' => [],
+            'lectureLanguages' => [],
+        ];
+
+        $options = get_option('rrze-univis');
+        $constants = $this->config->getConstants();
+        $UnivISURL = (!empty($options['basic_univis_url']) ? $options['basic_univis_url'] : $constants['defaults']['univis_url']);
+        $univisOrgID = (!empty($univisOrgID) ? $univisOrgID : (!empty($options['basic_UnivISOrgNr']) ? $options['basic_UnivISOrgNr'] : 0));
+
+        if (empty($UnivISURL) || empty($univisOrgID)) {
+            return $ret;
+        }
+
+        $univis = new Cache($UnivISURL, $univisOrgID, null);
+
+        $persons = $univis->getData('personAll');
+        if (is_array($persons)) {
+            foreach ($persons as $position => $entries) {
+                foreach ($entries as $entry) {
+                    if (isset($entry['person_id'])) {
+                        $ret['persons'][$entry['person_id']] = $entry['lastname'] . ', ' . $entry['firstname'];
+                    }
+                }
+            }
+            asort($ret['persons']);
+        }
+
+        $lectures = $univis->getData('lectureByDepartment');
+        if (is_array($lectures)) {
+            foreach ($lectures as $type => $entries) {
+                foreach ($entries as $entry) {
+                    if (isset($entry['lecture_id'])) {
+                        $ret['lectures'][$entry['lecture_id']] = $entry['name'];
+                    }
+                    if (!empty($entry['lecture_type'])) {
+                        $ret['lectureTypes'][$entry['lecture_type']] = $type;
+                    }
+                    if (!empty($entry['leclanguage_long']) && !empty($entry['leclanguage'])) {
+                        $parts = explode(' ', $entry['leclanguage_long']);
+                        $ret['lectureLanguages'][$entry['leclanguage']] = $parts[1] ?? $entry['leclanguage_long'];
+                    }
+                }
+            }
+            asort($ret['lectures']);
+            asort($ret['lectureTypes']);
+            asort($ret['lectureLanguages']);
+        }
+
+        return $ret;
+    }
+
     public function getUnivISData(mixed $univisOrgID = null, string $dataType = '', ?string $keyword = null): mixed {
         $data = false;
         $ret = __('No matching entries found.', 'rrze-univis'); // Keine passenden Einträge gefunden.
@@ -149,6 +204,11 @@ class Ajax {
         if (empty($inputs['univisOrgID']) || empty($inputs['dataType'])) {
             wp_send_json($this->getSelectHTML(__('No matching entries found.', 'rrze-univis')));
         }
+
+        if ($inputs['dataType'] === 'blockConfig') {
+            wp_send_json($this->getBlockEditorOptions($inputs['univisOrgID']));
+        }
+
         $response = $this->getSelectHTML($this->getUnivISData($inputs['univisOrgID'], $inputs['dataType']));
         wp_send_json($response);
     }

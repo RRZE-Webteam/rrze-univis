@@ -4,7 +4,7 @@
  * Plugin Name:     RRZE UnivIS
  * Plugin URI:      https://github.com/RRZE-Webteam/rrze-univis
  * Description:     Einbindung von Daten aus UnivIS
- * Version:         3.8.2
+ * Version:         3.8.3
  * Requires at least: 6.9.4
  * Requires PHP:      8.3
  * Author:          RRZE-Webteam
@@ -48,13 +48,13 @@ const RRZE_PHP_VERSION = '8.3';
 const RRZE_WP_VERSION = '6.9.4';
 
 // Load the plugin's text domain for localization.
-add_action('init', __NAMESPACE__ . '\loadTextdomain');
+add_action('init', __NAMESPACE__ . '\loadTextdomain', 5);
 // Registriert die Plugin-Funktion, die bei Aktivierung des Plugins ausgeführt werden soll.
 register_activation_hook(__FILE__, __NAMESPACE__ . '\activation');
 // Registriert die Plugin-Funktion, die ausgeführt werden soll, wenn das Plugin deaktiviert wird.
 register_deactivation_hook(__FILE__, __NAMESPACE__ . '\deactivation');
-// Wird aufgerufen, sobald alle aktivierten Plugins geladen wurden.
-add_action('plugins_loaded', __NAMESPACE__ . '\loaded');
+// Plugin bootstrap erst nach init, damit Übersetzungen sauber geladen sind.
+add_action('init', __NAMESPACE__ . '\loaded', 20);
 
 
 /**
