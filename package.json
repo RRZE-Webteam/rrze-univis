@@ -1,6 +1,6 @@
 {
   "name": "rrze-univis",
-  "version": "3.8.5",
+  "version": "3.8.6",
   "description": "Einbindung von Daten aus UnivIS",
   "main": "rrze-univis.php",
   "textdomain": "rrze-univis",
@@ -49,6 +49,6 @@
     "sass": "^1.94.2"
   },
   "dependencies": {
-    "esbuild": "^0.27.3"
+    "esbuild": "^0.28.1"
   }
 }
