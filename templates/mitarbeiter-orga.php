@@ -14,8 +14,9 @@
         ?>
 		        <li>
 		        <?php
+        $locations = isset($person['locations']) && is_array($person['locations']) ? $person['locations'] : [];
         if (!empty($person['title'])):
-            $name['title'] = '<span itemprop="honorificPrefix"><abbr title="' . $person['title_long'] . '">' . $person['title'] . '</abbr></span>';
+            $name['title'] = '<span itemprop="honorificPrefix"><abbr title="' . (!empty($person['title_long']) ? $person['title_long'] : $person['title']) . '">' . $person['title'] . '</abbr></span>';
         endif;
         if (!empty($person['firstname'])):
             $p['firstname'] = '<span itemprop="givenName">' . $person['firstname'] . '</span>';
@@ -46,41 +47,61 @@
         if (!empty($person['atitle'])):
             $pers['atitle'] = '<span itemprop="honorificSuffix"><abbr title="' . $person['atitle'] . '">' . $person['atitle'] . '</abbr></span>';
         endif;
-        if (!empty($person['locations'])) {
+        if (!empty($locations)) {
             // tel
-            foreach ($person['locations'] as $location) {
+            foreach ($locations as $location) {
+                if (!is_array($location)) {
+                    continue;
+                }
+
                 if (!empty($location['tel']) && in_array('telefon', $this->show) && !in_array('telefon', $this->hide)) {
                     if (in_array('call', $this->show) && !in_array('call', $this->hide)) {
-                        $pers[] = '<span class="screen-reader-text">' . __('Phone number', 'rrze-univis') . ': </span><span itemprop="telephone"><a href="tel:' . $location['tel_call'] . '"> ' . $location['tel'] . '</a></span>';
+                        $pers[] = '<span class="screen-reader-text">' . __('Phone number', 'rrze-univis') . ': </span><span itemprop="telephone"><a href="tel:' . (!empty($location['tel_call']) ? $location['tel_call'] : $location['tel']) . '"> ' . $location['tel'] . '</a></span>';
                     } else {
                         $pers[] = '<span class="screen-reader-text">' . __('Phone number', 'rrze-univis') . ': </span><span itemprop="telephone">' . $location['tel'] . '</span>';
                     }
                 }
             }
             // mobile
-            foreach ($person['locations'] as $location) {
+            foreach ($locations as $location) {
+                if (!is_array($location)) {
+                    continue;
+                }
+
                 if (!empty($location['mobile']) && in_array('mobile', $this->show) && !in_array('mobile', $this->hide)) {
                     if (in_array('call', $this->show) && !in_array('call', $this->hide)) {
-                        $pers[] = '<span class="screen-reader-text">' . __('Mobile number', 'rrze-univis') . ': </span><span class="mobile" itemprop="telephone"><a href="tel:' . $location['mobile_call'] . '"> ' . $location['mobile'] . '</a></span>';
+                        $pers[] = '<span class="screen-reader-text">' . __('Mobile number', 'rrze-univis') . ': </span><span class="mobile" itemprop="telephone"><a href="tel:' . (!empty($location['mobile_call']) ? $location['mobile_call'] : $location['mobile']) . '"> ' . $location['mobile'] . '</a></span>';
                     } else {
                         $pers[] = '<span class="screen-reader-text">' . __('Mobile number', 'rrze-univis') . ': </span><span class="mobile" itemprop="telephone">' . $location['mobile'] . '</span>';
                     }
                 }
             }
             // fax
-            foreach ($person['locations'] as $location) {
+            foreach ($locations as $location) {
+                if (!is_array($location)) {
+                    continue;
+                }
+
                 if (!empty($location['fax']) && in_array('fax', $this->show) && !in_array('fax', $this->hide)) {
                     $pers[] = '<span class="screen-reader-text">' . __('Fax number', 'rrze-univis') . ': </span><span itemprop="faxNumber">' . $location['fax'] . '</span>';
                 }
             }
             // email
-            foreach ($person['locations'] as $location) {
+            foreach ($locations as $location) {
+                if (!is_array($location)) {
+                    continue;
+                }
+
                 if (!empty($location['email']) && in_array('mail', $this->show) && !in_array('mail', $this->hide)) {
                     $pers[] = '<span class="screen-reader-text">' . __('Email', 'rrze-univis') . ': </span><span itemprop="email">' . $location['email'] . '</span>';
                 }
             }
             // address
-            foreach ($person['locations'] as $location) {
+            foreach ($locations as $location) {
+                if (!is_array($location)) {
+                    continue;
+                }
+
                 if (!empty($location['url']) && ((in_array('url', $this->show) && !in_array('url', $this->hide)) || ((in_array('address', $this->show) && !in_array('address', $this->hide) && !in_array('url', $this->hide))))) {
                     $pers[] = '<span class="screen-reader-text">' . __('Website', 'rrze-univis') . ': </span><a itemprop="url" href="' . $location['url'] . '">' . $location['url'] . '</a>';
                 }
