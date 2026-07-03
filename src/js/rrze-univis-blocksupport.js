@@ -13,7 +13,12 @@ function registerBlocks() {
     var blockName;
 
     for (blockName in configs) {
-        if (Object.prototype.hasOwnProperty.call(configs, blockName)) {
+        if (
+            Object.prototype.hasOwnProperty.call(configs, blockName) &&
+            configs[blockName] &&
+            configs[blockName].block &&
+            configs[blockName].block.blocktype
+        ) {
             createBlock(configs[blockName]);
         }
     }

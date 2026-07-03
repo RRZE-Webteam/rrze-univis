@@ -23,7 +23,7 @@ class Shortcode {
     protected $cache;
     protected $template;
     protected $noCache = false;
-    private $shortcodeSettings = '';
+    private array $shortcodeSettings = [];
     private $config;
     private $taskMap = [
         'mitarbeiter-einzeln' => ['settings' => 'mitarbeiter', 'handler' => 'getSingleEmployeeData'],
@@ -73,7 +73,6 @@ class Shortcode {
      * @return string Gib den Inhalt zurück
      */
     public function shortcodeOutput(mixed $atts): string {
-        $this->shortcodeSettings = $this->config->getShortcodeSettings();
         $this->noCache = is_array($atts) && !empty($atts['nocache']);
 
         if (empty($atts)) {
@@ -101,11 +100,11 @@ class Shortcode {
         }
 
         $taskConfig = $this->taskMap[$atts['task']];
-        $this->shortcodeSettings = $this->shortcodeSettings[$taskConfig['settings']];
+        $shortcodeSettings = $this->shortcodeSettings[$taskConfig['settings']] ?? [];
 
         // merge given attributes with default ones
         $atts_default = array();
-        foreach ($this->shortcodeSettings as $k => $v) {
+        foreach ($shortcodeSettings as $k => $v) {
             if ($k != 'block') {
                 $atts_default[$k] = $v['default'];
             }
@@ -301,23 +300,6 @@ class Shortcode {
         return $atts;
     }
 
-    public function isBlockEditorScreen(): bool {
-        if (!is_admin() || !function_exists('get_current_screen')) {
-            return false;
-        }
-
-        $screen = get_current_screen();
-        if (!$screen || !method_exists($screen, 'is_block_editor') || !$screen->is_block_editor()) {
-            return false;
-        }
-
-        if ($screen->base === 'site-editor') {
-            return false;
-        }
-
-        return true;
-    }
-
     private function makeDropdown(string $id, string $label, array $aData, ?string $all = null): array {
         $ret = [
             'id' => $id,
@@ -422,9 +404,11 @@ class Shortcode {
                 'jquery',
                 $constants['ajax']['admin_script_handle'],
                 'wp-blocks',
+                'wp-block-editor',
                 'wp-i18n',
                 'wp-element',
                 'wp-components',
+                'wp-dom-ready',
                 'wp-editor',
                 'wp-server-side-render',
             ),
@@ -443,10 +427,6 @@ class Shortcode {
     }
 
     public function initGutenberg(): void {
-        if (!$this->isBlockEditorScreen()) {
-            return;
-        }
-
         $editorScript = 'rrze-univis-blocksupport';
         $aSettings = $this->prepareBlockEditorSettings($this->shortcodeSettings);
 
