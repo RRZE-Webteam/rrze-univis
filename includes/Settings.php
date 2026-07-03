@@ -126,6 +126,12 @@ class Settings {
         $this->settingsMenu = $this->config->getMenuSettings();
     }
 
+    protected function getSettingsCapability(): string {
+        $capability = (string)($this->settingsMenu['capability'] ?? 'manage_options');
+
+        return (string)apply_filters('rrze_univis_settings_capability', $capability);
+    }
+
     /**
      * Einstellungsbereiche einstellen.
      */
@@ -426,7 +432,12 @@ class Settings {
         // Registrieren der Einstellungen
         foreach ($this->settingsSections as $section) {
             register_setting($this->settingsPrefix . $section['id'], $this->optionName, [$this, 'sanitizeOptions']);
+            add_filter('option_page_capability_' . $this->settingsPrefix . $section['id'], [$this, 'filterOptionPageCapability']);
         }
+    }
+
+    public function filterOptionPageCapability(): string {
+        return $this->getSettingsCapability();
     }
 
     public function callbackSectionDescription(array $section): void {
@@ -446,7 +457,7 @@ class Settings {
         $this->optionsPage = add_options_page(
             $this->settingsMenu['page_title'],
             $this->settingsMenu['menu_title'],
-            $this->settingsMenu['capability'],
+            $this->getSettingsCapability(),
             $this->settingsMenu['menu_slug'],
             [$this, 'pageOutput']
         );

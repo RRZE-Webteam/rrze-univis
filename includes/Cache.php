@@ -38,7 +38,7 @@ class Cache {
         $key = $this->buildTransientKey($dataType, $univisParam);
         if (!$this->noCache) {
             $cached = get_transient($key);
-            if ($cached && $cached != __('No matching records found.', 'rrze-univis')) {
+            if ($cached !== false && $cached != __('No matching records found.', 'rrze-univis')) {
                 return $cached;
             }
         }

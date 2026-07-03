@@ -1,5 +1,5 @@
 === Plugin Name: rrze-univis ===
-Version: 3.8.2
+Version: 3.8.5
 Plugin URI: https://github.com/RRZE-Webteam/rrze-univis
 GitHub Issue URL: https://github.com/RRZE-Webteam/rrze-univis/issues
 Author: RRZE-Webteam <webmaster@fau.de>

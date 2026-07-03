@@ -23,7 +23,7 @@ class Shortcode {
     protected $cache;
     protected $template;
     protected $noCache = false;
-    private $shortcodeSettings = '';
+    private array $shortcodeSettings = [];
     private $config;
     private $taskMap = [
         'mitarbeiter-einzeln' => ['settings' => 'mitarbeiter', 'handler' => 'getSingleEmployeeData'],
@@ -49,7 +49,8 @@ class Shortcode {
         $this->UnivISOrgNr = (!empty($this->options['basic_UnivISOrgNr']) ? $this->options['basic_UnivISOrgNr'] : 0);
         $this->UnivISURL = (!empty($this->options['basic_univis_url']) ? $this->options['basic_univis_url'] : $constants['defaults']['univis_url']);
         $this->UnivISLink = sprintf('<a href="%1$s">%2$s</a>', $this->UnivISURL, (!empty($this->options['basic_univis_linktxt']) ? $this->options['basic_univis_linktxt'] : __('Text for UnivIS link is missing', 'rrze-univis')));
-        add_action('init', [$this, 'initGutenberg']);
+        $this->registerBlocks();
+        add_action('enqueue_block_editor_assets', [$this, 'initGutenberg']);
     }
 
     /**
@@ -72,7 +73,6 @@ class Shortcode {
      * @return string Gib den Inhalt zurück
      */
     public function shortcodeOutput(mixed $atts): string {
-        $this->shortcodeSettings = $this->config->getShortcodeSettings();
         $this->noCache = is_array($atts) && !empty($atts['nocache']);
 
         if (empty($atts)) {
@@ -100,11 +100,11 @@ class Shortcode {
         }
 
         $taskConfig = $this->taskMap[$atts['task']];
-        $this->shortcodeSettings = $this->shortcodeSettings[$taskConfig['settings']];
+        $shortcodeSettings = $this->shortcodeSettings[$taskConfig['settings']] ?? [];
 
         // merge given attributes with default ones
         $atts_default = array();
-        foreach ($this->shortcodeSettings as $k => $v) {
+        foreach ($shortcodeSettings as $k => $v) {
             if ($k != 'block') {
                 $atts_default[$k] = $v['default'];
             }
@@ -300,14 +300,6 @@ class Shortcode {
         return $atts;
     }
 
-    public function isGutenberg(): bool {
-        $postID = get_the_ID();
-        if ($postID && !use_block_editor_for_post($postID)) {
-            return false;
-        }
-        return true;
-    }
-
     private function makeDropdown(string $id, string $label, array $aData, ?string $all = null): array {
         $ret = [
             'id' => $id,
@@ -339,60 +331,37 @@ class Shortcode {
         ];
     }
 
-    public function fillGutenbergOptions(array $aSettings): array {
-        $this->cache = new Cache($this->UnivISURL, $this->UnivISOrgNr, null);
-
+    public function prepareBlockEditorSettings(array $aSettings): array {
         foreach ($aSettings as $task => $settings) {
             $settings['number']['default'] = $this->UnivISOrgNr;
 
             // Mitarbeiter
             if (isset($settings['name'])) {
-                unset($settings['name']);
+                if ($task === 'mitarbeiter') {
+                    unset($settings['name']);
+                    unset($settings['univisid']);
+                }
+                if ($task === 'lehrveranstaltungen') {
+                    unset($settings['name']);
+                    $settings['univisid'] = $this->makeDropdown('univisid', __('Person', 'rrze-univis'), [], __('-- Select organization first --', 'rrze-univis'));
+                }
+
                 if ($task != 'lehrveranstaltungen') {
                     unset($settings['id']);
                 }
-                $aPersons = [];
-                $data = $this->cache->getData('personAll');
-                if (is_array($data)) {
-                    foreach ($data as $position => $persons) {
-                        foreach ($persons as $person) {
-                            $aPersons[$person['person_id']] = $person['lastname'] . (!empty($person['firstname']) ? ', ' . $person['firstname'] : '');
-                        }
-                    }
+                if ($task === 'publikationen') {
+                    unset($settings['name']);
+                    $settings['univisid'] = $this->makeDropdown('univisid', __('Person', 'rrze-univis'), [], __('-- Select organization first --', 'rrze-univis'));
+                } elseif (isset($settings['univisid'])) {
+                    $settings['univisid'] = $this->makeDropdown('univisid', __('Person', 'rrze-univis'), [], __('-- Select organization first --', 'rrze-univis'));
                 }
-                asort($aPersons);
-                $settings['univisid'] = $this->makeDropdown('univisid', __('Person', 'rrze-univis'), $aPersons);
-
             }
 
             // Lehrveranstaltungen
             if (isset($settings['id'])) {
-                $aLectures = [];
-                $aLectureTypes = [];
-                $aLectureLanguages = [];
-                $data = $this->cache->getData('lectureByDepartment');
-
-                if (is_array($data)) {
-                    foreach ($data as $type => $lecs) {
-                        foreach ($lecs as $lecture) {
-                            $aLectureTypes[$lecture['lecture_type']] = $type;
-                            if (!empty($lecture['leclanguage_long'])) {
-                                $parts = explode(' ', $lecture['leclanguage_long']);
-                                $aLectureLanguages[$lecture['leclanguage']] = $parts[1] ?? $lecture['leclanguage_long'];
-                            }
-                            $aLectures[$lecture['lecture_id']] = $lecture['name'];
-                        }
-                    }
-                }
-
-                asort($aLectures);
-                $settings['id'] = $this->makeDropdown('id', __('Lecture', 'rrze-univis'), $aLectures);
-
-                asort($aLectureTypes);
-                $settings['type'] = $this->makeDropdown('type', __('Type', 'rrze-univis'), $aLectureTypes);
-
-                asort($aLectureLanguages);
-                $settings['sprache'] = $this->makeDropdown('sprache', __('Language', 'rrze-univis'), $aLectureLanguages);
+                $settings['id'] = $this->makeDropdown('id', __('Lecture', 'rrze-univis'), [], __('-- Select organization first --', 'rrze-univis'));
+                $settings['type'] = $this->makeDropdown('type', __('Type', 'rrze-univis'), [], __('-- Select organization first --', 'rrze-univis'));
+                $settings['sprache'] = $this->makeDropdown('sprache', __('Language', 'rrze-univis'), [], __('-- Select organization first --', 'rrze-univis'));
 
                 // Semester
                 if (isset($settings['sem'])) {
@@ -424,34 +393,29 @@ class Shortcode {
         return $aSettings;
     }
 
-    public function initGutenberg(): void {
+    public function registerBlocks(): void {
         $editorScript = 'rrze-univis-blocksupport';
-
-        if (!$this->isGutenberg() || empty($this->UnivISURL) || empty($this->UnivISOrgNr)) {
-            return;
-        }
-        // get prefills for dropdowns
-        $aSettings = $this->fillGutenbergOptions($this->shortcodeSettings);
+        $constants = $this->config->getConstants();
 
         wp_register_script(
             $editorScript,
             $this->plugin->getUrl('js') . 'rrze-univis-blocksupport.js',
             array(
                 'jquery',
+                $constants['ajax']['admin_script_handle'],
                 'wp-blocks',
+                'wp-block-editor',
                 'wp-i18n',
                 'wp-element',
                 'wp-components',
+                'wp-dom-ready',
                 'wp-editor',
                 'wp-server-side-render',
             ),
             null
         );
 
-        wp_localize_script($editorScript, 'rrzeUnivisBlockConfigs', $aSettings);
-
-        foreach ($aSettings as $task => $settings) {
-            // register block
+        foreach ($this->shortcodeSettings as $task => $settings) {
             register_block_type($settings['block']['blocktype'], array(
                 'api_version' => 3,
                 'editor_script' => $editorScript,
@@ -460,6 +424,14 @@ class Shortcode {
             )
             );
         }
+    }
+
+    public function initGutenberg(): void {
+        $editorScript = 'rrze-univis-blocksupport';
+        $aSettings = $this->prepareBlockEditorSettings($this->shortcodeSettings);
+
+        wp_localize_script($editorScript, 'rrzeUnivisBlockConfigs', $aSettings);
+        wp_enqueue_script($editorScript);
     }
 
     private function getBlockAttributes(array $settings): array {

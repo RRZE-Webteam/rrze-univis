@@ -32,14 +32,18 @@ if ($data){
 
         $ret .= '<ul>';
         foreach ($lectures as $lecture){
+            if (!is_array($lecture) || empty($lecture['lecture_id'])) {
+                continue;
+            }
+
             $courseDates = '';
             $url = trailingslashit(get_permalink()) . 'lv_id/' . $lecture['lecture_id'];
-			$ret .= '<li>';
+				$ret .= '<li>';
             $ret .= '<h' . ($this->atts['hstart'] + 1) . '><a href="' . $url . '">';
             if ($lang != 'de_DE' && $lang != 'de_DE_formal' && !empty($lecture['ects_name'])) {
                 $lecture['title'] = $lecture['ects_name'];
             } else {
-                $lecture['title'] = $lecture['name'];
+                $lecture['title'] = isset($lecture['name']) ? $lecture['name'] : '';
             }
             $ret .= $lecture['title'];
             $ret .= '</a></h' . ($this->atts['hstart'] + 1) . '>';
@@ -102,10 +106,22 @@ if ($data){
             }
             $courseDates .= '<ul>';
 
-            if (isset($lecture['courses'])) {
+            if (!empty($lecture['courses']) && is_array($lecture['courses'])) {
                 foreach ($lecture['courses'] as $course) {
+                    if (!is_array($course)) {
+                        continue;
+                    }
+
                     if ((empty($lecture['lecturer_key']) || empty($course['doz'])) || (!empty($lecture['lecturer_key']) && !empty($course['doz']) && (in_array($lecture['lecturer_key'], $course['doz'])))) {
+                        if (empty($course['term']) || !is_array($course['term'])) {
+                            continue;
+                        }
+
                         foreach ($course['term'] as $term) {
+                            if (!is_array($term)) {
+                                continue;
+                            }
+
                             $t = array();
                             $time = array();
                             if (!empty($term['repeat'])) {

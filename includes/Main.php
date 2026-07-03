@@ -22,8 +22,9 @@ class Main {
         $this->plugin = $plugin;
         $this->config = new Config();
         $this->template = new Template($this->config, $this->plugin->getPath('templates'));
-        add_action('init', [Endpoints::class, 'add']);
+        Endpoints::add();
         add_action('template_redirect', [$this, 'getSingleEntry']);
+        add_filter('block_categories_all', [$this, 'registerBlockCategory'], 10, 2);
     }
 
     public function onLoaded(): void {
@@ -106,5 +107,24 @@ class Main {
             $ret = 'rrzethemes';
         }
         return $ret;
+    }
+
+    public function registerBlockCategory(array $categories, mixed $post): array {
+        $slug = 'fau';
+        $category = [
+            'slug' => $slug,
+            'title' => 'FAU',
+            'icon' => null,
+        ];
+
+        foreach ($categories as $existing) {
+            if (!empty($existing['slug']) && $existing['slug'] === $slug) {
+                return $categories;
+            }
+        }
+
+        array_unshift($categories, $category);
+
+        return $categories;
     }
 }

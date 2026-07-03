@@ -6,7 +6,9 @@ echo '<div class="rrze-univis">';
 
 if ($lecture){
     $lang = get_locale();
-    $type = $lecture['lecture_type_long'];
+    $type = isset($lecture['lecture_type_long']) ? $lecture['lecture_type_long'] : '';
+    $courses = isset($lecture['courses']) && is_array($lecture['courses']) ? $lecture['courses'] : [];
+    $studs = isset($lecture['studs']) && is_array($lecture['studs']) ? $lecture['studs'] : [];
 
     echo '<div itemscope itemtype="https://schema.org/Course">';
 
@@ -14,7 +16,7 @@ if ($lecture){
     if ($lang != 'de_DE' && $lang != 'de_DE_formal' && !empty($lecture['ects_name'])) {
         $lecture['title'] = $lecture['ects_name'];
     } else {
-        $lecture['title'] = $lecture['name'];
+        $lecture['title'] = isset($lecture['name']) ? $lecture['name'] : '';
     }
     echo '<span itemprop="name">' . $lecture['title'] . '</span>';
 
@@ -56,9 +58,17 @@ if ($lecture){
         echo '<p>' . make_clickable($lecture['comment']) . '</p>';
     }
     echo '<ul>';
-    if (isset($lecture['courses'])){
-        foreach ($lecture['courses'] as $course){
+    if (!empty($courses)){
+        foreach ($courses as $course){
+            if (!is_array($course) || empty($course['term']) || !is_array($course['term'])) {
+                continue;
+            }
+
             foreach ($course['term'] as $term){
+                if (!is_array($term)) {
+                    continue;
+                }
+
                 $t = array();
                 $time = array();
                 if (!empty($term['repeat'])){
@@ -102,10 +112,14 @@ if ($lecture){
     }
     echo '</ul>';
 
-    if (array_key_exists('studs', $lecture) && array_key_exists('stud', $lecture['studs'][0])){
+    if (!empty($studs[0]) && is_array($studs[0]) && !empty($studs[0]['stud']) && is_array($studs[0]['stud'])){
         echo '<h' . ($this->atts['hstart'] + 2) . '>' . __('Fields of study', 'rrze-univis') . '</h' . ($this->atts['hstart'] + 2) . '>';
         echo '<ul>';
-        foreach ($lecture['studs'][0]['stud'] as $stud){
+        foreach ($studs[0]['stud'] as $stud){
+            if (!is_array($stud)) {
+                continue;
+            }
+
             $s = array();
             if (!empty($stud['pflicht'])){
                 $s['pflicht'] = $stud['pflicht'];
